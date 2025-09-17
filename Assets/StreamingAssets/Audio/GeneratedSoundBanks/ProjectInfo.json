@@ -1,0 +1,36 @@
+{
+ "ProjectInfo": {
+  "Project": {
+   "Name": "Resonance_WwiseProject",
+   "GUID": "{30ABFBDE-C174-4F03-B5D8-2A3BCFF1423A}",
+   "Generator": "2024.1.7.8863"
+  },
+  "CacheRoot": "../../../../Resonance_WwiseProject/.cache",
+  "Platforms": [
+   {
+    "Name": "Mac",
+    "GUID": "{904802B3-EC8D-4797-B6D1-64A90247C49F}",
+    "BasePlatform": "Mac",
+    "BasePlatformGUID": "{9C6217D5-DD11-4795-87C1-6CE02853C540}",
+    "Path": "../../../../Resonance_WwiseProject/GeneratedSoundBanks/Mac"
+   },
+   {
+    "Name": "Windows",
+    "GUID": "{41530A86-B0CA-4A7B-924C-2B778B5E4C6B}",
+    "BasePlatform": "Windows",
+    "BasePlatformGUID": "{6E0CB257-C6C8-4C5C-8366-2740DFC441EB}",
+    "Path": "../../../../Resonance_WwiseProject/GeneratedSoundBanks/Windows"
+   }
+  ],
+  "Languages": [
+   {
+    "Name": "English(US)",
+    "Id": "684519430",
+    "GUID": "{797BD642-E3A3-4928-B8E7-3751545AF9D5}",
+    "Default": "true",
+    "UseAsStandIn": "true"
+   }
+  ],
+  "FileHash": "{17052925-2640-ABDF-8BD4-072EDAF7CF82}"
+ }
+}
