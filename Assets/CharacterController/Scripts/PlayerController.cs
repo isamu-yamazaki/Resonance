@@ -12,9 +12,11 @@ namespace Resonance.PlayerController
         [SerializeField] private Camera _playerCamera;
         
         [Header("Base Movement")]
-        public float runAcceleration = 0.25f;
+        public float runAcceleration = 35f;
         public float runSpeed = 4f;
-        public float drag = 0.1f;
+		public float sprintAcceleration = 50f;
+		public float sprintSpeed = 7f;
+        public float drag = 20f;
         public float movingThreshold = 0.01f;
 
         [Header("Camera Settings")]
@@ -46,26 +48,37 @@ namespace Resonance.PlayerController
 
         private void UpdateMovementState()
         {
+			// order matters
             bool isMovementInput = _playerLocomotionInput.MovementInput != Vector2.zero;
             bool isMovingLaterally = IsMovingLaterally();
+			bool isSprinting = _playerLocomotionInput.SprintToggledOn && isMovingLaterally;
             
-            PlayerMovementState lateralState = isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
+            PlayerMovementState lateralState = isSprinting ? PlayerMovementState.Sprinting : 
+											   isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
+
             _playerState.SetPlayerMovementState(lateralState);
         }
 
         private void HandleLateralMovement()
         {
+			// Create quick reference for current state
+			bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+			
+			// State dependent acceleration and speed
+			float lateralAcceleration = isSprinting ? sprintAcceleration : runAcceleration;
+			float clampLateralMagnitude = isSprinting ? sprintSpeed : runSpeed;
+
             Vector3 cameraForwardXZ = new Vector3(_playerCamera.transform.forward.x, 0f, _playerCamera.transform.forward.z).normalized;
             Vector3 cameraRightXZ = new Vector3(_playerCamera.transform.right.x, 0f, _playerCamera.transform.right.z).normalized;
             Vector3 movementDirection = cameraRightXZ * _playerLocomotionInput.MovementInput.x + cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
             
-            Vector3 movementDelta = movementDirection * runAcceleration *  Time.deltaTime;
+            Vector3 movementDelta = movementDirection * lateralAcceleration;
             Vector3 newVelocity = _characterController.velocity + movementDelta;
             
             // Add drag to player
             Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
             newVelocity = (newVelocity.magnitude > drag * Time.deltaTime) ? newVelocity - currentDrag : Vector3.zero;
-            newVelocity = Vector3.ClampMagnitude(newVelocity, runSpeed);
+            newVelocity = Vector3.ClampMagnitude(newVelocity, clampLateralMagnitude);
             
             // Move character (Unity suggests only calling this once per tick)
             _characterController.Move(newVelocity * Time.deltaTime);
