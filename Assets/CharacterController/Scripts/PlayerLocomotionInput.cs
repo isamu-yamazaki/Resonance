@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,15 +9,24 @@ namespace Resonance.PlayerController
     {
         #region Class Variables
         [SerializeField] private bool holdToSprint = true;
-            
-        public bool SprintToggledOn { get; private set; }
+        
         public PlayerControls PlayerControls { get; private set; }
         public Vector2 MovementInput { get; private set; }
         public Vector2 LookInput { get; private set; }
         public bool JumpPressed { get; private set; }
+        public bool SprintToggledOn { get; private set; }
+        public bool CrouchToggledOn { get; private set; }
+
+        private PlayerState _playerState;
         #endregion
         
         #region Startup
+
+        private void Awake()
+        {
+            _playerState = GetComponent<PlayerState>();
+        }
+        
         private void OnEnable()
         {
             PlayerControls =  new  PlayerControls();
@@ -39,6 +47,15 @@ namespace Resonance.PlayerController
         private void LateUpdate()
         {
             JumpPressed = false;
+            
+            // Disable crouch when airborne (jumping or falling)
+            bool isAirborne = _playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping ||
+                              _playerState.CurrentPlayerMovementState == PlayerMovementState.Falling;
+
+            if (isAirborne && CrouchToggledOn)
+            {
+                CrouchToggledOn = false;
+            }
         }
         #endregion
         
@@ -46,7 +63,6 @@ namespace Resonance.PlayerController
         public void OnMovement(InputAction.CallbackContext context)
         {
             MovementInput = context.ReadValue<Vector2>();
-            print(MovementInput);
         }
 
         public void OnLook(InputAction.CallbackContext context)
@@ -73,6 +89,15 @@ namespace Resonance.PlayerController
 
             JumpPressed = true;
         }
+
+        public void OnToggleCrouch(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            CrouchToggledOn = !CrouchToggledOn;
+        }
+
         #endregion
     }
 }

@@ -7,8 +7,34 @@
     <list default="true" id="ab354f86-6b88-42df-8f93-2e8adb1d51b0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Resonance/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Resonance/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/PlayerAnimator.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Animation/PlayerAnimator.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunBackward.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunBackward.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunBackwardLeft.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunBackwardLeft.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunBackwardRight.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunBackwardRight.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunForward.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunForward.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunForwardLeft.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunForwardLeft.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunForwardRight.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunForwardRight.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunLeft.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunLeft.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunRight.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_RunRight.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_SprintForward.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_SprintForward.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_SprintForwardLeft.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_SprintForwardLeft.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_SprintForwardRight.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Rifle/Rifle_SprintForwardRight.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Input/PlayerControls.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Input/PlayerControls.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Input/PlayerControls.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Input/PlayerControls.inputactions" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerAnimation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerAnimation.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerLocomotionInput.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerLocomotionInput.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerState.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +136,8 @@
       <workItem from="1758179985843" duration="3422000" />
       <workItem from="1758270023601" duration="3567000" />
       <workItem from="1758419402823" duration="548000" />
-      <workItem from="1758510424923" duration="6930000" />
+      <workItem from="1758510424923" duration="7415000" />
+      <workItem from="1759389138080" duration="6409000" />
     </task>
     <servers />
   </component>

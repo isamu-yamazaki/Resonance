@@ -12,8 +12,10 @@ namespace Resonance.PlayerController
         [SerializeField] private Camera _playerCamera;
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
-        
-        [Header("Base Movement")]
+
+        [Header("Base Movement")] 
+        public float crouchAcceleration = 25f;
+        public float crouchSpeed = 2f;
         public float runAcceleration = 35f;
         public float runSpeed = 4f;
 		public float sprintAcceleration = 50f;
@@ -25,7 +27,7 @@ namespace Resonance.PlayerController
 
         [Header("Animation")] 
         public float playerModelRotationSpeed = 10f;
-        public float rotateToTargetTime = 0.25f; 
+        public float rotateToTargetTime = 0.67f; 
 
         [Header("Camera Settings")]
         public float lookSensitivityH = 0.1f;
@@ -62,13 +64,16 @@ namespace Resonance.PlayerController
         private void UpdateMovementState()
         {
 			// order matters
+            bool canRun = CanRun();
             bool isMovementInput = _playerLocomotionInput.MovementInput != Vector2.zero;
             bool isMovingLaterally = IsMovingLaterally();
-			bool isSprinting = _playerLocomotionInput.SprintToggledOn && isMovingLaterally;
             bool isGrounded = IsGrounded();
+            bool isCrouchToggled = _playerLocomotionInput.CrouchToggledOn;
+			bool isSprinting = _playerLocomotionInput.SprintToggledOn && isMovingLaterally && !isCrouchToggled;
             
-            PlayerMovementState lateralState = isSprinting ? PlayerMovementState.Sprinting : 
-											   isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
+            PlayerMovementState lateralState = isCrouchToggled ? PlayerMovementState.Crouching : 
+                                               isSprinting ? PlayerMovementState.Sprinting :  
+                                               isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
 
             _playerState.SetPlayerMovementState(lateralState);
             
@@ -103,10 +108,13 @@ namespace Resonance.PlayerController
 			// Create quick reference for current state
 			bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
             bool isGrounded = _playerState.InGroundedState();
+            bool isCrouching = _playerState.CurrentPlayerMovementState == PlayerMovementState.Crouching;
 			
 			// State dependent acceleration and speed
-			float lateralAcceleration = isSprinting ? sprintAcceleration : runAcceleration;
-			float clampLateralMagnitude = isSprinting ? sprintSpeed : runSpeed;
+			float lateralAcceleration = isCrouching ? crouchAcceleration :
+                                        isSprinting ? sprintAcceleration : runAcceleration;
+			float clampLateralMagnitude = isCrouching ? crouchSpeed :
+                                          isSprinting ? sprintSpeed : runSpeed;
 
             Vector3 cameraForwardXZ = new Vector3(_playerCamera.transform.forward.x, 0f, _playerCamera.transform.forward.z).normalized;
             Vector3 cameraRightXZ = new Vector3(_playerCamera.transform.right.x, 0f, _playerCamera.transform.right.z).normalized;
@@ -119,7 +127,7 @@ namespace Resonance.PlayerController
             Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
             newVelocity = (newVelocity.magnitude > drag * Time.deltaTime) ? newVelocity - currentDrag : Vector3.zero;
             newVelocity = Vector3.ClampMagnitude(newVelocity, clampLateralMagnitude);
-            newVelocity.y += _verticalVelocity;
+            newVelocity.y = _verticalVelocity;
             
             // Move character (Unity suggests only calling this once per tick)
             _characterController.Move(newVelocity * Time.deltaTime);
@@ -199,6 +207,12 @@ namespace Resonance.PlayerController
         private bool IsGrounded()
         {
             return _characterController.isGrounded;
+        }
+
+        private bool CanRun()
+        {
+            // This means player is moving diagonally at 45 degrees or forward, if so, we can run
+            return _playerLocomotionInput.MovementInput.y >= MathF.Abs(_playerLocomotionInput.MovementInput.x);
         }
         #endregion
     }

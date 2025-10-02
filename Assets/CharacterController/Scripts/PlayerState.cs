@@ -15,9 +15,10 @@ namespace Resonance.PlayerController
         public bool InGroundedState()
         {
             return CurrentPlayerMovementState == PlayerMovementState.Idling ||
-                   CurrentPlayerMovementState == PlayerMovementState.Walking ||
+                   CurrentPlayerMovementState == PlayerMovementState.Crouching ||
                    CurrentPlayerMovementState == PlayerMovementState.Running ||
-                   CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+                   CurrentPlayerMovementState == PlayerMovementState.Sprinting ||
+                   CurrentPlayerMovementState == PlayerMovementState.Sliding;
 
         }
     }
@@ -25,11 +26,12 @@ namespace Resonance.PlayerController
     public enum PlayerMovementState
     {
         Idling = 0,
-        Walking = 1,
+        Crouching = 1,
         Running = 2,
         Sprinting = 3,
         Jumping = 4,
         Falling = 5,
-        Strafing = 6,
+        Sliding = 6,
+        Strafing = 7,
     }
 }

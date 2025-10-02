@@ -129,6 +129,15 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleCrouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""016845b5-40a4-46d8-839c-40d8799b1899"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -307,6 +316,17 @@ namespace Resonance.PlayerController
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a3183543-05a8-404d-b1c3-7b57ead0f9bd"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleCrouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -319,6 +339,7 @@ namespace Resonance.PlayerController
             m_PlayerLocomotionMap_Look = m_PlayerLocomotionMap.FindAction("Look", throwIfNotFound: true);
             m_PlayerLocomotionMap_ToggleSprint = m_PlayerLocomotionMap.FindAction("ToggleSprint", throwIfNotFound: true);
             m_PlayerLocomotionMap_Jump = m_PlayerLocomotionMap.FindAction("Jump", throwIfNotFound: true);
+            m_PlayerLocomotionMap_ToggleCrouch = m_PlayerLocomotionMap.FindAction("ToggleCrouch", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -403,6 +424,7 @@ namespace Resonance.PlayerController
         private readonly InputAction m_PlayerLocomotionMap_Look;
         private readonly InputAction m_PlayerLocomotionMap_ToggleSprint;
         private readonly InputAction m_PlayerLocomotionMap_Jump;
+        private readonly InputAction m_PlayerLocomotionMap_ToggleCrouch;
         /// <summary>
         /// Provides access to input actions defined in input action map "PlayerLocomotionMap".
         /// </summary>
@@ -430,6 +452,10 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerLocomotionMap/Jump".
             /// </summary>
             public InputAction @Jump => m_Wrapper.m_PlayerLocomotionMap_Jump;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerLocomotionMap/ToggleCrouch".
+            /// </summary>
+            public InputAction @ToggleCrouch => m_Wrapper.m_PlayerLocomotionMap_ToggleCrouch;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -468,6 +494,9 @@ namespace Resonance.PlayerController
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @ToggleCrouch.started += instance.OnToggleCrouch;
+                @ToggleCrouch.performed += instance.OnToggleCrouch;
+                @ToggleCrouch.canceled += instance.OnToggleCrouch;
             }
 
             /// <summary>
@@ -491,6 +520,9 @@ namespace Resonance.PlayerController
                 @Jump.started -= instance.OnJump;
                 @Jump.performed -= instance.OnJump;
                 @Jump.canceled -= instance.OnJump;
+                @ToggleCrouch.started -= instance.OnToggleCrouch;
+                @ToggleCrouch.performed -= instance.OnToggleCrouch;
+                @ToggleCrouch.canceled -= instance.OnToggleCrouch;
             }
 
             /// <summary>
@@ -559,6 +591,13 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnJump(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ToggleCrouch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnToggleCrouch(InputAction.CallbackContext context);
         }
     }
 }
