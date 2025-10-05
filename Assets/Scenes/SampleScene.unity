@@ -1316,6 +1316,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1676890609}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1742045801 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4865231967384266348, guid: f842ba83436f206498f0a24871cb0165, type: 3}
+  m_PrefabInstance: {fileID: 3081639476851703361}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
 --- !u!1 &1818242583
 GameObject:
   m_ObjectHideFlags: 0
@@ -1382,7 +1393,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: ae07d56413f0e684f890cc2f191f17c0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1533,6 +1544,10 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
+      propertyPath: baseFOV
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: gravity
       value: 25
       objectReference: {fileID: 0}
@@ -1540,6 +1555,10 @@ PrefabInstance:
       propertyPath: jumpSpeed
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
+      propertyPath: _virtualCamera
+      value: 
+      objectReference: {fileID: 1742045801}
     - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: runAcceleration
       value: 35
@@ -1606,7 +1625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4865231967384266348, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: Lens.FieldOfView
-      value: 80
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 4865231967384266348, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: Lens.FarClipPlane
@@ -1766,7 +1785,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7800289702002548540, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: field of view
-      value: 80
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 7800289702002548540, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: far clip plane

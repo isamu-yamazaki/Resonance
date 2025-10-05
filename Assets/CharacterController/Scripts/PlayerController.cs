@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Unity.Cinemachine;
 
 namespace Resonance.PlayerController
 {
@@ -10,6 +11,7 @@ namespace Resonance.PlayerController
         [Header("Components")]
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private Camera _playerCamera;
+        [SerializeField] private CinemachineCamera _virtualCamera;
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
 
@@ -34,6 +36,9 @@ namespace Resonance.PlayerController
         public float lookSensitivityH = 0.1f;
         public float lookSensitivityV = 0.1f;
         public float lookLimitV = 89f;
+        public float baseFOV = 75f;
+        public float sprintFOV = 90f;
+        public float fovTransitionSpeed = 10f;
 
         [Header("Environment Details")] 
         [SerializeField] private LayerMask _groundLayers;
@@ -62,6 +67,9 @@ namespace Resonance.PlayerController
 
             _antiBump = sprintSpeed;
             _stepOffset = _characterController.stepOffset;
+
+            if (_virtualCamera != null)
+                _virtualCamera.Lens.FieldOfView = baseFOV;
         }
         #endregion
 
@@ -181,6 +189,17 @@ namespace Resonance.PlayerController
         private void LateUpdate()
         {
             UpdateCameraRotation();
+            UpdateCameraFOV();
+        }
+
+        private void UpdateCameraFOV()
+        {
+            if (_virtualCamera == null) return;
+            
+            bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+            float targetFOV = isSprinting ? sprintFOV : baseFOV;
+            
+            _virtualCamera.Lens.FieldOfView = Mathf.Lerp(_virtualCamera.Lens.FieldOfView, targetFOV, fovTransitionSpeed * Time.deltaTime);
         }
 
         private void UpdateCameraRotation()
