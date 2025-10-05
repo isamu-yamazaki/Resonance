@@ -20,6 +20,7 @@ namespace Resonance.PlayerController
         public float runSpeed = 4f;
 		public float sprintAcceleration = 50f;
 		public float sprintSpeed = 7f;
+        public float inAirAcceleration = 25f;
         public float drag = 20f;
         public float gravity = 25f;
         public float jumpSpeed = 1.0f;
@@ -33,6 +34,9 @@ namespace Resonance.PlayerController
         public float lookSensitivityH = 0.1f;
         public float lookSensitivityV = 0.1f;
         public float lookLimitV = 89f;
+
+        [Header("Environment Details")] 
+        [SerializeField] private LayerMask _groundLayers;
         
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
@@ -40,9 +44,14 @@ namespace Resonance.PlayerController
         private Vector2 _cameraRotation = Vector2.zero;
         private Vector2 _playerTargetRotation = Vector2.zero;
 
+        private bool _jumpedLastFrame = false;
         private bool _isRotatingClockwise = false;
         private float _rotatingToTargetTimer = 0f;
         private float _verticalVelocity = 0f;
+        private float _antiBump;
+        private float _stepOffset;
+
+        private PlayerMovementState _lastMovementState = PlayerMovementState.Falling;
         #endregion
 
         #region Startup
@@ -50,6 +59,9 @@ namespace Resonance.PlayerController
         {
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
             _playerState = GetComponent<PlayerState>();
+
+            _antiBump = sprintSpeed;
+            _stepOffset = _characterController.stepOffset;
         }
         #endregion
 
@@ -63,6 +75,8 @@ namespace Resonance.PlayerController
 
         private void UpdateMovementState()
         {
+            _lastMovementState = _playerState.CurrentPlayerMovementState;
+            
 			// order matters
             bool canRun = CanRun();
             bool isMovementInput = _playerLocomotionInput.MovementInput != Vector2.zero;
@@ -78,28 +92,42 @@ namespace Resonance.PlayerController
             _playerState.SetPlayerMovementState(lateralState);
             
             // Control Airborne State
-            if (!isGrounded && _characterController.velocity.y > 0f)
+            if ((!isGrounded || _jumpedLastFrame) && _characterController.velocity.y > 0f)
             {
                 _playerState.SetPlayerMovementState(PlayerMovementState.Jumping);
+                _jumpedLastFrame = false;
+                _characterController.stepOffset = 0f;
             }
-            else if (!isGrounded && _characterController.velocity.y <= 0f)
+            else if ((!isGrounded || _jumpedLastFrame) && _characterController.velocity.y <= 0f)
             {
                 _playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+                _jumpedLastFrame = false;
+                _characterController.stepOffset = 0f;
+            }
+            else
+            {
+                _characterController.stepOffset = _stepOffset;
             }
         }
 
         private void HandleVerticalMovement()
         {
             bool isGrounded = _playerState.InGroundedState();
-
-            if (isGrounded && _verticalVelocity < 0f)
-                _verticalVelocity = 0f;
             
             _verticalVelocity -= gravity * Time.deltaTime;
+
+            if (isGrounded && _verticalVelocity < 0f)
+                _verticalVelocity = -_antiBump;
 
             if (_playerLocomotionInput.JumpPressed && isGrounded)
             {
                 _verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
+                _jumpedLastFrame = true;
+            }
+
+            if (_playerState.IsStateGroundedState(_lastMovementState) && !isGrounded)
+            {
+                _verticalVelocity += _antiBump;
             }
         }
 
@@ -111,9 +139,11 @@ namespace Resonance.PlayerController
             bool isCrouching = _playerState.CurrentPlayerMovementState == PlayerMovementState.Crouching;
 			
 			// State dependent acceleration and speed
-			float lateralAcceleration = isCrouching ? crouchAcceleration :
+			float lateralAcceleration = !isGrounded ? inAirAcceleration :
+                                        isCrouching ? crouchAcceleration :
                                         isSprinting ? sprintAcceleration : runAcceleration;
-			float clampLateralMagnitude = isCrouching ? crouchSpeed :
+			float clampLateralMagnitude = !isGrounded ? sprintSpeed : 
+                                          isCrouching ? crouchSpeed :
                                           isSprinting ? sprintSpeed : runSpeed;
 
             Vector3 cameraForwardXZ = new Vector3(_playerCamera.transform.forward.x, 0f, _playerCamera.transform.forward.z).normalized;
@@ -126,11 +156,24 @@ namespace Resonance.PlayerController
             // Add drag to player
             Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
             newVelocity = (newVelocity.magnitude > drag * Time.deltaTime) ? newVelocity - currentDrag : Vector3.zero;
-            newVelocity = Vector3.ClampMagnitude(newVelocity, clampLateralMagnitude);
+            newVelocity = Vector3.ClampMagnitude(new Vector3(newVelocity.x, 0f, newVelocity.z), clampLateralMagnitude);
             newVelocity.y = _verticalVelocity;
+            newVelocity = !isGrounded ? HandleSteepWalls(newVelocity) : newVelocity;
             
             // Move character (Unity suggests only calling this once per tick)
             _characterController.Move(newVelocity * Time.deltaTime);
+        }
+
+        private Vector3 HandleSteepWalls(Vector3 velocity)
+        {
+            Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
+            float angle = Vector3.Angle(normal, Vector3.up);
+            bool validAngle = angle <= _characterController.slopeLimit;
+
+            if (!validAngle && _verticalVelocity < 0f)
+                velocity = Vector3.ProjectOnPlane(velocity, normal);
+            
+            return velocity;
         }
         #endregion
         
@@ -206,9 +249,29 @@ namespace Resonance.PlayerController
 
         private bool IsGrounded()
         {
-            return _characterController.isGrounded;
+            bool grounded = _playerState.InGroundedState() ? IsGroundedWhileGrounded() : IsGroundedWhileAirborne();
+            
+            return grounded;
         }
 
+        private bool IsGroundedWhileGrounded()
+        {
+            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - _characterController.radius, transform.position.z);
+
+            bool grounded = Physics.CheckSphere(spherePosition, _characterController.radius, _groundLayers, QueryTriggerInteraction.Ignore);
+            
+            return grounded;
+        }
+
+        private bool IsGroundedWhileAirborne()
+        {
+            Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
+            float angle = Vector3.Angle(normal, Vector3.up);
+            bool validAngle = angle <= _characterController.slopeLimit;
+            
+            return _characterController.isGrounded && validAngle;
+        }
+        
         private bool CanRun()
         {
             // This means player is moving diagonally at 45 degrees or forward, if so, we can run

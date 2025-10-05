@@ -14,12 +14,17 @@ namespace Resonance.PlayerController
 
         public bool InGroundedState()
         {
-            return CurrentPlayerMovementState == PlayerMovementState.Idling ||
-                   CurrentPlayerMovementState == PlayerMovementState.Crouching ||
-                   CurrentPlayerMovementState == PlayerMovementState.Running ||
-                   CurrentPlayerMovementState == PlayerMovementState.Sprinting ||
-                   CurrentPlayerMovementState == PlayerMovementState.Sliding;
+            return IsStateGroundedState(CurrentPlayerMovementState);
 
+        }
+
+        public bool IsStateGroundedState(PlayerMovementState movementState)
+        {
+            return movementState == PlayerMovementState.Idling ||
+                   movementState == PlayerMovementState.Crouching ||
+                   movementState == PlayerMovementState.Running ||
+                   movementState == PlayerMovementState.Sprinting ||
+                   movementState == PlayerMovementState.Sliding;
         }
     }
     
