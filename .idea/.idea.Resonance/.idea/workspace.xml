@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ab354f86-6b88-42df-8f93-2e8adb1d51b0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Resonance/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Resonance/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -115,6 +114,7 @@
       <workItem from="1759635374760" duration="602000" />
       <workItem from="1759635998317" duration="6356000" />
       <workItem from="1759658504851" duration="1020000" />
+      <workItem from="1759701445318" duration="1380000" />
     </task>
     <servers />
   </component>
