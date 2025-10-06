@@ -25,6 +25,7 @@ namespace Resonance.PlayerController
         public float inAirAcceleration = 25f;
         public float drag = 20f;
         public float gravity = 25f;
+        public float terminalVelocity = 50f;
         public float jumpSpeed = 1.0f;
         public float movingThreshold = 0.01f;
 
@@ -136,6 +137,11 @@ namespace Resonance.PlayerController
             if (_playerState.IsStateGroundedState(_lastMovementState) && !isGrounded)
             {
                 _verticalVelocity += _antiBump;
+            }
+
+            if (Mathf.Abs(_verticalVelocity) > Mathf.Abs(terminalVelocity))
+            {
+                _verticalVelocity = -1f * Mathf.Abs(terminalVelocity);
             }
         }
 
