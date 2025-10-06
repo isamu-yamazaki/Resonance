@@ -6,11 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="ab354f86-6b88-42df-8f93-2e8adb1d51b0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Resonance/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Resonance/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Input/PlayerControls.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Input/PlayerControls.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Input/PlayerControls.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Input/PlayerControls.inputactions" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerLocomotionInput.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerLocomotionInput.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/PlayerAnimator.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Animation/PlayerAnimator.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Sprint.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Sprint/Rifle_SprintForward.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Sprint/Rifle_SprintForward.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Sprint/Rifle_SprintForwardLeft.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Sprint/Rifle_SprintForwardLeft.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Sprint/Rifle_SprintForwardRight.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Sprint/Rifle_SprintForwardRight.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerAnimation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerAnimation.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,8 +27,8 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/CharacterController/Scripts/CharacterControllerUtils.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/CharacterController/Scripts/Input/ThirdPersonInput.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@facf525283ae/Shaders/Lit.shader" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -119,7 +123,8 @@
       <workItem from="1759635374760" duration="602000" />
       <workItem from="1759635998317" duration="6356000" />
       <workItem from="1759658504851" duration="1020000" />
-      <workItem from="1759701445318" duration="5014000" />
+      <workItem from="1759701445318" duration="5061000" />
+      <workItem from="1759738309111" duration="5793000" />
     </task>
     <servers />
   </component>

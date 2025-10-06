@@ -324,6 +324,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerState
   <CurrentPlayerMovementState>k__BackingField: 0
+--- !u!114 &160081715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 160081707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9013b3fa3d70ab04c93dacdd173ebf4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerActionsInput
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1997,6 +2009,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8168975519737522225, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       insertIndex: -1
       addedObject: {fileID: 160081713}
+    - targetCorrespondingSourceObject: {fileID: 8168975519737522225, guid: f842ba83436f206498f0a24871cb0165, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 160081715}
   m_SourcePrefab: {fileID: 100100000, guid: f842ba83436f206498f0a24871cb0165, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

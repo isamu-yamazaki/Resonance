@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Resonance.PlayerController
@@ -11,7 +11,9 @@ namespace Resonance.PlayerController
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
         private PlayerController _playerController;
+        private PlayerActionsInput _playerActionsInput;
         
+        // Locomotion
         private static int inputXHash = Animator.StringToHash("inputX");
         private static int inputYHash = Animator.StringToHash("inputY");
         private static int inputMagnitudeHash = Animator.StringToHash("inputMagnitude");
@@ -20,6 +22,14 @@ namespace Resonance.PlayerController
         private static int isFallingHash = Animator.StringToHash("isFalling");
         private static int isJumpingHash = Animator.StringToHash("isJumping");
         private static int isCrouchingHash = Animator.StringToHash("isCrouching");
+        
+        // Actions
+        private static int isAttackingHash = Animator.StringToHash("isAttacking");
+        private static int isReloadingHash = Animator.StringToHash("isReloading");
+        private static int isPlayingActionHash = Animator.StringToHash("isPlayingAction");
+        private int[] actionHashes;
+        
+        // Camera/Rotation
         private static int isRotatingToTargetHash = Animator.StringToHash("isRotatingToTarget");
         private static int rotationMismatchHash = Animator.StringToHash("rotationMismatch");
         
@@ -30,6 +40,9 @@ namespace Resonance.PlayerController
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
             _playerState = GetComponent<PlayerState>();
             _playerController = GetComponent<PlayerController>();
+            _playerActionsInput = GetComponent<PlayerActionsInput>();
+
+            actionHashes = new int[] { }; // interruptible actions go here
         }
 
         private void Update()
@@ -46,6 +59,7 @@ namespace Resonance.PlayerController
             bool isJumping = _playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping;
             bool isFalling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Falling;
             bool isGrounded = _playerState.InGroundedState();
+            bool isPlayingAction = actionHashes.Any(hash => _animator.GetBool(hash));
 
             Vector2 inputTarget = isSprinting ? _playerLocomotionInput.MovementInput * 1.5f : 
                                   isRunning ? _playerLocomotionInput.MovementInput * 1f : _playerLocomotionInput.MovementInput * 0.5f;
@@ -57,6 +71,9 @@ namespace Resonance.PlayerController
             _animator.SetBool(isJumpingHash, isJumping);
             _animator.SetBool(isCrouchingHash, isCrouching);
             _animator.SetBool(isRotatingToTargetHash, _playerController.IsRotatingToTarget);
+            _animator.SetBool(isAttackingHash, _playerActionsInput.AttackPressed);
+            _animator.SetBool(isReloadingHash, _playerActionsInput.ReloadPressed);
+            _animator.SetBool(isPlayingActionHash, isPlayingAction);
             
             _animator.SetFloat(inputXHash, _currentBlendInput.x);
             _animator.SetFloat(inputYHash, _currentBlendInput.y);
