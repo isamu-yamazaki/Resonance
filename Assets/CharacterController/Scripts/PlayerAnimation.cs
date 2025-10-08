@@ -22,6 +22,7 @@ namespace Resonance.PlayerController
         private static int isFallingHash = Animator.StringToHash("isFalling");
         private static int isJumpingHash = Animator.StringToHash("isJumping");
         private static int isCrouchingHash = Animator.StringToHash("isCrouching");
+        private static int isSlidingHash = Animator.StringToHash("isSliding");
         
         // Actions
         private static int isAttackingHash = Animator.StringToHash("isAttacking");
@@ -56,12 +57,14 @@ namespace Resonance.PlayerController
             bool isRunning = _playerState.CurrentPlayerMovementState == PlayerMovementState.Running;
             bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
             bool isCrouching = _playerState.CurrentPlayerMovementState == PlayerMovementState.Crouching;
+            bool isSliding = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sliding;
             bool isJumping = _playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping;
             bool isFalling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Falling;
             bool isGrounded = _playerState.InGroundedState();
             bool isPlayingAction = actionHashes.Any(hash => _animator.GetBool(hash));
 
-            Vector2 inputTarget = isSprinting ? _playerLocomotionInput.MovementInput * 1.5f : 
+            Vector2 inputTarget = isSliding ? Vector2.zero :
+                                  isSprinting ? _playerLocomotionInput.MovementInput * 1.5f : 
                                   isRunning ? _playerLocomotionInput.MovementInput * 1f : _playerLocomotionInput.MovementInput * 0.5f;
             _currentBlendInput = Vector3.Lerp(_currentBlendInput, inputTarget, locomotionBlendSpeed * Time.deltaTime);
             
@@ -70,6 +73,7 @@ namespace Resonance.PlayerController
             _animator.SetBool(isFallingHash, isFalling);
             _animator.SetBool(isJumpingHash, isJumping);
             _animator.SetBool(isCrouchingHash, isCrouching);
+            _animator.SetBool(isSlidingHash, isSliding);
             _animator.SetBool(isRotatingToTargetHash, _playerController.IsRotatingToTarget);
             _animator.SetBool(isAttackingHash, _playerActionsInput.AttackPressed);
             _animator.SetBool(isReloadingHash, _playerActionsInput.ReloadPressed);

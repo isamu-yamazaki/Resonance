@@ -29,6 +29,15 @@ namespace Resonance.PlayerController
         public float jumpSpeed = 1.0f;
         public float movingThreshold = 0.01f;
 
+		[Header("Slide Settings")]
+		public float slideSpeed = 8f;
+		public float slideDuration = 1f;
+        public float slideDeceleration = 8f;
+        public float minSlideSpeed = 2f;
+        public float slopeAngleThreshold = 15f;
+        public float uphillSlideDecelerationMultiplier = 2f;
+        public float downhillSlideSpeedBoost = 1.5f;
+
         [Header("Animation")] 
         public float playerModelRotationSpeed = 10f;
         public float rotateToTargetTime = 0.67f; 
@@ -56,6 +65,11 @@ namespace Resonance.PlayerController
         private float _verticalVelocity = 0f;
         private float _antiBump;
         private float _stepOffset;
+        
+        // Slide variables
+        private bool _wasCrouchPressedLastFrame = false;
+        private float _slideTimer = 0f;
+        private Vector3 _slideDirection = Vector3.zero;
 
         private PlayerMovementState _lastMovementState = PlayerMovementState.Falling;
         #endregion
@@ -94,6 +108,53 @@ namespace Resonance.PlayerController
             bool isCrouchToggled = _playerLocomotionInput.CrouchToggledOn;
 			bool isSprinting = _playerLocomotionInput.SprintToggledOn && isMovingLaterally && !isCrouchToggled;
             
+            // Check for slide initiation
+            bool crouchJustPressed = isCrouchToggled && !_wasCrouchPressedLastFrame;
+            bool isCurrentlySprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+            bool isCurrentlySliding = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sliding;
+            
+            // Initiate slide: crouch pressed while sprinting and grounded
+            if (crouchJustPressed && isCurrentlySprinting && isGrounded)
+            {
+                _slideTimer = slideDuration;
+                _slideDirection = new Vector3(_characterController.velocity.x, 0f, _characterController.velocity.z).normalized;
+                _playerState.SetPlayerMovementState(PlayerMovementState.Sliding);
+                _wasCrouchPressedLastFrame = isCrouchToggled;
+                _characterController.stepOffset = _stepOffset;
+                return; // Exit early
+            }
+
+            _wasCrouchPressedLastFrame = isCrouchToggled;
+            
+            // Handle active slide
+            if (isCurrentlySliding)
+            {
+                // Exit slide conditions: crouch released, airborne, or jump pressed
+                bool shouldEndSlide = !isCrouchToggled || !isGrounded || _playerLocomotionInput.JumpPressed;
+        
+                if (shouldEndSlide)
+                {
+                    _slideTimer = 0f;
+                    _playerLocomotionInput.DisableCrouch();
+            
+                    // Jump out of slide
+                    if (_playerLocomotionInput.JumpPressed && isGrounded)
+                    {
+                        _verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
+                        _jumpedLastFrame = true;
+                    }
+            
+                    // Fall through to determine new state
+                }
+                else
+                {
+                    // Continue sliding
+                    _playerState.SetPlayerMovementState(PlayerMovementState.Sliding);
+                    return; // Exit early
+                }
+            }
+            
+            // Determine ground movement state
             PlayerMovementState lateralState = isCrouchToggled ? PlayerMovementState.Crouching : 
                                                isSprinting ? PlayerMovementState.Sprinting :  
                                                isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
@@ -147,6 +208,14 @@ namespace Resonance.PlayerController
 
         private void HandleLateralMovement()
         {
+            bool isSliding = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sliding;
+
+            if (isSliding)
+            {
+                HandleSlideMovement();
+                return;
+            }
+            
 			// Create quick reference for current state
 			bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
             bool isGrounded = _playerState.InGroundedState();
@@ -176,6 +245,67 @@ namespace Resonance.PlayerController
             
             // Move character (Unity suggests only calling this once per tick)
             _characterController.Move(newVelocity * Time.deltaTime);
+        }
+
+        private void HandleSlideMovement()
+        {
+            // Get ground slope information
+            Vector3 groundNormal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
+            float slopeAngle = Vector3.Angle(groundNormal, Vector3.up);
+    
+            // Find downhill direction of slope
+            Vector3 slopeDownDirection = Vector3.ProjectOnPlane(Vector3.down, groundNormal).normalized;
+    
+            // Determine if moving with or against the slope
+            float slopeDot = Vector3.Dot(_slideDirection, slopeDownDirection);
+    
+            bool isDownhill = slopeAngle > slopeAngleThreshold && slopeDot > 0.1f;
+            bool isUphill = slopeAngle > slopeAngleThreshold && slopeDot < -0.1f;
+    
+            // Update slide timer based on slope
+            if (isDownhill)
+            {
+                _slideTimer -= Time.deltaTime * 0.5f; // Slower decay on downhill
+            }
+            else if (isUphill)
+            {
+                _slideTimer -= Time.deltaTime * uphillSlideDecelerationMultiplier;
+            }
+            else
+            {
+                _slideTimer -= Time.deltaTime;
+            }
+    
+            // Calculate slide speed
+            float slideProgress = 1f - (_slideTimer / slideDuration);
+            float currentSlideSpeed = Mathf.Lerp(slideSpeed, minSlideSpeed, slideProgress);
+    
+            // Apply slope modifications to speed
+            if (isDownhill)
+            {
+                currentSlideSpeed *= downhillSlideSpeedBoost;
+            }
+            else if (isUphill)
+            {
+                currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * uphillSlideDecelerationMultiplier * Time.deltaTime), minSlideSpeed);
+            }
+            else
+            {
+                currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * Time.deltaTime), minSlideSpeed);
+            }
+    
+            // End slide when timer expires
+            if (_slideTimer <= 0f)
+            {
+                _playerLocomotionInput.DisableCrouch();
+                return;
+            }
+    
+            // Move in locked slide direction
+            Vector3 slideVelocity = _slideDirection * currentSlideSpeed;
+            slideVelocity.y = _verticalVelocity;
+    
+            _characterController.Move(slideVelocity * Time.deltaTime);
         }
 
         private Vector3 HandleSteepWalls(Vector3 velocity)

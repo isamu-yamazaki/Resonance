@@ -66,6 +66,13 @@ namespace Resonance.PlayerController
         }
         #endregion
         
+        #region Public Methods
+        public void DisableCrouch()
+        {
+            CrouchToggledOn = false;
+        }
+        #endregion
+        
         #region Input Callbacks
         public void OnMovement(InputAction.CallbackContext context)
         {
