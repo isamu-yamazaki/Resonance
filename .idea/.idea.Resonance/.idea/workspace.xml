@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ab354f86-6b88-42df-8f93-2e8adb1d51b0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Resonance/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Resonance/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/PlayerAnimator.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Animation/PlayerAnimator.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Slide.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Animation/Slide.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/Input/PlayerLocomotionInput.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/Input/PlayerLocomotionInput.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerAnimation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerAnimation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CharacterController/Scripts/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +119,7 @@
       <workItem from="1759738309111" duration="5793000" />
       <workItem from="1759802161929" duration="10000" />
       <workItem from="1759892279001" duration="841000" />
-      <workItem from="1759897841241" duration="1980000" />
+      <workItem from="1759897841241" duration="2781000" />
     </task>
     <servers />
   </component>
