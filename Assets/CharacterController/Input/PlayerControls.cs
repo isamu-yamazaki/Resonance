@@ -351,6 +351,15 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""037f376f-3039-46e7-a0a9-a709bfdf6512"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -375,6 +384,17 @@ namespace Resonance.PlayerController
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""74e5d9b3-4391-4e9e-955b-2dd55f71010c"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -392,6 +412,7 @@ namespace Resonance.PlayerController
             m_PlayerActionMap = asset.FindActionMap("PlayerActionMap", throwIfNotFound: true);
             m_PlayerActionMap_Attack = m_PlayerActionMap.FindAction("Attack", throwIfNotFound: true);
             m_PlayerActionMap_Reload = m_PlayerActionMap.FindAction("Reload", throwIfNotFound: true);
+            m_PlayerActionMap_Escape = m_PlayerActionMap.FindAction("Escape", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -615,6 +636,7 @@ namespace Resonance.PlayerController
         private List<IPlayerActionMapActions> m_PlayerActionMapActionsCallbackInterfaces = new List<IPlayerActionMapActions>();
         private readonly InputAction m_PlayerActionMap_Attack;
         private readonly InputAction m_PlayerActionMap_Reload;
+        private readonly InputAction m_PlayerActionMap_Escape;
         /// <summary>
         /// Provides access to input actions defined in input action map "PlayerActionMap".
         /// </summary>
@@ -634,6 +656,10 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerActionMap/Reload".
             /// </summary>
             public InputAction @Reload => m_Wrapper.m_PlayerActionMap_Reload;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerActionMap/Escape".
+            /// </summary>
+            public InputAction @Escape => m_Wrapper.m_PlayerActionMap_Escape;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -666,6 +692,9 @@ namespace Resonance.PlayerController
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
             }
 
             /// <summary>
@@ -683,6 +712,9 @@ namespace Resonance.PlayerController
                 @Reload.started -= instance.OnReload;
                 @Reload.performed -= instance.OnReload;
                 @Reload.canceled -= instance.OnReload;
+                @Escape.started -= instance.OnEscape;
+                @Escape.performed -= instance.OnEscape;
+                @Escape.canceled -= instance.OnEscape;
             }
 
             /// <summary>
@@ -780,6 +812,13 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnReload(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Escape" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnEscape(InputAction.CallbackContext context);
         }
     }
 }

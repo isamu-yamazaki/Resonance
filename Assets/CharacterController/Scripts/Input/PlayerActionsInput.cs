@@ -83,6 +83,23 @@ namespace Resonance.PlayerController
 
             ReloadPressed = true;
         }
+
+        public void OnEscape(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
         #endregion
     }
 }
