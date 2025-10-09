@@ -66,6 +66,7 @@ namespace Resonance.PlayerController
             Vector2 inputTarget = isSliding ? Vector2.zero :
                                   isSprinting ? _playerLocomotionInput.MovementInput * 1.5f : 
                                   isRunning ? _playerLocomotionInput.MovementInput * 1f : _playerLocomotionInput.MovementInput * 0.5f;
+            
             _currentBlendInput = Vector3.Lerp(_currentBlendInput, inputTarget, locomotionBlendSpeed * Time.deltaTime);
             
             _animator.SetBool(isGroundedHash, isGrounded);
