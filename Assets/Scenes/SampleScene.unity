@@ -2865,12 +2865,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
+      propertyPath: lookLimitV
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: _virtualCamera
       value: 
       objectReference: {fileID: 1742045801}
     - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: runAcceleration
       value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
+      propertyPath: lookSensitivityH
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
+      propertyPath: lookSensitivityV
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3065493494279960535, guid: f842ba83436f206498f0a24871cb0165, type: 3}
       propertyPath: terminalVelocity
