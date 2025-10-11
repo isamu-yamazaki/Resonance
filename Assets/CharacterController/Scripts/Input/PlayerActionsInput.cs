@@ -11,12 +11,14 @@ namespace Resonance.PlayerController
         public bool ReloadPressed { get; private set; }
         
         private PlayerLocomotionInput _playerLocomotionInput;
+        private OverdriveAbility _overdriveAbility;
         #endregion
         
         #region Startup
         private void Awake()
         {
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            _overdriveAbility =  GetComponent<OverdriveAbility>();
         }
 
         private void OnEnable()
@@ -82,6 +84,17 @@ namespace Resonance.PlayerController
                 return;
 
             ReloadPressed = true;
+        }
+
+        public void OnOverdrive(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (_overdriveAbility != null)
+            {
+                _overdriveAbility.TryActivateOverdrive();
+            }
         }
 
         public void OnEscape(InputAction.CallbackContext context)

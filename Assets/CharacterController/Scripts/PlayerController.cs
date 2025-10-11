@@ -48,6 +48,7 @@ namespace Resonance.PlayerController
         public float lookLimitV = 89f;
         public float baseFOV = 75f;
         public float sprintFOV = 90f;
+        public float overdriveFOV = 110f;
         public float fovTransitionSpeed = 10f;
 
         [Header("Environment Details")] 
@@ -55,6 +56,7 @@ namespace Resonance.PlayerController
         
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
+        private OverdriveAbility _overdriveAbility;
         
         private Vector2 _cameraRotation = Vector2.zero;
         private Vector2 _playerTargetRotation = Vector2.zero;
@@ -79,6 +81,7 @@ namespace Resonance.PlayerController
         {
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
             _playerState = GetComponent<PlayerState>();
+            _overdriveAbility = GetComponent<OverdriveAbility>();
 
             _antiBump = sprintSpeed;
             _stepOffset = _characterController.stepOffset;
@@ -229,6 +232,12 @@ namespace Resonance.PlayerController
                                           isCrouching ? crouchSpeed :
                                           isSprinting ? sprintSpeed : runSpeed;
 
+            if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
+            {
+                lateralAcceleration *= _overdriveAbility.SpeedMultiplier;
+                clampLateralMagnitude *= _overdriveAbility.SpeedMultiplier;
+            }
+
             Vector3 cameraForwardXZ = new Vector3(_playerCamera.transform.forward.x, 0f, _playerCamera.transform.forward.z).normalized;
             Vector3 cameraRightXZ = new Vector3(_playerCamera.transform.right.x, 0f, _playerCamera.transform.right.z).normalized;
             Vector3 movementDirection = cameraRightXZ * _playerLocomotionInput.MovementInput.x + cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
@@ -293,6 +302,12 @@ namespace Resonance.PlayerController
             {
                 currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * Time.deltaTime), minSlideSpeed);
             }
+            
+            // Apply Overdrive speed multiplier to slide
+            if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
+            {
+                currentSlideSpeed *= _overdriveAbility.SpeedMultiplier;
+            }
     
             // End slide when timer expires
             if (_slideTimer <= 0f)
@@ -332,8 +347,20 @@ namespace Resonance.PlayerController
         {
             if (_virtualCamera == null) return;
             
+            // Determine target FOV based on state priority: Overdrive > Sprint > Base
+            float targetFOV = baseFOV;
+            
             bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
-            float targetFOV = isSprinting ? sprintFOV : baseFOV;
+            bool isOverdriveActive = _overdriveAbility != null && _overdriveAbility.IsInOverdrive;
+
+            if (isOverdriveActive)
+            {
+                targetFOV = overdriveFOV;
+            }
+            else if (isSprinting)
+            {
+                targetFOV = sprintFOV;
+            }
             
             _virtualCamera.Lens.FieldOfView = Mathf.Lerp(_virtualCamera.Lens.FieldOfView, targetFOV, fovTransitionSpeed * Time.deltaTime);
         }

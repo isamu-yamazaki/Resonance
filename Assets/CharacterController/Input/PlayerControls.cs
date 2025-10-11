@@ -360,6 +360,15 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Overdrive"",
+                    ""type"": ""Button"",
+                    ""id"": ""04db4524-f587-4dcf-b098-97dc2d37f042"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -395,6 +404,17 @@ namespace Resonance.PlayerController
                     ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ccfe0f99-f775-4f1c-b3e7-a4e32e07f8a2"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Overdrive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -413,6 +433,7 @@ namespace Resonance.PlayerController
             m_PlayerActionMap_Attack = m_PlayerActionMap.FindAction("Attack", throwIfNotFound: true);
             m_PlayerActionMap_Reload = m_PlayerActionMap.FindAction("Reload", throwIfNotFound: true);
             m_PlayerActionMap_Escape = m_PlayerActionMap.FindAction("Escape", throwIfNotFound: true);
+            m_PlayerActionMap_Overdrive = m_PlayerActionMap.FindAction("Overdrive", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -637,6 +658,7 @@ namespace Resonance.PlayerController
         private readonly InputAction m_PlayerActionMap_Attack;
         private readonly InputAction m_PlayerActionMap_Reload;
         private readonly InputAction m_PlayerActionMap_Escape;
+        private readonly InputAction m_PlayerActionMap_Overdrive;
         /// <summary>
         /// Provides access to input actions defined in input action map "PlayerActionMap".
         /// </summary>
@@ -660,6 +682,10 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerActionMap/Escape".
             /// </summary>
             public InputAction @Escape => m_Wrapper.m_PlayerActionMap_Escape;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerActionMap/Overdrive".
+            /// </summary>
+            public InputAction @Overdrive => m_Wrapper.m_PlayerActionMap_Overdrive;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -695,6 +721,9 @@ namespace Resonance.PlayerController
                 @Escape.started += instance.OnEscape;
                 @Escape.performed += instance.OnEscape;
                 @Escape.canceled += instance.OnEscape;
+                @Overdrive.started += instance.OnOverdrive;
+                @Overdrive.performed += instance.OnOverdrive;
+                @Overdrive.canceled += instance.OnOverdrive;
             }
 
             /// <summary>
@@ -715,6 +744,9 @@ namespace Resonance.PlayerController
                 @Escape.started -= instance.OnEscape;
                 @Escape.performed -= instance.OnEscape;
                 @Escape.canceled -= instance.OnEscape;
+                @Overdrive.started -= instance.OnOverdrive;
+                @Overdrive.performed -= instance.OnOverdrive;
+                @Overdrive.canceled -= instance.OnOverdrive;
             }
 
             /// <summary>
@@ -819,6 +851,13 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnEscape(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Overdrive" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnOverdrive(InputAction.CallbackContext context);
         }
     }
 }
