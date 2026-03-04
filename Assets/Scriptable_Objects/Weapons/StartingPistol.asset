@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 981e9f714b3e12a4e8a7a5399e20ebcb, type: 3}
+  m_Name: StartingPistol
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponProperties
+  key: starting_pistol
+  weaponName: Modular Handgun
+  description: If you can believe it this thing can shoot people but not as good
+    as other stuff.
+  slot: 1
+  weaponClass: 5
+  firingType: 1
+  icon: {fileID: 0}
+  weaponPrefab: {fileID: 1737148184329554707, guid: a04aeb84fa5fcff41a60c568eea597ad, type: 3}
+  damage: 10
+  fireRate: 3
+  projectilesPerShot: 1
+  range: 100
+  accuracy: 0
+  control: 0
+  spread: 0
+  muzzleVelocity: 5
+  mobility: 1
+  handling: 0
+  magazineSize: 12
+  reloadTime: 3.3
+  bulletProperties: {fileID: 11400000, guid: efa6dd70ff966ac409b9d07883c05ff2, type: 2}

@@ -18,11 +18,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Testbeds/TB_ArenaDemo.unity
     guid: 188a3abd83fe30c4b86753ac60d3f317
   - enabled: 1
-    path: Assets/Developers/Brendan/LobbyScene.unity
+    path: Assets/Scenes/Lobby/LobbyScene.unity
     guid: 163ab76a47bff6646b7627336bc33bdf
   - enabled: 1
-    path: Assets/Developers/Brendan/GameBootstrapScene.unity
+    path: Assets/Scenes/Transitions/GameBootstrapScene.unity
     guid: e6ba6bbd3072e63449ec09bda4a1b5e6
+  - enabled: 1
+    path: Assets/Scenes/Transitions/NetworkDespawnerScene.unity
+    guid: 157b9ec0a6f97459496d6bfcaa643000
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 9fb1bdfd7a717e743bcf15dae882b1c0, type: 3}
   m_UseUCBPForAssetBundles: 0

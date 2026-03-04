@@ -1,0 +1,16 @@
+{
+    "name": "Arena",
+    "rootNamespace": "",
+    "references": [
+        "GUID:541dca94b13a54b81a99ecaaabcb9ce3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

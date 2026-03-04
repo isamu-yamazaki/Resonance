@@ -1,93 +1,105 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections;
+using Resonance.Helper;
 
 namespace Resonance.UI
 {
     public class HealthBar : MonoBehaviour
     {
         [Header("UI References")]
-        public Slider healthSlider;
-        public Image fillImage;
-        
-        [Header("Color Settings")]
-        [SerializeField] private Color highHealthColor = Color.green;
-        [SerializeField] private Color mediumHealthColor = Color.yellow;
-        [SerializeField] private Color lowHealthColor = Color.red;
-        
-        [Header("Thresholds (0-1)")]
-        [SerializeField] [Range(0f, 1f)] private float mediumHealthThreshold = 0.6f;
-        [SerializeField] [Range(0f, 1f)] private float lowHealthThreshold = 0.3f;
-        
-        [Header("Animation Settings")]
-        [SerializeField] private float lerpSpeed = 5f;
-        
-        private float targetHealthValue;
-        private float displayedHealthValue;
+        public Image healthFill;
+        public Image damageFill;
+        public TextMeshProUGUI healthText;
 
-        private void Start()
+        [Header("Animation")]
+        [SerializeField] float damageLerpSpeed = 2f;
+        [SerializeField] float numberTickSpeed = 5f;
+
+        [Header("Damage Flash")]
+        [SerializeField] Color damageFlashColor = Color.red;
+        [SerializeField] float flashDuration = 0.2f;
+
+        private float maxHealth;
+        private float displayedHealth;
+        private float displayedDamageBar;
+        private float targetHealth;
+
+        private Coroutine flashRoutine;
+
+        private PlayerViewModel viewModel;
+
+        public void Bind(PlayerViewModel vm)
         {
-            if (healthSlider != null)
-            {
-                displayedHealthValue = healthSlider.value;
-                targetHealthValue = displayedHealthValue;
-                UpdateHealthColor();
-            }
+            viewModel = vm;
+            maxHealth = vm.MaxHealth;
+            targetHealth = displayedHealth = displayedDamageBar = maxHealth;
+
+            // Subscribe to changes
+            vm.Health.ChangeEvent += OnHealthChanged;
+
+            UpdateUIInstant();
         }
 
-        private void Update()
+        private void OnHealthChanged(float newHealth)
         {
-            if (Mathf.Abs(displayedHealthValue - targetHealthValue) > 0.01f)
+            if (newHealth < targetHealth)
             {
-                displayedHealthValue = Mathf.Lerp(displayedHealthValue, targetHealthValue, Time.deltaTime * lerpSpeed);
-                healthSlider.value = displayedHealthValue;
-                UpdateHealthColor();
+                if (flashRoutine != null)
+                {
+                    StopCoroutine(flashRoutine);
+                    healthText.color = Color.white;
+                }
+
+                flashRoutine = StartCoroutine(FlashNumbers());
             }
-            else if (displayedHealthValue != targetHealthValue)
-            {
-                displayedHealthValue = targetHealthValue;
-                healthSlider.value = displayedHealthValue;
-                UpdateHealthColor();
-            }
+
+            targetHealth = newHealth;
         }
 
-        public void SetSlider(float amount)
+        void Update()
         {
-            targetHealthValue = amount;
+            if (maxHealth <= 0) return;
+
+            // Smooth health bar animation
+            displayedHealth = Mathf.Lerp(displayedHealth, targetHealth, Time.deltaTime * 15f);
+            displayedDamageBar = Mathf.Lerp(displayedDamageBar, targetHealth, Time.deltaTime * damageLerpSpeed);
+
+            UpdateUI();
         }
 
-        public void SetSliderMax(float amount)
+        void UpdateUI()
         {
-            healthSlider.maxValue = amount;
-            targetHealthValue = amount;
-            displayedHealthValue = amount;
-            healthSlider.value = amount;
-            UpdateHealthColor();
+            float healthPercent = displayedHealth / maxHealth;
+            float damagePercent = displayedDamageBar / maxHealth;
+
+            healthFill.fillAmount = healthPercent;
+            damageFill.fillAmount = damagePercent;
+
+            healthText.text = $"{Mathf.RoundToInt(displayedHealth)} / {Mathf.RoundToInt(maxHealth)}";
         }
-        
-        private void UpdateHealthColor()
+
+        void UpdateUIInstant()
         {
-            if (fillImage == null || healthSlider == null) return;
-            
-            float healthPercentage = healthSlider.value / healthSlider.maxValue;
-            
-            Color newColor;
-            
-            if (healthPercentage > mediumHealthThreshold)
+            healthFill.fillAmount = 1f;
+            damageFill.fillAmount = 1f;
+            healthText.text = $"{maxHealth} / {maxHealth}";
+        }
+
+        IEnumerator FlashNumbers()
+        {
+            healthText.color = damageFlashColor;
+            yield return new WaitForSeconds(flashDuration);
+            healthText.color = Color.white;
+        }
+
+        private void OnDestroy()
+        {
+            if (viewModel != null)
             {
-                newColor = highHealthColor;
+                viewModel.Health.ChangeEvent -= OnHealthChanged;
             }
-            else if (healthPercentage > lowHealthThreshold)
-            {
-                float gradientPosition = (healthPercentage - lowHealthThreshold) / (mediumHealthThreshold - lowHealthThreshold);
-                newColor = Color.Lerp(mediumHealthColor, highHealthColor, gradientPosition);
-            }
-            else
-            {
-                float gradientPosition = healthPercentage / lowHealthThreshold;
-                newColor = Color.Lerp(lowHealthColor, mediumHealthColor, gradientPosition);
-            }
-            
-            fillImage.color = newColor;
         }
     }
 }

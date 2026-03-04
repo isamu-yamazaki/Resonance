@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{01239DD2-AB02-4A8C-9980-EB0CF2E2F946}" SchemaVersion="133">
 	<Effects>
-		<WorkUnit Name="Default Work Unit" ID="{01239DD2-AB02-4A8C-9980-EB0CF2E2F946}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{01239DD2-AB02-4A8C-9980-EB0CF2E2F946}" PersistMode="Standalone">
+			<ChildrenList>
+				<Effect Name="Meter_Reverb" ID="{EB38A254-2797-4F8C-8D1B-B17031C6923D}" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3"/>
+			</ChildrenList>
+		</WorkUnit>
 	</Effects>
 </WwiseDocument>

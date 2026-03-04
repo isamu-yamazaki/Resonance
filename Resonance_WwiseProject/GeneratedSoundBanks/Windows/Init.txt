@@ -1,3 +1,8 @@
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	105837875	RoomSize			\Default Work Unit\RoomSize	
+	1572469619	ReverbSend			\Default Work Unit\ReverbSend	
+	4004954295	Enclosure			\Default Work Unit\Enclosure	
+
 Audio Bus	ID	Name			Wwise Object Path	Notes
 	247557814	Foley			\Default Work Unit\Master Audio Bus\Foley	
 	393239870	SFX			\Default Work Unit\Master Audio Bus\SFX	
@@ -6,10 +11,14 @@ Audio Bus	ID	Name			Wwise Object Path	Notes
 	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
 	3991942870	Music			\Default Work Unit\Master Audio Bus\Music	
 
+Auxiliary Bus	ID	Name			Wwise Object Path	Notes
+	2783051634	Reverb_Master			\Default Work Unit\Master Audio Bus\Reverb_Master	
+
 Effect plug-ins	ID	Name	Type				Notes
 	258589154	Meter (Custom)	Wwise Meter			
 	538595301	Meter (Custom)	Wwise Meter			
 	551947351	Meter (Custom)	Wwise Meter			
+	770269781	RoomVerb (Custom)	Wwise RoomVerb			
 
 Audio Devices	ID	Name	Type				Notes
 	2317455096	No_Output	No Output			

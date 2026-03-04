@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using PurrNet;
 using PurrNet.Packing;
+using Resonance.Assemblies.MatchStat;
 using UnityEngine;
 
 namespace Resonance.Match
@@ -13,11 +15,26 @@ namespace Resonance.Match
             return new PlayerID(new PackedULong(id), false);
         }
 
+        public static PlayerID? UlongNullableToPlayerIdNullable(ulong? id)
+        {
+            return id.HasValue ? UlongToPlayerId(id.Value) : null;
+        }
+
+        public static Dictionary<PlayerID, PlayerMatchStats> UlongDictionaryToPlayerIDDictionary(
+            Dictionary<ulong, PlayerMatchStats> allStats)
+        {
+            var result = new Dictionary<PlayerID, PlayerMatchStats>();
+            foreach (var (id, stats) in allStats)
+            {
+                result.Add(UlongToPlayerId(id), stats);
+            }
+            return result;
+        }
+
         public static bool TryExtractPlayerIds(GameObject gameObject, out ulong playerId)
         {
             playerId = 0;
             
-            // Get anything that is a NetworkBehaviour, I presume?
             if (!gameObject.TryGetComponent(out NetworkBehaviour controller))
                 return false;
 

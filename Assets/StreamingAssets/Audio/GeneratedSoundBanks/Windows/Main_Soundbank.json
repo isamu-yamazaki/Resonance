@@ -1,0 +1,112 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "2228651116",
+    "Type": "User",
+    "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
+    "Language": "SFX",
+    "Hash": "{C0E542A6-81EA-3CDB-D9AE-497B06ECF894}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
+    "ShortName": "Main_Soundbank",
+    "Path": "Main_Soundbank.bnk",
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "431755879",
+       "Name": "Sine",
+       "ObjectPath": "\\Containers\\Default Work Unit\\Test_Sound\\Sine",
+       "GUID": "{CD3090AF-2AE9-427F-8059-38A6AEB7EB62}",
+       "LibName": "Wwise Sine",
+       "LibId": "6553602"
+      },
+      {
+       "Id": "750451834",
+       "Name": "Sine",
+       "ObjectPath": "\\Containers\\Default Work Unit\\Reactive_Feedback\\Sine",
+       "GUID": "{D756AAF5-D53A-444D-9106-A6844FB36D72}",
+       "LibName": "Wwise Sine",
+       "LibId": "6553602"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "3062989335",
+      "Name": "Play_Reactive_Feedback",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Reactive_Feedback",
+      "GUID": "{96722AA4-1038-4FBD-A751-61F7B5327803}",
+      "DurationType": "Infinite",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "750451834"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "3211564518",
+      "Name": "Play_Test_Sound",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Test_Sound",
+      "GUID": "{DD204AD6-06A3-4E14-98F9-F6A1DC814F3D}",
+      "MaxAttenuation": "50",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "431755879"
+        }
+       ]
+      },
+      "AuxBusRefs": [
+       {
+        "Id": "2783051634",
+        "Name": "Reverb_Master",
+        "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Reverb_Master",
+        "GUID": "{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}"
+       }
+      ]
+     },
+     {
+      "Id": "3211783545",
+      "Name": "Stop_Reactive_Feedback",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Reactive_Feedback",
+      "GUID": "{AC0C71A3-5A4A-4700-84BE-F8438F763A1A}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "183903552",
+      "Name": "Occlusion",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Occlusion",
+      "GUID": "{DAAB43F5-A1A7-46AA-9E41-1AB0ABCD0152}"
+     },
+     {
+      "Id": "499096576",
+      "Name": "Diffraction",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Diffraction",
+      "GUID": "{3AD53E5D-776D-45D4-B11B-3D1F723DD2F1}"
+     },
+     {
+      "Id": "1585979646",
+      "Name": "ReactiveObject_Volume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\ReactiveObject_Volume",
+      "GUID": "{7F62881C-DB90-4935-9D2C-04107D29BF53}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{C4D34E02-258A-BCFC-1717-574B90682541}"
+ }
+}

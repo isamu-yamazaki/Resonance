@@ -20,10 +20,16 @@ namespace AK
 
     namespace GAME_PARAMETERS
     {
+        static const AkUniqueID AMBIENCEMIX = 142454441U;
+        static const AkUniqueID DIFFRACTION = 499096576U;
+        static const AkUniqueID ENCLOSURE = 4004954295U;
         static const AkUniqueID METER_ENVIRONMENT_INTENSITY = 1541695584U;
         static const AkUniqueID METER_FOLEY_INTENSITY = 4188395422U;
         static const AkUniqueID METER_SFX_INTENSITY = 2553996342U;
+        static const AkUniqueID OCCLUSION = 183903552U;
         static const AkUniqueID REACTIVEOBJECT_VOLUME = 1585979646U;
+        static const AkUniqueID REVERBSEND = 1572469619U;
+        static const AkUniqueID ROOMSIZE = 105837875U;
     } // namespace GAME_PARAMETERS
 
     namespace BANKS
@@ -41,6 +47,11 @@ namespace AK
         static const AkUniqueID SFX = 393239870U;
         static const AkUniqueID UI = 1551306167U;
     } // namespace BUSSES
+
+    namespace AUX_BUSSES
+    {
+        static const AkUniqueID REVERB_MASTER = 2783051634U;
+    } // namespace AUX_BUSSES
 
     namespace AUDIO_DEVICES
     {

@@ -1,5 +1,6 @@
 using System;
 using PurrNet;
+using Resonance.Player;
 using UnityEngine;
 using Unity.Cinemachine;
 
@@ -14,17 +15,20 @@ namespace Resonance.PlayerController
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private CinemachineCamera _virtualCamera;
         
+        private PlayerStats _playerStats;
+        
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
+        public static PlayerController LocalPlayer { get; private set; }
 
         [Header("Base Movement")] 
-        public float crouchAcceleration = 25f;
-        public float crouchSpeed = 2f;
-        public float runAcceleration = 35f;
-        public float runSpeed = 4f;
-		public float sprintAcceleration = 50f;
-		public float sprintSpeed = 7f;
-        public float inAirAcceleration = 25f;
+        public float baseCrouchAcceleration = 25f;
+        public float baseCrouchSpeed = 2f;
+        public float baseRunAcceleration = 35f;
+        public float baseRunSpeed = 4f;
+        public float baseSprintAcceleration = 50f;
+        public float baseSprintSpeed = 7f;
+        public float baseInAirAcceleration = 25f;
         public float drag = 20f;
         public float gravity = 25f;
         public float terminalVelocity = 50f;
@@ -32,10 +36,11 @@ namespace Resonance.PlayerController
         public float movingThreshold = 0.01f;
 
 		[Header("Slide Settings")]
-		public float slideSpeed = 8f;
+        public float baseSlideSpeed = 8f;
+        public float baseMinSlideSpeed = 2f;
+        
 		public float slideDuration = 1f;
         public float slideDeceleration = 8f;
-        public float minSlideSpeed = 2f;
         public float slopeAngleThreshold = 15f;
         public float uphillSlideDecelerationMultiplier = 2f;
         public float downhillSlideSpeedBoost = 1.5f;
@@ -63,6 +68,17 @@ namespace Resonance.PlayerController
         // Death flag to immediately block all movement
         public bool IsPlayerDead { get; set; } = false;
         
+        //Current speed stats - get updated during runtime
+        private float crouchAcceleration;
+        private float crouchSpeed;
+        private float runAcceleration;
+        private float runSpeed;
+        private float sprintAcceleration;
+        private float sprintSpeed;
+        private float inAirAcceleration;
+        private float slideSpeed;
+        private float minSlideSpeed;
+        
         private Vector2 _cameraRotation = Vector2.zero;
         private Vector2 _playerTargetRotation = Vector2.zero;
 
@@ -87,6 +103,11 @@ namespace Resonance.PlayerController
         {
             base.OnSpawned();
             
+            if (isOwner)
+            {
+                LocalPlayer = this;
+            }
+
             enabled = isOwner;
             _virtualCamera.gameObject.SetActive(isOwner);
 
@@ -102,6 +123,7 @@ namespace Resonance.PlayerController
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
             _playerState = GetComponent<PlayerState>();
             _overdriveAbility = GetComponent<OverdriveAbility>();
+            _playerStats = GetComponent<PlayerStats>();
 
             _antiBump = sprintSpeed;
             _stepOffset = _characterController.stepOffset;
@@ -144,12 +166,31 @@ namespace Resonance.PlayerController
             // Don't process movement if CharacterController is disabled
             if (!_characterController.enabled)
                 return;
-                
+            
+            UpdateStats();
             UpdateMovementState();
             HandleVerticalMovement();
             HandleLateralMovement();
         }
-
+        
+        private void UpdateStats()
+        {
+            float speedMult = _playerStats.PlayerSpeed;
+            
+            crouchSpeed = baseCrouchSpeed * speedMult;
+            runSpeed = baseRunSpeed * speedMult;
+            sprintSpeed = baseSprintSpeed * speedMult;
+            slideSpeed = baseSlideSpeed * speedMult;
+            minSlideSpeed = baseMinSlideSpeed * speedMult;
+            
+            crouchAcceleration = baseCrouchAcceleration * speedMult;
+            runAcceleration = baseRunAcceleration * speedMult;
+            sprintAcceleration = baseSprintAcceleration * speedMult;
+            inAirAcceleration = baseInAirAcceleration * speedMult;
+            
+            _antiBump = sprintSpeed * speedMult;
+        }
+        
         private void UpdateMovementState()
         {
             _lastMovementState = _playerState.CurrentPlayerMovementState;
@@ -280,12 +321,6 @@ namespace Resonance.PlayerController
 			float clampLateralMagnitude = !isGrounded ? sprintSpeed : 
                                           isCrouching ? crouchSpeed :
                                           isSprinting ? sprintSpeed : runSpeed;
-
-            if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
-            {
-                lateralAcceleration *= _overdriveAbility.SpeedMultiplier;
-                clampLateralMagnitude *= _overdriveAbility.SpeedMultiplier;
-            }
 
             Vector3 cameraForwardXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
             Vector3 cameraRightXZ = new Vector3(_virtualCamera.transform.right.x, 0f, _virtualCamera.transform.right.z).normalized;

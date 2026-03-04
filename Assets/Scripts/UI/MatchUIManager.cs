@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Resonance.Match;
-using System.Collections.Generic;
-using Resonance.Assemblies.Match;
+using Resonance.Assemblies.MatchStat;
 using PurrNet;
+using Resonance.NetworkDespawner;
 
 namespace Resonance.UI
 {
@@ -20,7 +20,8 @@ namespace Resonance.UI
         [SerializeField] private TextMeshProUGUI winnerText;
         [SerializeField] private TextMeshProUGUI finalStatsText;
         [SerializeField] private Button playAgainButton;
-        [SerializeField] private Button quitButton;
+        [SerializeField] private Button returnToLobbyButton;
+        [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
 
         [Header("Settings")]
         [SerializeField] private GameObject playerObject; // Assign the player to track
@@ -58,27 +59,17 @@ namespace Resonance.UI
         #region Event Subscriptions
         private void SubscribeToEvents()
         {
-            if (ArenaRoundManager.Instance != null)
+            if (ArenaRoundManagerBridge.Instance != null)
             {
-                ArenaRoundManager.Instance.OnMatchEnd += OnMatchEnd;
-            }
-
-            if (MatchStatBridge.Instance != null)
-            {
-                // MatchStatBridge.Instance.OnPlayerKill.AddListener(OnPlayerKill);
+                ArenaRoundManagerBridge.Instance.OnMatchEnd += OnMatchEnd;
             }
         }
 
         private void UnsubscribeFromEvents()
         {
-            if (ArenaRoundManager.Instance != null)
+            if (ArenaRoundManagerBridge.Instance != null)
             {
-                ArenaRoundManager.Instance.OnMatchEnd -= OnMatchEnd;
-            }
-
-            if (MatchStatBridge.Instance != null)
-            {
-                // MatchStatBridge.Instance.OnPlayerKill.RemoveListener(OnPlayerKill);
+                ArenaRoundManagerBridge.Instance.OnMatchEnd -= OnMatchEnd;
             }
         }
         #endregion
@@ -96,9 +87,9 @@ namespace Resonance.UI
                 Debug.LogWarning("[MatchUI] Play Again button is null!");
             }
 
-            if (quitButton != null)
+            if (returnToLobbyButton != null)
             {
-                quitButton.onClick.AddListener(OnQuitClicked);
+                returnToLobbyButton.onClick.AddListener(OnReturnToLobbyClicked);
                 Debug.Log("[MatchUI] Quit button listener added");
             }
             else
@@ -114,21 +105,16 @@ namespace Resonance.UI
             // Reset time scale in case it was paused
             Time.timeScale = 1f;
 
-            if (ArenaRoundManager.Instance != null)
+            if (ArenaRoundManagerBridge.Instance != null)
             {
-                ArenaRoundManager.Instance.ReloadLevel();
+                ArenaRoundManagerBridge.Instance.StartMatchCountdown();
             }
         }
 
-        private void OnQuitClicked()
+        private void OnReturnToLobbyClicked()
         {
-            Debug.Log("[MatchUI] Quit clicked!");
-
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-                Application.Quit();
-#endif
+            Debug.Log("[MatchUI] Return to lobby clicked!");
+            despawnerSceneLoader.LoadNetworkDespawnerSceneForEveryone();
         }
         #endregion
 
@@ -154,9 +140,9 @@ namespace Resonance.UI
             }
 
             // Update eliminations progress
-            if (eliminationsText != null && ArenaRoundManager.Instance != null)
+            if (eliminationsText != null && ArenaRoundManagerBridge.Instance != null)
             {
-                int target = ArenaRoundManager.Instance.EliminationsToWin;
+                int target = ArenaRoundManagerBridge.Instance.EliminationsToWin;
                 eliminationsText.text = $"Eliminations: {stats?.kills}/{target}";
             }
         }
@@ -183,7 +169,7 @@ namespace Resonance.UI
                     playerController.enabled = false;
                 }
 
-                var projectileShooter = playerObject.GetComponent<Resonance.Combat.ProjectileShooter>();
+                var projectileShooter = playerObject.GetComponent<Resonance.Combat.PlayerProjectileShooter>();
                 if (projectileShooter != null)
                 {
                     projectileShooter.enabled = false;

@@ -4,6 +4,8 @@ Event	ID	Name			Wwise Object Path	Notes
 	3211783545	Stop_Reactive_Feedback			\Default Work Unit\Stop_Reactive_Feedback	
 
 Game Parameter	ID	Name			Wwise Object Path	Notes
+	183903552	Occlusion			\Default Work Unit\Occlusion	
+	499096576	Diffraction			\Default Work Unit\Diffraction	
 	1585979646	ReactiveObject_Volume			\Default Work Unit\ReactiveObject_Volume	
 
 Source plug-ins	ID	Name	Type		Wwise Object Path	Notes

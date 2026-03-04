@@ -48,6 +48,11 @@
 							</ObjectLists>
 						</Bus>
 						<Bus Name="SFX" ID="{C22677A5-D637-423D-8AED-F11F0D85B4DE}">
+							<ReferenceList>
+								<Reference Name="UserAuxSend0">
+									<ObjectRef Name="Reverb_Master" ID="{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
 							<ObjectLists>
 								<ObjectList Name="Effects">
 									<EffectSlot Name="" ID="{7C2A6A79-4637-456C-8D33-936E69E471D0}" ShortID="206158913">
@@ -105,6 +110,196 @@
 								</Property>
 							</PropertyList>
 						</Bus>
+						<AuxBus Name="Reverb_Master" ID="{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}">
+							<ObjectLists>
+								<ObjectList Name="Effects">
+									<EffectSlot Name="" ID="{5F7CA8DE-24CF-46B6-BA9A-8553F28F1E9A}" ShortID="709692334">
+										<ReferenceList>
+											<Reference Name="Effect">
+												<Custom>
+													<Effect Name="RoomVerb (Custom)" ID="{745ED99A-D152-413E-8D0E-5AB2E4E51C20}" ShortID="770269781" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
+														<ObjectLists>
+															<ObjectList Name="RTPC">
+																<RTPC Name="" ID="{FA5332C7-1459-49CC-B8E5-118F0378032E}" ShortID="68699362">
+																	<PropertyList>
+																		<Property Name="PropertyName" Type="string" Value="DecayTime"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="ControlInput">
+																			<ObjectRef Name="RoomSize" ID="{8FE22EA3-E5DD-48C4-8390-D5F8B4C1B5B6}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+																		</Reference>
+																		<Reference Name="Curve">
+																			<Custom>
+																				<Curve Name="" ID="{811CCFFB-D234-4017-A7A5-AAF3DAA3C49F}">
+																					<PropertyList>
+																						<Property Name="Flags" Type="int32" Value="1"/>
+																					</PropertyList>
+																					<PointList>
+																						<Point>
+																							<XPos>0</XPos>
+																							<YPos>0.5</YPos>
+																							<Flags>5</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>50</XPos>
+																							<YPos>1.5</YPos>
+																							<Flags>0</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>100</XPos>
+																							<YPos>4</YPos>
+																							<Flags>37</Flags>
+																						</Point>
+																					</PointList>
+																				</Curve>
+																			</Custom>
+																		</Reference>
+																	</ReferenceList>
+																</RTPC>
+																<RTPC Name="" ID="{33C5D642-9FD5-48CA-8878-3912EF25D81B}" ShortID="94550035">
+																	<PropertyList>
+																		<Property Name="PropertyName" Type="string" Value="HFDamping"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="ControlInput">
+																			<ObjectRef Name="Enclosure" ID="{94EFA164-A969-4AF3-A59B-248F6FD443C6}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+																		</Reference>
+																		<Reference Name="Curve">
+																			<Custom>
+																				<Curve Name="" ID="{BB4AD253-DADB-4A18-8EEE-96B4D758CB71}">
+																					<PropertyList>
+																						<Property Name="Flags" Type="int32" Value="1"/>
+																					</PropertyList>
+																					<PointList>
+																						<Point>
+																							<XPos>0</XPos>
+																							<YPos>0.5</YPos>
+																							<Flags>5</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>0.5</XPos>
+																							<YPos>1.5</YPos>
+																							<Flags>0</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>1</XPos>
+																							<YPos>3</YPos>
+																							<Flags>37</Flags>
+																						</Point>
+																					</PointList>
+																				</Curve>
+																			</Custom>
+																		</Reference>
+																	</ReferenceList>
+																</RTPC>
+																<RTPC Name="" ID="{DC3165B8-0D2A-49AB-9220-8F616A4AB9FA}" ShortID="396588103">
+																	<PropertyList>
+																		<Property Name="PropertyName" Type="string" Value="ReverbLevel"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="ControlInput">
+																			<ObjectRef Name="ReverbSend" ID="{1FEE75FD-DAA1-4E06-9C5D-09CA4508A215}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+																		</Reference>
+																		<Reference Name="Curve">
+																			<Custom>
+																				<Curve Name="" ID="{BD9D5F36-F310-4422-B839-C5706291FEF3}">
+																					<PropertyList>
+																						<Property Name="Flags" Type="int32" Value="3"/>
+																					</PropertyList>
+																					<PointList>
+																						<Point>
+																							<XPos>0</XPos>
+																							<YPos>-96.3000030517578</YPos>
+																							<Flags>5</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>50</XPos>
+																							<YPos>-12</YPos>
+																							<Flags>0</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>100</XPos>
+																							<YPos>-6</YPos>
+																							<Flags>37</Flags>
+																						</Point>
+																					</PointList>
+																				</Curve>
+																			</Custom>
+																		</Reference>
+																	</ReferenceList>
+																</RTPC>
+																<RTPC Name="" ID="{62B58C5E-2250-456D-B4B3-4AAF3D4B2224}" ShortID="1031249342">
+																	<PropertyList>
+																		<Property Name="PropertyName" Type="string" Value="PreDelay"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="ControlInput">
+																			<ObjectRef Name="Enclosure" ID="{94EFA164-A969-4AF3-A59B-248F6FD443C6}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+																		</Reference>
+																		<Reference Name="Curve">
+																			<Custom>
+																				<Curve Name="" ID="{55E33B2A-9336-4415-AE76-319405743A9F}">
+																					<PropertyList>
+																						<Property Name="Flags" Type="int32" Value="1"/>
+																					</PropertyList>
+																					<PointList>
+																						<Point>
+																							<XPos>0</XPos>
+																							<YPos>0</YPos>
+																							<Flags>5</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>1</XPos>
+																							<YPos>40</YPos>
+																							<Flags>37</Flags>
+																						</Point>
+																					</PointList>
+																				</Curve>
+																			</Custom>
+																		</Reference>
+																	</ReferenceList>
+																</RTPC>
+																<RTPC Name="" ID="{6F95EB5A-4C47-428E-BBCD-DA4A7E33237E}" ShortID="330554477">
+																	<PropertyList>
+																		<Property Name="PropertyName" Type="string" Value="Diffusion"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="ControlInput">
+																			<ObjectRef Name="Enclosure" ID="{94EFA164-A969-4AF3-A59B-248F6FD443C6}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+																		</Reference>
+																		<Reference Name="Curve">
+																			<Custom>
+																				<Curve Name="" ID="{1C36D9C1-BE93-4D49-A58A-B23353EC0326}">
+																					<PropertyList>
+																						<Property Name="Flags" Type="int32" Value="1"/>
+																					</PropertyList>
+																					<PointList>
+																						<Point>
+																							<XPos>0</XPos>
+																							<YPos>50</YPos>
+																							<Flags>5</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>1</XPos>
+																							<YPos>100</YPos>
+																							<Flags>37</Flags>
+																						</Point>
+																					</PointList>
+																				</Curve>
+																			</Custom>
+																		</Reference>
+																	</ReferenceList>
+																</RTPC>
+															</ObjectList>
+														</ObjectLists>
+													</Effect>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</EffectSlot>
+								</ObjectList>
+							</ObjectLists>
+						</AuxBus>
 					</ChildrenList>
 				</Bus>
 			</ChildrenList>
