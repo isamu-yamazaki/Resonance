@@ -125,7 +125,7 @@ MonoBehaviour:
   maxCheckDistance: 100
   occlusionLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   enableDiffraction: 1
   nearFieldThreshold: 1.5
   diffractionCurve:
@@ -296,9 +296,7 @@ GameObject:
   - component: {fileID: 1227219239304027150}
   - component: {fileID: 3887967411063251530}
   - component: {fileID: 7288220896636920470}
-  - component: {fileID: 6396442435144648702}
   - component: {fileID: 566397693469419020}
-  - component: {fileID: 8445891028678286219}
   - component: {fileID: 1639472579186224973}
   - component: {fileID: 6663562861641907931}
   - component: {fileID: 442510756705436988}
@@ -312,6 +310,7 @@ GameObject:
   - component: {fileID: 8953151137814889512}
   - component: {fileID: 22982227885916328}
   - component: {fileID: -3400458708190070123}
+  - component: {fileID: -3222689995555833044}
   - component: {fileID: -6562338477815478662}
   - component: {fileID: -2009204506129055193}
   - component: {fileID: 3679427490564648025}
@@ -319,6 +318,8 @@ GameObject:
   - component: {fileID: 8627360394267033834}
   - component: {fileID: 5575042648507424026}
   - component: {fileID: -4161255406100890942}
+  - component: {fileID: 2324411731792430973}
+  - component: {fileID: 1311654643413597327}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -515,22 +516,6 @@ MonoBehaviour:
   overdriveHealAmount: 50
   overdriveRegenAmount: 5
   overdriveDamageReductionAmount: 0.25
---- !u!114 &6396442435144648702
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adea7913c6705ae4d8cca0dc117b81dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveVisualEffects
-  _postProcessVolume: {fileID: 0}
-  overdriveTintColor: {r: 0, g: 1, b: 0.5, a: 1}
-  tintIntensity: 0.3
-  tintTransitionSpeed: 5
 --- !u!114 &566397693469419020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,21 +573,6 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   useGradientOverLifetime: 1
---- !u!114 &8445891028678286219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4b33c7f3e63db4419972f228d4d1eec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveChromaticAberration
-  _postProcessVolume: {fileID: 0}
-  aberrationIntensity: 1
-  aberrationTransitionSpeed: 5
 --- !u!114 &1639472579186224973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -884,10 +854,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WwiseSmartReverb
   isGlobal: 1
-  targetEmitter: {fileID: 0}
+  targetEmitter: {fileID: 6809321870534573542}
   enclosureParameter: Enclosure
   roomSizeParameter: RoomSize
-  raysCount: 30
+  raysCount: 40
   maxDistance: 50
   environmentLayer:
     serializedVersion: 2
@@ -944,6 +914,39 @@ MonoBehaviour:
   drawRays: 0
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   missColor: {r: 0, g: 1, b: 0, a: 1}
+--- !u!114 &-3222689995555833044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eadec4af733d5445870b0d861fb4b09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WwiseAmbienceManager
+  outdoorAmbienceEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 9d77646d52ac5d74db7eaf97c80a0f75, type: 2}
+  indoorAmbienceEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: f2e933a297e714e43b6d52e46b8a0e59, type: 2}
+  scannerSource: {fileID: -3400458708190070123}
+  directionCount: 16
+  rayDistance: 30
+  headHeight: 1.6
+  environmentLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  emitterDistance: 15
+  activationThreshold: 0.3
+  scanRate: 2
+  autoStart: 1
+  drawDebugRays: 0
+  debugLog: 0
 --- !u!114 &-6562338477815478662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1058,3 +1061,47 @@ MonoBehaviour:
   _trainFloorTag: Train
   _inertiaDecay: 4
   _maxInertiaSpeed: 18
+--- !u!114 &2324411731792430973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae81c8d7f5408c444acb6669e9e5cd6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerPostProcessing
+  _playerVolume: {fileID: 1311654643413597327}
+  overdriveBloomIntensity: 1.4
+  baseBloomIntensity: 0.75
+  overdriveChromaticAberrationIntensity: 0.7
+  baseChromaticAberrationIntensity: 0.4
+  overdriveLensDistortionIntensity: -0.4
+  baseLensDistortionIntensity: -0.1
+  overdriveTintColor: {r: 0, g: 1, b: 0.5, a: 1}
+  overdriveTintIntensity: 0.3
+  overdriveTransitionSpeed: 6
+  damageVignetteColor: {r: 0, g: 0.8, b: 1, a: 1}
+  damageVignetteIntensity: 0.5
+  damageChromaticAberrationSpike: 0.9
+  damageFlashInSpeed: 35
+  damageFlashOutSpeed: 2
+--- !u!114 &1311654643413597327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: f413dfdf6e075ff49baac1e97bd2a1b7, type: 2}

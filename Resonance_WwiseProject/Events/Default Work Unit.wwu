@@ -83,6 +83,28 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Play_OutdoorAmbience" ID="{87B2053E-F857-4EB2-B914-927C0FF52814}">
+					<ChildrenList>
+						<Action Name="" ID="{25B041C8-EED5-4BF2-A403-83B2BF8E18F6}" ShortID="619187151">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="amb_outdoor_loop" ID="{A57E4BD0-A3F1-4BDC-8B81-C55F8E4676CE}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_IndoorAmbience" ID="{449CA8E9-EFB0-4FFF-951A-41E0653A4486}">
+					<ChildrenList>
+						<Action Name="" ID="{E85B3FA5-887B-48D8-9493-90641D5333E5}" ShortID="90584779">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="amb_indoor_loop" ID="{920982B7-A1C6-46A5-9179-E692B11369C2}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

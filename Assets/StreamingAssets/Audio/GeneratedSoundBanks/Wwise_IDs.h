@@ -16,7 +16,9 @@ namespace AK
         static const AkUniqueID PLAY_FOOTSTEP = 1602358412U;
         static const AkUniqueID PLAY_GLASSSHARDLAND = 278146749U;
         static const AkUniqueID PLAY_GLASSSHATTER = 2387432645U;
+        static const AkUniqueID PLAY_INDOORAMBIENCE = 1529325343U;
         static const AkUniqueID PLAY_LANDING = 2323405115U;
+        static const AkUniqueID PLAY_OUTDOORAMBIENCE = 3267244670U;
         static const AkUniqueID PLAY_REACTIVE_FEEDBACK = 3062989335U;
         static const AkUniqueID PLAY_TEST_SOUND = 3211564518U;
         static const AkUniqueID STOP_REACTIVE_FEEDBACK = 3211783545U;
@@ -41,9 +43,10 @@ namespace AK
 
     namespace GAME_PARAMETERS
     {
-        static const AkUniqueID AMBIENCEMIX = 142454441U;
         static const AkUniqueID DIFFRACTION = 499096576U;
+        static const AkUniqueID DIRECTIONALAMBIENCEVOLUME = 369910861U;
         static const AkUniqueID ENCLOSURE = 4004954295U;
+        static const AkUniqueID INDOORAMBIENCEVOLUME = 2371184266U;
         static const AkUniqueID METER_ENVIRONMENT_INTENSITY = 1541695584U;
         static const AkUniqueID METER_FOLEY_INTENSITY = 4188395422U;
         static const AkUniqueID METER_SFX_INTENSITY = 2553996342U;
@@ -51,6 +54,7 @@ namespace AK
         static const AkUniqueID REACTIVE_FEEDBACK_VOLUME = 1471093987U;
         static const AkUniqueID REVERBSEND = 1572469619U;
         static const AkUniqueID ROOMSIZE = 105837875U;
+        static const AkUniqueID WALLTHICKNESS = 3602790513U;
     } // namespace GAME_PARAMETERS
 
     namespace BANKS

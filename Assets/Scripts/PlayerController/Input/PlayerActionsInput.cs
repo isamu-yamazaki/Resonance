@@ -13,6 +13,7 @@ namespace Resonance.PlayerController
         public bool SwapSlotOnePressed  { get; private set; }
         public bool SwapSlotTwoPressed  { get; private set; }
         public bool SwapWeaponPressed  { get; private set; }
+        public bool HealPressed  { get; private set; }
         
         public bool ShowStatsHeld { get; private set; }
         
@@ -90,6 +91,11 @@ namespace Resonance.PlayerController
             SwapWeaponPressed = false;
         }
 
+        public void SetHealPressedFalse()
+        {
+            HealPressed = false;
+        }
+
         #endregion
         
         #region Input Callbacks
@@ -159,6 +165,14 @@ namespace Resonance.PlayerController
                 return;
 
             SwapWeaponPressed = true;
+        }
+
+        public void OnHeal(InputAction.CallbackContext context)
+        {
+            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop())
+                return;
+    
+            HealPressed = true;
         }
 
 

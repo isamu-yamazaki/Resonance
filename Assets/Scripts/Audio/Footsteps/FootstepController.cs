@@ -114,7 +114,7 @@ namespace Resonance.Audio
         string GetSurfaceFromTag(string tag)
         {
             if (tag == "Concrete") return "Concrete";
-            if (tag == "Metal") return "Metal";
+            if (tag == "Metal" || tag == "Train") return "Metal";
             if (tag == "Wood") return "Wood";
             if (tag == "Gravel") return "Gravel";
             

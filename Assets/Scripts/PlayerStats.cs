@@ -182,6 +182,9 @@ namespace Resonance.Player
             float finalDamageAmount = amount * (1f - currentDamageReduction);
             UpdatePlayerHealthRelativeToCurrentHealth(-finalDamageAmount);
 
+            if (attacker != null && owner.HasValue)
+                ShowDamageIndicatorRpc(owner.Value, attacker.transform.position);
+
             if (CurrentHealth.value <= 0)
                 Die(attacker);
         }
@@ -214,11 +217,14 @@ namespace Resonance.Player
         [ObserversRpc]
         private void PropagateHealthToObservers()
         {
-
             if (playerViewModel != null)
-            {
                 playerViewModel.Health.Value = CurrentHealth.value;
-            }
+        }
+
+        [TargetRpc]
+        private void ShowDamageIndicatorRpc(PlayerID target, Vector3 attackerPosition)
+        {
+            Resonance.UI.DamageIndicatorUI.Instance?.ShowIndicator(attackerPosition);
         }
 
         public void AddRegenModifier(float modifier)
