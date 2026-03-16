@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
   m_Name: All In
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: all_in
+  key: mod_barrel_allIn
   modName: All In
   description: 
   slot: 0
@@ -27,4 +27,5 @@ MonoBehaviour:
   - stat: 3
     type: 1
     value: 0.5
+  bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 01000000

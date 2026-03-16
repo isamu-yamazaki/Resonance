@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ce7836e1165da94795069ad946c025a, type: 3}
   m_Name: Sprint Burst Augment
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AugmentProperties
-  key: augment_SprintBurst
+  key: augment_lower_sprintBurst
   augmentName: Sprint Burst
   description: Go fast!
   icon: {fileID: 0}

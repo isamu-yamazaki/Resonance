@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ce7836e1165da94795069ad946c025a, type: 3}
   m_Name: Steady Aim
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AugmentProperties
-  key: upper_steadyAim
+  key: augment_upper_steadyAim
   augmentName: Steady Aim
   description: 
   icon: {fileID: 0}

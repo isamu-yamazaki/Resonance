@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 981e9f714b3e12a4e8a7a5399e20ebcb, type: 3}
   m_Name: Machine Gun
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponProperties
-  key: machine_gun
+  key: machineGun_default
   weaponName: LMG
   description: 
   slot: 0

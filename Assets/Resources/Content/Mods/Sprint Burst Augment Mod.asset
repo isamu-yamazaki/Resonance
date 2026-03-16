@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
   m_Name: Sprint Burst Augment Mod
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: mod_SprintBurstAugment
+  key: mod_augment_sprintBurst
   modName: Sprint Burst
   description: Go fast shoot bad!
   slot: 6
@@ -21,4 +21,5 @@ MonoBehaviour:
   - stat: 6
     type: 1
     value: 1.5
+  bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 
