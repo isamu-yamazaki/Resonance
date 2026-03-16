@@ -64,7 +64,6 @@ jobs:
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
             -buildConfig ${{ github.event.inputs.config || 'Dev' }} \
             -buildTarget ${{ github.event.inputs.target || 'Windows64' }} \
-            -logFile /dev/stdout
         env:
           UNITY_PATH: /Applications/Unity/Hub/Editor/${{ github.event.inputs.unity_version }}/Unity.app/Contents/MacOS/Unity
           SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
