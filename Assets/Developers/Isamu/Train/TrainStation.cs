@@ -21,7 +21,9 @@ namespace Resonance.Train
             Gizmos.DrawSphere(StopPosition, 0.3f);
 
             Gizmos.color = Color.white;
+#if UNITY_EDITOR
             UnityEditor.Handles.Label(StopPosition + Vector3.up * 0.6f, _displayName);
+#endif
         }
     }
 }

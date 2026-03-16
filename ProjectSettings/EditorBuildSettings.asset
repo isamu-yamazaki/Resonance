@@ -8,9 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lobby/LobbyScene.unity
     guid: 163ab76a47bff6646b7627336bc33bdf
-  - enabled: 0
-    path: Assets/Scenes/Testbeds/TB_Networking.unity
-    guid: 43cc04d5db6e7c2428d694027e4dade4
   - enabled: 1
     path: Assets/Scenes/Testbeds/TB_ArenaDemo.unity
     guid: 188a3abd83fe30c4b86753ac60d3f317
