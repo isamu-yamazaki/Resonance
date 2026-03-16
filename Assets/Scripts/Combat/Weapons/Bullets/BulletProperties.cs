@@ -7,6 +7,10 @@ namespace Resonance.Combat.Weapons
     
     public class BulletProperties : ScriptableObject
     {
+        [Tooltip("Unique identifier.")]
+        [SerializeField] private string key;
+        public string Key => key;
+        
         [SerializeField] private float bulletBaseSpeed;
         public float BulletBaseSpeed => bulletBaseSpeed;
         

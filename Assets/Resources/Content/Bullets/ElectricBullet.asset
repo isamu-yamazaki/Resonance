@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c831c691dc3be464f8f6d6015ce0056e, type: 3}
   m_Name: ElectricBullet
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.BulletProperties
+  key: bullet_electricBullet
   bulletBaseSpeed: 10
   bulletGravity: 0
   bulletPrefab: {fileID: 8481959970380596095, guid: 084670e1cd4023545949b9edf0c5d3ae, type: 3}

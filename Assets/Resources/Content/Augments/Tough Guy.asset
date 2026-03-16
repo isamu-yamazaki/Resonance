@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ce7836e1165da94795069ad946c025a, type: 3}
   m_Name: Tough Guy
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AugmentProperties
-  key: tough_guy
+  key: augment_upper_toughGuy
   augmentName: Tough Guy
   description: 
   icon: {fileID: 0}
