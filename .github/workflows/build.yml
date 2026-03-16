@@ -3,14 +3,6 @@ name: Build
 on:
   workflow_dispatch:
     inputs:
-      unity_version:
-        description: Unity version to install (e.g. 6000.2.7f2)
-        required: true
-        default: 6000.2.7f2
-      unity_changeset:
-        description: Changeset ID matching the Unity version (from the Unity download archive)
-        required: true
-        default: 2b518236b676
       config:
         description: BuildConfig asset name (Dev, DevLocal, or Production)
         required: true
@@ -31,8 +23,8 @@ jobs:
         id: cache-unity
         uses: actions/cache@v4
         with:
-          path: /Applications/Unity/Hub/Editor/${{ github.event.inputs.unity_version }}
-          key: unity-${{ github.event.inputs.unity_version }}
+          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
+          key: unity-${{ vars.UNITY_VERSION }}
 
       - name: Install Unity
         if: steps.cache-unity.outputs.cache-hit != 'true'
@@ -40,8 +32,8 @@ jobs:
           brew install --cask unity-hub
           /Applications/Unity\ Hub.app/Contents/MacOS/Unity\ Hub -- \
             --headless install \
-            --version ${{ github.event.inputs.unity_version }} \
-            --changeset ${{ github.event.inputs.unity_changeset }} \
+            --version ${{ vars.UNITY_VERSION }} \
+            --changeset ${{ vars.UNITY_CHANGESET }} \
             --architecture arm64
 
       - name: Import certificate into keychain
@@ -65,7 +57,7 @@ jobs:
             -buildConfig ${{ github.event.inputs.config || 'Dev' }} \
             -buildTarget ${{ github.event.inputs.target || 'Windows64' }} \
         env:
-          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ github.event.inputs.unity_version }}/Unity.app/Contents/MacOS/Unity
+          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
           SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
