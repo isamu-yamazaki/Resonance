@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Y Bot
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.SkinData
   skinName: Y Bot
-  meshPrefab: {fileID: 7564018027673088218, guid: 74413a5886e9e4ff5a5d118df15d305c, type: 3}
-  avatar: {fileID: 9000000, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
+  bodyMeshPrefab: {fileID: 7564018027673088218, guid: 74413a5886e9e4ff5a5d118df15d305c, type: 3}
+  bodyAvatar: {fileID: 9000000, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
+  armsMeshPrefab: {fileID: 7564018027673088218, guid: 74413a5886e9e4ff5a5d118df15d305c, type: 3}
+  armsAvatar: {fileID: 9000000, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}

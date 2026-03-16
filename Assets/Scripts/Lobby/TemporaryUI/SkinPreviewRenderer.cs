@@ -43,9 +43,9 @@ namespace Resonance.LobbySystem.TemporaryUI
             }
 
             var data = skinCatalog.Get(index);
-            if (data?.meshPrefab)
+            if (data?.bodyMeshPrefab)
             {
-                _currentMesh = Instantiate(data.meshPrefab, spawnPoint);
+                _currentMesh = Instantiate(data.bodyMeshPrefab, spawnPoint);
             }
         }
 

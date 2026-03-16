@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Adidas
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.SkinData
   skinName: Adidas
-  meshPrefab: {fileID: 132596493798814269, guid: 6d745e02db873456a9187061b84a1ccb, type: 3}
-  avatar: {fileID: 9000000, guid: 3d1a4c18f8f56418791267507e284a67, type: 3}
-  equipSlot: {x: 0.002348, y: 0.0017461, z: -0.000819}
+  bodyMeshPrefab: {fileID: 7888975620791195872, guid: 3d8dd475ad99d48a9861c8b8b036309f, type: 3}
+  bodyAvatar: {fileID: 9000000, guid: 3c21727da419b4bcc8a117efcc2cfed4, type: 3}
+  armsMeshPrefab: {fileID: 1904636067503296632, guid: 2e849e3cbe77a420e8fcaf15f2426e10, type: 3}
+  armsAvatar: {fileID: 9000000, guid: 3a73b1625addf4ce3a59fbced2cd2b2b, type: 3}
