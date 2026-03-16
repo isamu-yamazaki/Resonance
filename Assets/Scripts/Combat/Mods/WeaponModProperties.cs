@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
 using UnityEngine;
 
@@ -30,7 +31,11 @@ namespace Resonance.Combat.Mods
         [Header("Stat Modifiers")]
         [SerializeField] private List<StatModifier> modifiers = new();
         public IReadOnlyList<StatModifier> Modifiers => modifiers;
-        
+
+        [Header("Bullet Override")]
+        [SerializeField] private BulletProperties bulletPropertiesOverride;
+        public BulletProperties BulletPropertiesOverride => bulletPropertiesOverride;
+
         [Header("Weapon Compatibility")]
         [SerializeField] private List<WeaponClass> compatibleWeaponClasses;
         public IReadOnlyList<WeaponClass> CompatibleWeaponClasses => compatibleWeaponClasses;

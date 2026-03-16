@@ -15,6 +15,10 @@ namespace Resonance.Combat.Weapons
         
         [SerializeField] private GameObject bulletPrefab;
         public GameObject BulletPrefab => bulletPrefab;
+
+        [Header("Visuals")]
+        [SerializeField] private TrailRenderer bulletTrailPrefab;
+        public TrailRenderer BulletTrailPrefab => bulletTrailPrefab;
         
         [Header("On Hit Effects")]
         [SerializeField] private List<IBulletEffect> bulletEffects;
