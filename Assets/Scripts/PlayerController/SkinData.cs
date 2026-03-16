@@ -6,7 +6,9 @@ namespace Resonance.PlayerController
     public class SkinData : ScriptableObject
     {
         public string skinName;
-        public GameObject meshPrefab;
-        public Avatar avatar;
+        public GameObject bodyMeshPrefab;
+        public Avatar bodyAvatar;
+        public GameObject armsMeshPrefab;
+        public Avatar armsAvatar;
     }
 }
