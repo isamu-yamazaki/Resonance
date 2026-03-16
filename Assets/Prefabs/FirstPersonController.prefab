@@ -125,7 +125,7 @@ MonoBehaviour:
   maxCheckDistance: 100
   occlusionLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   enableDiffraction: 1
   nearFieldThreshold: 1.5
   diffractionCurve:
@@ -310,6 +310,7 @@ GameObject:
   - component: {fileID: 8953151137814889512}
   - component: {fileID: 22982227885916328}
   - component: {fileID: -3400458708190070123}
+  - component: {fileID: -3222689995555833044}
   - component: {fileID: -6562338477815478662}
   - component: {fileID: -2009204506129055193}
   - component: {fileID: 3679427490564648025}
@@ -853,10 +854,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WwiseSmartReverb
   isGlobal: 1
-  targetEmitter: {fileID: 0}
+  targetEmitter: {fileID: 6809321870534573542}
   enclosureParameter: Enclosure
   roomSizeParameter: RoomSize
-  raysCount: 30
+  raysCount: 40
   maxDistance: 50
   environmentLayer:
     serializedVersion: 2
@@ -913,6 +914,39 @@ MonoBehaviour:
   drawRays: 0
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   missColor: {r: 0, g: 1, b: 0, a: 1}
+--- !u!114 &-3222689995555833044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eadec4af733d5445870b0d861fb4b09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WwiseAmbienceManager
+  outdoorAmbienceEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 9d77646d52ac5d74db7eaf97c80a0f75, type: 2}
+  indoorAmbienceEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: f2e933a297e714e43b6d52e46b8a0e59, type: 2}
+  scannerSource: {fileID: -3400458708190070123}
+  directionCount: 16
+  rayDistance: 30
+  headHeight: 1.6
+  environmentLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  emitterDistance: 15
+  activationThreshold: 0.3
+  scanRate: 2
+  autoStart: 1
+  drawDebugRays: 0
+  debugLog: 0
 --- !u!114 &-6562338477815478662
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -69,6 +69,19 @@ public class WwiseSmartOcclusion : MonoBehaviour
 
     void Start()
     {
+        if (occlusionLayer == 0)
+        {
+            int environmentLayer = LayerMask.NameToLayer("Environment");
+            if (environmentLayer != -1)
+            {
+                occlusionLayer = 1 << environmentLayer;
+            }
+            else
+            {
+                Debug.LogWarning("[WwiseSmartOcclusion] 'Environment' layer not found! Please set occlusion layer manually or create an 'Environment' layer.");
+            }
+        }
+
         FindListener();
         GenerateConeDirections();
         lastScanTime = -1f;
