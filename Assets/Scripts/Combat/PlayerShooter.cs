@@ -72,6 +72,8 @@ namespace Resonance.Combat
         public int CurrentAmmo => currentAmmo;
         public bool IsReloading => isReloading;
 
+        private BulletProperties[] bulletProperties;
+
         #endregion
 
         #region Network
@@ -116,6 +118,8 @@ namespace Resonance.Combat
             }
 
             hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
+
+            bulletProperties = Resources.LoadAll<BulletProperties>("Content/Bullets");
         }
 
         private void Start()
@@ -316,15 +320,19 @@ namespace Resonance.Combat
                 BulletProperties hitscanBullet = weaponStatManager.GetBulletProperties();
                 if (hitscanBullet?.BulletTrailPrefab != null && view.Muzzle != null)
                 {
-                    SpawnTrailOnAllClients(view.Muzzle.position, endPoint, hitscanBullet.BulletTrailPrefab);
+                    SpawnTrailOnAllClients(view.Muzzle.position, endPoint, hitscanBullet.Key);
                 }
             }
         }
 
         [ObserversRpc(runLocally: true)]
-        private void SpawnTrailOnAllClients(Vector3 start, Vector3 end, TrailRenderer trailPrefab)
+        private void SpawnTrailOnAllClients(Vector3 start, Vector3 end, string bulletPropertyKey)
         {
-            StartCoroutine(SpawnTrail(start, end, trailPrefab));
+            BulletProperties properties = System.Array.Find(bulletProperties, w => w.Key == bulletPropertyKey);
+            if (properties != null && properties.BulletTrailPrefab != null)
+            {
+                StartCoroutine(SpawnTrail(start, end, properties.BulletTrailPrefab));
+            }
         }
 
         private IEnumerator SpawnTrail(Vector3 start, Vector3 end, TrailRenderer trailPrefab)
