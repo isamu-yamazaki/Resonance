@@ -17,6 +17,7 @@ public class Zipline : MonoBehaviour, IInteractable
     private LineRenderer lineRenderer;
     private GameObject currentPlayer;
     private bool isRiding = false;
+    private bool isDismounting = false;
     private float ziplineProgress = 0f;
     private CharacterController playerController;
     private Rigidbody playerRigidbody;
@@ -48,15 +49,31 @@ public class Zipline : MonoBehaviour, IInteractable
             }
         }
 
-        if (isRiding)
+        //Debug.Log("Riding: " + isRiding);
+        //Debug.Log("Dismounting: " + isDismounting);
+
+        if (playerController.enabled)
+        {
+            Debug.Log("player controller enabled");
+        }
+        /*Debug.Log("player controller enabled: " + playerController.enabled);
+        Debug.Log("player kinematic: " + playerRigidbody.isKinematic);
+        Debug.Log("current player: " +  currentPlayer);
+        Debug.Log("_playerLocomotionInput: " +  _playerLocomotionInput);
+        Debug.Log("playerController: " +  playerController);
+        Debug.Log("playerRigidbody: " +  playerRigidbody);*/
+        
+        if (isRiding && !isDismounting)
         {
             HandleZiplineMovement();
             
             // Check for dismount
             if (_playerLocomotionInput.JumpPressed)
             {
+                isDismounting = true;
                 Debug.Log("Player Pressed Space");
                 DismountZipline();
+                Debug.Log("After Dismount");
             }
         }
     }
@@ -65,10 +82,18 @@ public class Zipline : MonoBehaviour, IInteractable
     {
         //code for going on da zipline
         //use player interactor to do anything needed to player
+
+        if (isRiding || isDismounting)
+        {
+            Debug.Log("player is already riding zipline");
+            return;
+        }
         
+        Debug.Log("started zipline interaction");
         // Start riding the zipline
         currentPlayer = interactor;
         isRiding = true;
+        isDismounting = false;
         
         _playerLocomotionInput = interactor.GetComponent<PlayerLocomotionInput>();
     
@@ -179,7 +204,6 @@ public class Zipline : MonoBehaviour, IInteractable
         float moveInput = 0f;
         
         Vector2 inputVector = _playerLocomotionInput.MovementInput;
-        Debug.Log("movement: " + inputVector);
                 
         // Convert input to a world-space direction based on camera
         if (headCamera != null && inputVector.sqrMagnitude > 0.01f) 
@@ -211,7 +235,6 @@ public class Zipline : MonoBehaviour, IInteractable
         // Clamp progress to stay on the zipline
         ziplineProgress = Mathf.Clamp01(ziplineProgress);
         
-        // Update player position and rotation
         UpdatePlayerPosition();
         
         // Make player face the direction they're moving
@@ -231,7 +254,6 @@ public class Zipline : MonoBehaviour, IInteractable
     
     void UpdatePlayerPosition()
     {
-        Debug.Log("UpdatePlayerPosition");
         // Calculate position along the zipline
         Vector3 ziplinePosition = Vector3.Lerp(ziplineStartPoint, ziplineEndPoint, ziplineProgress);
         
@@ -251,6 +273,7 @@ public class Zipline : MonoBehaviour, IInteractable
         if (currentPlayer == null)
         {
             isRiding = false;
+            isDismounting = false;
             return;
         }
         
@@ -266,14 +289,14 @@ public class Zipline : MonoBehaviour, IInteractable
             playerRigidbody.isKinematic = false;
         }
         
-        isRiding = false;
-        
-        Debug.Log("Dismounted from zipline!");
-        
         currentPlayer = null;
         _playerLocomotionInput = null;
         playerController = null;
         playerRigidbody = null;
+
+        isRiding = false;
+        isDismounting = false;
+        Debug.Log("End of DismountZipline");
     }
     
     void OnDrawGizmos()
