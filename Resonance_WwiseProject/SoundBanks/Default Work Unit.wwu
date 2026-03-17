@@ -11,7 +11,9 @@
 						<ObjectRef Name="Stop_Reactive_Feedback" ID="{AC0C71A3-5A4A-4700-84BE-F8438F763A1A}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_GlassShatter" ID="{FF8D6C3A-E13D-4784-A0DD-F5D3850BBB9F}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Test_Sound" ID="{DD204AD6-06A3-4E14-98F9-F6A1DC814F3D}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_OutdoorAmbience" ID="{87B2053E-F857-4EB2-B914-927C0FF52814}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Reactive_Feedback" ID="{96722AA4-1038-4FBD-A751-61F7B5327803}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_IndoorAmbience" ID="{449CA8E9-EFB0-4FFF-951A-41E0653A4486}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>

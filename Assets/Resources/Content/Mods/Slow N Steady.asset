@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
   m_Name: Slow N Steady
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: mod_SlowNSteady
+  key: mod_augment_slowSteady
   modName: Slow n Steady
   description: Go slow shoot awesome
   slot: 6
@@ -21,4 +21,5 @@ MonoBehaviour:
   - stat: 6
     type: 1
     value: 0.5
+  bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 

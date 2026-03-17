@@ -1,3 +1,4 @@
-  *.unity merge=unityyamlmerge
-  *.prefab merge=unityyamlmerge
-  *.asset merge=unityyamlmerge
+*.unity merge=unityyamlmerge
+*.prefab merge=unityyamlmerge
+*.asset merge=unityyamlmerge
+*.tga filter=lfs diff=lfs merge=lfs -text

@@ -10,6 +10,8 @@ TagManager:
   - Wood
   - Gravel
   - Glass
+  - Train
+  - Arm
   layers:
   - Default
   - TransparentFX

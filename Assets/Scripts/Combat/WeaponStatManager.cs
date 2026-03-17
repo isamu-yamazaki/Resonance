@@ -73,6 +73,26 @@ namespace Resonance.Combat
             return (baseStat + additiveSum) * multiplicativeProduct;
         }
 
+        public BulletProperties GetBulletProperties()
+        {
+            if (managedWeapon == null)
+            {
+                return null;
+            }
+
+            IEnumerable<WeaponModProperties> allMods = managedWeapon.ModList.Concat(augmentMods).Where(mod => mod != null);
+
+            foreach (WeaponModProperties mod in allMods)
+            {
+                if (mod.BulletPropertiesOverride != null)
+                {
+                    return mod.BulletPropertiesOverride;
+                }
+            }
+
+            return managedWeapon.BulletProperties;
+        }
+
         private float GetBaseValue(WeaponStat stat) => stat switch
         {
             WeaponStat.Damage             => managedWeapon.Damage,

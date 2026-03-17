@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
   m_Name: Extended Mag
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: mod_extendedMag
+  key: mod_magazine_extendedMag
   modName: Extended Magazine
   description: More bullets!
   slot: 3
@@ -21,4 +21,5 @@ MonoBehaviour:
   - stat: 10
     type: 1
     value: 1.5
+  bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 05000000

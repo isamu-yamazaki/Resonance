@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
   m_Name: Revolver
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: modular_revolver
+  key: mod_barrel_revolver
   modName: Revolver
   description: 
   slot: 0
@@ -33,4 +33,5 @@ MonoBehaviour:
   - stat: 12
     type: 1
     value: 1.5
+  bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 05000000

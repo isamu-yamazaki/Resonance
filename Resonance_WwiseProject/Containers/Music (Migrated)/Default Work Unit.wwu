@@ -42,21 +42,13 @@
 					</ChildrenList>
 					<BlendTrackList>
 						<BlendTrack Name="New Blend Track" ID="{D8024E07-8273-4AAD-A493-A07E45046782}" ShortID="960798930">
-							<PropertyList>
-								<Property Name="EnableCrossFading" Type="bool" Value="True"/>
-							</PropertyList>
-							<ReferenceList>
-								<Reference Name="LayerCrossFadeControlInput">
-									<ObjectRef Name="AmbienceMix" ID="{0FF9B36C-12DC-4B98-8374-150CECB1370E}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
-								</Reference>
-							</ReferenceList>
+							<ReferenceList/>
 							<ObjectLists>
 								<ObjectList Name="RTPC">
 									<RTPC Name="" ID="{FA0F428A-A5BE-4ED7-B995-E0070CB58296}" ShortID="376903435">
 										<PropertyList>
 											<Property Name="PropertyName" Type="string" Value="Volume"/>
 										</PropertyList>
-										<ReferenceList/>
 									</RTPC>
 								</ObjectList>
 							</ObjectLists>

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using PurrNet;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
@@ -18,7 +19,6 @@ namespace Resonance.Combat
         [SerializeField] private PlayerActionsInput playerActionsInput;
         [SerializeField] private Camera playerCamera;
 
-        [SerializeField] private TrailRenderer bulletTrailPrefab;
         [SerializeField] private DamageNumber damageNumberPrefab;
 
         [Header("Debug")]
@@ -26,12 +26,43 @@ namespace Resonance.Combat
         [SerializeField] private bool debugAmmoLogs;
 
         private float nextFireTime;
-        private int currentAmmo;
         private bool isReloading;
         private float reloadEndTime;
         private float currentSpread;
 
         private WeaponProperties lastWeapon;
+
+        private Dictionary<WeaponProperties, int> ammoByWeapon = new Dictionary<WeaponProperties, int>();
+        private Dictionary<GameObject, DamageNumber> pendingBatchedNumbers = new Dictionary<GameObject, DamageNumber>();
+
+        private int currentAmmo
+        {
+            get
+            {
+                WeaponProperties weapon = playerEquip != null ? playerEquip.EquippedWeapon : null;
+                if (weapon == null)
+                {
+                    return 0;
+                }
+
+                if (ammoByWeapon.TryGetValue(weapon, out int ammo))
+                {
+                    return ammo;
+                }
+
+                return weaponStatManager.MagazineSize;
+            }
+            set
+            {
+                WeaponProperties weapon = playerEquip != null ? playerEquip.EquippedWeapon : null;
+                if (weapon == null)
+                {
+                    return;
+                }
+
+                ammoByWeapon[weapon] = value;
+            }
+        }
 
         [SerializeField] private LayerMask hitscanLayerMask;
 
@@ -40,6 +71,8 @@ namespace Resonance.Combat
 
         public int CurrentAmmo => currentAmmo;
         public bool IsReloading => isReloading;
+
+        private BulletProperties[] bulletProperties;
 
         #endregion
 
@@ -85,6 +118,8 @@ namespace Resonance.Combat
             }
 
             hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
+
+            bulletProperties = Resources.LoadAll<BulletProperties>("Content/Bullets");
         }
 
         private void Start()
@@ -207,7 +242,7 @@ namespace Resonance.Combat
 
         private void FireProjectile(WeaponProperties weapon, WeaponView view, WeaponPayload payload, Vector3 baseDirection, int count)
         {
-            BulletProperties bullet = weapon.BulletProperties;
+            BulletProperties bullet = weaponStatManager.GetBulletProperties();
             if (bullet == null || bullet.BulletPrefab == null) return;
 
             float speedMultiplier = weaponStatManager.MuzzleVelocity;
@@ -246,8 +281,26 @@ namespace Resonance.Combat
                         target.TakeDamage(finalDamage, payload.Shooter);
                         if (damageNumberPrefab != null && hit.collider.GetComponent<IDamageNumberTarget>() != null)
                         {
-                            DamageNumber number = Instantiate(damageNumberPrefab, hit.point, Quaternion.identity);
-                            number.Initialize(finalDamage);
+                            if (count > 1)
+                            {
+                                GameObject hitRoot = hit.collider.transform.root.gameObject;
+
+                                if (pendingBatchedNumbers.TryGetValue(hitRoot, out DamageNumber existing) && existing != null && !existing.IsBatchExpired)
+                                {
+                                    existing.AddDamage(finalDamage);
+                                }
+                                else
+                                {
+                                    DamageNumber number = Instantiate(damageNumberPrefab, hit.point, Quaternion.identity);
+                                    number.InitializeBatched(finalDamage);
+                                    pendingBatchedNumbers[hitRoot] = number;
+                                }
+                            }
+                            else
+                            {
+                                DamageNumber number = Instantiate(damageNumberPrefab, hit.point, Quaternion.identity);
+                                number.Initialize(finalDamage);
+                            }
                         }
                     }
                     else
@@ -264,28 +317,27 @@ namespace Resonance.Combat
                     }
                 }
 
-                if (bulletTrailPrefab != null && view.Muzzle != null)
+                BulletProperties hitscanBullet = weaponStatManager.GetBulletProperties();
+                if (hitscanBullet?.BulletTrailPrefab != null && view.Muzzle != null)
                 {
-                    var start = view.Muzzle.position;
-                    StartCoroutine(SpawnTrail(start, endPoint));
-                    SpawnTrailOnOtherClients(start, endPoint);
+                    SpawnTrailOnAllClients(view.Muzzle.position, endPoint, hitscanBullet.Key);
                 }
             }
         }
 
-        [ObserversRpc]
-        private void SpawnTrailOnOtherClients(Vector3 start, Vector3 end)
+        [ObserversRpc(runLocally: true)]
+        private void SpawnTrailOnAllClients(Vector3 start, Vector3 end, string bulletPropertyKey)
         {
-            if (isOwner)
+            BulletProperties properties = System.Array.Find(bulletProperties, w => w.Key == bulletPropertyKey);
+            if (properties != null && properties.BulletTrailPrefab != null)
             {
-                return;
+                StartCoroutine(SpawnTrail(start, end, properties.BulletTrailPrefab));
             }
-            StartCoroutine(SpawnTrail(start, end));
         }
 
-        private IEnumerator SpawnTrail(Vector3 start, Vector3 end)
+        private IEnumerator SpawnTrail(Vector3 start, Vector3 end, TrailRenderer trailPrefab)
         {
-            TrailRenderer trail = Instantiate(bulletTrailPrefab, start, Quaternion.identity);
+            TrailRenderer trail = Instantiate(trailPrefab, start, Quaternion.identity);
             float duration = trail.time;
             float elapsed = 0f;
 
@@ -471,11 +523,14 @@ namespace Resonance.Combat
 
             if (weaponStatManager.MagazineSize > 0)
             {
-                currentAmmo = weaponStatManager.MagazineSize;
-            }
-            else
-            {
-                currentAmmo = 0;
+                if (!ammoByWeapon.ContainsKey(weapon))
+                {
+                    ammoByWeapon[weapon] = weaponStatManager.MagazineSize;
+                }
+                else if (force)
+                {
+                    ammoByWeapon[weapon] = Mathf.Min(ammoByWeapon[weapon], weaponStatManager.MagazineSize);
+                }
             }
 
             viewModel.SetAmmo(currentAmmo, MagazineSize);

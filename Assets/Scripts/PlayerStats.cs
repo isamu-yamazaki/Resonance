@@ -33,9 +33,9 @@ namespace Resonance.Player
         public SyncVar<float> CurrentHealth = new SyncVar<float>();
         public float MaxHealth => maxHealth;
 
-        public float BaseHealthRegen { get => baseHealthRegen; set => baseHealthRegen = value; } 
+        public float BaseHealthRegen { get => baseHealthRegen; set => baseHealthRegen = value; }
         public float CurrentHealthRegen => currentHealthRegen;
-        
+
         //Damage Reduction
         public float DamageReduction { get => currentDamageReduction; }
         public float BaseDamageReduction { get => baseDamageReduction; set => baseDamageReduction = Mathf.Clamp(value, 0f, maxDamageReduction); }
@@ -44,11 +44,11 @@ namespace Resonance.Player
         public float PlayerSpeed => (currentSpeed);
         public float BaseSpeed { get => playerBaseSpeed; set => playerBaseSpeed = value; }
         public bool IsDead { get; private set; }
-        
+
         public IReadOnlyList<float> DamageReductionModifiers => damageReductionModifiers;
         public IReadOnlyList<float> SpeedModifiers => speedModifiers;
         public IReadOnlyList<float> RegenModifiers => regenModifiers;
-        
+
 
         #endregion
 
@@ -79,7 +79,7 @@ namespace Resonance.Player
             {
                 CurrentHealth.value = maxHealth;
             }
-            
+
             lastHealth = CurrentHealth.value;
 
             if (isOwner)
@@ -149,7 +149,7 @@ namespace Resonance.Player
             {
                 Heal(currentHealthRegen * Time.deltaTime);
             }
-            
+
             if (!isOwner) return;
 
             if (Mathf.Abs(CurrentHealth.value - lastHealth) > 0.01f)
@@ -179,36 +179,52 @@ namespace Resonance.Player
                 lastDamageTime = Time.time;
             }
 
-            float finalAmount = amount * (1f - currentDamageReduction);
+            float finalDamageAmount = amount * (1f - currentDamageReduction);
+            UpdatePlayerHealthRelativeToCurrentHealth(-finalDamageAmount);
 
-            CurrentHealth.value = Mathf.Max(0, CurrentHealth.value - finalAmount);
+            if (attacker != null && owner.HasValue)
+                ShowDamageIndicatorRpc(owner.Value, attacker.transform.position);
 
-            if (playerViewModel != null)
-            {
-                playerViewModel.Health.Value = CurrentHealth.value;
-            }
-            
             if (CurrentHealth.value <= 0)
                 Die(attacker);
         }
 
-        [ServerRpc(requireOwnership: false)]
+        private void UpdatePlayerHealthRelativeToCurrentHealth(float amountToChange)
+        {
+            if (amountToChange < 0)
+            {
+                UpdatePlayerHealth(Mathf.Max(0, CurrentHealth.value + amountToChange));
+            }
+            else
+            {
+                UpdatePlayerHealth(Mathf.Min(CurrentHealth.value + amountToChange, maxHealth));
+            }
+        }
+
+        private void UpdatePlayerHealth(float healthToSetTo)
+        {
+            CurrentHealth.value = healthToSetTo;
+            PropagateHealthToObservers();
+        }
+
+        [ServerRpc(requireOwnership: true)]
         public void Heal(float amount)
         {
             if (IsDead) return;
-            CurrentHealth.value = Mathf.Min(CurrentHealth.value + amount, maxHealth);
-
-            PropagateHealthToLocal();
+            UpdatePlayerHealthRelativeToCurrentHealth(amount);
         }
 
         [ObserversRpc]
-        private void PropagateHealthToLocal()
+        private void PropagateHealthToObservers()
         {
-
             if (playerViewModel != null)
-            {
                 playerViewModel.Health.Value = CurrentHealth.value;
-            }
+        }
+
+        [TargetRpc]
+        private void ShowDamageIndicatorRpc(PlayerID target, Vector3 attackerPosition)
+        {
+            Resonance.UI.DamageIndicatorUI.Instance?.ShowIndicator(attackerPosition);
         }
 
         public void AddRegenModifier(float modifier)

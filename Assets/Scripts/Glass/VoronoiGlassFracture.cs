@@ -18,8 +18,8 @@ namespace Resonance.Environment
             float shardMass)
         {
             List<Vector2> seeds = GenerateSeeds(shardCount, paneSize, hitPointLocal);
-            int[] cellMap       = BuildCellMap(seeds, paneSize);
-            var shards          = new List<GameObject>(seeds.Count);
+            int[] cellMap = BuildCellMap(seeds, paneSize);
+            var shards = new List<GameObject>(seeds.Count);
 
             for (int i = 0; i < seeds.Count; i++)
             {
@@ -37,14 +37,14 @@ namespace Resonance.Environment
         private static List<Vector2> GenerateSeeds(int count, Vector2 paneSize, Vector2 hitPointLocal)
         {
             var seeds = new List<Vector2>(count);
-            float hw  = paneSize.x * 0.5f;
-            float hh  = paneSize.y * 0.5f;
+            float hw = paneSize.x * 0.5f;
+            float hh = paneSize.y * 0.5f;
 
             int clustered = Mathf.RoundToInt(count * 0.6f);
             for (int i = 0; i < clustered; i++)
             {
                 Vector2 offset = Random.insideUnitCircle * (Mathf.Min(paneSize.x, paneSize.y) * 0.25f);
-                Vector2 seed   = hitPointLocal + offset;
+                Vector2 seed = hitPointLocal + offset;
                 seed.x = Mathf.Clamp(seed.x, -hw, hw);
                 seed.y = Mathf.Clamp(seed.y, -hh, hh);
                 seeds.Add(seed);
@@ -59,22 +59,22 @@ namespace Resonance.Environment
 
         private static int[] BuildCellMap(List<Vector2> seeds, Vector2 paneSize)
         {
-            int res       = GridResolution;
+            int res = GridResolution;
             int[] cellMap = new int[res * res];
 
             for (int py = 0; py < res; py++)
             {
                 for (int px = 0; px < res; px++)
                 {
-                    float lx       = Mathf.Lerp(-paneSize.x * 0.5f, paneSize.x * 0.5f, (px + 0.5f) / res);
-                    float ly       = Mathf.Lerp(-paneSize.y * 0.5f, paneSize.y * 0.5f, (py + 0.5f) / res);
-                    int nearest    = 0;
+                    float lx = Mathf.Lerp(-paneSize.x * 0.5f, paneSize.x * 0.5f, (px + 0.5f) / res);
+                    float ly = Mathf.Lerp(-paneSize.y * 0.5f, paneSize.y * 0.5f, (py + 0.5f) / res);
+                    int nearest = 0;
                     float minDistSq = float.MaxValue;
 
                     for (int s = 0; s < seeds.Count; s++)
                     {
-                        float dx  = lx - seeds[s].x;
-                        float dy  = ly - seeds[s].y;
+                        float dx = lx - seeds[s].x;
+                        float dy = ly - seeds[s].y;
                         float dSq = dx * dx + dy * dy;
                         if (dSq < minDistSq) { minDistSq = dSq; nearest = s; }
                     }
@@ -88,8 +88,8 @@ namespace Resonance.Environment
 
         private static Mesh BuildShardMesh(int cellIndex, int[] cellMap, List<Vector2> seeds, Vector2 paneSize, float thickness)
         {
-            int res             = GridResolution;
-            var pixelPoints     = new List<Vector2>();
+            int res = GridResolution;
+            var pixelPoints = new List<Vector2>();
 
             for (int py = 0; py < res; py++)
             {
@@ -121,18 +121,18 @@ namespace Resonance.Environment
 
         private static Mesh ExtrudePolygon(List<Vector2> poly, float thickness)
         {
-            int n       = poly.Count;
+            int n = poly.Count;
             float halfT = thickness * 0.5f;
 
             var verts = new Vector3[n * 2];
-            var uvs   = new Vector2[n * 2];
+            var uvs = new Vector2[n * 2];
 
             for (int i = 0; i < n; i++)
             {
-                verts[i]     = new Vector3(poly[i].x, poly[i].y,  halfT);
+                verts[i] = new Vector3(poly[i].x, poly[i].y, halfT);
                 verts[i + n] = new Vector3(poly[i].x, poly[i].y, -halfT);
-                uvs[i]       = new Vector2(poly[i].x, poly[i].y);
-                uvs[i + n]   = new Vector2(poly[i].x, poly[i].y);
+                uvs[i] = new Vector2(poly[i].x, poly[i].y);
+                uvs[i + n] = new Vector2(poly[i].x, poly[i].y);
             }
 
             var tris = new List<int>();
@@ -143,13 +143,13 @@ namespace Resonance.Environment
             for (int i = 0; i < n; i++)
             {
                 int next = (i + 1) % n;
-                tris.Add(i);      tris.Add(next);      tris.Add(i + n);
-                tris.Add(next);   tris.Add(next + n);  tris.Add(i + n);
+                tris.Add(i);     tris.Add(next);     tris.Add(i + n);
+                tris.Add(next);  tris.Add(next + n); tris.Add(i + n);
             }
 
-            Mesh mesh      = new Mesh();
-            mesh.vertices  = verts;
-            mesh.uv        = uvs;
+            Mesh mesh = new Mesh();
+            mesh.vertices = verts;
+            mesh.uv = uvs;
             mesh.triangles = tris.ToArray();
             return mesh;
         }
@@ -161,24 +161,27 @@ namespace Resonance.Environment
             if (!float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float cx)) return null;
             if (!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float cy)) return null;
 
-            Vector3 worldPos = paneTransform.TransformPoint(new Vector3(cx, cy, 0f));
+            Vector3 worldPos = paneTransform.position + paneTransform.rotation * new Vector3(cx, cy, 0f);
 
-            GameObject go   = new GameObject(parts[0]);
+            GameObject go = new GameObject(parts[0]);
             go.transform.SetPositionAndRotation(worldPos, paneTransform.rotation);
             go.layer = LayerMask.NameToLayer("GlassShard");
 
-            go.AddComponent<MeshFilter>().mesh       = mesh;
+            go.AddComponent<MeshFilter>().mesh = mesh;
             go.AddComponent<MeshRenderer>().material = material;
 
             MeshCollider mc = go.AddComponent<MeshCollider>();
-            mc.sharedMesh   = mesh;
-            mc.convex       = true;
+            mc.sharedMesh = mesh;
+            mc.convex = true;
 
-            Rigidbody rb                   = go.AddComponent<Rigidbody>();
-            rb.mass                        = mass;
-            rb.useGravity                  = true;
-            rb.isKinematic                 = false;
-            rb.collisionDetectionMode      = CollisionDetectionMode.ContinuousDynamic;
+            Rigidbody rb = go.AddComponent<Rigidbody>();
+            rb.mass = mass;
+            rb.useGravity = true;
+            rb.isKinematic = false;
+            rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+            go.AddComponent<AkGameObj>();
+            go.AddComponent<WwiseSmartOcclusion>();
 
             return go;
         }
@@ -190,7 +193,7 @@ namespace Resonance.Environment
 
             points.Sort((a, b) => a.x != b.x ? a.x.CompareTo(b.x) : a.y.CompareTo(b.y));
 
-            var hull  = new List<Vector2>(2 * n);
+            var hull = new List<Vector2>(2 * n);
 
             for (int i = 0; i < n; i++)
             {

@@ -1,9 +1,10 @@
+using PurrNet;
 using UnityEngine;
 
 namespace Resonance.Environment
 {
     [RequireComponent(typeof(Collider))]
-    public class BreakableGlass : MonoBehaviour, Resonance.Helper.IDamageable
+    public class BreakableGlass : NetworkBehaviour, Resonance.Helper.IDamageable
     {
         [Header("References")]
         [SerializeField] private GlassShatterEffect shatterEffect;
@@ -45,12 +46,13 @@ namespace Resonance.Environment
             if (collision.collider.transform.IsChildOf(transform)) return;
 
             ContactPoint contact = collision.GetContact(0);
-            _pendingHitPoint     = contact.point;
-            _pendingHitNormal    = contact.normal;
+            _pendingHitPoint = contact.point;
+            _pendingHitNormal = contact.normal;
             _pendingHitDirection = collision.relativeVelocity.normalized;
-            _hasPendingHitData   = true;
+            _hasPendingHitData = true;
         }
 
+        [ObserversRpc(runLocally: true)]
         private void BreakNow(Vector3 hitPoint, Vector3 hitNormal, Vector3 hitDirection)
         {
             _broken = true;
@@ -63,7 +65,7 @@ namespace Resonance.Environment
             if (destroyPaneOnShatter)
             {
                 if (TryGetComponent(out MeshRenderer mr)) mr.enabled = false;
-                if (TryGetComponent(out Collider col))    col.enabled = false;
+                if (TryGetComponent(out Collider col)) col.enabled = false;
                 Destroy(gameObject, 3f);
             }
         }

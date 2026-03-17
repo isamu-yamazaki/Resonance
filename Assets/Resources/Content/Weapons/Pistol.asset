@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 981e9f714b3e12a4e8a7a5399e20ebcb, type: 3}
-  m_Name: StartingPistol
+  m_Name: Pistol
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponProperties
-  key: starting_pistol
+  key: handgun_default
   weaponName: Modular Handgun
   description: If you can believe it this thing can shoot people but not as good
     as other stuff.

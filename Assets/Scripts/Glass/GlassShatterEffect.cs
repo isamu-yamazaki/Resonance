@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using PurrNet;
 using UnityEngine;
 
 namespace Resonance.Environment
 {
-    public class GlassShatterEffect : MonoBehaviour
+    public class GlassShatterEffect : NetworkBehaviour
     {
         [Header("Pane Properties")]
         [Tooltip("Thickness of the glass pane (Z scale). Locked to match shard thickness.")]
