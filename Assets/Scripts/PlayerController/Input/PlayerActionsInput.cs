@@ -167,7 +167,7 @@ namespace Resonance.PlayerController
             SwapWeaponPressed = true;
         }
 
-        public void OnHeal(InputAction.CallbackContext context)
+        public void OnStim(InputAction.CallbackContext context)
         {
             if (!context.performed || _playerState.IsDead() || _playerState.IsInShop())
                 return;
