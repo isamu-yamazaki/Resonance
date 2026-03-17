@@ -27,7 +27,6 @@ Game Parameter	ID	Name			Wwise Object Path	Notes
 	3602790513	WallThickness			\Default Work Unit\WallThickness	
 
 Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
-	114934340	Sine	Wwise Sine		\Containers\Default Work Unit\Reactive_Feedback\Sine	
 	431755879	Sine	Wwise Sine		\Containers\Default Work Unit\Test_Sound\Sine	
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
@@ -68,5 +67,6 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	880115635	sfx_foley_footstep_concrete_run_05	.cache\76\{7660372E-464B-3F1B-D178-3C2A06FA5906}.wem		\Containers\Default Work Unit\Footsteps\Concrete\sfx_foley_footstep_concrete_run_05		47520
 	901815095	sfx_props_glass_land_01	.cache\30\{301B831C-3A91-E1F0-AAAB-28F743CB28E3}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_01		54096
 	909837310	sfx_foley_footstep_metal_run_01	.cache\52\{52A1F936-1F9A-9F66-629C-32080999EE94}.wem		\Containers\Default Work Unit\Footsteps\Metal\sfx_foley_footstep_metal_run_01		50020
+	941471142	sfx_world_audioreactive_loop	.cache\CA\{CAA224DB-658F-08EA-552A-D9F55F9B8843}.wem		\Containers\Default Work Unit\sfx_world_audioreactive_loop		1027924
 	1054996423	sfx_foley_footstep_wood_land_01	.cache\B6\{B67BF7DB-A0F5-0B2A-1D23-0A037D49C59C}.wem		\Containers\Default Work Unit\Landing\Wood\sfx_foley_footstep_wood_land_01		93280
 
