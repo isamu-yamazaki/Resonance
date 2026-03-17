@@ -19,7 +19,7 @@
 						<Action Name="" ID="{D87963E7-D03C-4432-8C5B-D61363D1FD08}" ShortID="487407952">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="Reactive_Feedback" ID="{33937709-1DB1-4D96-9932-AA9D089F8D75}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+									<ObjectRef Name="sfx_world_audioreactive_loop" ID="{3787C5C7-BC67-4831-B00B-F326BA9E3934}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -33,7 +33,7 @@
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="Reactive_Feedback" ID="{33937709-1DB1-4D96-9932-AA9D089F8D75}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+									<ObjectRef Name="sfx_world_audioreactive_loop" ID="{3787C5C7-BC67-4831-B00B-F326BA9E3934}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{90DD0126-090F-A68E-CCFF-9A15A9FEA266}",
+    "Hash": "{609833C6-1387-E258-928D-E54046A67333}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -312,6 +312,14 @@
       "CachePath": "52/{52A1F936-1F9A-9F66-629C-32080999EE94}.wem"
      },
      {
+      "Id": "941471142",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_world_audioreactive_loop.wav",
+      "CachePath": "CA/{CAA224DB-658F-08EA-552A-D9F55F9B8843}.wem"
+     },
+     {
       "Id": "1054996423",
       "Language": "SFX",
       "Streaming": "false",
@@ -322,14 +330,6 @@
     ],
     "Plugins": {
      "Custom": [
-      {
-       "Id": "114934340",
-       "Name": "Sine",
-       "ObjectPath": "\\Containers\\Default Work Unit\\Reactive_Feedback\\Sine",
-       "GUID": "{A85AC99A-6B7E-4BE3-9685-DBB0F4F39F91}",
-       "LibName": "Wwise Sine",
-       "LibId": "6553602"
-      },
       {
        "Id": "431755879",
        "Name": "Sine",
@@ -611,13 +611,11 @@
       "GUID": "{96722AA4-1038-4FBD-A751-61F7B5327803}",
       "MaxAttenuation": "100",
       "DurationType": "Infinite",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "114934340"
-        }
-       ]
-      }
+      "MediaRefs": [
+       {
+        "Id": "941471142"
+       }
+      ]
      },
      {
       "Id": "3211564518",
@@ -729,6 +727,6 @@
     ]
    }
   ],
-  "FileHash": "{9822C4C8-F71E-F932-BDBE-D537A1ACD6F8}"
+  "FileHash": "{4B2C2D12-A6A3-3B20-AE4A-B81AE8ED1063}"
  }
 }
