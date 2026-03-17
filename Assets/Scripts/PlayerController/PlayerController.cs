@@ -20,6 +20,7 @@ namespace Resonance.PlayerController
         
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
+        
         public static PlayerController LocalPlayer { get; private set; }
 
         [Header("Base Movement")] 
@@ -474,31 +475,18 @@ namespace Resonance.PlayerController
         {
             _cameraRotation.x += lookSensitivityH * _playerLocomotionInput.LookInput.x;
             _cameraRotation.y = Mathf.Clamp(_cameraRotation.y - lookSensitivityV * _playerLocomotionInput.LookInput.y, -lookLimitV, lookLimitV);
-            
-            _playerTargetRotation.x += transform.eulerAngles.x + lookSensitivityH * _playerLocomotionInput.LookInput.x;
-            
-            float rotationTolerance = 90f;
-            bool isIdling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Idling;
-            IsRotatingToTarget = _rotatingToTargetTimer > 0f;
-            
-            // ROTATE if we're not idling
-            if (!isIdling)
-            {
-                RotatePlayerToTarget();
-            }
-            // If rotation mismatch not within tolerance, or rotate to target is active, ROTATE
-            else if (Mathf.Abs(RotationMismatch) > rotationTolerance || IsRotatingToTarget)
-            {
-                UpdateIdleRotation(rotationTolerance);
-            }
-            
+
+            _playerTargetRotation.x += lookSensitivityH * _playerLocomotionInput.LookInput.x;
+
             _virtualCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x, 0f);
-            
-            // Get angle between camera and player
+
+            RotatePlayerToTarget();
+
             Vector3 camForwardProjectedXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
             Vector3 crossProduct = Vector3.Cross(transform.forward, camForwardProjectedXZ);
             float sign = Mathf.Sign(Vector3.Dot(crossProduct, transform.up));
             RotationMismatch = sign * Vector3.Angle(transform.forward, camForwardProjectedXZ);
+            IsRotatingToTarget = false;
         }
 
         private void UpdateIdleRotation(float rotationTolerance)

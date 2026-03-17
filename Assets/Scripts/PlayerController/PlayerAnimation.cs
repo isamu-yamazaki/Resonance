@@ -18,7 +18,6 @@ namespace Resonance.PlayerController
         // Locomotion
         private static int inputXHash = Animator.StringToHash("inputX");
         private static int inputYHash = Animator.StringToHash("inputY");
-        private static int inputMagnitudeHash = Animator.StringToHash("inputMagnitude");
         private static int isIdlingHash = Animator.StringToHash("isIdling");
         private static int isGroundedHash = Animator.StringToHash("isGrounded");
         private static int isFallingHash = Animator.StringToHash("isFalling");
@@ -32,10 +31,6 @@ namespace Resonance.PlayerController
         private static int isPlayingActionHash = Animator.StringToHash("isPlayingAction");
         private int[] actionHashes;
         
-        // Camera/Rotation
-        private static int isRotatingToTargetHash = Animator.StringToHash("isRotatingToTarget");
-        private static int rotationMismatchHash = Animator.StringToHash("rotationMismatch");
-        
         private Vector3 _currentBlendInput = Vector3.zero;
 
         private void Awake()
@@ -45,7 +40,7 @@ namespace Resonance.PlayerController
             _playerController = GetComponent<PlayerController>();
             _playerActionsInput = GetComponent<PlayerActionsInput>();
 
-            actionHashes = new int[] { }; // interruptible actions go here
+            actionHashes = new int[] { isAttackingHash, isReloadingHash };
         }
 
         private void Update()
@@ -67,7 +62,8 @@ namespace Resonance.PlayerController
 
             Vector2 inputTarget = isSliding ? Vector2.zero :
                                   isSprinting ? _playerLocomotionInput.MovementInput * 1.5f : 
-                                  isRunning ? _playerLocomotionInput.MovementInput * 1f : _playerLocomotionInput.MovementInput * 0.5f;
+                                  isRunning ? _playerLocomotionInput.MovementInput * 1f : 
+                                  _playerLocomotionInput.MovementInput * 0.5f;
             
             _currentBlendInput = Vector3.Lerp(_currentBlendInput, inputTarget, locomotionBlendSpeed * Time.deltaTime);
             
@@ -77,15 +73,12 @@ namespace Resonance.PlayerController
             _networkAnimator.SetBool(isJumpingHash, isJumping);
             _networkAnimator.SetBool(isCrouchingHash, isCrouching);
             _networkAnimator.SetBool(isSlidingHash, isSliding);
-            _networkAnimator.SetBool(isRotatingToTargetHash, _playerController.IsRotatingToTarget);
-            _networkAnimator.SetBool(isAttackingHash, _playerActionsInput.AttackPressed);
-            _networkAnimator.SetBool(isReloadingHash, _playerActionsInput.ReloadPressed);
+            _networkAnimator.SetBool(isAttackingHash, _playerState.IsAttacking);
+            _networkAnimator.SetBool(isReloadingHash, _playerState.IsReloading);
             _networkAnimator.SetBool(isPlayingActionHash, isPlayingAction);
             
             _networkAnimator.SetFloat(inputXHash, _currentBlendInput.x);
             _networkAnimator.SetFloat(inputYHash, _currentBlendInput.y);
-            _networkAnimator.SetFloat(inputMagnitudeHash, _currentBlendInput.magnitude);
-            _networkAnimator.SetFloat(rotationMismatchHash, _playerController.RotationMismatch);
         }
     }
 }

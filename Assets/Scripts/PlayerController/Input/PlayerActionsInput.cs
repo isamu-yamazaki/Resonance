@@ -229,7 +229,7 @@ namespace Resonance.PlayerController
         #endregion
         public void RequestReload()
         {
-            if (_playerState != null && _playerState.IsDead())
+            if (_playerState.IsDead() || _playerState.IsInShop())
                 return;
 
             ReloadPressed = true;

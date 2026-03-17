@@ -1,3 +1,4 @@
+using Resonance.Combat.Weapons.Enums;
 using UnityEngine;
 
 namespace Resonance.PlayerController
@@ -6,6 +7,14 @@ namespace Resonance.PlayerController
     {
         [field: SerializeField]
         public PlayerMovementState CurrentPlayerMovementState { get; private set; } = PlayerMovementState.Idling;
+        public WeaponClass CurrentWeaponClass { get; private set; }
+        
+        //Player action state stuff should prob be here instead of in shooter
+        public bool IsReloading { get; private set; }
+        public bool IsAttacking { get; private set; }
+
+        public void SetReloading(bool value) => IsReloading = value;
+        public void SetAttacking(bool value) => IsAttacking = value;
 
         public void SetPlayerMovementState(PlayerMovementState playerMovementState)
         {
@@ -36,7 +45,14 @@ namespace Resonance.PlayerController
         {
             return CurrentPlayerMovementState == PlayerMovementState.InShop;
         }
+        
+        public void SetWeaponClass(WeaponClass weaponClass)
+        {
+            CurrentWeaponClass = weaponClass;
+        }
     }
+    
+    
     
     public enum PlayerMovementState
     {

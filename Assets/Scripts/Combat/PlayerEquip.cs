@@ -30,6 +30,7 @@ namespace Resonance.Combat
         public Transform EquipSlot => equipSlot;
 
         [SerializeField] private PlayerActionsInput playerActionsInput;
+        private PlayerState playerState;
 
         [SerializeField] private WeaponView currentWeaponView;
         public WeaponView CurrentWeaponView => currentWeaponView;
@@ -44,6 +45,7 @@ namespace Resonance.Combat
             playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
 
             weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+            playerState = GetComponent<PlayerState>();
         }
 
         private void Start()
@@ -172,6 +174,7 @@ namespace Resonance.Combat
             }
 
             EquippedWeapon = weapon;
+            playerState?.SetWeaponClass(weapon.Class);
 
             if (weaponStatManager != null)
             {

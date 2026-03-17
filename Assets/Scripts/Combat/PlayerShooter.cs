@@ -26,7 +26,6 @@ namespace Resonance.Combat
         [SerializeField] private bool debugAmmoLogs;
 
         private float nextFireTime;
-        private bool isReloading;
         private float reloadEndTime;
         private float currentSpread;
 
@@ -68,9 +67,9 @@ namespace Resonance.Combat
 
         private PlayerViewModel viewModel;
         private WeaponStatManager weaponStatManager;
+        private PlayerState playerState;
 
         public int CurrentAmmo => currentAmmo;
-        public bool IsReloading => isReloading;
 
         private BulletProperties[] bulletProperties;
 
@@ -111,6 +110,7 @@ namespace Resonance.Combat
         private void Awake()
         {
             viewModel = GetComponent<PlayerViewModel>();
+            playerState = GetComponent<PlayerState>();
 
             if (playerCamera == null)
             {
@@ -146,6 +146,7 @@ namespace Resonance.Combat
 
             if (!playerActionsInput.AttackHeld && !playerActionsInput.AttackPressed)
             {
+                playerState.SetAttacking(false);
                 currentSpread = Mathf.Max(
                     weaponStatManager.Spread,
                     currentSpread - weaponStatManager.SpreadRecoveryRate * Time.deltaTime
@@ -177,7 +178,7 @@ namespace Resonance.Combat
 
         private void TryShoot()
         {
-            if (isReloading) return;
+            if (playerState.IsReloading) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
@@ -203,6 +204,7 @@ namespace Resonance.Combat
 
                 currentAmmo -= 1;
                 viewModel.SetAmmo(currentAmmo, MagazineSize);
+                playerState.SetAttacking(true);
 
                 currentSpread += weaponStatManager.SpreadPerShot;
                 currentSpread = Mathf.Min(currentSpread, weaponStatManager.MaxSpread);
@@ -387,7 +389,7 @@ namespace Resonance.Combat
 
         private void TickReload()
         {
-            if (!isReloading)
+            if (!playerState.IsReloading)
             {
                 return;
             }
@@ -409,7 +411,7 @@ namespace Resonance.Combat
 
         private void TryStartReload()
         {
-            if (isReloading)
+            if (playerState.IsReloading)
             {
                 return;
             }
@@ -452,7 +454,7 @@ namespace Resonance.Combat
                 return;
             }
 
-            isReloading = true;
+            playerState.SetReloading(true);
             reloadEndTime = Time.time + reloadTime;
 
             viewModel.SetReloadState(true);
@@ -466,7 +468,7 @@ namespace Resonance.Combat
 
         private void FinishReload()
         {
-            isReloading = false;
+            playerState.SetReloading(false);
 
             if (playerEquip == null)
             {
@@ -514,7 +516,7 @@ namespace Resonance.Combat
             }
 
             lastWeapon = weapon;
-            isReloading = false;
+            playerState.SetReloading(false);
 
             currentSpread = weaponStatManager.Spread;
 
@@ -621,7 +623,7 @@ namespace Resonance.Combat
         {
             get
             {
-                if (!isReloading) return 0f;
+                if (!playerState.IsReloading) return 0f;
 
                 float reloadDuration = weaponStatManager.ReloadTime;
                 float timeRemaining = reloadEndTime - Time.time;
