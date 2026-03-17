@@ -326,6 +326,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Stim",
+                    "type": "Button",
+                    "id": "66c53e41-d145-439e-9915-21ba21226773",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -365,7 +374,7 @@
                 {
                     "name": "",
                     "id": "ccfe0f99-f775-4f1c-b3e7-a4e32e07f8a2",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -425,6 +434,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleShop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "468fc2f2-65eb-4a9a-8f6f-9b0bf4a72b36",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Stim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
