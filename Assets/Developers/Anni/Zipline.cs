@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Resonance.PlayerController;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class Zipline : MonoBehaviour, IInteractable
 
     [SerializeField] public Transform startPoint;
     [SerializeField] public Transform endPoint;
+    [SerializeField] public GameObject headCamera;
     public float ziplineSpeed = 10f;
     private PlayerLocomotionInput _playerLocomotionInput;
     
@@ -22,6 +24,8 @@ public class Zipline : MonoBehaviour, IInteractable
     private float ziplineLength;
     private Vector3 ziplineStartPoint;
     private Vector3 ziplineEndPoint;
+    private float playerHeight;
+    public float handReachOffset = 1.0f;
     
     void Start()
     {
@@ -43,7 +47,7 @@ public class Zipline : MonoBehaviour, IInteractable
                 endPoint.hasChanged = false;
             }
         }
-        
+
         if (isRiding)
         {
             HandleZiplineMovement();
@@ -51,6 +55,7 @@ public class Zipline : MonoBehaviour, IInteractable
             // Check for dismount
             if (_playerLocomotionInput.JumpPressed)
             {
+                Debug.Log("Player Pressed Space");
                 DismountZipline();
             }
         }
@@ -60,13 +65,20 @@ public class Zipline : MonoBehaviour, IInteractable
     {
         //code for going on da zipline
         //use player interactor to do anything needed to player
-
+        
         // Start riding the zipline
         currentPlayer = interactor;
         isRiding = true;
         
-        // Recalculate in case points moved
-        CalculateZiplineEndpoints();
+        _playerLocomotionInput = interactor.GetComponent<PlayerLocomotionInput>();
+    
+        if (_playerLocomotionInput == null)
+        {
+            Debug.LogError("Player does not have PlayerLocomotionInput component!");
+            return;
+        }
+        
+        playerHeight = headCamera.transform.position.y - interactor.transform.position.y;
         
         // Find the closest point on the zipline to attach the player
         Vector3 playerPos = interactor.transform.position;
@@ -93,6 +105,7 @@ public class Zipline : MonoBehaviour, IInteractable
             playerRigidbody.isKinematic = true;
         }
         
+        Debug.Log("Call update player pos");
         // Position player on zipline
         UpdatePlayerPosition();
         
@@ -162,13 +175,34 @@ public class Zipline : MonoBehaviour, IInteractable
             return;
         }
         
-        // Get input based on control scheme
+        // Get input from the player's input class
         float moveInput = 0f;
-      
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D))
-            moveInput = 1f;
-        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A))
-            moveInput = -1f;
+        
+        Vector2 inputVector = _playerLocomotionInput.MovementInput;
+        Debug.Log("movement: " + inputVector);
+                
+        // Convert input to a world-space direction based on camera
+        if (headCamera != null && inputVector.sqrMagnitude > 0.01f) 
+        {
+            // Get camera forward and right (flattened to horizontal plane)
+            Vector3 cameraForward = headCamera.transform.forward;
+            cameraForward.y = 0;
+            cameraForward.Normalize();
+                    
+            Vector3 cameraRight = headCamera.transform.right;
+            cameraRight.y = 0;
+            cameraRight.Normalize();
+                    
+            // Calculate desired movement direction in world space
+            Vector3 desiredDirection = (cameraForward * inputVector.y + cameraRight * inputVector.x).normalized;
+                    
+            // Project desired direction onto the zipline direction
+            // This gives us whether to move forward or backward along the zipline
+            float dotProduct = Vector3.Dot(desiredDirection, ziplineDirection);
+                
+            // Use the dot product as move input (-1 to 1)
+            moveInput = dotProduct;
+        }
         
         // Update progress along the zipline
         float progressDelta = (ziplineSpeed / ziplineLength) * moveInput * Time.deltaTime;
@@ -197,10 +231,21 @@ public class Zipline : MonoBehaviour, IInteractable
     
     void UpdatePlayerPosition()
     {
-        Vector3 newPosition = Vector3.Lerp(ziplineStartPoint, ziplineEndPoint, ziplineProgress);
-        currentPlayer.transform.position = newPosition;
+        Debug.Log("UpdatePlayerPosition");
+        // Calculate position along the zipline
+        Vector3 ziplinePosition = Vector3.Lerp(ziplineStartPoint, ziplineEndPoint, ziplineProgress);
+        
+        // Calculate hanging offset based on player height
+        // Player's feet should be playerHeight below the zipline, hands slightly above head
+        // So total offset is -(playerHeight - handReachOffset)
+        float hangingOffset = -(playerHeight + handReachOffset);
+        
+        // Apply hanging offset (player hangs below the zipline)
+        Vector3 hangingPosition = ziplinePosition + Vector3.up * hangingOffset;
+        
+        currentPlayer.transform.position = hangingPosition;
     }
-    
+
     void DismountZipline()
     {
         if (currentPlayer == null)
@@ -226,6 +271,7 @@ public class Zipline : MonoBehaviour, IInteractable
         Debug.Log("Dismounted from zipline!");
         
         currentPlayer = null;
+        _playerLocomotionInput = null;
         playerController = null;
         playerRigidbody = null;
     }

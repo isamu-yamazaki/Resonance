@@ -20,11 +20,13 @@ public class PlayerInteract : MonoBehaviour
     {
         if (_playerActionsInput.InteractPressed)
         {
+            Debug.Log("Interact pressed, _currentInteractable is: " + _currentInteractable);
+            _playerActionsInput.SetInteractPressedFalse();
             if (_currentInteractable != null)
             {
+                Debug.Log("Interactable attempted interacted");
                 _currentInteractable.Interact(player);
                 Debug.Log("Interactable interacted");
-                _playerActionsInput.SetInteractPressedFalse();
             }
         }
     }

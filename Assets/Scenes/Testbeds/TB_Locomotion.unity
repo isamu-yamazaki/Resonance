@@ -3273,9 +3273,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Zipline
   startPoint: {fileID: 1090257306}
   endPoint: {fileID: 1247816263}
+  headCamera: {fileID: 1906349860}
   ziplineSpeed: 10
+  hangOffset: -1.5
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  handReachOffset: 0.5
 --- !u!1 &1880030520
 GameObject:
   m_ObjectHideFlags: 0
@@ -3767,14 +3770,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b5be48014306304aa7bfad073f8e105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBar
-  healthSlider: {fileID: 1970462121}
-  fillImage: {fileID: 1081430819}
-  highHealthColor: {r: 0, g: 1, b: 0, a: 1}
-  mediumHealthColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
-  mediumHealthThreshold: 0.6
-  lowHealthThreshold: 0.3
-  lerpSpeed: 5
+  healthFill: {fileID: 0}
+  damageFill: {fileID: 0}
+  healthText: {fileID: 0}
+  damageLerpSpeed: 2
+  numberTickSpeed: 5
+  damageFlashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.2
 --- !u!1 &2007493602
 GameObject:
   m_ObjectHideFlags: 0
