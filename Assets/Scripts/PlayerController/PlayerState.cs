@@ -1,3 +1,4 @@
+using System;
 using Resonance.Combat.Weapons.Enums;
 using UnityEngine;
 
@@ -47,10 +48,13 @@ namespace Resonance.PlayerController
             return CurrentPlayerMovementState == PlayerMovementState.InShop;
         }
         
+        public event Action<WeaponClass> OnWeaponClassChanged;
+
         public void SetWeaponClass(WeaponClass weaponClass)
         {
             CurrentWeaponClass = weaponClass;
             WeaponClassInitialized = true;
+            OnWeaponClassChanged?.Invoke(weaponClass);
         }
     }
     

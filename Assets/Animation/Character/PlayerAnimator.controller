@@ -51,7 +51,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 67b9f02ac998edc40b3c43a6c73ff2eb, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: d9698a7b0a7891b47b7d1bbb2921df7a, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -145,7 +145,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 1aed3880c5c9bb449957cc743407147a, type: 2}
+  m_Motion: {fileID: -203655887218126122, guid: 2823da7c75e5053419de5f628865e482, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -460,7 +460,7 @@ AnimatorStateMachine:
     m_Position: {x: 760, y: -20, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2821414211596354803}
-    m_Position: {x: 250, y: 110, z: 0}
+    m_Position: {x: 260, y: 150, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -607,7 +607,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 1aed3880c5c9bb449957cc743407147a, type: 2}
+  m_Motion: {fileID: -203655887218126122, guid: e94215fb372322644afbd2c304bc18a3, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -648,9 +648,6 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 6
     m_ConditionEvent: weaponClass
-    m_EventTreshold: 4
-  - m_ConditionMode: 6
-    m_ConditionEvent: weaponClass
     m_EventTreshold: 5
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2082424284881238174}
@@ -674,9 +671,6 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 6
-    m_ConditionEvent: weaponClass
-    m_EventTreshold: 4
   - m_ConditionMode: 6
     m_ConditionEvent: weaponClass
     m_EventTreshold: 5
@@ -789,9 +783,6 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 6
-    m_ConditionEvent: weaponClass
-    m_EventTreshold: 4
   - m_ConditionMode: 6
     m_ConditionEvent: weaponClass
     m_EventTreshold: 5
@@ -942,7 +933,7 @@ AnimatorController:
     m_BlendingMode: 0
     m_SyncedLayerIndex: -1
     m_DefaultWeight: 1
-    m_IKPass: 0
+    m_IKPass: 1
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
   - serializedVersion: 5
@@ -954,7 +945,7 @@ AnimatorController:
     m_BlendingMode: 0
     m_SyncedLayerIndex: -1
     m_DefaultWeight: 1
-    m_IKPass: 0
+    m_IKPass: 1
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
 --- !u!1107 &595902857193754681
@@ -1440,7 +1431,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 67b9f02ac998edc40b3c43a6c73ff2eb, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: d9698a7b0a7891b47b7d1bbb2921df7a, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1763,7 +1754,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: f096273f87f26a742a03b0945fdbfa89, type: 2}
+  m_Motion: {fileID: -203655887218126122, guid: c866d208a4e1d0144af540d8d61b39c9, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1792,7 +1783,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 1582d051874980f4b9a8e8545af1969d, type: 2}
+  m_Motion: {fileID: -203655887218126122, guid: 8e4860c9b52612945ba8f01e39a993bc, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

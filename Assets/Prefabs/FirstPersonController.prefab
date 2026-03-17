@@ -185,7 +185,7 @@ Transform:
   m_GameObject: {fileID: 5642366538942606948}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.67, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -336,7 +336,7 @@ Transform:
   m_GameObject: {fileID: 6809321870534573542}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.52246, y: 0, z: -8.93903}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -395,6 +395,12 @@ MonoBehaviour:
   sprintFOV: 85
   overdriveFOV: 95
   fovTransitionSpeed: 10
+  pistolConfig: {fileID: 11400000, guid: 3dddd0fda2c98d54da43526732666bfe, type: 2}
+  rifleConfig: {fileID: 11400000, guid: d151d9ed4584ec848958dd6406de4306, type: 2}
+  shotgunConfig: {fileID: 0}
+  heavyMGConfig: {fileID: 0}
+  sniperConfig: {fileID: 0}
+  swordConfig: {fileID: 0}
   _groundLayers:
     serializedVersion: 2
     m_Bits: 257
@@ -729,7 +735,6 @@ MonoBehaviour:
   playerEquip: {fileID: 3601999263526900247}
   playerActionsInput: {fileID: 3887967411063251530}
   playerCamera: {fileID: 0}
-  bulletTrailPrefab: {fileID: 5479048742665415825, guid: c3d977cf3df0a9e42ab7ef8cb60e1696, type: 3}
   damageNumberPrefab: {fileID: 2474898762247100464, guid: 325d2b673ea625b4d984c4618506fb81, type: 3}
   debugAimRays: 1
   debugAmmoLogs: 1
@@ -1083,11 +1088,6 @@ MonoBehaviour:
   overdriveTintColor: {r: 0, g: 1, b: 0.5, a: 1}
   overdriveTintIntensity: 0.3
   overdriveTransitionSpeed: 6
-  damageVignetteColor: {r: 0, g: 0.8, b: 1, a: 1}
-  damageVignetteIntensity: 0.5
-  damageChromaticAberrationSpike: 0.9
-  damageFlashInSpeed: 35
-  damageFlashOutSpeed: 2
 --- !u!114 &1311654643413597327
 MonoBehaviour:
   m_ObjectHideFlags: 0

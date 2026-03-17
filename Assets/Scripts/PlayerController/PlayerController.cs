@@ -1,5 +1,7 @@
 using System;
 using PurrNet;
+using Resonance.Combat.Weapons;
+using Resonance.Combat.Weapons.Enums;
 using Resonance.Player;
 using Resonance.Train;
 using UnityEngine;
@@ -59,6 +61,16 @@ namespace Resonance.PlayerController
         public float sprintFOV = 90f;
         public float overdriveFOV = 110f;
         public float fovTransitionSpeed = 10f;
+        
+        [Header("Weapon Class Camera Configs")]
+        [SerializeField] private WeaponClassCameraConfig pistolConfig;
+        [SerializeField] private WeaponClassCameraConfig rifleConfig;
+        [SerializeField] private WeaponClassCameraConfig shotgunConfig;
+        [SerializeField] private WeaponClassCameraConfig heavyMGConfig;
+        [SerializeField] private WeaponClassCameraConfig sniperConfig;
+        [SerializeField] private WeaponClassCameraConfig swordConfig;
+
+        private float currentAimOffset = 0f;
 
         [Header("Environment Details")] 
         [SerializeField] private LayerMask _groundLayers;
@@ -82,7 +94,7 @@ namespace Resonance.PlayerController
         private float slideSpeed;
         private float minSlideSpeed;
         private float drag;
-        
+
         private Vector2 _cameraRotation = Vector2.zero;
         private Vector2 _playerTargetRotation = Vector2.zero;
 
@@ -135,6 +147,7 @@ namespace Resonance.PlayerController
 
             if (_virtualCamera != null)
                 _virtualCamera.Lens.FieldOfView = baseFOV;
+            _playerState.OnWeaponClassChanged += OnWeaponClassChanged;
         }
         #endregion
 
@@ -478,7 +491,7 @@ namespace Resonance.PlayerController
 
             _playerTargetRotation.x += lookSensitivityH * _playerLocomotionInput.LookInput.x;
 
-            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x, 0f);
+            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x + currentAimOffset, 0f);
 
             RotatePlayerToTarget();
 
@@ -551,6 +564,32 @@ namespace Resonance.PlayerController
         {
             // This means player is moving diagonally at 45 degrees or forward, if so, we can run
             return _playerLocomotionInput.MovementInput.y >= MathF.Abs(_playerLocomotionInput.MovementInput.x);
+        }
+        
+        private void OnWeaponClassChanged(WeaponClass weaponClass)
+        {
+            ApplyCameraConfig(GetConfig(weaponClass));
+        }
+        
+        private WeaponClassCameraConfig GetConfig(WeaponClass weaponClass)
+        {
+            return weaponClass switch
+            {
+                WeaponClass.Pistol => pistolConfig,
+                WeaponClass.Rifle => rifleConfig,
+                WeaponClass.Shotgun => shotgunConfig ?? rifleConfig,
+                WeaponClass.HeavyMG => heavyMGConfig ?? rifleConfig,
+                WeaponClass.Sniper => sniperConfig ?? rifleConfig,
+                WeaponClass.Sword => swordConfig ?? rifleConfig,
+                _ => rifleConfig
+            };
+        }
+        
+        private void ApplyCameraConfig(WeaponClassCameraConfig config)
+        {
+            if (config == null) return;
+            _virtualCamera.transform.localPosition = config.cameraLocalPosition;
+            currentAimOffset = config.aimOffset;
         }
         #endregion
     }
