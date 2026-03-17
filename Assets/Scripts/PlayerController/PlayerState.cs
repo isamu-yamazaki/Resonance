@@ -8,6 +8,7 @@ namespace Resonance.PlayerController
         [field: SerializeField]
         public PlayerMovementState CurrentPlayerMovementState { get; private set; } = PlayerMovementState.Idling;
         public WeaponClass CurrentWeaponClass { get; private set; }
+        public bool WeaponClassInitialized { get; private set; }
         
         //Player action state stuff should prob be here instead of in shooter
         public bool IsReloading { get; private set; }
@@ -49,6 +50,7 @@ namespace Resonance.PlayerController
         public void SetWeaponClass(WeaponClass weaponClass)
         {
             CurrentWeaponClass = weaponClass;
+            WeaponClassInitialized = true;
         }
     }
     

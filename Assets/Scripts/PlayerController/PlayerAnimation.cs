@@ -31,6 +31,10 @@ namespace Resonance.PlayerController
         private static int isPlayingActionHash = Animator.StringToHash("isPlayingAction");
         private int[] actionHashes;
         
+        //Weapon Class
+        private static int weaponClassHash = Animator.StringToHash("weaponClass");
+        private static int weaponClassInitializedHash = Animator.StringToHash("weaponClassInitialized");
+        
         private Vector3 _currentBlendInput = Vector3.zero;
 
         private void Awake()
@@ -76,7 +80,8 @@ namespace Resonance.PlayerController
             _networkAnimator.SetBool(isAttackingHash, _playerState.IsAttacking);
             _networkAnimator.SetBool(isReloadingHash, _playerState.IsReloading);
             _networkAnimator.SetBool(isPlayingActionHash, isPlayingAction);
-            
+            _networkAnimator.SetBool(weaponClassInitializedHash, _playerState.WeaponClassInitialized);
+            _networkAnimator.SetInt(weaponClassHash, (int)_playerState.CurrentWeaponClass);
             _networkAnimator.SetFloat(inputXHash, _currentBlendInput.x);
             _networkAnimator.SetFloat(inputYHash, _currentBlendInput.y);
         }
