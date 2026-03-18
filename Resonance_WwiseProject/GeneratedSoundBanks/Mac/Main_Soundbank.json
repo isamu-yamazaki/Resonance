@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{A5518CF3-6ADD-804A-F2DE-663A0DDCB251}",
+    "Hash": "{BFDAAE0F-7ACE-AEC0-1942-D227023E7A4E}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -22,6 +22,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_metal_land_02.wav",
       "CachePath": "0C/{0CE17BE5-2178-58BC-E104-0681F54900C2}.wem"
+     },
+     {
+      "Id": "106684015",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_props_train_moving.wav",
+      "CachePath": "FA/{FAD07188-5451-3479-9DDB-7074EC5984AC}.wem"
      },
      {
       "Id": "117358700",
@@ -667,10 +675,13 @@
       "Name": "Play_Train_Moving",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Moving",
       "GUID": "{3C5E15D5-9DF8-4C03-9A2A-C8C585369995}",
-      "MaxAttenuation": "0",
-      "DurationType": "OneShot",
-      "DurationMin": "0",
-      "DurationMax": "0"
+      "MaxAttenuation": "100",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "106684015"
+       }
+      ]
      },
      {
       "Id": "3211783545",
@@ -729,6 +740,12 @@
       "Name": "WallThickness",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\WallThickness",
       "GUID": "{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}"
+     },
+     {
+      "Id": "4004916241",
+      "Name": "Train_Speed",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Train_Speed",
+      "GUID": "{EE3D5125-14FF-49A4-A653-DE395AFE97A7}"
      }
     ],
     "SwitchGroups": [
@@ -767,6 +784,6 @@
     ]
    }
   ],
-  "FileHash": "{A94944E6-6424-2815-714C-266FD9C5E067}"
+  "FileHash": "{F1315433-58DE-B33C-CB73-910A8D63611A}"
  }
 }
