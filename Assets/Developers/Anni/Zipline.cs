@@ -1,5 +1,6 @@
 using Resonance.PlayerController;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(1)]
 public class Zipline : MonoBehaviour, IInteractable
@@ -24,15 +25,13 @@ public class Zipline : MonoBehaviour, IInteractable
     private CharacterController playerController;
     private PlayerLocomotionInput playerLocomotionInput;
     private PlayerState playerState;
+    private Transform playerCameraTransform;
 
     private Vector3 pointAWorld;
     private Vector3 pointBWorld;
     private float playerHeight;
 
-    // World-space position the player is currently at on the cable
     private Vector3 currentCablePosition;
-
-    // World-space destination the player is riding toward
     private Vector3 targetCablePosition;
 
     private bool isRiding;
@@ -61,7 +60,7 @@ public class Zipline : MonoBehaviour, IInteractable
             return;
         }
 
-        if (playerLocomotionInput.JumpPressed)
+        if (playerLocomotionInput.JumpPressed || Keyboard.current.spaceKey.wasPressedThisFrame)
             jumpLatch = true;
 
         if (jumpLatch)
@@ -121,18 +120,48 @@ public class Zipline : MonoBehaviour, IInteractable
         currentPlayer = interactor;
         playerHeight = playerController.height;
 
-        // Snap to nearest point on the cable
+        // Get the camera transform — try the CinemachineCamera child first,
+        // then any Camera in children, then fall back to Camera.main
+        PlayerController pc = interactor.GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            // CinemachineCamera is the virtual camera; the brain (real Camera) is on Camera.main
+            // but we can use the virtual camera transform for direction since it matches look direction
+            Unity.Cinemachine.CinemachineCamera vcam = interactor.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
+            playerCameraTransform = vcam != null ? vcam.transform : null;
+        }
+
+        if (playerCameraTransform == null)
+        {
+            Camera cam = interactor.GetComponentInChildren<Camera>();
+            playerCameraTransform = cam != null ? cam.transform : Camera.main?.transform;
+        }
+
+        Debug.Log($"[Zipline] playerCameraTransform: {playerCameraTransform}, forward: {playerCameraTransform?.forward}");
+
+        // Snap to nearest point on cable
         Vector3 playerPos = interactor.transform.position;
         Vector3 cableDir = (pointBWorld - pointAWorld).normalized;
-        float projection = Vector3.Dot(playerPos - pointAWorld, cableDir);
         float cableLength = Vector3.Distance(pointAWorld, pointBWorld);
+        float projection = Vector3.Dot(playerPos - pointAWorld, cableDir);
         float t = Mathf.Clamp01(projection / cableLength);
         currentCablePosition = Vector3.Lerp(pointAWorld, pointBWorld, t);
 
-        // Ride toward whichever end is farther away (i.e. the one we're not near)
-        float distToA = Vector3.Distance(playerPos, pointAWorld);
-        float distToB = Vector3.Distance(playerPos, pointBWorld);
-        targetCablePosition = distToA > distToB ? pointAWorld : pointBWorld;
+        // Ride toward whichever endpoint the player's camera is facing
+        if (playerCameraTransform != null)
+        {
+            float dotToA = Vector3.Dot(playerCameraTransform.forward, (pointAWorld - currentCablePosition).normalized);
+            float dotToB = Vector3.Dot(playerCameraTransform.forward, (pointBWorld - currentCablePosition).normalized);
+            targetCablePosition = dotToB > dotToA ? pointBWorld : pointAWorld;
+            Debug.Log($"[Zipline] dotToA={dotToA:F3} dotToB={dotToB:F3} target={targetCablePosition}");
+        }
+        else
+        {
+            float distToA = Vector3.Distance(playerPos, pointAWorld);
+            float distToB = Vector3.Distance(playerPos, pointBWorld);
+            targetCablePosition = distToA > distToB ? pointAWorld : pointBWorld;
+            Debug.LogWarning("[Zipline] No camera found, falling back to distance-based direction.");
+        }
 
         playerState.SetPlayerMovementState(PlayerMovementState.Ziplining);
 
@@ -146,21 +175,18 @@ public class Zipline : MonoBehaviour, IInteractable
 
     private void HandleMovement()
     {
-        // Step toward target along cable
         currentCablePosition = Vector3.MoveTowards(
             currentCablePosition,
             targetCablePosition,
             ziplineSpeed * Time.deltaTime
         );
 
-        // Position player hanging below cable position
         float hangOffset = -(playerHeight * 0.5f + handReachOffset);
         Vector3 targetPosition = currentCablePosition + Vector3.up * hangOffset;
         Vector3 delta = targetPosition - currentPlayer.transform.position;
         playerController.Move(delta);
 
-        // Face the direction of travel
-        Vector3 travelDirection = (targetCablePosition - currentCablePosition);
+        Vector3 travelDirection = targetCablePosition - currentCablePosition;
         if (travelDirection.sqrMagnitude > 0.001f)
         {
             Vector3 flatDirection = new Vector3(travelDirection.x, 0f, travelDirection.z);
@@ -174,7 +200,6 @@ public class Zipline : MonoBehaviour, IInteractable
             }
         }
 
-        // Dismount on arrival
         if (Vector3.Distance(currentCablePosition, targetCablePosition) < 0.05f)
             Dismount();
     }
@@ -193,6 +218,7 @@ public class Zipline : MonoBehaviour, IInteractable
         playerController = null;
         playerLocomotionInput = null;
         playerState = null;
+        playerCameraTransform = null;
         isRiding = false;
         jumpLatch = false;
     }
