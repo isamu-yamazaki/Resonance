@@ -10,8 +10,7 @@ namespace Resonance.PlayerController
         public PlayerMovementState CurrentPlayerMovementState { get; private set; } = PlayerMovementState.Idling;
         public WeaponClass CurrentWeaponClass { get; private set; }
         public bool WeaponClassInitialized { get; private set; }
-        
-        //Player action state stuff should prob be here instead of in shooter
+
         public bool IsReloading { get; private set; }
         public bool IsAttacking { get; private set; }
 
@@ -26,7 +25,6 @@ namespace Resonance.PlayerController
         public bool InGroundedState()
         {
             return IsStateGroundedState(CurrentPlayerMovementState);
-
         }
 
         public bool IsStateGroundedState(PlayerMovementState movementState)
@@ -42,12 +40,17 @@ namespace Resonance.PlayerController
         {
             return CurrentPlayerMovementState == PlayerMovementState.Dead;
         }
-        
+
         public bool IsInShop()
         {
             return CurrentPlayerMovementState == PlayerMovementState.InShop;
         }
-        
+
+        public bool IsZiplining()
+        {
+            return CurrentPlayerMovementState == PlayerMovementState.Ziplining;
+        }
+
         public event Action<WeaponClass> OnWeaponClassChanged;
 
         public void SetWeaponClass(WeaponClass weaponClass)
@@ -57,9 +60,7 @@ namespace Resonance.PlayerController
             OnWeaponClassChanged?.Invoke(weaponClass);
         }
     }
-    
-    
-    
+
     public enum PlayerMovementState
     {
         Idling = 0,
@@ -70,6 +71,7 @@ namespace Resonance.PlayerController
         Falling = 5,
         Sliding = 6,
         Dead = 7,
-        InShop = 8
+        InShop = 8,
+        Ziplining = 9
     }
 }
