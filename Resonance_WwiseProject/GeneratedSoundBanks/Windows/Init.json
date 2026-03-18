@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{C9502B7F-A086-CC20-1B1C-27405FA6D9BB}",
+    "Hash": "{BF644DEC-04A1-E5CB-896A-B27854862974}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -249,6 +249,12 @@
       "GUID": "{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}"
      },
      {
+      "Id": "4004916241",
+      "Name": "Train_Speed",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Train_Speed",
+      "GUID": "{EE3D5125-14FF-49A4-A653-DE395AFE97A7}"
+     },
+     {
       "Id": "4004954295",
       "Name": "Enclosure",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Enclosure",
@@ -297,6 +303,6 @@
     ]
    }
   ],
-  "FileHash": "{A4ED01FF-558D-97B6-9D25-4C7F9BD810AB}"
+  "FileHash": "{8F4431F2-9D1F-6417-35D3-EB6A0F2A5324}"
  }
 }

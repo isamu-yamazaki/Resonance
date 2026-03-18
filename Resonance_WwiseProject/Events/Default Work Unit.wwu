@@ -105,6 +105,10 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Play_Train_Moving" ID="{3C5E15D5-9DF8-4C03-9A2A-C8C585369995}"/>
+				<Event Name="Stop_Train_Moving" ID="{5C6A69E7-5734-4A59-9855-DB5FEB581542}"/>
+				<Event Name="Play_Train_Disembark" ID="{51C94B9D-0D94-43C7-AA59-DB3CD379EA80}"/>
+				<Event Name="Play_Train_Arrival" ID="{68D90232-C33C-4CBC-9B40-F9164D7350AF}"/>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

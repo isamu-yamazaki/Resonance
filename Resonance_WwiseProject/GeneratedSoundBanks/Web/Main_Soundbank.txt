@@ -1,13 +1,17 @@
 Event	ID	Name			Wwise Object Path	Notes
+	130138219	Stop_Train_Moving			\Default Work Unit\Stop_Train_Moving	
 	278146749	Play_GlassShardLand			\Default Work Unit\Play_GlassShardLand	
 	1529325343	Play_IndoorAmbience			\Default Work Unit\Play_IndoorAmbience	
 	1602358412	Play_Footstep			\Default Work Unit\Play_Footstep	
+	2305398106	Play_Train_Arrival			\Default Work Unit\Play_Train_Arrival	
+	2317729681	Play_Train_Moving			\Default Work Unit\Play_Train_Moving	
 	2323405115	Play_Landing			\Default Work Unit\Play_Landing	
 	2387432645	Play_GlassShatter			\Default Work Unit\Play_GlassShatter	
 	3062989335	Play_Reactive_Feedback			\Default Work Unit\Play_Reactive_Feedback	
 	3211564518	Play_Test_Sound			\Default Work Unit\Play_Test_Sound	
 	3211783545	Stop_Reactive_Feedback			\Default Work Unit\Stop_Reactive_Feedback	
 	3267244670	Play_OutdoorAmbience			\Default Work Unit\Play_OutdoorAmbience	
+	3903810609	Play_Train_Disembark			\Default Work Unit\Play_Train_Disembark	
 
 Switch Group	ID	Name			Wwise Object Path	Notes
 	63790334	SurfaceType			\Default Work Unit\SurfaceType	

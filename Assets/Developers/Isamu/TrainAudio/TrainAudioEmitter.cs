@@ -20,7 +20,6 @@ namespace Resonance.Train
 
         [Header("Wwise RTPCs")]
         [SerializeField] private string _speedRtpc = "Train_Speed";
-        [SerializeField] private string _distanceRtpc = "Train_Player_Distance";
 
         [Header("Player Reference")]
         [Tooltip("Assign the local player transform. Falls back to Camera.main if empty.")]
@@ -83,7 +82,6 @@ namespace Resonance.Train
             if (distance > _cullingDistance) return;
 
             AkSoundEngine.SetRTPCValue(_speedRtpc, _trainController.NormalizedSpeed, _emitterObject);
-            AkSoundEngine.SetRTPCValue(_distanceRtpc, distance, _emitterObject);
         }
 
         private void OnDestroy()

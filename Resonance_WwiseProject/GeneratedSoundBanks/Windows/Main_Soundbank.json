@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{609833C6-1387-E258-928D-E54046A67333}",
+    "Hash": "{A5518CF3-6ADD-804A-F2DE-663A0DDCB251}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -643,10 +643,50 @@
       ]
      },
      {
+      "Id": "2305398106",
+      "Name": "Play_Train_Arrival",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Arrival",
+      "GUID": "{68D90232-C33C-4CBC-9B40-F9164D7350AF}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "3903810609",
+      "Name": "Play_Train_Disembark",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Disembark",
+      "GUID": "{51C94B9D-0D94-43C7-AA59-DB3CD379EA80}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "2317729681",
+      "Name": "Play_Train_Moving",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Moving",
+      "GUID": "{3C5E15D5-9DF8-4C03-9A2A-C8C585369995}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
       "Id": "3211783545",
       "Name": "Stop_Reactive_Feedback",
       "ObjectPath": "\\Events\\Default Work Unit\\Stop_Reactive_Feedback",
       "GUID": "{AC0C71A3-5A4A-4700-84BE-F8438F763A1A}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "130138219",
+      "Name": "Stop_Train_Moving",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Train_Moving",
+      "GUID": "{5C6A69E7-5734-4A59-9855-DB5FEB581542}",
       "MaxAttenuation": "0",
       "DurationType": "OneShot",
       "DurationMin": "0",
@@ -727,6 +767,6 @@
     ]
    }
   ],
-  "FileHash": "{4B2C2D12-A6A3-3B20-AE4A-B81AE8ED1063}"
+  "FileHash": "{1AD84E29-EA28-C695-87E1-9AF00DD309B7}"
  }
 }
