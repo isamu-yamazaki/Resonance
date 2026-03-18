@@ -2861,6 +2861,51 @@
 						<ActiveSource Name="sfx_world_audioreactive_loop" ID="{45798635-82F9-4398-AB83-68AF979BC947}" Platform="Linked"/>
 					</ActiveSourceList>
 				</Sound>
+				<Sound Name="sfx_props_train_moving" ID="{DB605F27-AFC6-4AB4-9610-BCA2D7ECB3AD}" ShortID="356867907">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+						</Reference>
+					</ReferenceList>
+					<ObjectLists>
+						<ObjectList Name="RTPC">
+							<RTPC Name="" ID="{5DB6187F-FA16-49B7-9298-4AB804C3B37F}" ShortID="1029186648">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="Volume"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="Train_Speed" ID="{EE3D5125-14FF-49A4-A653-DE395AFE97A7}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{A58F2FB2-7A47-4EFA-8A68-D0936F346D19}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="3"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>-200</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>1</XPos>
+														<YPos>0</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+						</ObjectList>
+					</ObjectLists>
+				</Sound>
 			</ChildrenList>
 		</WorkUnit>
 	</Containers>
