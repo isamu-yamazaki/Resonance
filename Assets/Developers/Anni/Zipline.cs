@@ -183,7 +183,7 @@ public class Zipline : MonoBehaviour, IInteractable
         cableProgress = Mathf.Clamp01(cableProgress);
 
         Vector3 cablePosition = Vector3.Lerp(pointAWorld, pointBWorld, cableProgress);
-        float hangOffset = -(playerHeight * 0.5f + handReachOffset);
+        float hangOffset = -(playerHeight + handReachOffset);
         Vector3 targetPosition = cablePosition + Vector3.up * hangOffset;
         Vector3 delta = targetPosition - currentPlayer.transform.position;
         playerController.Move(delta);
