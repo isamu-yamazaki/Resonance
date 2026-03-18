@@ -6,10 +6,10 @@ public class SampleMatchTimerListener : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (MatchLogicNetworkAdapter.Instance != null)
+        if (ArenaRoundManagerBridge.Instance != null)
         {
             Debug.Log("[MatchTimerListener] Subscribing to match timer events");
-            MatchLogicNetworkAdapter.Instance.ArenaRoundManager.OnMatchTimerElapsed += OnMatchTimerElapsed;
+            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed += OnMatchTimerElapsed;
         }
     }
 

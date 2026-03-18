@@ -9,7 +9,6 @@ namespace Resonance.DebugTools
         [Header("Test Sound Settings")]
         [SerializeField] private string testEvent = "Play_Test_Sound";
         [SerializeField] private GameObject emitter;
-        [SerializeField] private BusType testBusType = BusType.SFX;
         #endregion
         
         #region Private Fields
@@ -52,6 +51,7 @@ namespace Resonance.DebugTools
             GUILayout.Space(10);
             
             DrawTestSoundSection();
+            DrawBusMonitorSection();
             
             GUILayout.EndVertical();
         }
@@ -94,14 +94,34 @@ namespace Resonance.DebugTools
                 TriggerCustomSound(_customEvent);
             }
             
-            GUILayout.Space(15);
+            GUILayout.EndVertical();
+        }
+
+        private void DrawBusMonitorSection()
+        {
+            GUILayout.BeginVertical("box");
             
-            // Gizmo info
             GUI.color = Color.cyan;
-            GUILayout.Label("Gizmos:", GUILayout.Height(20));
+            GUILayout.Label("Bus Levels:", GUILayout.Height(20));
             GUI.color = Color.white;
-            GUILayout.Label("• Select AudioSourceTracker to see active sources");
-            GUILayout.Label("• Select AudioReactiveObject to see listen radius");
+
+            if (AudioBusMonitor.Instance != null)
+            {
+                float foley = AudioBusMonitor.Instance.GetBusIntensity(BusType.Foley);
+                float sfx = AudioBusMonitor.Instance.GetBusIntensity(BusType.SFX);
+                float environment = AudioBusMonitor.Instance.GetBusIntensity(BusType.Environment);
+
+                GUILayout.Label($"Foley: {foley:F3}");
+                GUILayout.Label($"SFX: {sfx:F3}");
+                GUILayout.Label($"Environment: {environment:F3}");
+                GUILayout.Label($"Max: {AudioBusMonitor.Instance.GetMaxBusIntensity():F3}");
+            }
+            else
+            {
+                GUI.color = Color.yellow;
+                GUILayout.Label("AudioBusMonitor not found!");
+                GUI.color = Color.white;
+            }
             
             GUILayout.EndVertical();
         }
@@ -118,12 +138,6 @@ namespace Resonance.DebugTools
             
             Debug.Log($"[AudioDebugPanel] Triggering '{testEvent}' on {emitter.name}");
             AkUnitySoundEngine.PostEvent(testEvent, emitter);
-            
-            // Register with spatial tracker if available
-            if (AudioSourceTracker.Instance != null)
-            {
-                AudioSourceTracker.Instance.RegisterSound(emitter.transform.position, testBusType);
-            }
         }
         
         private void TriggerCustomSound(string eventName)
@@ -142,12 +156,6 @@ namespace Resonance.DebugTools
             
             Debug.Log($"[AudioDebugPanel] Triggering '{eventName}' on {emitter.name}");
             AkUnitySoundEngine.PostEvent(eventName, emitter);
-            
-            // Register with spatial tracker if available
-            if (AudioSourceTracker.Instance != null)
-            {
-                AudioSourceTracker.Instance.RegisterSound(emitter.transform.position, testBusType);
-            }
         }
         #endregion
     }

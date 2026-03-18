@@ -74,14 +74,15 @@ namespace Resonance.Match
 
         private void StartMatchCountdown()
         {
-            if (ArenaRoundManagerBridge.Instance != null)
+            var activeRoundManager = MatchLogicNetworkAdapter.Instance.ActiveRoundManager;
+            if (activeRoundManager != null)
             {
-                ArenaRoundManagerBridge.Instance.StartMatchCountdown();
+                activeRoundManager.StartMatchCountdown();
                 Debug.Log("[MatchStarter] Match countdown started.");
             }
             else
             {
-                Debug.LogError("[MatchStarter] ArenaRoundManagerBridge.Instance is null! Make sure MatchLogicNetworkAdapter is in the scene.");
+                Debug.LogError("[MatchStarter] MatchLogicNetworkAdapter.Instance.ActiveRoundManager is null! Make sure MatchLogicNetworkAdapter is in the scene.");
             }
         }
 

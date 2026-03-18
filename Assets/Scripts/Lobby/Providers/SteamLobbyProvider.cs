@@ -450,7 +450,7 @@ namespace Resonance.LobbySystem.Providers
                 Id = steamId.m_SteamID.ToString(),
                 DisplayName = displayName,
                 IsReady = isReady,
-                Avatar = avatar
+                Avatar = avatar,
             };
         }
 

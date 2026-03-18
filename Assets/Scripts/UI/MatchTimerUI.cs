@@ -11,11 +11,9 @@ public class MatchTimerUI : MonoBehaviour
     {
         viewModel.FormattedTime.ChangeEvent += UpdateText;
 
-        if (MatchLogicNetworkAdapter.Instance != null)
+        if (ArenaRoundManagerBridge.Instance != null)
         {
-            MatchLogicNetworkAdapter.Instance
-                .ArenaRoundManager
-                .OnMatchTimerElapsed += viewModel.SetTime;
+            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed += viewModel.SetTime;
         }
     }
 
@@ -23,11 +21,9 @@ public class MatchTimerUI : MonoBehaviour
     {
         viewModel.FormattedTime.ChangeEvent -= UpdateText;
 
-        if (MatchLogicNetworkAdapter.Instance != null)
+        if (ArenaRoundManagerBridge.Instance != null)
         {
-            MatchLogicNetworkAdapter.Instance
-                .ArenaRoundManager
-                .OnMatchTimerElapsed -= viewModel.SetTime;
+            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed -= viewModel.SetTime;
         }
     }
 

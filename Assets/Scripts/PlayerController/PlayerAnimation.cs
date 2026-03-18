@@ -9,6 +9,7 @@ namespace Resonance.PlayerController
         [SerializeField] private Animator _animator;
         [SerializeField] private NetworkAnimator _networkAnimator;
         [SerializeField] private float locomotionBlendSpeed = 4f;
+        [SerializeField] private float rifleChestCorrection = 0f;
         
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
@@ -18,7 +19,6 @@ namespace Resonance.PlayerController
         // Locomotion
         private static int inputXHash = Animator.StringToHash("inputX");
         private static int inputYHash = Animator.StringToHash("inputY");
-        private static int inputMagnitudeHash = Animator.StringToHash("inputMagnitude");
         private static int isIdlingHash = Animator.StringToHash("isIdling");
         private static int isGroundedHash = Animator.StringToHash("isGrounded");
         private static int isFallingHash = Animator.StringToHash("isFalling");
@@ -32,9 +32,9 @@ namespace Resonance.PlayerController
         private static int isPlayingActionHash = Animator.StringToHash("isPlayingAction");
         private int[] actionHashes;
         
-        // Camera/Rotation
-        private static int isRotatingToTargetHash = Animator.StringToHash("isRotatingToTarget");
-        private static int rotationMismatchHash = Animator.StringToHash("rotationMismatch");
+        //Weapon Class
+        private static int weaponClassHash = Animator.StringToHash("weaponClass");
+        private static int weaponClassInitializedHash = Animator.StringToHash("weaponClassInitialized");
         
         private Vector3 _currentBlendInput = Vector3.zero;
 
@@ -45,7 +45,7 @@ namespace Resonance.PlayerController
             _playerController = GetComponent<PlayerController>();
             _playerActionsInput = GetComponent<PlayerActionsInput>();
 
-            actionHashes = new int[] { }; // interruptible actions go here
+            actionHashes = new int[] { isAttackingHash, isReloadingHash };
         }
 
         private void Update()
@@ -67,9 +67,15 @@ namespace Resonance.PlayerController
 
             Vector2 inputTarget = isSliding ? Vector2.zero :
                                   isSprinting ? _playerLocomotionInput.MovementInput * 1.5f : 
-                                  isRunning ? _playerLocomotionInput.MovementInput * 1f : _playerLocomotionInput.MovementInput * 0.5f;
+                                  isRunning ? _playerLocomotionInput.MovementInput * 1f : 
+                                  _playerLocomotionInput.MovementInput * 0.5f;
             
             _currentBlendInput = Vector3.Lerp(_currentBlendInput, inputTarget, locomotionBlendSpeed * Time.deltaTime);
+            
+            Vector2 clampedInput = new Vector2(
+                Mathf.Abs(_currentBlendInput.x) < 0.01f ? 0f : _currentBlendInput.x,
+                Mathf.Abs(_currentBlendInput.y) < 0.01f ? 0f : _currentBlendInput.y
+            );
             
             _networkAnimator.SetBool(isGroundedHash, isGrounded);
             _networkAnimator.SetBool(isIdlingHash, isIdling);
@@ -77,15 +83,23 @@ namespace Resonance.PlayerController
             _networkAnimator.SetBool(isJumpingHash, isJumping);
             _networkAnimator.SetBool(isCrouchingHash, isCrouching);
             _networkAnimator.SetBool(isSlidingHash, isSliding);
-            _networkAnimator.SetBool(isRotatingToTargetHash, _playerController.IsRotatingToTarget);
-            _networkAnimator.SetBool(isAttackingHash, _playerActionsInput.AttackPressed);
-            _networkAnimator.SetBool(isReloadingHash, _playerActionsInput.ReloadPressed);
+            _networkAnimator.SetBool(isAttackingHash, _playerState.IsAttacking);
+            _networkAnimator.SetBool(isReloadingHash, _playerState.IsReloading);
             _networkAnimator.SetBool(isPlayingActionHash, isPlayingAction);
-            
-            _networkAnimator.SetFloat(inputXHash, _currentBlendInput.x);
-            _networkAnimator.SetFloat(inputYHash, _currentBlendInput.y);
-            _networkAnimator.SetFloat(inputMagnitudeHash, _currentBlendInput.magnitude);
-            _networkAnimator.SetFloat(rotationMismatchHash, _playerController.RotationMismatch);
+            _networkAnimator.SetBool(weaponClassInitializedHash, _playerState.WeaponClassInitialized);
+            _networkAnimator.SetInt(weaponClassHash, (int)_playerState.CurrentWeaponClass);
+            _networkAnimator.SetFloat(inputXHash, clampedInput.x);
+            _networkAnimator.SetFloat(inputYHash, clampedInput.y);
+        }
+        
+        private void LateUpdate()
+        {
+            if ((int)_playerState.CurrentWeaponClass != 2) return;
+    
+            Transform chest = _animator.GetBoneTransform(HumanBodyBones.Chest);
+            if (chest == null) return;
+    
+            chest.localRotation = Quaternion.AngleAxis(rifleChestCorrection, Vector3.up) * chest.localRotation;
         }
     }
 }

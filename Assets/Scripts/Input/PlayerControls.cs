@@ -414,6 +414,24 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleShop"",
+                    ""type"": ""Button"",
+                    ""id"": ""f924d80a-fd6e-4d25-9ccc-36b239216c4d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Stim"",
+                    ""type"": ""Button"",
+                    ""id"": ""66c53e41-d145-439e-9915-21ba21226773"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -453,7 +471,7 @@ namespace Resonance.PlayerController
                 {
                     ""name"": """",
                     ""id"": ""ccfe0f99-f775-4f1c-b3e7-a4e32e07f8a2"",
-                    ""path"": ""<Keyboard>/f"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -515,6 +533,28 @@ namespace Resonance.PlayerController
                     ""action"": ""ShowMatchStats"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6030c83c-c184-419f-93f2-8fe48e1698a3"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleShop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""468fc2f2-65eb-4a9a-8f6f-9b0bf4a72b36"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Stim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -539,6 +579,8 @@ namespace Resonance.PlayerController
             m_PlayerActionMap_SwapSlotTwo = m_PlayerActionMap.FindAction("SwapSlotTwo", throwIfNotFound: true);
             m_PlayerActionMap_SwapWeapon = m_PlayerActionMap.FindAction("SwapWeapon", throwIfNotFound: true);
             m_PlayerActionMap_ShowMatchStats = m_PlayerActionMap.FindAction("ShowMatchStats", throwIfNotFound: true);
+            m_PlayerActionMap_ToggleShop = m_PlayerActionMap.FindAction("ToggleShop", throwIfNotFound: true);
+            m_PlayerActionMap_Stim = m_PlayerActionMap.FindAction("Stim", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -769,6 +811,8 @@ namespace Resonance.PlayerController
         private readonly InputAction m_PlayerActionMap_SwapSlotTwo;
         private readonly InputAction m_PlayerActionMap_SwapWeapon;
         private readonly InputAction m_PlayerActionMap_ShowMatchStats;
+        private readonly InputAction m_PlayerActionMap_ToggleShop;
+        private readonly InputAction m_PlayerActionMap_Stim;
         /// <summary>
         /// Provides access to input actions defined in input action map "PlayerActionMap".
         /// </summary>
@@ -816,6 +860,14 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerActionMap/ShowMatchStats".
             /// </summary>
             public InputAction @ShowMatchStats => m_Wrapper.m_PlayerActionMap_ShowMatchStats;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerActionMap/ToggleShop".
+            /// </summary>
+            public InputAction @ToggleShop => m_Wrapper.m_PlayerActionMap_ToggleShop;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerActionMap/Stim".
+            /// </summary>
+            public InputAction @Stim => m_Wrapper.m_PlayerActionMap_Stim;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -869,6 +921,12 @@ namespace Resonance.PlayerController
                 @ShowMatchStats.started += instance.OnShowMatchStats;
                 @ShowMatchStats.performed += instance.OnShowMatchStats;
                 @ShowMatchStats.canceled += instance.OnShowMatchStats;
+                @ToggleShop.started += instance.OnToggleShop;
+                @ToggleShop.performed += instance.OnToggleShop;
+                @ToggleShop.canceled += instance.OnToggleShop;
+                @Stim.started += instance.OnStim;
+                @Stim.performed += instance.OnStim;
+                @Stim.canceled += instance.OnStim;
             }
 
             /// <summary>
@@ -907,6 +965,12 @@ namespace Resonance.PlayerController
                 @ShowMatchStats.started -= instance.OnShowMatchStats;
                 @ShowMatchStats.performed -= instance.OnShowMatchStats;
                 @ShowMatchStats.canceled -= instance.OnShowMatchStats;
+                @ToggleShop.started -= instance.OnToggleShop;
+                @ToggleShop.performed -= instance.OnToggleShop;
+                @ToggleShop.canceled -= instance.OnToggleShop;
+                @Stim.started -= instance.OnStim;
+                @Stim.performed -= instance.OnStim;
+                @Stim.canceled -= instance.OnStim;
             }
 
             /// <summary>
@@ -1053,6 +1117,20 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnShowMatchStats(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ToggleShop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnToggleShop(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Stim" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnStim(InputAction.CallbackContext context);
         }
     }
 }

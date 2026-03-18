@@ -1,4 +1,5 @@
 using PurrNet;
+using UnityEngine;
 
 namespace Resonance.NetworkDespawner
 {
@@ -7,7 +8,13 @@ namespace Resonance.NetworkDespawner
     {
         public void LoadNetworkDespawnerSceneForEveryone()
         {
-            networkManager.sceneModule.LoadSceneAsync("NetworkDespawnerScene");
+            if (isServer)
+            {
+                networkManager.sceneModule.LoadSceneAsync("NetworkDespawnerScene");
+            } else
+            {
+                Debug.Log("[NetworkDespawnerSceneLoader] Can only load next scene from server");
+            }
         }
     }
 }

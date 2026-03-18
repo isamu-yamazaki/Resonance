@@ -5,6 +5,14 @@ TagManager:
   serializedVersion: 3
   tags:
   - Interactable
+  - Gun Equip
+  - Concrete
+  - Metal
+  - Wood
+  - Gravel
+  - Glass
+  - Train
+  - Arm
   layers:
   - Default
   - TransparentFX
@@ -15,7 +23,7 @@ TagManager:
   - Player
   - Projectile
   - Environment
-  - 
+  - GlassShard
   - 
   - 
   - 

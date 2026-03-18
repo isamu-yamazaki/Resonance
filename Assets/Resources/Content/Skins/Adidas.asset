@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9f1998742cb84d5eb17318adbbb40ce, type: 3}
+  m_Name: Adidas
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.SkinData
+  skinName: Adidas
+  bodyMeshPrefab: {fileID: 7888975620791195872, guid: 3d8dd475ad99d48a9861c8b8b036309f, type: 3}
+  bodyAvatar: {fileID: 9000000, guid: 3c21727da419b4bcc8a117efcc2cfed4, type: 3}
+  armsMeshPrefab: {fileID: 1904636067503296632, guid: 2e849e3cbe77a420e8fcaf15f2426e10, type: 3}
+  armsAvatar: {fileID: 9000000, guid: 3a73b1625addf4ce3a59fbced2cd2b2b, type: 3}

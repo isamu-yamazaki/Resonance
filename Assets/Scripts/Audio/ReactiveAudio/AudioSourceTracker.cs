@@ -1,91 +1,78 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Resonance.Audio;
 
 namespace Resonance.Audio
 {
     public class AudioSourceTracker : MonoBehaviour
     {
-        #region Singleton
         public static AudioSourceTracker Instance { get; private set; }
-        #endregion
 
-        #region Inspector Fields
         [Header("Settings")]
-        [SerializeField] private float defaultDuration = 1f;
-        #endregion
+        [SerializeField] private float defaultDuration = 3f;
+        [SerializeField] private float propagationSpeed = 50f;
+        [SerializeField] private float baseWaveDistance = 150f;
+        
+        private List<AudioSourceData> activeSources = new List<AudioSourceData>();
 
-        #region Private Fields
-        private List<AudioSourceData> _activeSources = new List<AudioSourceData>();
-        #endregion
+        public float BaseWaveDistance => baseWaveDistance;
 
-        #region Unity Lifecycle
-        private void Awake()
+        void Awake()
         {
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
-
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
-        private void Update()
+        void Update()
         {
-            CleanupOldSources();
+            activeSources.RemoveAll(source => source.IsExpired());
         }
-        #endregion
-
-        #region Public API
-        public void RegisterSound(Vector3 position, BusType busType, float duration = -1f)
+        
+        public void RegisterSound(Vector3 position, float duration = -1f)
         {
-            if (duration < 0)
+            if (duration < 0f)
             {
                 duration = defaultDuration;
             }
-            
-            _activeSources.RemoveAll(source => 
-                Vector3.Distance(source.Position, position) < 1f
-            );
-            
-            float peakIntensity = 0f;
+
+            float intensity = 0f;
             if (AudioBusMonitor.Instance != null)
             {
-                peakIntensity = AudioBusMonitor.Instance.GetMaxBusIntensity();
+                intensity = AudioBusMonitor.Instance.GetMaxBusIntensity();
             }
-            
-            _activeSources.Add(new AudioSourceData(position, busType, duration, peakIntensity));
-        }
 
-        public List<AudioSourceData> GetActiveSources()
-        {
-            return _activeSources;
+            activeSources.Add(new AudioSourceData(position, duration, intensity));
         }
-
-        public AudioSourceData FindLoudestNearby(Vector3 listenerPosition, float maxDistance, bool checkPropagation = false, float propagationSpeed = 100f)
+        
+        public AudioSourceData FindLoudestNearby(Vector3 position, float searchRadius)
         {
             AudioSourceData loudest = null;
             float maxWeightedIntensity = 0f;
 
-            foreach (var source in _activeSources)
+            foreach (var source in activeSources)
             {
-                float distance = Vector3.Distance(listenerPosition, source.Position);
+                float distance = Vector3.Distance(position, source.Position);
+                float waveMaxDistance = baseWaveDistance * source.PeakIntensity;
+                float soundAge = source.GetAge();
+                float waveRadius = soundAge * propagationSpeed;
                 
-                if (distance > maxDistance) continue;
-
-                if (checkPropagation)
-                {
-                    float soundAge = source.GetAge();
-                    float soundWaveRadius = soundAge * propagationSpeed;
+                if (distance > waveRadius)
+                    continue;
                     
-                    if (distance > soundWaveRadius) continue;
-                }
+                if (distance > waveMaxDistance)
+                    continue;
+                
+                if (distance > searchRadius)
+                    continue;
 
                 float intensity = source.GetCurrentIntensity();
-                float attenuation = 1f / (1f + distance * distance);
-                float weightedIntensity = intensity * attenuation;
+                float distanceAttenuation = 1f - (distance / waveMaxDistance);
+                distanceAttenuation = Mathf.Clamp01(distanceAttenuation);
+                
+                float weightedIntensity = intensity * distanceAttenuation;
 
                 if (weightedIntensity > maxWeightedIntensity)
                 {
@@ -96,26 +83,27 @@ namespace Resonance.Audio
 
             return loudest;
         }
-        #endregion
 
-        #region Cleanup
-        private void CleanupOldSources()
+        void OnDrawGizmos()
         {
-            _activeSources.RemoveAll(source => source.IsExpired());
-        }
-        #endregion
+            if (activeSources == null) return;
 
-        #region Debug
-        private void OnDrawGizmos()
-        {
-            if (_activeSources == null) return;
-
-            foreach (var source in _activeSources)
+            foreach (var source in activeSources)
             {
-                Gizmos.color = BusTypeUtility.GetBusColor(source.BusType);
+                float intensity = source.GetCurrentIntensity();
+                
+                Gizmos.color = Color.yellow * intensity;
                 Gizmos.DrawWireSphere(source.Position, 0.5f);
+                
+                float waveRadius = source.GetAge() * propagationSpeed;
+                float waveMaxDistance = baseWaveDistance * source.PeakIntensity;
+                
+                if (waveRadius < waveMaxDistance)
+                {
+                    Gizmos.color = new Color(1f, 1f, 0f, intensity * 0.3f);
+                    Gizmos.DrawWireSphere(source.Position, waveRadius);
+                }
             }
         }
-        #endregion
     }
 }

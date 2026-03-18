@@ -1,270 +1,285 @@
+using System;
+using System.Collections;
+using PurrNet;
 using UnityEngine;
-using Resonance.Audio;
 
 namespace Resonance.Audio
 {
-    public class AudioReactiveObject : MonoBehaviour
+    public class AudioReactiveObject : NetworkBehaviour
     {
-        #region Inspector Fields
-        [Header("Listening Settings")]
-        [SerializeField] private float listenRadius = 20f;
-        [SerializeField] private float falloffDistance = 10f;
-        [Tooltip("Controls how quickly intensity fades with distance. Higher = less falloff")]
-        [SerializeField] private float falloffSmoothness = 1f;
-        
         [Header("Material Settings")]
-        [SerializeField] private Material targetMaterial;
+        [SerializeField] private Renderer targetRenderer;
         [SerializeField] private Color emissionColor = Color.cyan;
         [SerializeField] private float emissionIntensity = 5f;
-        
-        [Header("Propagation Settings")]
-        [SerializeField] private float propagationSpeed = 100f;
-        [SerializeField] private bool enablePropagationDelay = true;
-        
-        [Header("Performance (LOD)")]
-        [SerializeField] private bool enableLOD = true;
-        [SerializeField] private float lodNearDistance = 15f;
-        [SerializeField] private float lodMediumDistance = 40f;
-        [SerializeField] private float lodFarDistance = 80f;
-        
-        [Header("Optional Smoothing")]
-        [SerializeField] private bool enableSmoothing = false;
-        [SerializeField] private float smoothSpeed = 10f;
-        
+
         [Header("Audio Feedback")]
         [SerializeField] private bool enableAudioFeedback = true;
-        [SerializeField] private AK.Wwise.Event feedbackStartEvent;
-        [SerializeField] private AK.Wwise.Event feedbackStopEvent;
-        [SerializeField] private AK.Wwise.RTPC feedbackVolumeRTPC;
-        [SerializeField] private float minVolumeThreshold = 0.01f;
-        [SerializeField] private float maxFeedbackVolume = 100f;
-        
+
+        [Header("Envelope (ADSR)")]
+        [SerializeField] private float attackSpeed = 30f;
+        [SerializeField] private float sustainTime = 1f;
+        [SerializeField] private float releaseSpeed = 0.5f;
+
+        [Header("Threshold")]
+        [SerializeField] private float threshold = 0.05f;
+
         [Header("Debug")]
-        [SerializeField] private bool drawDebugRadius = false;
-        #endregion
-        
-        #region Private Fields
-        private Material _materialInstance;
-        private float _currentIntensity;
-        private float _smoothedIntensity;
-        private int _frameCounter = 0;
-        private Camera _mainCamera;
-        
-        // Audio feedback tracking
-        private uint _feedbackPlayingID = AkSoundEngine.AK_INVALID_PLAYING_ID;
-        private bool _isFeedbackPlaying = false;
-        #endregion
-        
-        #region Unity Lifecycle
-        private void Start()
+        [SerializeField] private bool debugLog = false;
+
+        private Material materialInstance;
+        private float currentIntensity = 0f;
+        private float targetIntensity = 0f;
+        private float peakIntensity = 0f;
+        private float sustainTimer = 0f;
+        private bool inSustain = false;
+        private bool isFeedbackPlaying = false;
+
+        [Header("Network Update Intervals")]
+        [SerializeField] private float serverToClientPropagationIntervalSeconds = 0.2f;
+
+        /// <summary>
+        /// A base control for how often clients emit updates to the server.
+        /// If there is a detected sound from the client, that will get reported
+        /// immediately outside of this coroutine loop.
+        /// Otherwise, `null` sound events are propagated from a loop with this wait time.
+        /// </summary>
+        [SerializeField] private float clientToServerNullSourceReportingIntervalSeconds = 1f;
+
+        private AudioSourceData clientReportedSource;
+
+        void Start()
         {
             SetupMaterial();
-            _mainCamera = Camera.main;
         }
-        
-        private void Update()
-        {
-            if (enableLOD && _mainCamera != null)
-            {
-                _frameCounter++;
-                int interval = GetLODUpdateInterval();
-                
-                if (_frameCounter < interval)
-                    return;
-                    
-                _frameCounter = 0;
-            }
-            
-            UpdateReactiveEffect();
-        }
-        
-        private void OnDestroy()
-        {
-            CleanupMaterial();
-            StopAudioFeedback();
-        }
-        #endregion
-        
-        #region Initialization
-        private void SetupMaterial()
-        {
-            if (targetMaterial == null)
-            {
-                var renderer = GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    _materialInstance = renderer.material;
-                    targetMaterial = _materialInstance;
-                }
-                else
-                {
-                    return;
-                }
-            }
-            
-            if (targetMaterial != null)
-            {
-                targetMaterial.EnableKeyword("_EMISSION");
-                targetMaterial.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
-            }
-        }
-        #endregion
-        
-        #region Update Logic
-        private int GetLODUpdateInterval()
-        {
-            if (_mainCamera == null) return 1;
-            
-            float distanceToCamera = Vector3.Distance(transform.position, _mainCamera.transform.position);
-            
-            if (distanceToCamera < lodNearDistance) return 1;
-            if (distanceToCamera < lodMediumDistance) return 3;
-            if (distanceToCamera < lodFarDistance) return 5;
-            return 10;
-        }
-        
-        private void UpdateReactiveEffect()
-        {
-            if (AudioSourceTracker.Instance == null) return;
-            
-            if (targetMaterial == null)
-            {
-                SetupMaterial();
-                if (targetMaterial == null) return;
-            }
-            
-            AudioSourceData nearestSource = AudioSourceTracker.Instance.FindLoudestNearby(
-                transform.position, 
-                listenRadius,
-                enablePropagationDelay,
-                propagationSpeed
-            );
 
-            if (nearestSource != null)
+        protected override void OnSpawned(bool asServer)
+        {
+            base.OnSpawned(asServer);
+
+            if (asServer)
             {
-                float distance = Vector3.Distance(transform.position, nearestSource.Position);
-                float sourceIntensity = nearestSource.GetCurrentIntensity();
-                
-                float normalizedDistance = distance / falloffDistance;
-                float attenuation = 1f / (1f + Mathf.Pow(normalizedDistance, 2f / falloffSmoothness));
-                
-                _currentIntensity = sourceIntensity * attenuation;
+                currentIntensity = 0f;
+                ApplyEmissionAndAudioFeedbackForAllClients(0f);
+                StartCoroutine(ServerPropagationLoop());
+            }
+
+            if (isClient)
+            {
+                StartCoroutine(ClientReportingLoop());
+            }
+        }
+
+        protected override void OnDespawned(bool asServer)
+        {
+            base.OnDespawned(asServer);
+            StopAllCoroutines();
+        }
+
+        void Update()
+        {
+            if (isServer)
+            {
+                CalculateAudioState();
+            }
+
+            if (isClient)
+            {
+                AudioSourceData nearestSource = FindNearestSource();
+                if (nearestSource != null)
+                {
+                    SetNearestAudioSourceOnServer(nearestSource);
+                }
+            }
+        }
+
+        private IEnumerator ServerPropagationLoop()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(serverToClientPropagationIntervalSeconds);
+                ApplyEmissionAndAudioFeedbackForAllClients(currentIntensity);
+            }
+        }
+
+        private IEnumerator ClientReportingLoop()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(clientToServerNullSourceReportingIntervalSeconds);
+
+                if (AudioSourceTracker.Instance == null)
+                {
+                    Debug.LogWarning("[AudioReactiveObject] AudioSourceTracker not found in scene!");
+                    continue;
+                }
+
+                AudioSourceData nearestSource = FindNearestSource();
+                SetNearestAudioSourceOnServer(nearestSource);
+            }
+        }
+
+        private AudioSourceData FindNearestSource()
+        {
+            return AudioSourceTracker.Instance.FindLoudestNearby(
+                transform.position,
+                AudioSourceTracker.Instance.BaseWaveDistance
+            );
+        }
+
+        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
+        public void SetNearestAudioSourceOnServer(AudioSourceData source)
+        {
+            clientReportedSource = source;
+        }
+
+        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
+        private void CalculateAudioState()
+        {
+            if (clientReportedSource != null)
+            {
+                float distance = Vector3.Distance(transform.position, clientReportedSource.Position);
+                float sourceIntensity = clientReportedSource.GetCurrentIntensity();
+                float waveMaxDistance = AudioSourceTracker.Instance.BaseWaveDistance * clientReportedSource.PeakIntensity;
+                float distanceAttenuation = 1f - Mathf.Clamp01(distance / waveMaxDistance);
+
+                targetIntensity = sourceIntensity * distanceAttenuation;
             }
             else
             {
-                _currentIntensity = 0f;
+                targetIntensity = 0f;
             }
-            
-            float finalIntensity = enableSmoothing ? GetSmoothedIntensity() : _currentIntensity;
-            
-            ApplyEmission(finalIntensity);
-            
-            // Update audio feedback
-            if (enableAudioFeedback)
+
+            if (targetIntensity < threshold)
             {
-                UpdateAudioFeedback(finalIntensity);
+                targetIntensity = 0f;
             }
-        }
-        
-        private float GetSmoothedIntensity()
-        {
-            _smoothedIntensity = Mathf.Lerp(_smoothedIntensity, _currentIntensity, smoothSpeed * Time.deltaTime);
-            return _smoothedIntensity;
-        }
-        
-        private void ApplyEmission(float intensity)
-        {
-            if (targetMaterial == null) return;
-            
-            if (!targetMaterial.IsKeywordEnabled("_EMISSION"))
+
+            // ADSR Envelope
+            if (targetIntensity > currentIntensity)
             {
-                targetMaterial.EnableKeyword("_EMISSION");
+                currentIntensity = Mathf.Lerp(currentIntensity, targetIntensity, Time.deltaTime * attackSpeed);
+
+                if (currentIntensity > peakIntensity)
+                {
+                    peakIntensity = currentIntensity;
+                    sustainTimer = sustainTime;
+                    inSustain = true;
+                }
             }
-            
-            Color finalEmission = emissionColor * (intensity * emissionIntensity);
-            targetMaterial.SetColor("_EmissionColor", finalEmission);
+            else if (inSustain && sustainTimer > 0f)
+            {
+                currentIntensity = peakIntensity;
+                sustainTimer -= Time.deltaTime;
+
+                if (sustainTimer <= 0f)
+                {
+                    inSustain = false;
+                }
+            }
+            else
+            {
+                currentIntensity = Mathf.Lerp(currentIntensity, targetIntensity, Time.deltaTime * releaseSpeed);
+
+                if (currentIntensity < 0.01f)
+                {
+                    peakIntensity = 0f;
+                }
+            }
+
+            // as a fallback for zero-division results
+            if (float.IsNaN(currentIntensity))
+            {
+                currentIntensity = 0f;
+            }
+
+            if (debugLog)
+            {
+                Debug.Log($"[AudioReactiveObject] Target: {targetIntensity:F3}, Current: {currentIntensity:F3}, Sustain: {sustainTimer:F2}s");
+            }
         }
-        #endregion
-        
-        #region Audio Feedback
+
+        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
+        private void ResetTargetIntensity()
+        {
+            targetIntensity = 0f;
+        }
+
         private void UpdateAudioFeedback(float intensity)
         {
-            bool shouldPlay = intensity > minVolumeThreshold;
-            
-            if (shouldPlay)
+            bool shouldPlay = intensity > 0f;
+
+            if (shouldPlay && !isFeedbackPlaying)
             {
-                if (!_isFeedbackPlaying)
-                {
-                    StartAudioFeedback();
-                }
-                
-                if (_isFeedbackPlaying && feedbackVolumeRTPC != null)
-                {
-                    float volumeValue = Mathf.Lerp(0f, maxFeedbackVolume, intensity);
-                    feedbackVolumeRTPC.SetValue(gameObject, volumeValue);
-                }
+                StartAudioFeedback();
+            }
+            else if (!shouldPlay && isFeedbackPlaying)
+            {
+                StopAudioFeedback();
+            }
+
+            if (isFeedbackPlaying)
+            {
+                float volumeValue = Mathf.Clamp01(intensity) * 100f;
+                AkSoundEngine.SetRTPCValue("Reactive_Feedback_Volume", volumeValue, gameObject);
+            }
+        }
+
+        private void StartAudioFeedback()
+        {
+            AkUnitySoundEngine.PostEvent("Play_Reactive_Feedback", gameObject);
+            isFeedbackPlaying = true;
+        }
+
+        private void StopAudioFeedback()
+        {
+            AkUnitySoundEngine.PostEvent("Stop_Reactive_Feedback", gameObject);
+            isFeedbackPlaying = false;
+        }
+
+        private void SetupMaterial()
+        {
+            if (targetRenderer == null)
+            {
+                targetRenderer = GetComponent<Renderer>();
+            }
+
+            if (targetRenderer != null)
+            {
+                materialInstance = targetRenderer.material;
+                materialInstance.EnableKeyword("_EMISSION");
+                materialInstance.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
             }
             else
             {
-                if (_isFeedbackPlaying)
-                {
-                    StopAudioFeedback();
-                }
+                Debug.LogError($"[AudioReactiveObject] No Renderer found on {gameObject.name}!");
             }
         }
-        
-        private void StartAudioFeedback()
+
+        [ObserversRpc(PurrNet.Transports.Channel.ReliableOrdered)]
+        private void ApplyEmissionAndAudioFeedbackForAllClients(float intensity)
         {
-            if (feedbackStartEvent == null)
+            if (materialInstance == null) return;
+
+            Color finalEmission = emissionColor * (intensity * emissionIntensity);
+            materialInstance.SetColor("_EmissionColor", finalEmission);
+
+            if (enableAudioFeedback)
             {
-                Debug.LogWarning($"[AudioReactiveObject] Feedback start event not assigned on {gameObject.name}");
-                return;
-            }
-            
-            _feedbackPlayingID = feedbackStartEvent.Post(gameObject);
-            
-            if (_feedbackPlayingID != AkSoundEngine.AK_INVALID_PLAYING_ID)
-            {
-                _isFeedbackPlaying = true;
+                UpdateAudioFeedback(intensity);
             }
         }
-        
-        private void StopAudioFeedback()
+
+        void OnDestroy()
         {
-            if (!_isFeedbackPlaying) return;
-            
-            if (feedbackStopEvent != null)
+            if (materialInstance != null)
             {
-                feedbackStopEvent.Post(gameObject);
+                Destroy(materialInstance);
             }
-            else if (_feedbackPlayingID != AkSoundEngine.AK_INVALID_PLAYING_ID)
+
+            if (isFeedbackPlaying)
             {
-                AkSoundEngine.StopPlayingID(_feedbackPlayingID);
-            }
-            
-            _feedbackPlayingID = AkSoundEngine.AK_INVALID_PLAYING_ID;
-            _isFeedbackPlaying = false;
-        }
-        #endregion
-        
-        #region Cleanup
-        private void CleanupMaterial()
-        {
-            if (_materialInstance != null)
-            {
-                Destroy(_materialInstance);
+                StopAudioFeedback();
             }
         }
-        #endregion
-        
-        #region Debug
-        private void OnDrawGizmosSelected()
-        {
-            if (!drawDebugRadius) return;
-            
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, listenRadius);
-        }
-        #endregion
     }
 }

@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{C0E542A6-81EA-3CDB-D9AE-497B06ECF894}",
+    "Hash": "{16F9DCA2-422C-F367-8691-8477211BF149}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -56,8 +56,8 @@
       "GUID": "{DD204AD6-06A3-4E14-98F9-F6A1DC814F3D}",
       "MaxAttenuation": "50",
       "DurationType": "OneShot",
-      "DurationMin": "1",
-      "DurationMax": "1",
+      "DurationMin": "20",
+      "DurationMax": "20",
       "PluginRefs": {
        "Custom": [
         {
@@ -107,6 +107,6 @@
     ]
    }
   ],
-  "FileHash": "{C4D34E02-258A-BCFC-1717-574B90682541}"
+  "FileHash": "{00C4FCEA-F86D-6479-D761-821364BBCDA3}"
  }
 }

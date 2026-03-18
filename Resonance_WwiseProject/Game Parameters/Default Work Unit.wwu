@@ -5,20 +5,26 @@
 			<ChildrenList>
 				<GameParameter Name="Meter_SFX_Intensity" ID="{52BB91AD-DDC9-4B62-8832-46C14C04E59C}">
 					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="InitialValue" Type="Real64" Value="-48"/>
+						<Property Name="Max" Type="Real64" Value="0"/>
+						<Property Name="Min" Type="Real64" Value="-48"/>
 					</PropertyList>
 				</GameParameter>
 				<GameParameter Name="Meter_Foley_Intensity" ID="{DD8BD260-2D5B-4650-98EC-464F50A7CA9B}">
 					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="InitialValue" Type="Real64" Value="-48"/>
+						<Property Name="Max" Type="Real64" Value="0"/>
+						<Property Name="Min" Type="Real64" Value="-48"/>
 					</PropertyList>
 				</GameParameter>
 				<GameParameter Name="Meter_Environment_Intensity" ID="{D6008D2F-0282-4AFD-A98E-A873A0BF9AC4}">
 					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="InitialValue" Type="Real64" Value="-48"/>
+						<Property Name="Max" Type="Real64" Value="0"/>
+						<Property Name="Min" Type="Real64" Value="-48"/>
 					</PropertyList>
 				</GameParameter>
-				<GameParameter Name="ReactiveObject_Volume" ID="{7F62881C-DB90-4935-9D2C-04107D29BF53}">
+				<GameParameter Name="Reactive_Feedback_Volume" ID="{7F62881C-DB90-4935-9D2C-04107D29BF53}">
 					<PropertyList>
 						<Property Name="InitialValue" Type="Real64" Value="0"/>
 					</PropertyList>
@@ -51,9 +57,24 @@
 						<Property Name="Max" Type="Real64" Value="1"/>
 					</PropertyList>
 				</GameParameter>
-				<GameParameter Name="AmbienceMix" ID="{0FF9B36C-12DC-4B98-8374-150CECB1370E}">
+				<GameParameter Name="IndoorAmbienceVolume" ID="{1ADA932F-E8A0-4FC1-B3DA-720CF4577470}">
 					<PropertyList>
 						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="0"/>
+						<Property Name="Min" Type="Real64" Value="-96"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="DirectionalAmbienceVolume" ID="{4FBCDE3D-AEF4-4BA6-99D6-E2BBAF0F0AC3}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="0"/>
+						<Property Name="Min" Type="Real64" Value="-96"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="WallThickness" ID="{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="10"/>
 					</PropertyList>
 				</GameParameter>
 			</ChildrenList>

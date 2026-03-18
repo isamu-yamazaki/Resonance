@@ -5,7 +5,7 @@ using Resonance.Assemblies.MatchStat;
 
 namespace Resonance.Entities
 {
-    public class TargetDummy : MonoBehaviour, IDamageable
+    public class TargetDummy : MonoBehaviour, IDamageable, IDamageNumberTarget
     {
         [SerializeField] private float maxHealth = 100f;
         [SerializeField] private float respawnDelay = 3f;

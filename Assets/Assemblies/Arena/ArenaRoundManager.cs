@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Resonance.Assemblies.MatchStat;
+using Resonance.Assemblies.SharedGameLogic;
 
 namespace Resonance.Assemblies.Arena
 {
-    public class ArenaRoundManager
+    public class ArenaRoundManager : BaseRoundManager
     {
         #region Configuration
         public struct ArenaRoundManagerConfig
@@ -29,13 +30,11 @@ namespace Resonance.Assemblies.Arena
         }
         private int eliminationsToWin = 10;
         private float autoStartDelaySeconds = 3f;
-        private float matchStartCountdownSeconds = 5f;
         private bool autoStartNextMatch = false;
         private float matchDurationSeconds = 300f;
         #endregion
 
         #region State
-        private ArenaMatchState matchState = ArenaMatchState.Waiting;
         private ulong? currentLeader = null;
         private int highestEliminations = 0;
         private DateTime timeOfLastMatchStart = default;
@@ -43,22 +42,15 @@ namespace Resonance.Assemblies.Arena
         #endregion
 
         #region Events
-        public event Action<ArenaMatchState, ArenaMatchState> OnMatchStateChange;  // Old state, new state
-        public event Action<float> OnMatchCountdownStart;  // Seconds
-        public event Action OnMatchStart;
-        public event Action<ulong?> OnMatchEnd; // Winner
-        public event Action<ulong, int> OnLeaderChanged; // New leader, their eliminations
-        public event Action<double> OnMatchTimerElapsed; // Total seconds remaining
+        public event Action<ulong?> OnMatchEnd;
+        public event Action<ulong, int> OnLeaderChanged;
+        public event Action<double> OnMatchTimerElapsed;
         #endregion
 
         #region Properties
-        public ArenaMatchState MatchState => matchState;
-        public bool IsMatchActive => matchState == ArenaMatchState.MatchActive;
-        public bool IsMatchEnded => matchState == ArenaMatchState.MatchEnded;
         public int EliminationsToWin => eliminationsToWin;
         public ulong? CurrentLeader => currentLeader;
         public int HighestEliminations => highestEliminations;
-        public float MatchStartCountdownSeconds => matchStartCountdownSeconds;
         public DateTime TimeOfMatchEnd => timeOfLastMatchStart.AddSeconds(matchDurationSeconds);
         public double SecondsRemainingForMatch
         {
@@ -74,20 +66,17 @@ namespace Resonance.Assemblies.Arena
         }
         #endregion
 
-        private MatchStatTracker matchStatTracker;
-
         public ArenaRoundManager(MatchStatTracker tracker)
             : this(tracker, ArenaRoundManagerConfig.Default)
         {
         }
 
         public ArenaRoundManager(MatchStatTracker tracker, ArenaRoundManagerConfig config)
+            : base(tracker, config.matchStartCountdownSeconds)
         {
-            matchStatTracker = tracker;
             autoStartNextMatch = config.autoStartNextMatch;
             eliminationsToWin = config.eliminationsToWin;
             autoStartDelaySeconds = config.autoStartDelaySeconds;
-            matchStartCountdownSeconds = config.matchStartCountdownSeconds;
             matchDurationSeconds = config.matchDurationSeconds;
 
             SubscribeToEvents();
@@ -104,33 +93,12 @@ namespace Resonance.Assemblies.Arena
         #endregion
 
         #region Match Control
-        public async Task StartMatchCountdown()
+        public override void StartMatchWithoutCountdown()
         {
-            if (matchState == ArenaMatchState.MatchActive || matchState == ArenaMatchState.Countdown)
-            {
-                return;
-            }
+            if (IsMatchActive) { return; }
 
             var oldMatchState = matchState;
-
-            matchState = ArenaMatchState.Countdown;
-
-            OnMatchCountdownStart?.Invoke(matchStartCountdownSeconds);
-            OnMatchStateChange?.Invoke(oldMatchState, matchState);
-
-            await Task.Delay((int)(matchStartCountdownSeconds * 1000));
-            StartMatchWithoutCountdown();
-        }
-
-        public void StartMatchWithoutCountdown()
-        {
-            if (IsMatchActive)
-            {
-                return;
-            }
-
-            var oldMatchState = matchState;
-            matchState = ArenaMatchState.MatchActive;
+            matchState = BaseMatchState.MatchActive;
 
             currentLeader = null;
             highestEliminations = 0;
@@ -138,8 +106,8 @@ namespace Resonance.Assemblies.Arena
 
             matchStatTracker?.ResetAllStats();
 
-            OnMatchStart?.Invoke();
-            OnMatchStateChange?.Invoke(oldMatchState, matchState);
+            RaiseMatchStart();
+            RaiseMatchStateChange(oldMatchState, matchState);
 
             SetCheckForMatchEndTimer();
         }
@@ -158,10 +126,7 @@ namespace Resonance.Assemblies.Arena
 
         private void CheckForMatchEnd()
         {
-            if (MatchState != ArenaMatchState.MatchActive)
-            {
-                return;
-            }
+            if (MatchState != BaseMatchState.MatchActive) { return; }
 
             if (TimeOfMatchEnd <= DateTime.Now)
             {
@@ -172,14 +137,12 @@ namespace Resonance.Assemblies.Arena
         /// <summary>
         /// Ends the match, auto-starting the next round if configured.
         /// </summary>
-        /// <param name="winner"></param>
-        /// <returns></returns>
         public async Task EndMatch(ulong? winner)
         {
-            if (matchState != ArenaMatchState.MatchActive) return;
+            if (matchState != BaseMatchState.MatchActive) { return; }
 
-            matchState = ArenaMatchState.MatchEnded;
-            OnMatchStateChange?.Invoke(ArenaMatchState.MatchActive, matchState);
+            matchState = BaseMatchState.MatchEnded;
+            RaiseMatchStateChange(BaseMatchState.MatchActive, matchState);
 
             OnMatchEnd?.Invoke(winner);
 
@@ -202,7 +165,7 @@ namespace Resonance.Assemblies.Arena
         #region Kill Event Handling
         private void OnPlayerKilled(ulong killer, ulong victim)
         {
-            if (!IsMatchActive || IsMatchEnded) return;
+            if (!IsMatchActive || IsMatchEnded) { return; }
 
             PlayerMatchStats? killerStats = matchStatTracker.GetStats(killer);
             if (killerStats is PlayerMatchStats stats)
@@ -221,7 +184,6 @@ namespace Resonance.Assemblies.Arena
         {
             int currentEliminations = stats.kills;
 
-            // Update leader tracking
             if (currentEliminations > highestEliminations)
             {
                 highestEliminations = currentEliminations;
@@ -241,7 +203,7 @@ namespace Resonance.Assemblies.Arena
         #region Leaderboard Queries
         public List<PlayerRanking> GetLeaderboard()
         {
-            if (matchStatTracker == null) return new List<PlayerRanking>();
+            if (matchStatTracker == null) { return new List<PlayerRanking>(); }
 
             var allStats = matchStatTracker.GetAllStats();
             var rankings = new List<PlayerRanking>();
@@ -255,7 +217,6 @@ namespace Resonance.Assemblies.Arena
                 });
             }
 
-            // Sort by kills (descending), then by KDA (descending), then by deaths (ascending)
             rankings = rankings.OrderByDescending(r => r.stats.kills)
                               .ThenByDescending(r => r.stats.KDA)
                               .ThenBy(r => r.stats.deaths)
@@ -278,6 +239,5 @@ namespace Resonance.Assemblies.Arena
             return result;
         }
         #endregion
-
     }
 }

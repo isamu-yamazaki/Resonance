@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Resonance.Match;
-using Resonance.Assemblies.Arena;
 using Resonance.Helper;
+using Resonance.Assemblies.MatchStat;
 
 public class MatchStatsViewModel : MonoBehaviour
 {

@@ -156,14 +156,6 @@ namespace Resonance.LobbySystem
 
             _currentProvider.OnLobbyPlayerListUpdated += players => InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
             _currentProvider.OnError += error => InvokeDelayed(() => OnError.Invoke(error));
-            
-            _currentProvider.OnLobbyUpdated += room =>
-            {
-                if (room.IsValid)
-                {
-                    InvokeDelayed(() => OnRoomJoined?.Invoke(room));
-                }
-            };
         }
 
         // Unsubscribe from provider events
@@ -174,15 +166,6 @@ namespace Resonance.LobbySystem
             _currentProvider.OnLobbyUpdated -= room => InvokeDelayed(() => OnRoomUpdated.Invoke(room));
             _currentProvider.OnLobbyPlayerListUpdated -= players => InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
             _currentProvider.OnError -= error => InvokeDelayed(() => OnError.Invoke(error));
-
-            // ReSharper disable once EventUnsubscriptionViaAnonymousDelegate
-            _currentProvider.OnLobbyUpdated -= room =>
-            {
-                if (room.IsValid)
-                {
-                    InvokeDelayed(() => OnRoomJoined?.Invoke(room));
-                }
-            };
         }
 
         /// <summary>
@@ -239,6 +222,7 @@ namespace Resonance.LobbySystem
                 EnsureProviderSet();
                 var room = await _currentProvider.CreateLobbyAsync(maxPlayers, roomProperties);
                 _currentLobby = room;
+                OnRoomJoined?.Invoke(room);
                 OnRoomUpdated?.Invoke(room);
             });
         }
@@ -326,6 +310,16 @@ namespace Resonance.LobbySystem
                 EnsureProviderSet();
                 await _currentProvider.SetIsReadyAsync(userId, isReady);
             });
+        }
+
+        /// <summary>
+        /// Gets the local user's ID from the current provider.
+        /// </summary>
+        /// <returns>The local user's ID, or null if unavailable.</returns>
+        public async Task<string> GetLocalUserId()
+        {
+            EnsureProviderSet();
+            return await _currentProvider.GetLocalUserIdAsync();
         }
 
         /// <summary>

@@ -23,7 +23,7 @@
 							<PropertyList>
 								<Property Name="BusVolume" Type="Real64">
 									<ValueList>
-										<Value>-3</Value>
+										<Value>-52</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -77,10 +77,15 @@
 							<PropertyList>
 								<Property Name="BusVolume" Type="Real64">
 									<ValueList>
-										<Value>-3</Value>
+										<Value>-6</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
+							<ReferenceList>
+								<Reference Name="UserAuxSend0">
+									<ObjectRef Name="Reverb_Master" ID="{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
 							<ObjectLists>
 								<ObjectList Name="Effects">
 									<EffectSlot Name="" ID="{6E29A114-9D2D-4E6A-872F-B2F38BD60CBB}" ShortID="164246851">
@@ -300,6 +305,32 @@
 								</ObjectList>
 							</ObjectLists>
 						</AuxBus>
+						<Bus Name="SFX_NonReactive" ID="{861F9B84-3627-4559-B84F-737913CD1B35}">
+							<ReferenceList>
+								<Reference Name="UserAuxSend0">
+									<ObjectRef Name="Reverb_Master" ID="{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
+							<ObjectLists>
+								<ObjectList Name="Effects">
+									<EffectSlot Name="" ID="{F85B132E-1CE9-4370-B29A-76E9318D7EF8}" ShortID="951963357">
+										<ReferenceList>
+											<Reference Name="Effect">
+												<Custom>
+													<Effect Name="Meter (Custom)" ID="{6656604E-7FD2-4985-89E6-BF579E0F733D}" ShortID="462317545" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3">
+														<ReferenceList>
+															<Reference Name="GameParameter">
+																<ObjectRef Name="Meter_SFX_Intensity" ID="{52BB91AD-DDC9-4B62-8832-46C14C04E59C}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+															</Reference>
+														</ReferenceList>
+													</Effect>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</EffectSlot>
+								</ObjectList>
+							</ObjectLists>
+						</Bus>
 					</ChildrenList>
 				</Bus>
 			</ChildrenList>

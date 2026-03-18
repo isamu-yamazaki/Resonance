@@ -2,27 +2,30 @@ using PurrNet;
 using Resonance.LobbySystem;
 using UnityEngine;
 
-public class NextSceneLoader : NetworkBehaviour
+namespace Resonance.GameBootstrap
 {
-    // [SerializeField] private NetworkManager networkManager;
-
-    private LobbyDataHolder lobbyDataHolder;
-
-
-    protected override void OnSpawned()
+    public class NextSceneLoader : NetworkBehaviour
     {
-        base.OnSpawned();
+        // [SerializeField] private NetworkManager networkManager;
 
-        lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-        if (!lobbyDataHolder)
+        private LobbyDataHolder lobbyDataHolder;
+
+
+        protected override void OnSpawned()
         {
-            Debug.LogError($"Unable to find {nameof(LobbyDataHolder)} component; scene switching will not work.");
-        }
-    }
+            base.OnSpawned();
 
-    public void LoadNextScene()
-    {
-        var sceneToSwitchTo = lobbyDataHolder.CurrentLobby.SceneName;
-        networkManager.sceneModule.LoadSceneAsync(sceneToSwitchTo);
+            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
+            if (!lobbyDataHolder)
+            {
+                Debug.LogError($"Unable to find {nameof(LobbyDataHolder)} component; scene switching will not work.");
+            }
+        }
+
+        public void LoadNextScene()
+        {
+            var sceneToSwitchTo = lobbyDataHolder.CurrentLobby.SceneName;
+            networkManager.sceneModule.LoadSceneAsync(sceneToSwitchTo);
+        }
     }
 }

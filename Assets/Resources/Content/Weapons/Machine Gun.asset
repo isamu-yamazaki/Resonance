@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 981e9f714b3e12a4e8a7a5399e20ebcb, type: 3}
+  m_Name: Machine Gun
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponProperties
+  key: machineGun_default
+  weaponName: LMG
+  description: 
+  slot: 0
+  weaponClass: 3
+  firingType: 1
+  icon: {fileID: 0}
+  weaponPrefab: {fileID: 1737148184329554707, guid: abac27ae7a7c8f74db29e88b2f8e646d, type: 3}
+  damage: 2
+  fireRate: 20
+  projectilesPerShot: 1
+  range: 30
+  accuracy: 0
+  control: 0
+  muzzleVelocity: 0
+  spread: 0
+  spreadPerShot: 0.1
+  maxSpread: 5
+  spreadRecoveryRate: 1
+  mobility: 0.75
+  handling: 0
+  magazineSize: 120
+  reloadTime: 3.3
+  bulletProperties: {fileID: 11400000, guid: efa6dd70ff966ac409b9d07883c05ff2, type: 2}
+  modList: []

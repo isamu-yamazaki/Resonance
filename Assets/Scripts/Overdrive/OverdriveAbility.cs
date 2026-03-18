@@ -12,7 +12,8 @@ namespace Resonance.PlayerController
         [SerializeField] private float overdriveCooldown = 30f;
         [SerializeField] private float overdriveSpeedMultiplier = 2f;
         [SerializeField] private float overdriveHealAmount = 50f;
-        [SerializeField] private float overdriveRegenAmount = 5f;
+        [SerializeField] private float overdriveRegenAmount = 2f;
+        [SerializeField] private float overdriveDamageReductionAmount = 0.25f;
         
         
         public ObservableValue<OverdriveState> State { get; private set; }
@@ -142,9 +143,9 @@ namespace Resonance.PlayerController
             
             if (_playerStats != null)
             {
-                
                 _playerStats.AddSpeedModifier(overdriveSpeedMultiplier);
                 _playerStats.AddRegenModifier(overdriveRegenAmount);
+                _playerStats.AddDamageReductionModifier(overdriveDamageReductionAmount);
                 _playerStats.Heal(overdriveHealAmount);
                 Debug.Log($"Overdrive ACTIVATED! Healed {overdriveHealAmount} HP");
             }
@@ -161,6 +162,7 @@ namespace Resonance.PlayerController
             
             _playerStats.RemoveSpeedModifier(overdriveSpeedMultiplier);
             _playerStats.RemoveRegenModifier(overdriveRegenAmount);
+            _playerStats.RemoveDamageReductionModifier(overdriveDamageReductionAmount);
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");
         }
 

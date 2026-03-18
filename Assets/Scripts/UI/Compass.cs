@@ -10,34 +10,34 @@ public class Compass : MonoBehaviour
     public TextMeshProUGUI CompassDirectionText;
     
     private Transform player;
+    private Transform cam;
 
     private IEnumerator Start()
     {
-        while (PlayerController.LocalPlayer == null)
+        while (PlayerController.LocalPlayer == null || Camera.main == null)
         {
             yield return null;
         }
 
         player = PlayerController.LocalPlayer.transform;
-        Debug.Log("[Compass] Bound to local player");
+        cam = Camera.main.transform;
+
+        Debug.Log("[Compass] Bound to camera");
     }
 
     void Update()
     {
-        if (player == null) return;
+        if (cam == null) return;
 
-        CompassImage.uvRect = new Rect(player.localEulerAngles.y / 360, 0, 1, 1);
+        CompassImage.uvRect = new Rect(cam.localEulerAngles.y / 360, 0, 1, 1);
 
-        Vector3 forward = player.transform.forward;
-
+        Vector3 forward = cam.forward;
         forward.y = 0;
 
         float headingAngle = Quaternion.LookRotation(forward).eulerAngles.y;
         headingAngle = 5 * (Mathf.RoundToInt(headingAngle / 5.0f));
 
-        int displayangle;
-        displayangle = Mathf.RoundToInt(headingAngle);
-
+        int displayangle = Mathf.RoundToInt(headingAngle);
 
         switch (displayangle)
         {
@@ -53,7 +53,7 @@ public class Compass : MonoBehaviour
             case 90:
                 CompassDirectionText.text = "E";
                 break;
-            case 130:
+            case 135:
                 CompassDirectionText.text = "SE";
                 break;
             case 180:

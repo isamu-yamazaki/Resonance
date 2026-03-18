@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{343425AF-A8E7-DFF6-5403-5166EDCC65A6}",
+    "Hash": "{DBAE9CA8-631D-C19D-081B-98E42CC89632}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -21,6 +21,14 @@
        "Name": "Meter (Custom)",
        "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Foley\\[Effect Slot [0]: (Meter)]\\Meter (Custom)",
        "GUID": "{A34A176F-5F08-403A-8349-001190F96737}",
+       "LibName": "Wwise Meter",
+       "LibId": "8454147"
+      },
+      {
+       "Id": "462317545",
+       "Name": "Meter (Custom)",
+       "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\SFX_NonReactive\\[Effect Slot [0]: (Meter)]\\Meter (Custom)",
+       "GUID": "{6656604E-7FD2-4985-89E6-BF579E0F733D}",
        "LibName": "Wwise Meter",
        "LibId": "8454147"
       },
@@ -80,7 +88,15 @@
          "Id": "258589154"
         }
        ]
-      }
+      },
+      "AuxBusRefs": [
+       {
+        "Id": "2783051634",
+        "Name": "Reverb_Master",
+        "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Reverb_Master",
+        "GUID": "{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}"
+       }
+      ]
      },
      {
       "Id": "393239870",
@@ -133,6 +149,27 @@
       "Name": "Music",
       "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Music",
       "GUID": "{26A4A81B-B389-46FE-B5B6-6B67F3D37ED1}"
+     },
+     {
+      "Id": "4123335503",
+      "Name": "SFX_NonReactive",
+      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\SFX_NonReactive",
+      "GUID": "{861F9B84-3627-4559-B84F-737913CD1B35}",
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "462317545"
+        }
+       ]
+      },
+      "AuxBusRefs": [
+       {
+        "Id": "2783051634",
+        "Name": "Reverb_Master",
+        "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Reverb_Master",
+        "GUID": "{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}"
+       }
+      ]
      }
     ],
     "AuxBusses": [
@@ -158,22 +195,28 @@
       "GUID": "{8FE22EA3-E5DD-48C4-8390-D5F8B4C1B5B6}"
      },
      {
-      "Id": "142454441",
-      "Name": "AmbienceMix",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\AmbienceMix",
-      "GUID": "{0FF9B36C-12DC-4B98-8374-150CECB1370E}"
-     },
-     {
       "Id": "183903552",
       "Name": "Occlusion",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Occlusion",
       "GUID": "{DAAB43F5-A1A7-46AA-9E41-1AB0ABCD0152}"
      },
      {
+      "Id": "369910861",
+      "Name": "DirectionalAmbienceVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\DirectionalAmbienceVolume",
+      "GUID": "{4FBCDE3D-AEF4-4BA6-99D6-E2BBAF0F0AC3}"
+     },
+     {
       "Id": "499096576",
       "Name": "Diffraction",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Diffraction",
       "GUID": "{3AD53E5D-776D-45D4-B11B-3D1F723DD2F1}"
+     },
+     {
+      "Id": "1471093987",
+      "Name": "Reactive_Feedback_Volume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Reactive_Feedback_Volume",
+      "GUID": "{7F62881C-DB90-4935-9D2C-04107D29BF53}"
      },
      {
       "Id": "1541695584",
@@ -188,16 +231,22 @@
       "GUID": "{1FEE75FD-DAA1-4E06-9C5D-09CA4508A215}"
      },
      {
-      "Id": "1585979646",
-      "Name": "ReactiveObject_Volume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\ReactiveObject_Volume",
-      "GUID": "{7F62881C-DB90-4935-9D2C-04107D29BF53}"
+      "Id": "2371184266",
+      "Name": "IndoorAmbienceVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\IndoorAmbienceVolume",
+      "GUID": "{1ADA932F-E8A0-4FC1-B3DA-720CF4577470}"
      },
      {
       "Id": "2553996342",
       "Name": "Meter_SFX_Intensity",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Meter_SFX_Intensity",
       "GUID": "{52BB91AD-DDC9-4B62-8832-46C14C04E59C}"
+     },
+     {
+      "Id": "3602790513",
+      "Name": "WallThickness",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\WallThickness",
+      "GUID": "{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}"
      },
      {
       "Id": "4004954295",
@@ -211,9 +260,43 @@
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Meter_Foley_Intensity",
       "GUID": "{DD8BD260-2D5B-4650-98EC-464F50A7CA9B}"
      }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "63790334",
+      "Name": "SurfaceType",
+      "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType",
+      "GUID": "{394CB589-82AC-49F7-BB24-AFCEB7571849}",
+      "Switches": [
+       {
+        "Id": "841620460",
+        "Name": "Concrete",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Concrete",
+        "GUID": "{43DD5BAF-CB8F-4064-91B4-5A3286ED26EC}"
+       },
+       {
+        "Id": "2058049674",
+        "Name": "Wood",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Wood",
+        "GUID": "{8C5FA892-76DC-4CB1-9F40-41D094639406}"
+       },
+       {
+        "Id": "2185786256",
+        "Name": "Gravel",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Gravel",
+        "GUID": "{F1B7AA10-C300-4DE4-8DA3-73C44C1C762F}"
+       },
+       {
+        "Id": "2473969246",
+        "Name": "Metal",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Metal",
+        "GUID": "{03214074-974A-4AC1-AA95-ABF83F648055}"
+       }
+      ]
+     }
     ]
    }
   ],
-  "FileHash": "{823B559C-7334-5276-99A9-943C3757E554}"
+  "FileHash": "{706D0352-6024-99BE-31B8-8CCE5A7505B8}"
  }
 }

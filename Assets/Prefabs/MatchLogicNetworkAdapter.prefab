@@ -55,8 +55,10 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   assistTimeWindow: 5
   assistDamageThreshold: 20
-  eliminationsToWin: 10
+  matchStartCountdownSeconds: 5
+  eliminationsToWin: 5
   autoStartDelaySeconds: 5
   autoStartNextMatch: 0
-  matchStartCountdownSeconds: 5
   matchDurationSeconds: 300
+  teamEliminationsToWin: 10
+  timeBetweenRoleSwitchSeconds: 90

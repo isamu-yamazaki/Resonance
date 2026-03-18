@@ -1,7 +1,9 @@
+using PurrNet.Packing;
+
 namespace Resonance.Assemblies.MatchStat
 {
     [System.Serializable]
-    public struct PlayerMatchStats
+    public struct PlayerMatchStats: IPackedAuto
     {
         public int kills;
         public int deaths;

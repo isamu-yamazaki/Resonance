@@ -211,9 +211,43 @@
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Meter_Foley_Intensity",
       "GUID": "{DD8BD260-2D5B-4650-98EC-464F50A7CA9B}"
      }
+    ],
+    "SwitchGroups": [
+     {
+      "Id": "63790334",
+      "Name": "SurfaceType",
+      "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType",
+      "GUID": "{394CB589-82AC-49F7-BB24-AFCEB7571849}",
+      "Switches": [
+       {
+        "Id": "841620460",
+        "Name": "Concrete",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Concrete",
+        "GUID": "{43DD5BAF-CB8F-4064-91B4-5A3286ED26EC}"
+       },
+       {
+        "Id": "2058049674",
+        "Name": "Wood",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Wood",
+        "GUID": "{8C5FA892-76DC-4CB1-9F40-41D094639406}"
+       },
+       {
+        "Id": "2185786256",
+        "Name": "Gravel",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Gravel",
+        "GUID": "{F1B7AA10-C300-4DE4-8DA3-73C44C1C762F}"
+       },
+       {
+        "Id": "2473969246",
+        "Name": "Metal",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Metal",
+        "GUID": "{03214074-974A-4AC1-AA95-ABF83F648055}"
+       }
+      ]
+     }
     ]
    }
   ],
-  "FileHash": "{A9DDB109-4752-36BD-6541-9157D80C54A6}"
+  "FileHash": "{0DA1A2B9-5ADB-9F09-8D76-0C178C773328}"
  }
 }

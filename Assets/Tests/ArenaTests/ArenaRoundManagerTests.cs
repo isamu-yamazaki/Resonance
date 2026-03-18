@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.Arena;
+using Resonance.Assemblies.SharedGameLogic;
 using System.Threading.Tasks;
 
 public class ArenaRoundManagerTests
@@ -102,8 +103,8 @@ public class ArenaRoundManagerTests
     {
         roundManager.StartMatchWithoutCountdown();
 
-        ArenaMatchState capturedOldState = default;
-        ArenaMatchState capturedNewState = default;
+        BaseMatchState capturedOldState = default;
+        BaseMatchState capturedNewState = default;
         int eventCallCount = 0;
         roundManager.OnMatchStateChange += (oldState, newState) =>
         {
@@ -114,8 +115,8 @@ public class ArenaRoundManagerTests
 
         await roundManager.EndMatch(null);
 
-        Assert.AreEqual(ArenaMatchState.MatchActive, capturedOldState);
-        Assert.AreEqual(ArenaMatchState.MatchEnded, capturedNewState);
+        Assert.AreEqual(BaseMatchState.MatchActive, capturedOldState);
+        Assert.AreEqual(BaseMatchState.MatchEnded, capturedNewState);
         Assert.AreEqual(1, eventCallCount);
     }
 
@@ -194,7 +195,7 @@ public class ArenaRoundManagerTests
     {
         _ = roundManager.StartMatchCountdown();
         await Task.Delay(1000);
-        Assert.AreEqual(ArenaMatchState.Countdown, roundManager.MatchState);
+        Assert.AreEqual(BaseMatchState.Countdown, roundManager.MatchState);
     }
 
     [Test]
@@ -220,8 +221,8 @@ public class ArenaRoundManagerTests
     [Test]
     public async Task StartMatchCountdown_FiresMatchStateChangeEvent()
     {
-        ArenaMatchState capturedOldState = default;
-        ArenaMatchState capturedNewState = default;
+        BaseMatchState capturedOldState = default;
+        BaseMatchState capturedNewState = default;
         int eventCallCount = 0;
         roundManager.OnMatchStateChange += (oldState, newState) =>
         {
@@ -231,8 +232,8 @@ public class ArenaRoundManagerTests
         };
 
         _ = roundManager.StartMatchCountdown();
-        Assert.AreEqual(ArenaMatchState.Waiting, capturedOldState);
-        Assert.AreEqual(ArenaMatchState.Countdown, capturedNewState);
+        Assert.AreEqual(BaseMatchState.Waiting, capturedOldState);
+        Assert.AreEqual(BaseMatchState.Countdown, capturedNewState);
         Assert.AreEqual(1, eventCallCount);
     }
 
@@ -245,7 +246,7 @@ public class ArenaRoundManagerTests
         });
 
         await roundManager.StartMatchCountdown();
-        Assert.AreEqual(ArenaMatchState.MatchActive, roundManager.MatchState);
+        Assert.AreEqual(BaseMatchState.MatchActive, roundManager.MatchState);
     }
 
     #endregion
@@ -275,8 +276,8 @@ public class ArenaRoundManagerTests
     [Test]
     public void StartMatchWithoutCountdown_FiresMatchStateChangeEvent()
     {
-        ArenaMatchState capturedOldState = default;
-        ArenaMatchState capturedNewState = default;
+        BaseMatchState capturedOldState = default;
+        BaseMatchState capturedNewState = default;
         int eventCallCount = 0;
         roundManager.OnMatchStateChange += (oldState, newState) =>
         {
@@ -286,8 +287,8 @@ public class ArenaRoundManagerTests
         };
 
         roundManager.StartMatchWithoutCountdown();
-        Assert.AreEqual(ArenaMatchState.Waiting, capturedOldState);
-        Assert.AreEqual(ArenaMatchState.MatchActive, capturedNewState);
+        Assert.AreEqual(BaseMatchState.Waiting, capturedOldState);
+        Assert.AreEqual(BaseMatchState.MatchActive, capturedNewState);
         Assert.AreEqual(1, eventCallCount);
 
     }
@@ -345,7 +346,7 @@ public class ArenaRoundManagerTests
 
         await Task.Delay(2000);
 
-        Assert.AreEqual(ArenaMatchState.MatchEnded, roundManager.MatchState);
+        Assert.AreEqual(BaseMatchState.MatchEnded, roundManager.MatchState);
         Assert.LessOrEqual(eventCallCount, 1);
     }
 

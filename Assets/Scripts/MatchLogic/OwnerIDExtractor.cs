@@ -31,6 +31,16 @@ namespace Resonance.Match
             return result;
         }
 
+        public static List<ulong> PlayerIdListToUlongList(List<PlayerID> players)
+        {
+            var result = new List<ulong>(players.Count);
+            foreach (var p in players)
+            {
+                result.Add(p.id.value);
+            }
+            return result;
+        }
+
         public static bool TryExtractPlayerIds(GameObject gameObject, out ulong playerId)
         {
             playerId = 0;

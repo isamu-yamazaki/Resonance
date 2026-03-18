@@ -8,7 +8,7 @@ using Resonance.NetworkDespawner;
 
 namespace Resonance.UI
 {
-    public class MatchUIManager : MonoBehaviour
+    public class MatchUIManager : NetworkBehaviour
     {
         [Header("HUD Elements")]
         [SerializeField] private TextMeshProUGUI kdaText;
@@ -19,9 +19,11 @@ namespace Resonance.UI
         [SerializeField] private GameObject matchEndPanel;
         [SerializeField] private TextMeshProUGUI winnerText;
         [SerializeField] private TextMeshProUGUI finalStatsText;
+        [SerializeField] private TextMeshProUGUI waitingForHostText;
         [SerializeField] private Button playAgainButton;
         [SerializeField] private Button returnToLobbyButton;
         [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
+        [SerializeField] private GameObject shopGameObject;  // disabled on match end
 
         [Header("Settings")]
         [SerializeField] private GameObject playerObject; // Assign the player to track
@@ -169,7 +171,7 @@ namespace Resonance.UI
                     playerController.enabled = false;
                 }
 
-                var projectileShooter = playerObject.GetComponent<Resonance.Combat.PlayerProjectileShooter>();
+                var projectileShooter = playerObject.GetComponent<Resonance.Combat.PlayerShooter>();
                 if (projectileShooter != null)
                 {
                     projectileShooter.enabled = false;
@@ -193,6 +195,31 @@ namespace Resonance.UI
                 {
                     finalStatsText.text = $"Final Score: {stats?.kills} Kills";
                 }
+            }
+
+            if (waitingForHostText != null)
+            {
+                if (isServer)
+                {
+                    waitingForHostText.text = "";
+                }
+                else
+                {
+                    waitingForHostText.text = "Waiting for host...";
+                }
+            }
+
+            if (returnToLobbyButton != null)
+            {
+                if (!isServer)
+                {
+                    returnToLobbyButton.gameObject.SetActive(false);
+                }
+            }
+
+            if (shopGameObject != null)
+            {
+                shopGameObject.SetActive(false);
             }
         }
 

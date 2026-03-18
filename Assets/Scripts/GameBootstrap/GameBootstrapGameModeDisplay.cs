@@ -2,26 +2,29 @@ using Resonance.LobbySystem;
 using TMPro;
 using UnityEngine;
 
-/// <summary>
-/// Script which sets the selected game mode on the text object.
-/// </summary>
-public class GameBootstrapGameModeDisplay : MonoBehaviour
+namespace Resonance.GameBootstrap
 {
-    [SerializeField] private TMP_Text text;
-
-    private LobbyDataHolder lobbyDataHolder;
-
-    private void Awake()
+    /// <summary>
+    /// Script which sets the selected game mode on the text object.
+    /// </summary>
+    public class GameBootstrapGameModeDisplay : MonoBehaviour
     {
-        lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-        if (lobbyDataHolder == null)
+        [SerializeField] private TMP_Text text;
+
+        private LobbyDataHolder lobbyDataHolder;
+
+        private void Awake()
         {
-            Debug.LogError($"Unable to find {nameof(LobbyDataHolder)} component");
-            return;
+            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
+            if (lobbyDataHolder == null)
+            {
+                Debug.LogError($"[{GetType()}] Unable to find {nameof(LobbyDataHolder)} component");
+                return;
+            }
+
+            var gameMode = lobbyDataHolder.CurrentLobby.GameMode;
+            text.text = $"Selected game mode: {gameMode}";
         }
 
-        var gameMode = lobbyDataHolder.CurrentLobby.GameMode;
-        text.text = $"Selected game mode: {gameMode}";
     }
-
 }

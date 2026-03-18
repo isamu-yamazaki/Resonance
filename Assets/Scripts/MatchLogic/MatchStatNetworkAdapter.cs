@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using PurrNet;
 using Resonance.Assemblies.MatchStat;
 using UnityEngine;
@@ -69,7 +68,8 @@ namespace Resonance.Match
         #region Server Event Handlers
         private void OnTrackerStatsUpdated(Dictionary<ulong, PlayerMatchStats> allStats)
         {
-            FirePlayerStatObservers(JsonConvert.SerializeObject(allStats));
+            var playerIdStats = OwnerIDExtractor.UlongDictionaryToPlayerIDDictionary(allStats);
+            FirePlayerStatObservers(playerIdStats);
         }
 
         private void OnTrackerPlayerKill(ulong killer, ulong victim)
@@ -80,13 +80,10 @@ namespace Resonance.Match
 
         #region Server to Client RPCs
         [ObserversRpc]
-        private void FirePlayerStatObservers(string serializedPlayerData)
+        private void FirePlayerStatObservers(Dictionary<PlayerID, PlayerMatchStats> allStats)
         {
-            Debug.Log($"[MatchStatNetworkAdapter] Stats: {serializedPlayerData}");
-
-            var allStats = JsonConvert.DeserializeObject<Dictionary<ulong, PlayerMatchStats>>(serializedPlayerData);
-            var toPropagate = OwnerIDExtractor.UlongDictionaryToPlayerIDDictionary(allStats);
-            OnAllStatsUpdate?.Invoke(toPropagate);
+            Debug.Log($"[MatchStatNetworkAdapter] Stats update received for {allStats.Count} players");
+            OnAllStatsUpdate?.Invoke(allStats);
         }
 
         [ObserversRpc]

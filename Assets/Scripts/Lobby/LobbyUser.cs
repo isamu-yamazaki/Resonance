@@ -8,5 +8,6 @@ namespace Resonance.LobbySystem
         public string DisplayName;
         public bool IsReady;
         public Texture2D Avatar;
+
     }
 }

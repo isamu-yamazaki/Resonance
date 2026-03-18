@@ -428,7 +428,7 @@ namespace Resonance.LobbySystem
                     user.IsReady = Convert.ToBoolean(updateData["IsReady"]);
                     users[userIndex] = user;
                 }
-                
+
                 await WriteJsonResponse(response, users[userIndex]);
             }
             catch (Exception ex)

@@ -1,5 +1,7 @@
+using PurrNet;
 using UnityEngine;
 using Resonance.Helper;
+using Resonance.Match;
 
 public class PlayerViewModel : MonoBehaviour
 {
@@ -17,6 +19,10 @@ public class PlayerViewModel : MonoBehaviour
     public ObservableValue<bool> IsReloading { get; private set; }
     public ObservableValue<float> ReloadProgress { get; private set; } // 0 → 1
 
+    public ObservableValue<bool> GotKill { get; private set; }
+
+    private MatchStatNetworkAdapter matchStats;
+
     void Awake()
     {
         Health = new ObservableValue<float>(MaxHealth);
@@ -25,6 +31,10 @@ public class PlayerViewModel : MonoBehaviour
         MagazineSize = new ObservableValue<int>(0);
         IsReloading = new ObservableValue<bool>(false);
         ReloadProgress = new ObservableValue<float>(0f);
+        
+        GotKill = new ObservableValue<bool>(false);
+    
+        matchStats = MatchLogicNetworkAdapter.Instance?.MatchStats;
     }
 
     public void InitializeHealth(float maxHealth)
@@ -67,5 +77,29 @@ public class PlayerViewModel : MonoBehaviour
     public void Heal(float amount)
     {
         Health.Value = Mathf.Min(Health.Value + amount, MaxHealth);
+    }
+    
+    public void NotifyKill()
+    {
+        GotKill.Value = true;
+        GotKill.Value = false;
+    }
+    
+    private void OnEnable()
+    {
+        if (matchStats != null)
+            matchStats.OnPlayerKill += HandlePlayerKill;
+    }
+
+    private void OnDisable()
+    {
+        if (matchStats != null)
+            matchStats.OnPlayerKill -= HandlePlayerKill;
+    }
+
+    private void HandlePlayerKill(PlayerID killer, PlayerID victim)
+    {
+        if (killer == NetworkManager.main.localPlayer)
+            NotifyKill();
     }
 }

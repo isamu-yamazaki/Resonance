@@ -19,7 +19,7 @@
 						<Action Name="" ID="{D87963E7-D03C-4432-8C5B-D61363D1FD08}" ShortID="487407952">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="Reactive_Feedback" ID="{A00BD35F-4EC1-4BE7-9CD1-7D645193AE68}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+									<ObjectRef Name="sfx_world_audioreactive_loop" ID="{3787C5C7-BC67-4831-B00B-F326BA9E3934}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -33,7 +33,73 @@
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="Reactive_Feedback" ID="{A00BD35F-4EC1-4BE7-9CD1-7D645193AE68}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+									<ObjectRef Name="sfx_world_audioreactive_loop" ID="{3787C5C7-BC67-4831-B00B-F326BA9E3934}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Footstep" ID="{9682FA73-32CF-41B9-931F-A41CE6D92E60}">
+					<ChildrenList>
+						<Action Name="" ID="{88FA616B-6DC1-4D8F-B929-BB671F3E19E3}" ShortID="918991617">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Footsteps" ID="{416F31FF-A666-4E03-BD23-644DEC1F7C0F}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Landing" ID="{3F483C2B-4AA2-43B3-B2A7-A916FFF59C74}">
+					<ChildrenList>
+						<Action Name="" ID="{CCE88CB8-2F12-4002-87FE-00628106B74C}" ShortID="880465146">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Landing" ID="{2CC14BB4-5576-4AF1-9405-67ED2678EE2F}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_GlassShatter" ID="{FF8D6C3A-E13D-4784-A0DD-F5D3850BBB9F}">
+					<ChildrenList>
+						<Action Name="" ID="{089976BC-AD7D-4EC1-8823-9C91A67BC5BC}" ShortID="646903695">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Glass_Shatter" ID="{99686DD9-1D6A-4AE9-AD0A-1438A263293C}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_GlassShardLand" ID="{6B6E1229-1882-41F9-882E-55BDA79ABE17}">
+					<ChildrenList>
+						<Action Name="" ID="{69E5B313-D04C-42BF-B7AA-8E839F0830E8}" ShortID="403994136">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="GlassShard_Land" ID="{80737A9B-D02B-455E-8ADA-CC51FB82526F}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_OutdoorAmbience" ID="{87B2053E-F857-4EB2-B914-927C0FF52814}">
+					<ChildrenList>
+						<Action Name="" ID="{25B041C8-EED5-4BF2-A403-83B2BF8E18F6}" ShortID="619187151">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="amb_outdoor_loop" ID="{A57E4BD0-A3F1-4BDC-8B81-C55F8E4676CE}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_IndoorAmbience" ID="{449CA8E9-EFB0-4FFF-951A-41E0653A4486}">
+					<ChildrenList>
+						<Action Name="" ID="{E85B3FA5-887B-48D8-9493-90641D5333E5}" ShortID="90584779">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="amb_indoor_loop" ID="{920982B7-A1C6-46A5-9179-E692B11369C2}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

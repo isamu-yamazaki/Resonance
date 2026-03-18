@@ -10,12 +10,14 @@ Audio Bus	ID	Name			Wwise Object Path	Notes
 	1551306167	UI			\Default Work Unit\Master Audio Bus\UI	
 	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
 	3991942870	Music			\Default Work Unit\Master Audio Bus\Music	
+	4123335503	SFX_NonReactive			\Default Work Unit\Master Audio Bus\SFX_NonReactive	
 
 Auxiliary Bus	ID	Name			Wwise Object Path	Notes
 	2783051634	Reverb_Master			\Default Work Unit\Master Audio Bus\Reverb_Master	
 
 Effect plug-ins	ID	Name	Type				Notes
 	258589154	Meter (Custom)	Wwise Meter			
+	462317545	Meter (Custom)	Wwise Meter			
 	538595301	Meter (Custom)	Wwise Meter			
 	551947351	Meter (Custom)	Wwise Meter			
 	770269781	RoomVerb (Custom)	Wwise RoomVerb			

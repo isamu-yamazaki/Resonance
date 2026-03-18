@@ -195,8 +195,8 @@ namespace Resonance.DebugTools
             GUILayout.BeginVertical("box");
 
             GUILayout.Label($"Current Health: {_playerStats.CurrentHealth.value:F0} / {_playerStats.MaxHealth:F0}");
-            GUILayout.Label($"Health Regen: {_playerStats.BaseHealthRegen:F1}/s base");
-            GUILayout.Label($"Damage Reduction: {_playerStats.DamageReduction * 100f:F1}%");
+            GUILayout.Label($"Health Regen: {_playerStats.CurrentHealthRegen:F1}/s (base: {_playerStats.BaseHealthRegen:F1})");
+            GUILayout.Label($"Damage Reduction: {_playerStats.DamageReduction:F1}%");
 
             GUILayout.Space(10);
 
@@ -227,93 +227,137 @@ namespace Resonance.DebugTools
             GUILayout.EndVertical();
         }
 
-        private void DrawSpeedModifiers()
-        {
-            GUILayout.BeginVertical("box");
-            GUILayout.Label("Speed Modifier:");
+private void DrawSpeedModifiers()
+{
+    GUILayout.BeginVertical("box");
+    GUILayout.Label("Speed Modifier:");
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Multiplier:", GUILayout.Width(100));
-            _speedModifierAmount = GUILayout.TextField(_speedModifierAmount, GUILayout.Width(60));
-            GUILayout.EndHorizontal();
+    GUILayout.BeginHorizontal();
+    GUILayout.Label("Multiplier:", GUILayout.Width(100));
+    _speedModifierAmount = GUILayout.TextField(_speedModifierAmount, GUILayout.Width(60));
+    GUILayout.EndHorizontal();
 
-            GUILayout.Space(5);
+    GUILayout.Space(5);
+    GUILayout.Label($"Effective Speed: {_playerStats.PlayerSpeed:F2}");
 
-            if (_activeSpeedModifier.HasValue)
-            {
-                GUI.color = Color.yellow;
-                GUILayout.Label($"Active modifier: {_activeSpeedModifier.Value:F2}x  →  Effective: {_playerStats.PlayerSpeed:F2}");
-                GUI.color = Color.white;
-                if (GUILayout.Button("Remove Speed Modifier", GUILayout.Height(25)))
-                    RemoveSpeedModifier();
-            }
-            else
-            {
-                if (GUILayout.Button("Add Speed Modifier", GUILayout.Height(25)))
-                    AddSpeedModifier();
-            }
+    // Show raw modifier list
+    var speedMods = _playerStats.SpeedModifiers;
+    if (speedMods.Count == 0)
+    {
+        GUILayout.Label("  Modifiers: (none)");
+    }
+    else
+    {
+        for (int i = 0; i < speedMods.Count; i++)
+            GUILayout.Label($"  [{i}] {speedMods[i]:F2}x");
+    }
 
-            GUILayout.EndVertical();
-        }
+    GUILayout.Space(5);
 
-        private void DrawDamageReductionModifiers()
-        {
-            GUILayout.BeginVertical("box");
-            GUILayout.Label("Damage Reduction Modifier:");
-            GUILayout.Label("(damage taken value: 0.8 = 20% DR, 0.5 = 50% DR)");
+    if (_activeSpeedModifier.HasValue)
+    {
+        GUI.color = Color.yellow;
+        GUILayout.Label($"Debug modifier active: {_activeSpeedModifier.Value:F2}x");
+        GUI.color = Color.white;
+        if (GUILayout.Button("Remove Speed Modifier", GUILayout.Height(25)))
+            RemoveSpeedModifier();
+    }
+    else
+    {
+        if (GUILayout.Button("Add Speed Modifier", GUILayout.Height(25)))
+            AddSpeedModifier();
+    }
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Damage Taken:", GUILayout.Width(100));
-            _drModifierAmount = GUILayout.TextField(_drModifierAmount, GUILayout.Width(60));
-            GUILayout.EndHorizontal();
+    GUILayout.EndVertical();
+}
 
-            GUILayout.Space(5);
+private void DrawDamageReductionModifiers()
+{
+    GUILayout.BeginVertical("box");
+    GUILayout.Label("Damage Reduction Modifier:");
 
-            if (_activeDRModifier.HasValue)
-            {
-                GUI.color = Color.yellow;
-                GUILayout.Label($"Active modifier: {_activeDRModifier.Value:F2} damage taken  →  Effective DR: {_playerStats.DamageReduction * 100f:F1}%");
-                GUI.color = Color.white;
-                if (GUILayout.Button("Remove DR Modifier", GUILayout.Height(25)))
-                    RemoveDRModifier();
-            }
-            else
-            {
-                if (GUILayout.Button("Add DR Modifier", GUILayout.Height(25)))
-                    AddDRModifier();
-            }
+    GUILayout.BeginHorizontal();
+    GUILayout.Label("DR Amount:", GUILayout.Width(100));
+    _drModifierAmount = GUILayout.TextField(_drModifierAmount, GUILayout.Width(60));
+    GUILayout.EndHorizontal();
 
-            GUILayout.EndVertical();
-        }
+    GUILayout.Space(5);
+    GUILayout.Label($"Effective DR: {_playerStats.DamageReduction * 100f:F1}%");
 
-        private void DrawRegenModifiers()
-        {
-            GUILayout.BeginVertical("box");
-            GUILayout.Label("Regen Modifier:");
+    // Show raw modifier list
+    var drMods = _playerStats.DamageReductionModifiers;
+    if (drMods.Count == 0)
+    {
+        GUILayout.Label("  Modifiers: (none)");
+    }
+    else
+    {
+        for (int i = 0; i < drMods.Count; i++)
+            GUILayout.Label($"  [{i}] {drMods[i] * 100f:F1}%");
+    }
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Flat Amount:", GUILayout.Width(100));
-            _regenModifierAmount = GUILayout.TextField(_regenModifierAmount, GUILayout.Width(60));
-            GUILayout.EndHorizontal();
+    GUILayout.Space(5);
 
-            GUILayout.Space(5);
+    if (_activeDRModifier.HasValue)
+    {
+        GUI.color = Color.yellow;
+        GUILayout.Label($"Debug modifier active: {_activeDRModifier.Value * 100f:F1}%");
+        GUI.color = Color.white;
+        if (GUILayout.Button("Remove DR Modifier", GUILayout.Height(25)))
+            RemoveDRModifier();
+    }
+    else
+    {
+        if (GUILayout.Button("Add DR Modifier", GUILayout.Height(25)))
+            AddDRModifier();
+    }
 
-            if (_activeRegenModifier.HasValue)
-            {
-                GUI.color = Color.yellow;
-                GUILayout.Label($"Active modifier: +{_activeRegenModifier.Value:F1}/s");
-                GUI.color = Color.white;
-                if (GUILayout.Button("Remove Regen Modifier", GUILayout.Height(25)))
-                    RemoveRegenModifier();
-            }
-            else
-            {
-                if (GUILayout.Button("Add Regen Modifier", GUILayout.Height(25)))
-                    AddRegenModifier();
-            }
+    GUILayout.EndVertical();
+}
 
-            GUILayout.EndVertical();
-        }
+private void DrawRegenModifiers()
+{
+    GUILayout.BeginVertical("box");
+    GUILayout.Label("Regen Modifier:");
+
+    GUILayout.BeginHorizontal();
+    GUILayout.Label("Flat Amount:", GUILayout.Width(100));
+    _regenModifierAmount = GUILayout.TextField(_regenModifierAmount, GUILayout.Width(60));
+    GUILayout.EndHorizontal();
+
+    GUILayout.Space(5);
+    GUILayout.Label($"Effective Regen: {_playerStats.CurrentHealthRegen:F2}/s (base: {_playerStats.BaseHealthRegen:F1})");
+
+    // Show raw modifier list
+    var regenMods = _playerStats.RegenModifiers;
+    if (regenMods.Count == 0)
+    {
+        GUILayout.Label("  Modifiers: (none)");
+    }
+    else
+    {
+        for (int i = 0; i < regenMods.Count; i++)
+            GUILayout.Label($"  [{i}] +{regenMods[i]:F2}/s");
+    }
+
+    GUILayout.Space(5);
+
+    if (_activeRegenModifier.HasValue)
+    {
+        GUI.color = Color.yellow;
+        GUILayout.Label($"Debug modifier active: +{_activeRegenModifier.Value:F2}/s");
+        GUI.color = Color.white;
+        if (GUILayout.Button("Remove Regen Modifier", GUILayout.Height(25)))
+            RemoveRegenModifier();
+    }
+    else
+    {
+        if (GUILayout.Button("Add Regen Modifier", GUILayout.Height(25)))
+            AddRegenModifier();
+    }
+
+    GUILayout.EndVertical();
+}
         #endregion
 
         #region Modifier Methods

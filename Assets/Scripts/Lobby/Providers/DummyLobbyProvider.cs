@@ -151,7 +151,7 @@ namespace Resonance.LobbySystem
                         {
                             Id = serverUser.Id,
                             DisplayName = serverUser.DisplayName,
-                            IsReady = serverUser.IsReady
+                            IsReady = serverUser.IsReady,
                         });
                     }
                 }
@@ -305,7 +305,7 @@ namespace Resonance.LobbySystem
                     {
                         Id = serverUser.Id,
                         DisplayName = serverUser.DisplayName,
-                        IsReady = serverUser.IsReady
+                        IsReady = serverUser.IsReady,
                     });
                 }
 

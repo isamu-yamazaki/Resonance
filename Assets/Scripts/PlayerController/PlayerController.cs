@@ -1,6 +1,9 @@
 using System;
 using PurrNet;
+using Resonance.Combat.Weapons;
+using Resonance.Combat.Weapons.Enums;
 using Resonance.Player;
+using Resonance.Train;
 using UnityEngine;
 using Unity.Cinemachine;
 
@@ -19,6 +22,7 @@ namespace Resonance.PlayerController
         
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
+        
         public static PlayerController LocalPlayer { get; private set; }
 
         [Header("Base Movement")] 
@@ -29,7 +33,7 @@ namespace Resonance.PlayerController
         public float baseSprintAcceleration = 50f;
         public float baseSprintSpeed = 7f;
         public float baseInAirAcceleration = 25f;
-        public float drag = 20f;
+        public float baseDrag = 20f;
         public float gravity = 25f;
         public float terminalVelocity = 50f;
         public float jumpSpeed = 1.0f;
@@ -57,6 +61,17 @@ namespace Resonance.PlayerController
         public float sprintFOV = 90f;
         public float overdriveFOV = 110f;
         public float fovTransitionSpeed = 10f;
+        
+        [Header("Weapon Class Camera Configs")]
+        [SerializeField] private WeaponClassCameraConfig defaultConfig;
+        [SerializeField] private WeaponClassCameraConfig pistolConfig;
+        [SerializeField] private WeaponClassCameraConfig rifleConfig;
+        [SerializeField] private WeaponClassCameraConfig shotgunConfig;
+        [SerializeField] private WeaponClassCameraConfig heavyMGConfig;
+        [SerializeField] private WeaponClassCameraConfig sniperConfig;
+        [SerializeField] private WeaponClassCameraConfig swordConfig;
+
+        private float currentAimOffset = 0f;
 
         [Header("Environment Details")] 
         [SerializeField] private LayerMask _groundLayers;
@@ -64,6 +79,7 @@ namespace Resonance.PlayerController
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
         private OverdriveAbility _overdriveAbility;
+        private TrainPassengerPhysics _trainPassengerPhysics;
         
         // Death flag to immediately block all movement
         public bool IsPlayerDead { get; set; } = false;
@@ -78,7 +94,8 @@ namespace Resonance.PlayerController
         private float inAirAcceleration;
         private float slideSpeed;
         private float minSlideSpeed;
-        
+        private float drag;
+
         private Vector2 _cameraRotation = Vector2.zero;
         private Vector2 _playerTargetRotation = Vector2.zero;
 
@@ -124,12 +141,14 @@ namespace Resonance.PlayerController
             _playerState = GetComponent<PlayerState>();
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerStats = GetComponent<PlayerStats>();
+            _trainPassengerPhysics = GetComponent<TrainPassengerPhysics>();
 
             _antiBump = sprintSpeed;
             _stepOffset = _characterController.stepOffset;
 
             if (_virtualCamera != null)
                 _virtualCamera.Lens.FieldOfView = baseFOV;
+            _playerState.OnWeaponClassChanged += OnWeaponClassChanged;
         }
         #endregion
 
@@ -149,6 +168,8 @@ namespace Resonance.PlayerController
             {
                 _characterController.stepOffset = _stepOffset;
             }
+
+            _trainPassengerPhysics?.ClearInertia();
         }
         #endregion
 
@@ -161,6 +182,9 @@ namespace Resonance.PlayerController
             
             // Don't process movement if player is dead
             if (_playerState.IsDead())
+                return;
+            
+            if (_playerState.IsInShop())
                 return;
             
             // Don't process movement if CharacterController is disabled
@@ -187,6 +211,8 @@ namespace Resonance.PlayerController
             runAcceleration = baseRunAcceleration * speedMult;
             sprintAcceleration = baseSprintAcceleration * speedMult;
             inAirAcceleration = baseInAirAcceleration * speedMult;
+            
+            drag = baseDrag * speedMult;
             
             _antiBump = sprintSpeed * speedMult;
         }
@@ -327,7 +353,9 @@ namespace Resonance.PlayerController
             Vector3 movementDirection = cameraRightXZ * _playerLocomotionInput.MovementInput.x + cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
             
             Vector3 movementDelta = movementDirection * lateralAcceleration * Time.deltaTime;
-            Vector3 newVelocity = _characterController.velocity + movementDelta;
+            Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetFrameVelocityOffset() : Vector3.zero;
+            Vector3 localVelocity = _characterController.velocity - trainOffset;
+            Vector3 newVelocity = localVelocity + movementDelta;
             
             // Add drag to player
             Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
@@ -335,9 +363,12 @@ namespace Resonance.PlayerController
             newVelocity = Vector3.ClampMagnitude(new Vector3(newVelocity.x, 0f, newVelocity.z), clampLateralMagnitude);
             newVelocity.y = _verticalVelocity;
             newVelocity = !isGrounded ? HandleSteepWalls(newVelocity) : newVelocity;
-            
+
             // Move character (Unity suggests only calling this once per tick)
-            _characterController.Move(newVelocity * Time.deltaTime);
+            if (_trainPassengerPhysics != null)
+                _verticalVelocity += _trainPassengerPhysics.GetKnockbackVertical();
+            newVelocity.y = _verticalVelocity;
+            _characterController.Move((newVelocity + trainOffset) * Time.deltaTime);
         }
 
         private void HandleSlideMovement()
@@ -401,7 +432,8 @@ namespace Resonance.PlayerController
             Vector3 slideVelocity = _slideDirection * currentSlideSpeed;
             slideVelocity.y = _verticalVelocity;
     
-            _characterController.Move(slideVelocity * Time.deltaTime);
+            Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetFrameVelocityOffset() : Vector3.zero;
+            _characterController.Move((slideVelocity + trainOffset) * Time.deltaTime);
         }
 
         private Vector3 HandleSteepWalls(Vector3 velocity)
@@ -424,6 +456,9 @@ namespace Resonance.PlayerController
             if (IsPlayerDead)
                 return;
                 
+            if (_playerState.IsInShop())
+                return;
+            
             UpdateCameraRotation();
             UpdateCameraFOV();
         }
@@ -454,31 +489,18 @@ namespace Resonance.PlayerController
         {
             _cameraRotation.x += lookSensitivityH * _playerLocomotionInput.LookInput.x;
             _cameraRotation.y = Mathf.Clamp(_cameraRotation.y - lookSensitivityV * _playerLocomotionInput.LookInput.y, -lookLimitV, lookLimitV);
-            
-            _playerTargetRotation.x += transform.eulerAngles.x + lookSensitivityH * _playerLocomotionInput.LookInput.x;
-            
-            float rotationTolerance = 90f;
-            bool isIdling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Idling;
-            IsRotatingToTarget = _rotatingToTargetTimer > 0f;
-            
-            // ROTATE if we're not idling
-            if (!isIdling)
-            {
-                RotatePlayerToTarget();
-            }
-            // If rotation mismatch not within tolerance, or rotate to target is active, ROTATE
-            else if (Mathf.Abs(RotationMismatch) > rotationTolerance || IsRotatingToTarget)
-            {
-                UpdateIdleRotation(rotationTolerance);
-            }
-            
-            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x, 0f);
-            
-            // Get angle between camera and player
+
+            _playerTargetRotation.x += lookSensitivityH * _playerLocomotionInput.LookInput.x;
+
+            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x + currentAimOffset, 0f);
+
+            RotatePlayerToTarget();
+
             Vector3 camForwardProjectedXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
             Vector3 crossProduct = Vector3.Cross(transform.forward, camForwardProjectedXZ);
             float sign = Mathf.Sign(Vector3.Dot(crossProduct, transform.up));
             RotationMismatch = sign * Vector3.Angle(transform.forward, camForwardProjectedXZ);
+            IsRotatingToTarget = false;
         }
 
         private void UpdateIdleRotation(float rotationTolerance)
@@ -541,8 +563,35 @@ namespace Resonance.PlayerController
         
         private bool CanRun()
         {
-            // This means player is moving diagonally at 45 degrees or forward, if so, we can run
+            // This means player is moving diagonally at 45 degrees or forward, if so, we can sprint
             return _playerLocomotionInput.MovementInput.y >= MathF.Abs(_playerLocomotionInput.MovementInput.x);
+        }
+        
+        private void OnWeaponClassChanged(WeaponClass weaponClass)
+        { 
+            //ApplyCameraConfig(GetConfig(weaponClass));
+            ApplyCameraConfig(defaultConfig);
+        }
+        
+        private WeaponClassCameraConfig GetConfig(WeaponClass weaponClass)
+        {
+            return weaponClass switch
+            {
+                WeaponClass.Pistol => pistolConfig,
+                WeaponClass.Rifle => rifleConfig,
+                WeaponClass.Shotgun => shotgunConfig ?? rifleConfig,
+                WeaponClass.HeavyMG => heavyMGConfig ?? rifleConfig,
+                WeaponClass.Sniper => sniperConfig ?? rifleConfig,
+                WeaponClass.Sword => swordConfig ?? rifleConfig,
+                _ => rifleConfig
+            };
+        }
+        
+        private void ApplyCameraConfig(WeaponClassCameraConfig config)
+        {
+            if (config == null) return;
+            _virtualCamera.transform.localPosition = config.cameraLocalPosition;
+            currentAimOffset = config.aimOffset;
         }
         #endregion
     }

@@ -1,4 +1,4 @@
-using Resonance.Assemblies.Arena;
+using Resonance.Assemblies.MatchStat;
 using TMPro;
 using UnityEngine;
 
