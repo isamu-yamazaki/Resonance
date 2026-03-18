@@ -310,6 +310,7 @@ Transform:
   - {fileID: 2396395920718355507}
   - {fileID: 4659127782733484335}
   - {fileID: 7000823463968341051}
+  - {fileID: 4999819020443283670}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3448999368842045501
@@ -485,21 +486,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainAudioEmitter
   _trainController: {fileID: 3448999368842045501}
-  _emitterObject: {fileID: 0}
-  _movingLoopEvent:
+  _emitterObject: {fileID: 8491923598149017266}
+  _playTrainMovingEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  _departureEvent:
+    WwiseObjectReference: {fileID: 11400000, guid: 86ab57d2472343b44bcd0f4c7d1a397b, type: 2}
+  _stopTrainMovingEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  _arrivalEvent:
+    WwiseObjectReference: {fileID: 11400000, guid: 400e22a11ccaa64408bf31fcd95d3528, type: 2}
+  _playTrainDisembarkEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: 268159c8978054444bd04463d59ce483, type: 2}
+  _playTrainArrivalEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 1f50faa59b6353440bbcb6d96968f215, type: 2}
   _speedRtpc: Train_Speed
-  _distanceRtpc: Train_Player_Distance
   _playerTransform: {fileID: 7264354477965666744, guid: 3beb74802a435e54da51d4fd0f95b9b8, type: 3}
   _cullingDistance: 80
 --- !u!1 &5660052391384256175
@@ -576,6 +580,38 @@ MonoBehaviour:
   _knockbackForce: 12
   _knockbackUpward: 4
   _damageCooldown: 1
+--- !u!1 &6209784844124214120
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4999819020443283670}
+  m_Layer: 8
+  m_Name: AudioSources
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4999819020443283670
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6209784844124214120}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8230680216512268621}
+  m_Father: {fileID: 3713895707255018345}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6898128949341442131
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,6 +643,115 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3713895707255018345}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8491923598149017266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8230680216512268621}
+  - component: {fileID: 640597523389709664}
+  - component: {fileID: 934062867277397575}
+  m_Layer: 8
+  m_Name: TrainAudioEmitterPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8230680216512268621
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8491923598149017266}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4999819020443283670}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &640597523389709664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8491923598149017266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02372b49c7f35af4caecfab755da37c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkGameObj
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 1
+  isStaticObject: 0
+  usePositionOffsetData: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  scalingFactor: 1
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
+--- !u!114 &934062867277397575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8491923598149017266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f898346e55a92449a1030d1390b9900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WwiseSmartOcclusion
+  occlusionParameter: Occlusion
+  diffractionParameter: Diffraction
+  coneRayCount: 6
+  coneAngle: 30
+  maxCheckDistance: 100
+  occlusionLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  enableDiffraction: 1
+  nearFieldThreshold: 1.5
+  diffractionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 5
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  scanRate: 5
+  cullingDistance: 50
+  drawDebugRays: 0
+  clearColor: {r: 0, g: 1, b: 0, a: 1}
+  occludedColor: {r: 1, g: 0, b: 0, a: 1}
+  diffractionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1001 &4718148665042084934
 PrefabInstance:
   m_ObjectHideFlags: 0

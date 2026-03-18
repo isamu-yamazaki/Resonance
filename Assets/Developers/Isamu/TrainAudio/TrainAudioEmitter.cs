@@ -9,7 +9,6 @@ namespace Resonance.Train
         [SerializeField] private TrainController _trainController;
 
         [Header("Emitter")]
-        [Tooltip("Child GameObject with AkGameObj attached. Created automatically if left empty.")]
         [SerializeField] private GameObject _emitterObject;
 
         [Header("Wwise Events")]
@@ -21,15 +20,12 @@ namespace Resonance.Train
         [Header("Wwise RTPCs")]
         [SerializeField] private string _speedRtpc = "Train_Speed";
 
-        [Header("Player Reference")]
-        [Tooltip("Assign the local player transform. Falls back to Camera.main if empty.")]
-        [SerializeField] private Transform _playerTransform;
-
         [Header("Distance Culling")]
         [Tooltip("Beyond this distance the emitter still tracks but RTPC updates pause.")]
         [SerializeField] private float _cullingDistance = 80f;
 
         private TrainAudioSpline _spline;
+        private Transform _playerTransform;
         private bool _isLoopPlaying = false;
 
         private void Awake()
@@ -47,10 +43,11 @@ namespace Resonance.Train
             }
 
             if (_emitterObject == null)
-                _emitterObject = CreateEmitterObject();
-
-            if (_playerTransform == null && Camera.main != null)
-                _playerTransform = Camera.main.transform;
+            {
+                Debug.LogError("[TrainAudioEmitter] Emitter Object not assigned.", this);
+                enabled = false;
+                return;
+            }
         }
 
         private void OnEnable()
@@ -72,12 +69,14 @@ namespace Resonance.Train
 
         private void Update()
         {
+            if (Resonance.PlayerController.PlayerController.LocalPlayer != null)
+                _playerTransform = Resonance.PlayerController.PlayerController.LocalPlayer.transform;
+
             if (_playerTransform == null) return;
 
-            Vector3 nearestPoint = _spline.FindNearestPoint(_playerTransform.position);
-            _emitterObject.transform.position = nearestPoint;
+            _emitterObject.transform.localPosition = _spline.FindNearestLocalPoint(_playerTransform.position);
 
-            float distance = Vector3.Distance(_playerTransform.position, nearestPoint);
+            float distance = Vector3.Distance(_playerTransform.position, _emitterObject.transform.position);
 
             if (distance > _cullingDistance) return;
 
@@ -125,12 +124,12 @@ namespace Resonance.Train
             _isLoopPlaying = false;
         }
 
-        private GameObject CreateEmitterObject()
+        private void OnDrawGizmos()
         {
-            GameObject emitter = new GameObject("TrainAudioEmitterPoint");
-            emitter.transform.SetParent(transform);
-            emitter.AddComponent<AkGameObj>();
-            return emitter;
+            if (_emitterObject == null) return;
+
+            Gizmos.color = new Color(1f, 0.5f, 0f, 0.8f);
+            Gizmos.DrawWireSphere(_emitterObject.transform.position, 2f);
         }
     }
 }

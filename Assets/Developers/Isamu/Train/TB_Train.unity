@@ -4114,6 +4114,11 @@ MonoBehaviour:
   readyGlow: {fileID: 475380510}
   glowPulseSpeed: 2
   glowMaxAlpha: 1
+--- !u!1 &1599265127 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8491923598149017266, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
+  m_PrefabInstance: {fileID: 6158482962065565576}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1620983566
 GameObject:
   m_ObjectHideFlags: 0
@@ -5759,6 +5764,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3105654030807264256, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
+      propertyPath: _emitterObject
+      value: 
+      objectReference: {fileID: 1599265127}
     - target: {fileID: 3448999368842045501, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
       propertyPath: '_stations.Array.data[0]'
       value: 
