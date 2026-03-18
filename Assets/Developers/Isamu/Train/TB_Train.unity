@@ -5405,7 +5405,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1935016498
 Transform:
   m_ObjectHideFlags: 0
@@ -5768,6 +5768,10 @@ PrefabInstance:
       propertyPath: _emitterObject
       value: 
       objectReference: {fileID: 1599265127}
+    - target: {fileID: 934062867277397575, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
+      propertyPath: occlusionLayer.m_Bits
+      value: 257
+      objectReference: {fileID: 0}
     - target: {fileID: 3448999368842045501, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
       propertyPath: '_stations.Array.data[0]'
       value: 

@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{BFDAAE0F-7ACE-AEC0-1942-D227023E7A4E}",
+    "Hash": "{642FACA0-E585-8676-1373-351C5279756C}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -29,7 +29,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_props_train_moving.wav",
-      "CachePath": "FA/{FAD07188-5451-3479-9DDB-7074EC5984AC}.wem"
+      "CachePath": "C2/{C2247225-0AB1-B3B4-C933-864AFE3C0F5F}.wem"
      },
      {
       "Id": "117358700",
@@ -784,6 +784,6 @@
     ]
    }
   ],
-  "FileHash": "{84887893-479C-4013-FCD2-D30D3F769543}"
+  "FileHash": "{4C6CBA06-8982-A452-AABF-DA32AF928F93}"
  }
 }

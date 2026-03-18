@@ -36,7 +36,7 @@ Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	39040200	sfx_foley_footstep_metal_land_02	.cache\0C\{0CE17BE5-2178-58BC-E104-0681F54900C2}.wem		\Containers\Default Work Unit\Landing\Metal\sfx_foley_footstep_metal_land_02		125156
-	106684015	sfx_props_train_moving	.cache\FA\{FAD07188-5451-3479-9DDB-7074EC5984AC}.wem		\Containers\Default Work Unit\sfx_props_train_moving		5911204
+	106684015	sfx_props_train_moving	.cache\C2\{C2247225-0AB1-B3B4-C933-864AFE3C0F5F}.wem		\Containers\Default Work Unit\sfx_props_train_moving		5911204
 	117358700	sfx_foley_footstep_gravel_land_02	.cache\7B\{7BABE657-3E4A-FAC8-B847-4AF673B33234}.wem		\Containers\Default Work Unit\Landing\Gravel\sfx_foley_footstep_gravel_land_02		111736
 	151765522	sfx_props_glass_shatter_03	.cache\82\{82392F02-F3B7-2D82-04CD-01134489CF25}.wem		\Containers\Default Work Unit\Glass_Shatter\sfx_props_glass_shatter_03		187624
 	152568559	sfx_foley_footstep_gravel_run_02	.cache\2D\{2D98AB83-F1DD-6D72-63EF-305AC133EA0E}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_02		63568
