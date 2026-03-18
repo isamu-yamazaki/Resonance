@@ -12,6 +12,7 @@ public class Zipline : MonoBehaviour, IInteractable
     [SerializeField] private Transform pointB;
 
     [Header("Settings")]
+    [SerializeField] private ZiplineMode ziplineMode = ZiplineMode.Horizontal;
     [SerializeField] private float ziplineSpeed = 10f;
     [SerializeField] private float handReachOffset = 1.0f;
 
@@ -29,8 +30,14 @@ public class Zipline : MonoBehaviour, IInteractable
 
     private Vector3 pointAWorld;
     private Vector3 pointBWorld;
+    private Vector3 cableDirection;
+    private float cableLength;
     private float playerHeight;
 
+    // Horizontal mode
+    private float cableProgress;
+
+    // Vertical mode
     private Vector3 currentCablePosition;
     private Vector3 targetCablePosition;
 
@@ -69,7 +76,10 @@ public class Zipline : MonoBehaviour, IInteractable
             return;
         }
 
-        HandleMovement();
+        if (ziplineMode == ZiplineMode.Horizontal)
+            HandleHorizontalMovement();
+        else
+            HandleVerticalMovement();
     }
 
     private void OnDrawGizmos()
@@ -120,16 +130,8 @@ public class Zipline : MonoBehaviour, IInteractable
         currentPlayer = interactor;
         playerHeight = playerController.height;
 
-        // Get the camera transform — try the CinemachineCamera child first,
-        // then any Camera in children, then fall back to Camera.main
-        PlayerController pc = interactor.GetComponent<PlayerController>();
-        if (pc != null)
-        {
-            // CinemachineCamera is the virtual camera; the brain (real Camera) is on Camera.main
-            // but we can use the virtual camera transform for direction since it matches look direction
-            Unity.Cinemachine.CinemachineCamera vcam = interactor.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
-            playerCameraTransform = vcam != null ? vcam.transform : null;
-        }
+        Unity.Cinemachine.CinemachineCamera vcam = interactor.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
+        playerCameraTransform = vcam != null ? vcam.transform : null;
 
         if (playerCameraTransform == null)
         {
@@ -137,30 +139,30 @@ public class Zipline : MonoBehaviour, IInteractable
             playerCameraTransform = cam != null ? cam.transform : Camera.main?.transform;
         }
 
-        Debug.Log($"[Zipline] playerCameraTransform: {playerCameraTransform}, forward: {playerCameraTransform?.forward}");
-
-        // Snap to nearest point on cable
         Vector3 playerPos = interactor.transform.position;
-        Vector3 cableDir = (pointBWorld - pointAWorld).normalized;
-        float cableLength = Vector3.Distance(pointAWorld, pointBWorld);
-        float projection = Vector3.Dot(playerPos - pointAWorld, cableDir);
+        float projection = Vector3.Dot(playerPos - pointAWorld, cableDirection);
         float t = Mathf.Clamp01(projection / cableLength);
-        currentCablePosition = Vector3.Lerp(pointAWorld, pointBWorld, t);
 
-        // Ride toward whichever endpoint the player's camera is facing
-        if (playerCameraTransform != null)
+        if (ziplineMode == ZiplineMode.Horizontal)
         {
-            float dotToA = Vector3.Dot(playerCameraTransform.forward, (pointAWorld - currentCablePosition).normalized);
-            float dotToB = Vector3.Dot(playerCameraTransform.forward, (pointBWorld - currentCablePosition).normalized);
-            targetCablePosition = dotToB > dotToA ? pointBWorld : pointAWorld;
-            Debug.Log($"[Zipline] dotToA={dotToA:F3} dotToB={dotToB:F3} target={targetCablePosition}");
+            cableProgress = t;
         }
         else
         {
-            float distToA = Vector3.Distance(playerPos, pointAWorld);
-            float distToB = Vector3.Distance(playerPos, pointBWorld);
-            targetCablePosition = distToA > distToB ? pointAWorld : pointBWorld;
-            Debug.LogWarning("[Zipline] No camera found, falling back to distance-based direction.");
+            currentCablePosition = Vector3.Lerp(pointAWorld, pointBWorld, t);
+
+            if (playerCameraTransform != null)
+            {
+                float dotToA = Vector3.Dot(playerCameraTransform.forward, (pointAWorld - currentCablePosition).normalized);
+                float dotToB = Vector3.Dot(playerCameraTransform.forward, (pointBWorld - currentCablePosition).normalized);
+                targetCablePosition = dotToB > dotToA ? pointBWorld : pointAWorld;
+            }
+            else
+            {
+                float distToA = Vector3.Distance(playerPos, pointAWorld);
+                float distToB = Vector3.Distance(playerPos, pointBWorld);
+                targetCablePosition = distToA > distToB ? pointAWorld : pointBWorld;
+            }
         }
 
         playerState.SetPlayerMovementState(PlayerMovementState.Ziplining);
@@ -173,7 +175,38 @@ public class Zipline : MonoBehaviour, IInteractable
 
     #region Zipline Logic
 
-    private void HandleMovement()
+    private void HandleHorizontalMovement()
+    {
+        float moveInput = GetMoveInput();
+
+        cableProgress += moveInput * ziplineSpeed / cableLength * Time.deltaTime;
+        cableProgress = Mathf.Clamp01(cableProgress);
+
+        Vector3 cablePosition = Vector3.Lerp(pointAWorld, pointBWorld, cableProgress);
+        float hangOffset = -(playerHeight * 0.5f + handReachOffset);
+        Vector3 targetPosition = cablePosition + Vector3.up * hangOffset;
+        Vector3 delta = targetPosition - currentPlayer.transform.position;
+        playerController.Move(delta);
+
+        if (Mathf.Abs(moveInput) > 0.01f)
+        {
+            Vector3 faceDirection = cableDirection * Mathf.Sign(moveInput);
+            Vector3 flatDirection = new Vector3(faceDirection.x, 0f, faceDirection.z);
+            if (flatDirection.sqrMagnitude > 0.001f)
+            {
+                currentPlayer.transform.rotation = Quaternion.Lerp(
+                    currentPlayer.transform.rotation,
+                    Quaternion.LookRotation(flatDirection),
+                    Time.deltaTime * 10f
+                );
+            }
+        }
+
+        if (cableProgress >= 1f || cableProgress <= 0f)
+            Dismount();
+    }
+
+    private void HandleVerticalMovement()
     {
         currentCablePosition = Vector3.MoveTowards(
             currentCablePosition,
@@ -204,6 +237,27 @@ public class Zipline : MonoBehaviour, IInteractable
             Dismount();
     }
 
+    private float GetMoveInput()
+    {
+        if (playerCameraTransform == null)
+            return 0f;
+
+        Vector2 input = playerLocomotionInput.MovementInput;
+        if (input.sqrMagnitude <= 0.01f)
+            return 0f;
+
+        Vector3 cameraForward = playerCameraTransform.forward;
+        cameraForward.y = 0f;
+        cameraForward.Normalize();
+
+        Vector3 cameraRight = playerCameraTransform.right;
+        cameraRight.y = 0f;
+        cameraRight.Normalize();
+
+        Vector3 desiredDirection = (cameraForward * input.y + cameraRight * input.x).normalized;
+        return Vector3.Dot(desiredDirection, cableDirection);
+    }
+
     private void Dismount()
     {
         if (currentPlayer != null)
@@ -221,6 +275,7 @@ public class Zipline : MonoBehaviour, IInteractable
         playerCameraTransform = null;
         isRiding = false;
         jumpLatch = false;
+        cableProgress = 0f;
     }
 
     #endregion
@@ -269,6 +324,9 @@ public class Zipline : MonoBehaviour, IInteractable
             pointAWorld = pointA.position;
             pointBWorld = pointB.position;
         }
+
+        cableDirection = (pointBWorld - pointAWorld).normalized;
+        cableLength = Vector3.Distance(pointAWorld, pointBWorld);
     }
 
     private void RefreshLineRenderer()
@@ -281,4 +339,10 @@ public class Zipline : MonoBehaviour, IInteractable
     }
 
     #endregion
+}
+
+public enum ZiplineMode
+{
+    Horizontal,
+    Vertical
 }
