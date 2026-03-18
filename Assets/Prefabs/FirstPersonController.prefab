@@ -185,7 +185,7 @@ Transform:
   m_GameObject: {fileID: 5642366538942606948}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.67, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -337,7 +337,7 @@ Transform:
   m_GameObject: {fileID: 6809321870534573542}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.52246, y: 0, z: -8.93903}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -396,6 +396,13 @@ MonoBehaviour:
   sprintFOV: 85
   overdriveFOV: 95
   fovTransitionSpeed: 10
+  defaultConfig: {fileID: 11400000, guid: 3fdceac9f513e2547b0e6a3a3f10f29d, type: 2}
+  pistolConfig: {fileID: 11400000, guid: 3dddd0fda2c98d54da43526732666bfe, type: 2}
+  rifleConfig: {fileID: 11400000, guid: d151d9ed4584ec848958dd6406de4306, type: 2}
+  shotgunConfig: {fileID: 0}
+  heavyMGConfig: {fileID: 0}
+  sniperConfig: {fileID: 0}
+  swordConfig: {fileID: 0}
   _groundLayers:
     serializedVersion: 2
     m_Bits: 257
@@ -487,6 +494,7 @@ MonoBehaviour:
   _animator: {fileID: 186030322157751487}
   _networkAnimator: {fileID: 5378828892324781899}
   locomotionBlendSpeed: 4
+  rifleChestCorrection: 16
 --- !u!114 &3887967411063251530
 MonoBehaviour:
   m_ObjectHideFlags: 0

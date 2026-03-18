@@ -30,6 +30,7 @@ namespace Resonance.Combat
         public Transform EquipSlot => equipSlot;
 
         [SerializeField] private PlayerActionsInput playerActionsInput;
+        private PlayerState playerState;
 
         [SerializeField] private WeaponView currentWeaponView;
         public WeaponView CurrentWeaponView => currentWeaponView;
@@ -44,6 +45,7 @@ namespace Resonance.Combat
             playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
 
             weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+            playerState = GetComponent<PlayerState>();
         }
 
         private void Start()
@@ -107,16 +109,20 @@ namespace Resonance.Combat
 
         private void UpdateEquipSlotFromSkin(GameObject skinInstance)
         {
-            var tagged = skinInstance.GetComponentsInChildren<Transform>()
-                .FirstOrDefault(t => t.CompareTag("Gun Equip"));
-
-            if (tagged == null)
+            var slots = skinInstance.GetComponentsInChildren<WeaponEquipSlot>();
+            
+            var match = slots.FirstOrDefault(s => s.weaponClass == playerState.CurrentWeaponClass);
+            
+            if (match == null)
+                match = slots.FirstOrDefault(s => s.weaponClass == WeaponClass.Rifle);
+            
+            if (match == null)
             {
-                Debug.LogError($"[{GetType()}] No 'Gun Equip' tagged object found on skin.", skinInstance);
+                Debug.LogError($"[PlayerEquip] No WeaponEquipSlot found on skin.", skinInstance);
                 return;
             }
 
-            equipSlot = tagged;
+            equipSlot = match.transform;
             RefreshWeaponView(EquippedWeapon);
         }
 
@@ -172,6 +178,9 @@ namespace Resonance.Combat
             }
 
             EquippedWeapon = weapon;
+            playerState?.SetWeaponClass(weapon.Class);
+            if (playerSkinRenderer.CurrentMeshInstance != null)
+                UpdateEquipSlotFromSkin(playerSkinRenderer.CurrentMeshInstance);
 
             if (weaponStatManager != null)
             {

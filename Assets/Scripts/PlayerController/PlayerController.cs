@@ -1,5 +1,7 @@
 using System;
 using PurrNet;
+using Resonance.Combat.Weapons;
+using Resonance.Combat.Weapons.Enums;
 using Resonance.Player;
 using Resonance.Train;
 using UnityEngine;
@@ -20,6 +22,7 @@ namespace Resonance.PlayerController
         
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
+        
         public static PlayerController LocalPlayer { get; private set; }
 
         [Header("Base Movement")] 
@@ -58,6 +61,17 @@ namespace Resonance.PlayerController
         public float sprintFOV = 90f;
         public float overdriveFOV = 110f;
         public float fovTransitionSpeed = 10f;
+        
+        [Header("Weapon Class Camera Configs")]
+        [SerializeField] private WeaponClassCameraConfig defaultConfig;
+        [SerializeField] private WeaponClassCameraConfig pistolConfig;
+        [SerializeField] private WeaponClassCameraConfig rifleConfig;
+        [SerializeField] private WeaponClassCameraConfig shotgunConfig;
+        [SerializeField] private WeaponClassCameraConfig heavyMGConfig;
+        [SerializeField] private WeaponClassCameraConfig sniperConfig;
+        [SerializeField] private WeaponClassCameraConfig swordConfig;
+
+        private float currentAimOffset = 0f;
 
         [Header("Environment Details")] 
         [SerializeField] private LayerMask _groundLayers;
@@ -81,7 +95,7 @@ namespace Resonance.PlayerController
         private float slideSpeed;
         private float minSlideSpeed;
         private float drag;
-        
+
         private Vector2 _cameraRotation = Vector2.zero;
         private Vector2 _playerTargetRotation = Vector2.zero;
 
@@ -134,6 +148,7 @@ namespace Resonance.PlayerController
 
             if (_virtualCamera != null)
                 _virtualCamera.Lens.FieldOfView = baseFOV;
+            _playerState.OnWeaponClassChanged += OnWeaponClassChanged;
         }
         #endregion
 
@@ -474,31 +489,18 @@ namespace Resonance.PlayerController
         {
             _cameraRotation.x += lookSensitivityH * _playerLocomotionInput.LookInput.x;
             _cameraRotation.y = Mathf.Clamp(_cameraRotation.y - lookSensitivityV * _playerLocomotionInput.LookInput.y, -lookLimitV, lookLimitV);
-            
-            _playerTargetRotation.x += transform.eulerAngles.x + lookSensitivityH * _playerLocomotionInput.LookInput.x;
-            
-            float rotationTolerance = 90f;
-            bool isIdling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Idling;
-            IsRotatingToTarget = _rotatingToTargetTimer > 0f;
-            
-            // ROTATE if we're not idling
-            if (!isIdling)
-            {
-                RotatePlayerToTarget();
-            }
-            // If rotation mismatch not within tolerance, or rotate to target is active, ROTATE
-            else if (Mathf.Abs(RotationMismatch) > rotationTolerance || IsRotatingToTarget)
-            {
-                UpdateIdleRotation(rotationTolerance);
-            }
-            
-            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x, 0f);
-            
-            // Get angle between camera and player
+
+            _playerTargetRotation.x += lookSensitivityH * _playerLocomotionInput.LookInput.x;
+
+            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x + currentAimOffset, 0f);
+
+            RotatePlayerToTarget();
+
             Vector3 camForwardProjectedXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
             Vector3 crossProduct = Vector3.Cross(transform.forward, camForwardProjectedXZ);
             float sign = Mathf.Sign(Vector3.Dot(crossProduct, transform.up));
             RotationMismatch = sign * Vector3.Angle(transform.forward, camForwardProjectedXZ);
+            IsRotatingToTarget = false;
         }
 
         private void UpdateIdleRotation(float rotationTolerance)
@@ -561,8 +563,35 @@ namespace Resonance.PlayerController
         
         private bool CanRun()
         {
-            // This means player is moving diagonally at 45 degrees or forward, if so, we can run
+            // This means player is moving diagonally at 45 degrees or forward, if so, we can sprint
             return _playerLocomotionInput.MovementInput.y >= MathF.Abs(_playerLocomotionInput.MovementInput.x);
+        }
+        
+        private void OnWeaponClassChanged(WeaponClass weaponClass)
+        { 
+            //ApplyCameraConfig(GetConfig(weaponClass));
+            ApplyCameraConfig(defaultConfig);
+        }
+        
+        private WeaponClassCameraConfig GetConfig(WeaponClass weaponClass)
+        {
+            return weaponClass switch
+            {
+                WeaponClass.Pistol => pistolConfig,
+                WeaponClass.Rifle => rifleConfig,
+                WeaponClass.Shotgun => shotgunConfig ?? rifleConfig,
+                WeaponClass.HeavyMG => heavyMGConfig ?? rifleConfig,
+                WeaponClass.Sniper => sniperConfig ?? rifleConfig,
+                WeaponClass.Sword => swordConfig ?? rifleConfig,
+                _ => rifleConfig
+            };
+        }
+        
+        private void ApplyCameraConfig(WeaponClassCameraConfig config)
+        {
+            if (config == null) return;
+            _virtualCamera.transform.localPosition = config.cameraLocalPosition;
+            currentAimOffset = config.aimOffset;
         }
         #endregion
     }

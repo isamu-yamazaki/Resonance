@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.SkinCatalog
   skins:
   - {fileID: 11400000, guid: eec54ee85f7bc4fc59537c6618c332c9, type: 2}
+  - {fileID: 11400000, guid: 8d95aef2755102e4a9f7ad11477d7fae, type: 2}
   - {fileID: 11400000, guid: 48576604c13bc4920a9d20d3e0f4c07d, type: 2}
