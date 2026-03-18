@@ -187,6 +187,9 @@ namespace Resonance.PlayerController
             if (_playerState.IsInShop())
                 return;
             
+            if (_playerState.IsZiplining())
+                return;
+            
             // Don't process movement if CharacterController is disabled
             if (!_characterController.enabled)
                 return;

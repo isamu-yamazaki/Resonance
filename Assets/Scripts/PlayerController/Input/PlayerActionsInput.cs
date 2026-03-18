@@ -10,6 +10,7 @@ namespace Resonance.PlayerController
         public bool AttackPressed  { get; private set; }
         public bool AttackHeld { get; private set; }
         public bool ReloadPressed { get; private set; }
+        public bool InteractPressed { get; private set; }
         public bool SwapSlotOnePressed  { get; private set; }
         public bool SwapSlotTwoPressed  { get; private set; }
         public bool SwapWeaponPressed  { get; private set; }
@@ -79,6 +80,10 @@ namespace Resonance.PlayerController
             ReloadPressed = false;
         }
         
+        public void SetInteractPressedFalse()
+        {
+            InteractPressed = false;
+        }
         public void SetSlotOnePressedFalse()
         {
             SwapSlotOnePressed = false;
@@ -129,6 +134,14 @@ namespace Resonance.PlayerController
                 return;
 
             ReloadPressed = true;
+        }
+        
+        public void OnInteract(InputAction.CallbackContext context)
+        {
+            if (!context.performed || _playerState.IsDead())
+                return;
+
+            InteractPressed = true;
         }
 
         public void OnOverdrive(InputAction.CallbackContext context)

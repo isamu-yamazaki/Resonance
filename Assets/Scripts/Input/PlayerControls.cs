@@ -371,6 +371,15 @@ namespace Resonance.PlayerController
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""54707955-d7d7-437b-8aa3-c2a9dab91794"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""SwapSlotOne"",
                     ""type"": ""Button"",
                     ""id"": ""87301078-3863-4764-958b-85010e1eae2e"",
@@ -472,6 +481,17 @@ namespace Resonance.PlayerController
                 },
                 {
                     ""name"": """",
+                    ""id"": ""da70440f-855c-4bce-a890-36ea41631434"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""32c8178c-dbdb-436e-b79d-1fca3c7a8952"",
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
@@ -554,6 +574,7 @@ namespace Resonance.PlayerController
             m_PlayerActionMap_Reload = m_PlayerActionMap.FindAction("Reload", throwIfNotFound: true);
             m_PlayerActionMap_Escape = m_PlayerActionMap.FindAction("Escape", throwIfNotFound: true);
             m_PlayerActionMap_Overdrive = m_PlayerActionMap.FindAction("Overdrive", throwIfNotFound: true);
+            m_PlayerActionMap_Interact = m_PlayerActionMap.FindAction("Interact", throwIfNotFound: true);
             m_PlayerActionMap_SwapSlotOne = m_PlayerActionMap.FindAction("SwapSlotOne", throwIfNotFound: true);
             m_PlayerActionMap_SwapSlotTwo = m_PlayerActionMap.FindAction("SwapSlotTwo", throwIfNotFound: true);
             m_PlayerActionMap_SwapWeapon = m_PlayerActionMap.FindAction("SwapWeapon", throwIfNotFound: true);
@@ -785,6 +806,7 @@ namespace Resonance.PlayerController
         private readonly InputAction m_PlayerActionMap_Reload;
         private readonly InputAction m_PlayerActionMap_Escape;
         private readonly InputAction m_PlayerActionMap_Overdrive;
+        private readonly InputAction m_PlayerActionMap_Interact;
         private readonly InputAction m_PlayerActionMap_SwapSlotOne;
         private readonly InputAction m_PlayerActionMap_SwapSlotTwo;
         private readonly InputAction m_PlayerActionMap_SwapWeapon;
@@ -818,6 +840,10 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerActionMap/Overdrive".
             /// </summary>
             public InputAction @Overdrive => m_Wrapper.m_PlayerActionMap_Overdrive;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerActionMap/Interact".
+            /// </summary>
+            public InputAction @Interact => m_Wrapper.m_PlayerActionMap_Interact;
             /// <summary>
             /// Provides access to the underlying input action "PlayerActionMap/SwapSlotOne".
             /// </summary>
@@ -880,6 +906,9 @@ namespace Resonance.PlayerController
                 @Overdrive.started += instance.OnOverdrive;
                 @Overdrive.performed += instance.OnOverdrive;
                 @Overdrive.canceled += instance.OnOverdrive;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
                 @SwapSlotOne.started += instance.OnSwapSlotOne;
                 @SwapSlotOne.performed += instance.OnSwapSlotOne;
                 @SwapSlotOne.canceled += instance.OnSwapSlotOne;
@@ -921,6 +950,9 @@ namespace Resonance.PlayerController
                 @Overdrive.started -= instance.OnOverdrive;
                 @Overdrive.performed -= instance.OnOverdrive;
                 @Overdrive.canceled -= instance.OnOverdrive;
+                @Interact.started -= instance.OnInteract;
+                @Interact.performed -= instance.OnInteract;
+                @Interact.canceled -= instance.OnInteract;
                 @SwapSlotOne.started -= instance.OnSwapSlotOne;
                 @SwapSlotOne.performed -= instance.OnSwapSlotOne;
                 @SwapSlotOne.canceled -= instance.OnSwapSlotOne;
@@ -1050,6 +1082,13 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnOverdrive(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnInteract(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "SwapSlotOne" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
