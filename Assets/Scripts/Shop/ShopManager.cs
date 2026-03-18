@@ -204,6 +204,23 @@ namespace Resonance.Shop
             SwitchMainTab(weaponBuyTab, weaponTabButton);
             SwitchWeaponSubTab(weaponPrimaryButton);
             SwitchAugmentSubTab(augmentUpperButton);
+            
+            // Force initialize all tab visuals
+            SetButtonSelected(weaponTabButton, false);
+            SetButtonSelected(augmentTabButton, false);
+            SetButtonSelected(modTabButton, false);
+
+            SetButtonSelected(weaponPrimaryButton, false);
+            SetButtonSelected(weaponSecondaryButton, false);
+
+            SetButtonSelected(augmentUpperButton, false);
+            SetButtonSelected(augmentLowerButton, false);
+
+            // Now activate defaults properly
+            SwitchMainTab(weaponBuyTab, weaponTabButton);
+            SwitchWeaponSubTab(weaponPrimaryButton);
+            SwitchAugmentSubTab(augmentUpperButton);
+            
             PopulateWeapons();
         }
 
@@ -289,13 +306,16 @@ namespace Resonance.Shop
                 return;
             }
 
-            Color active = new Color(0.5f, 0.5f, 0.5f);
-            Color inactive = Color.white;
+            Color active = Color.white;                      // active = white
+            Color inactive = new Color(0.5f, 0.5f, 0.5f);    // inactive = gray
 
             ColorBlock colors = button.colors;
             colors.normalColor = selected ? active : inactive;
             colors.selectedColor = selected ? active : inactive;
-            colors.highlightedColor = selected ? new Color(0.6f, 0.6f, 0.6f) : new Color(0.9f, 0.9f, 0.9f);
+            colors.highlightedColor = selected 
+                ? new Color(0.9f, 0.9f, 0.9f) 
+                : new Color(0.6f, 0.6f, 0.6f);
+
             button.colors = colors;
         }
 
@@ -370,6 +390,12 @@ namespace Resonance.Shop
                 GameObject go = Instantiate(shopItemPrefab, weaponItemSpawn.transform);
                 ShopItem item = go.GetComponent<ShopItem>();
                 item.SetupWeapon(weapon);
+                
+                ShopItemHover hover = go.GetComponent<ShopItemHover>();
+                if (hover != null)
+                {
+                    hover.Setup(weapon);
+                }
             }
         }
 
