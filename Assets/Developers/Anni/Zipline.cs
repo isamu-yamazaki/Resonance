@@ -151,18 +151,9 @@ public class Zipline : MonoBehaviour, IInteractable
         {
             currentCablePosition = Vector3.Lerp(pointAWorld, pointBWorld, t);
 
-            if (playerCameraTransform != null)
-            {
-                float dotToA = Vector3.Dot(playerCameraTransform.forward, (pointAWorld - currentCablePosition).normalized);
-                float dotToB = Vector3.Dot(playerCameraTransform.forward, (pointBWorld - currentCablePosition).normalized);
-                targetCablePosition = dotToB > dotToA ? pointBWorld : pointAWorld;
-            }
-            else
-            {
-                float distToA = Vector3.Distance(playerPos, pointAWorld);
-                float distToB = Vector3.Distance(playerPos, pointBWorld);
-                targetCablePosition = distToA > distToB ? pointAWorld : pointBWorld;
-            }
+            float distToA = Vector3.Distance(playerPos, pointAWorld);
+            float distToB = Vector3.Distance(playerPos, pointBWorld);
+            targetCablePosition = distToA < distToB ? pointBWorld : pointAWorld;
         }
 
         playerState.SetPlayerMovementState(PlayerMovementState.Ziplining);
