@@ -13,9 +13,10 @@ namespace Resonance.Train
         [SerializeField] private GameObject _emitterObject;
 
         [Header("Wwise Events")]
-        [SerializeField] private AK.Wwise.Event _movingLoopEvent;
-        [SerializeField] private AK.Wwise.Event _departureEvent;
-        [SerializeField] private AK.Wwise.Event _arrivalEvent;
+        [SerializeField] private AK.Wwise.Event _playTrainMovingEvent;
+        [SerializeField] private AK.Wwise.Event _stopTrainMovingEvent;
+        [SerializeField] private AK.Wwise.Event _playTrainDisembarkEvent;
+        [SerializeField] private AK.Wwise.Event _playTrainArrivalEvent;
 
         [Header("Wwise RTPCs")]
         [SerializeField] private string _speedRtpc = "Train_Speed";
@@ -30,7 +31,7 @@ namespace Resonance.Train
         [SerializeField] private float _cullingDistance = 80f;
 
         private TrainAudioSpline _spline;
-        private uint _loopPlayingId = AkSoundEngine.AK_INVALID_PLAYING_ID;
+        private bool _isLoopPlaying = false;
 
         private void Awake()
         {
@@ -92,41 +93,38 @@ namespace Resonance.Train
 
         private void OnDeparted(int index, TrainStation station)
         {
-            if (_departureEvent != null && _departureEvent.IsValid())
-                _departureEvent.Post(_emitterObject);
+            if (_playTrainDisembarkEvent != null && _playTrainDisembarkEvent.IsValid())
+                _playTrainDisembarkEvent.Post(_emitterObject);
         }
 
         private void OnArrived(int index, TrainStation station)
         {
-            if (_arrivalEvent != null && _arrivalEvent.IsValid())
-                _arrivalEvent.Post(_emitterObject);
+            if (_playTrainArrivalEvent != null && _playTrainArrivalEvent.IsValid())
+                _playTrainArrivalEvent.Post(_emitterObject);
         }
 
         private void StartLoop()
         {
-            if (_loopPlayingId != AkSoundEngine.AK_INVALID_PLAYING_ID) return;
+            if (_isLoopPlaying) return;
 
-            if (_movingLoopEvent == null || !_movingLoopEvent.IsValid())
+            if (_playTrainMovingEvent == null || !_playTrainMovingEvent.IsValid())
             {
-                Debug.LogWarning("[TrainAudioEmitter] Moving loop event not assigned or invalid.", this);
+                Debug.LogWarning("[TrainAudioEmitter] Play Train Moving event not assigned or invalid.", this);
                 return;
             }
 
-            _loopPlayingId = _movingLoopEvent.Post(_emitterObject);
+            _playTrainMovingEvent.Post(_emitterObject);
+            _isLoopPlaying = true;
         }
 
         private void StopLoop()
         {
-            if (_loopPlayingId == AkSoundEngine.AK_INVALID_PLAYING_ID) return;
+            if (!_isLoopPlaying) return;
 
-            AkSoundEngine.ExecuteActionOnPlayingID(
-                AkActionOnEventType.AkActionOnEventType_Stop,
-                _loopPlayingId,
-                500,
-                AkCurveInterpolation.AkCurveInterpolation_Linear
-            );
+            if (_stopTrainMovingEvent != null && _stopTrainMovingEvent.IsValid())
+                _stopTrainMovingEvent.Post(_emitterObject);
 
-            _loopPlayingId = AkSoundEngine.AK_INVALID_PLAYING_ID;
+            _isLoopPlaying = false;
         }
 
         private GameObject CreateEmitterObject()
