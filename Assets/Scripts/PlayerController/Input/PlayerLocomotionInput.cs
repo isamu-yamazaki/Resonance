@@ -32,6 +32,9 @@ namespace Resonance.PlayerController
                 Debug.LogError("Player controls is not initialized - cannot enable");
                 return;
             }
+            
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.AddCallbacks(this);
         }
 
         private void OnDisable()

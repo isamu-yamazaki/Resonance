@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14c64d6c5c38bb34ea594af45e0c5a41, type: 3}
-  m_Name: RifleConfig
+  m_Name: Defaut
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponClassCameraConfig
-  cameraLocalPosition: {x: -0.15, y: 1.7, z: -0.2}
-  aimOffset: -50
+  cameraLocalPosition: {x: 0, y: 1.67, z: 0}
+  aimOffset: 0

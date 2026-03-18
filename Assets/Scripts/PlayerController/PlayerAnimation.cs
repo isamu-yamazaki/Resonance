@@ -9,6 +9,7 @@ namespace Resonance.PlayerController
         [SerializeField] private Animator _animator;
         [SerializeField] private NetworkAnimator _networkAnimator;
         [SerializeField] private float locomotionBlendSpeed = 4f;
+        [SerializeField] private float rifleChestCorrection = 0f;
         
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
@@ -71,6 +72,11 @@ namespace Resonance.PlayerController
             
             _currentBlendInput = Vector3.Lerp(_currentBlendInput, inputTarget, locomotionBlendSpeed * Time.deltaTime);
             
+            Vector2 clampedInput = new Vector2(
+                Mathf.Abs(_currentBlendInput.x) < 0.01f ? 0f : _currentBlendInput.x,
+                Mathf.Abs(_currentBlendInput.y) < 0.01f ? 0f : _currentBlendInput.y
+            );
+            
             _networkAnimator.SetBool(isGroundedHash, isGrounded);
             _networkAnimator.SetBool(isIdlingHash, isIdling);
             _networkAnimator.SetBool(isFallingHash, isFalling);
@@ -82,8 +88,18 @@ namespace Resonance.PlayerController
             _networkAnimator.SetBool(isPlayingActionHash, isPlayingAction);
             _networkAnimator.SetBool(weaponClassInitializedHash, _playerState.WeaponClassInitialized);
             _networkAnimator.SetInt(weaponClassHash, (int)_playerState.CurrentWeaponClass);
-            _networkAnimator.SetFloat(inputXHash, _currentBlendInput.x);
-            _networkAnimator.SetFloat(inputYHash, _currentBlendInput.y);
+            _networkAnimator.SetFloat(inputXHash, clampedInput.x);
+            _networkAnimator.SetFloat(inputYHash, clampedInput.y);
+        }
+        
+        private void LateUpdate()
+        {
+            if ((int)_playerState.CurrentWeaponClass != 2) return;
+    
+            Transform chest = _animator.GetBoneTransform(HumanBodyBones.Chest);
+            if (chest == null) return;
+    
+            chest.localRotation = Quaternion.AngleAxis(rifleChestCorrection, Vector3.up) * chest.localRotation;
         }
     }
 }

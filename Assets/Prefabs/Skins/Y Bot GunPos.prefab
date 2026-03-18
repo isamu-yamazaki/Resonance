@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4361309238679575833
+--- !u!1 &4198013511657483806
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2365166198780722015}
-  m_Layer: 0
-  m_Name: EquipPoints
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2365166198780722015
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4361309238679575833}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.5000003, y: -0.49999958, z: 0.49999985, w: -0.5000003}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7443293887063532783}
-  - {fileID: 6901452382597421854}
-  m_Father: {fileID: 7184115506204027488}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6245154924976278582
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6901452382597421854}
-  - component: {fileID: 7899588274202171280}
+  - component: {fileID: 2613748703333208339}
+  - component: {fileID: 6521980119882395021}
   m_Layer: 0
   m_Name: GunEquipRifle
   m_TagString: Gun Equip
@@ -50,38 +17,35 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6901452382597421854
+--- !u!4 &2613748703333208339
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6245154924976278582}
+  m_GameObject: {fileID: 4198013511657483806}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.08166452, y: 0.01035754, z: -0.0074259276, w: 0.99657845}
+  m_LocalPosition: {x: -0.19158548, y: 0.124902666, z: 0.011437267}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2365166198780722015}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7899588274202171280
+  m_Father: {fileID: 9046622563383128643}
+  m_LocalEulerAnglesHint: {x: 9.377, y: 1.128, z: -0.761}
+--- !u!114 &6521980119882395021
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6245154924976278582}
+  m_GameObject: {fileID: 4198013511657483806}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2fb5f65365c32c34a9302c55f68e263a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.WeaponEquipSlot
   weaponClass: 2
-  handBoneToFollow: {fileID: 9046622563383128643}
-  positionOffset: {x: -0.19158548, y: 0.124902666, z: 0.011437267}
-  rotationOffset: {x: 9.377, y: 1.128, z: -0.761}
---- !u!1 &7368450339680219023
+--- !u!1 &6977554742791073980
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,8 +53,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7443293887063532783}
-  - component: {fileID: 5232659306842320865}
+  - component: {fileID: 6878482685494381208}
+  - component: {fileID: 2032437402933251076}
   m_Layer: 0
   m_Name: GunEquipPistol
   m_TagString: Gun Equip
@@ -98,37 +62,34 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7443293887063532783
+--- !u!4 &6878482685494381208
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7368450339680219023}
+  m_GameObject: {fileID: 6977554742791073980}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.12521078, y: 0.003610977, z: -0.105716266, w: 0.9864752}
+  m_LocalPosition: {x: -0.183, y: 0.133, z: 0.058}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2365166198780722015}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5232659306842320865
+  m_Father: {fileID: 9046622563383128643}
+  m_LocalEulerAnglesHint: {x: 11.043, y: -0.406, z: -9.07}
+--- !u!114 &2032437402933251076
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7368450339680219023}
+  m_GameObject: {fileID: 6977554742791073980}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2fb5f65365c32c34a9302c55f68e263a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.WeaponEquipSlot
   weaponClass: 5
-  handBoneToFollow: {fileID: 9046622563383128643}
-  positionOffset: {x: -0.21, y: 0.14, z: -0.01}
-  rotationOffset: {x: -15, y: -15, z: 2}
 --- !u!1001 &7221983248054209931
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -188,16 +149,14 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
-      insertIndex: 0
-      addedObject: {fileID: 2365166198780722015}
+    - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6878482685494381208}
+    - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2613748703333208339}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
---- !u!4 &7184115506204027488 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
-  m_PrefabInstance: {fileID: 7221983248054209931}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9046622563383128643 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}

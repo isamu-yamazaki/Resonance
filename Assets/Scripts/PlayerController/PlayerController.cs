@@ -63,6 +63,7 @@ namespace Resonance.PlayerController
         public float fovTransitionSpeed = 10f;
         
         [Header("Weapon Class Camera Configs")]
+        [SerializeField] private WeaponClassCameraConfig defaultConfig;
         [SerializeField] private WeaponClassCameraConfig pistolConfig;
         [SerializeField] private WeaponClassCameraConfig rifleConfig;
         [SerializeField] private WeaponClassCameraConfig shotgunConfig;
@@ -562,13 +563,14 @@ namespace Resonance.PlayerController
         
         private bool CanRun()
         {
-            // This means player is moving diagonally at 45 degrees or forward, if so, we can run
+            // This means player is moving diagonally at 45 degrees or forward, if so, we can sprint
             return _playerLocomotionInput.MovementInput.y >= MathF.Abs(_playerLocomotionInput.MovementInput.x);
         }
         
         private void OnWeaponClassChanged(WeaponClass weaponClass)
-        {
-            ApplyCameraConfig(GetConfig(weaponClass));
+        { 
+            //ApplyCameraConfig(GetConfig(weaponClass));
+            ApplyCameraConfig(defaultConfig);
         }
         
         private WeaponClassCameraConfig GetConfig(WeaponClass weaponClass)
