@@ -144,8 +144,8 @@ namespace Resonance.UI
             // Update eliminations progress
             if (eliminationsText != null && ArenaRoundManagerBridge.Instance != null)
             {
-                int target = ArenaRoundManagerBridge.Instance.EliminationsToWin;
-                eliminationsText.text = $"Eliminations: {stats?.kills}/{target}";
+                float target = ArenaRoundManagerBridge.Instance.RatingToWin;
+                eliminationsText.text = $"Rating: {stats?.rating:F0}/{target}";
             }
         }
         #endregion

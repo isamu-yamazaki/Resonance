@@ -8,12 +8,14 @@ public class ArenaRoundManagerTests
 {
     private MatchStatTracker statTracker;
     private ArenaRoundManager roundManager;
+    private ArenaRatingManager ratingManager;
 
     [SetUp]
     public void Setup()
     {
         statTracker = new();
         roundManager = new(statTracker);
+        ratingManager = new(statTracker, roundManager);
     }
 
     #region Properties
@@ -29,6 +31,7 @@ public class ArenaRoundManagerTests
         var config = ArenaRoundManager.ArenaRoundManagerConfig.Default;
         config.matchDurationSeconds = 120f;
         var roundManager = new ArenaRoundManager(statTracker, config);
+        var ratingManager = new ArenaRatingManager(statTracker, roundManager);
 
         roundManager.StartMatchWithoutCountdown();
 
@@ -43,9 +46,11 @@ public class ArenaRoundManagerTests
         roundManager.StartMatchWithoutCountdown();
 
         ulong killerId = 1;
+        statTracker.RegisterPlayer(killerId);
+        statTracker.RegisterPlayer(2);
 
         statTracker.RecordKill(killerId, 2);
-        statTracker.RecordKill(killerId, 3);
+        statTracker.RecordKill(killerId, 2);
 
         Assert.AreEqual(killerId, roundManager.CurrentLeader);
     }
@@ -54,23 +59,37 @@ public class ArenaRoundManagerTests
     public void OnPlayerKilled_DoesNotUpdateLeaderIfRoundNotActive()
     {
         ulong killerId = 1;
+        statTracker.RegisterPlayer(killerId);
+        statTracker.RegisterPlayer(2);
 
         statTracker.RecordKill(killerId, 2);
-        statTracker.RecordKill(killerId, 3);
+        statTracker.RecordKill(killerId, 2);
 
         Assert.IsNull(roundManager.CurrentLeader);
     }
 
     [Test]
-    public void OnPlayerKilled_EndMatchIfEliminationThresholdPassed()
+    public void OnPlayerKilled_EndMatchIfRatingThresholdPassed()
     {
-        roundManager.StartMatchWithoutCountdown();
-        ulong killerId = 1;
-
-        for (int i = 0; i < roundManager.EliminationsToWin; i++)
+        var config = new ArenaRoundManager.ArenaRoundManagerConfig
         {
-            statTracker.RecordKill(killerId, 2);
-        }
+            ratingToWin = 100f,
+            autoStartNextMatch = false,
+            autoStartDelaySeconds = 5f,
+            matchStartCountdownSeconds = 5f,
+            matchDurationSeconds = 300f,
+        };
+        var roundManager = new ArenaRoundManager(statTracker, config);
+        var ratingManager = new ArenaRatingManager(statTracker, roundManager);
+
+        roundManager.StartMatchWithoutCountdown();
+
+        ulong killerId = 1;
+        statTracker.RegisterPlayer(killerId);
+        statTracker.RegisterPlayer(2);
+
+        // One kill = 100 points = exactly ratingToWin
+        statTracker.RecordKill(killerId, 2);
 
         Assert.AreEqual(true, roundManager.IsMatchEnded);
     }
@@ -130,19 +149,19 @@ public class ArenaRoundManagerTests
         Assert.AreEqual(true, roundManager.IsMatchEnded);
     }
 
-
     [Test]
     public async Task EndMatch_AutoStartsNextRoundIfConfigured()
     {
         var config = new ArenaRoundManager.ArenaRoundManagerConfig
         {
-            eliminationsToWin = 10,
+            ratingToWin = 1000f,
             autoStartNextMatch = true,
             autoStartDelaySeconds = 1,
             matchStartCountdownSeconds = 5f,
             matchDurationSeconds = 300f,
         };
         var autoStartManager = new ArenaRoundManager(statTracker, config);
+        var autoStartRatingManager = new ArenaRatingManager(statTracker, autoStartManager);
         autoStartManager.StartMatchWithoutCountdown();
         await autoStartManager.EndMatch(1);
 
@@ -155,7 +174,7 @@ public class ArenaRoundManagerTests
     {
         var config = new ArenaRoundManager.ArenaRoundManagerConfig
         {
-            eliminationsToWin = 10,
+            ratingToWin = 1000f,
             autoStartNextMatch = true,
             autoStartDelaySeconds = 1,
             matchStartCountdownSeconds = 5f,
@@ -163,6 +182,7 @@ public class ArenaRoundManagerTests
         };
 
         var autoStartManager = new ArenaRoundManager(statTracker, config);
+        var autoStartRatingManager = new ArenaRatingManager(statTracker, autoStartManager);
         var eventCallCount = 0;
         autoStartManager.OnMatchCountdownStart += (seconds) =>
         {
@@ -206,7 +226,7 @@ public class ArenaRoundManagerTests
         roundManager.OnMatchCountdownStart += (seconds) =>
         {
             capturedSeconds = seconds;
-            eventCallCount++; ;
+            eventCallCount++;
         };
 
         _ = roundManager.StartMatchCountdown();
@@ -215,8 +235,6 @@ public class ArenaRoundManagerTests
         Assert.AreEqual(roundManager.MatchStartCountdownSeconds, capturedSeconds);
         Assert.AreEqual(1, eventCallCount);
     }
-
-
 
     [Test]
     public async Task StartMatchCountdown_FiresMatchStateChangeEvent()
@@ -244,11 +262,11 @@ public class ArenaRoundManagerTests
         {
             matchStartCountdownSeconds = 0.5f,
         });
+        ratingManager = new(statTracker, roundManager);
 
         await roundManager.StartMatchCountdown();
         Assert.AreEqual(BaseMatchState.MatchActive, roundManager.MatchState);
     }
-
     #endregion
 
     #region StartMatchWithoutCountdown
@@ -260,7 +278,6 @@ public class ArenaRoundManagerTests
         Assert.AreEqual(true, roundManager.IsMatchActive);
         Assert.AreEqual(false, roundManager.IsMatchEnded);
     }
-
 
     [Test]
     public void StartMatchWithoutCountdown_FiresOnMatchStartEvent()
@@ -290,7 +307,6 @@ public class ArenaRoundManagerTests
         Assert.AreEqual(BaseMatchState.Waiting, capturedOldState);
         Assert.AreEqual(BaseMatchState.MatchActive, capturedNewState);
         Assert.AreEqual(1, eventCallCount);
-
     }
 
     [Test]
@@ -328,11 +344,12 @@ public class ArenaRoundManagerTests
         var roundManager = new ArenaRoundManager(statTracker, new()
         {
             autoStartNextMatch = false,
-            eliminationsToWin = 10,
+            ratingToWin = 1000f,
             autoStartDelaySeconds = 1f,
             matchStartCountdownSeconds = 1f,
             matchDurationSeconds = 0.5f,
         });
+        var ratingManager = new ArenaRatingManager(statTracker, roundManager);
 
         double capturedSecondsRemaining = 0;
         var eventCallCount = 0;
@@ -349,14 +366,17 @@ public class ArenaRoundManagerTests
         Assert.AreEqual(BaseMatchState.MatchEnded, roundManager.MatchState);
         Assert.LessOrEqual(eventCallCount, 1);
     }
-
     #endregion
-
 
     #region GetLeaderboard
     [Test]
     public void GetLeaderboard_GetsAllPlayerRankingsDependentOnStats()
     {
+        statTracker.RegisterPlayer(1);
+        statTracker.RegisterPlayer(2);
+        statTracker.RegisterPlayer(3);
+        statTracker.RegisterPlayer(4);
+
         statTracker.RecordKill(1, 2);
         statTracker.RecordKill(1, 2);
         statTracker.RecordKill(1, 2);
