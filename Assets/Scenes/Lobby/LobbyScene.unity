@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.DefaultSceneNameSetter
   lobbyManager: {fileID: 1097043115}
-  sceneName: leveldesign
+  sceneName: TB_PlaytestArena
 --- !u!1 &32129099
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +356,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15156e7f57bff964485891eba8344bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.Providers.SteamLobbyProvider
+  lobbyType: 2
+  maxLobbiesToFind: 10
+  handleSteamInit: 0
 --- !u!1 &92920406
 GameObject:
   m_ObjectHideFlags: 0
