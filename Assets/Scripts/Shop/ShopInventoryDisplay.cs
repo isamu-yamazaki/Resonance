@@ -90,7 +90,7 @@ namespace Resonance.Shop
                 GameObject go = Instantiate(modTextPrefab, modContainer.transform);
 
                 TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
-                text.text = $"- {mod.ModName}";
+                text.text = $"{mod.ModName}";
 
                 modTexts.Add(go);
             }
