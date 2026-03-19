@@ -5,8 +5,6 @@ using UnityEngine.InputSystem;
 [DefaultExecutionOrder(1)]
 public class Zipline : MonoBehaviour, IInteractable
 {
-    public Collider InteractRange { get; set; }
-
     [Header("References")]
     [SerializeField] private Transform pointA;
     [SerializeField] private Transform pointB;
@@ -15,12 +13,15 @@ public class Zipline : MonoBehaviour, IInteractable
     [SerializeField] private ZiplineMode ziplineMode = ZiplineMode.Horizontal;
     [SerializeField] private float ziplineSpeed = 10f;
     [SerializeField] private float handReachOffset = 1.0f;
+    [SerializeField] private float interactReach = 2.0f;
 
     [Header("Line Renderer")]
     [SerializeField] private float lineWidth = 0.1f;
     [SerializeField] private Material lineMaterial;
 
     private LineRenderer lineRenderer;
+    private BoxCollider interactCollider;
+    private GameObject interactColliderHost;
 
     private GameObject currentPlayer;
     private CharacterController playerController;
@@ -34,24 +35,25 @@ public class Zipline : MonoBehaviour, IInteractable
     private float cableLength;
     private float playerHeight;
 
-    // Horizontal mode
     private float cableProgress;
 
-    // Vertical mode
     private Vector3 currentCablePosition;
     private Vector3 targetCablePosition;
 
     private bool isRiding;
     private bool jumpLatch;
 
+    public Collider InteractRange { get => interactCollider; set { } }
+
     #region Unity Messages
 
     private void Start()
     {
-        InteractRange = GetComponent<Collider>();
+        SetupInteractCollider();
         SetupLineRenderer();
         RecalculateEndpoints();
         RefreshLineRenderer();
+        RefreshInteractCollider();
     }
 
     private void Update()
@@ -271,6 +273,31 @@ public class Zipline : MonoBehaviour, IInteractable
 
     #endregion
 
+    #region Interact Collider
+
+    private void SetupInteractCollider()
+    {
+        interactColliderHost = new GameObject("ZiplineInteractRange");
+        interactColliderHost.transform.SetParent(transform);
+        interactColliderHost.layer = gameObject.layer;
+
+        interactCollider = interactColliderHost.AddComponent<BoxCollider>();
+        interactCollider.isTrigger = true;
+    }
+
+    private void RefreshInteractCollider()
+    {
+        if (interactCollider == null || pointA == null || pointB == null)
+            return;
+
+        Vector3 midpoint = (pointAWorld + pointBWorld) * 0.5f;
+        interactColliderHost.transform.SetPositionAndRotation(midpoint, Quaternion.LookRotation(cableDirection));
+        interactCollider.size = new Vector3(interactReach, interactReach, cableLength);
+        interactCollider.center = Vector3.zero;
+    }
+
+    #endregion
+
     #region Line Renderer
 
     private void TrackEndpointChanges()
@@ -283,6 +310,7 @@ public class Zipline : MonoBehaviour, IInteractable
 
         RecalculateEndpoints();
         RefreshLineRenderer();
+        RefreshInteractCollider();
         pointA.hasChanged = false;
         pointB.hasChanged = false;
     }

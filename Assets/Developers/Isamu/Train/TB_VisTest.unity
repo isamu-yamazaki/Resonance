@@ -9400,6 +9400,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 138296981}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -9409,6 +9418,8 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
+  serverToClientPropagationIntervalSeconds: 0.2
+  clientToServerNullSourceReportingIntervalSeconds: 1
 --- !u!65 &138296980
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -42991,7 +43002,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 0.6901961, g: 0.76862746, b: 0.87058824, a: 1}
-  m_Intensity: 0.2
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -55305,6 +55316,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 752055323}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -55314,6 +55334,8 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
+  serverToClientPropagationIntervalSeconds: 0.2
+  clientToServerNullSourceReportingIntervalSeconds: 1
 --- !u!65 &752055322
 BoxCollider:
   m_ObjectHideFlags: 0

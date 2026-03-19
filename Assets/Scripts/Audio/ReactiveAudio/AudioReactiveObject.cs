@@ -26,6 +26,11 @@ namespace Resonance.Audio
         [Header("Debug")]
         [SerializeField] private bool debugLog = false;
 
+        [Header("Network Update Intervals")]
+        [SerializeField] private float serverToClientPropagationIntervalSeconds = 0.2f;
+        [SerializeField] private float clientToServerNullSourceReportingIntervalSeconds = 1f;
+        [SerializeField] private float clientToServerSourceReportingIntervalSeconds = 0.1f;
+
         private Material materialInstance;
         private float currentIntensity = 0f;
         private float targetIntensity = 0f;
@@ -33,18 +38,7 @@ namespace Resonance.Audio
         private float sustainTimer = 0f;
         private bool inSustain = false;
         private bool isFeedbackPlaying = false;
-
-        [Header("Network Update Intervals")]
-        [SerializeField] private float serverToClientPropagationIntervalSeconds = 0.2f;
-
-        /// <summary>
-        /// A base control for how often clients emit updates to the server.
-        /// If there is a detected sound from the client, that will get reported
-        /// immediately outside of this coroutine loop.
-        /// Otherwise, `null` sound events are propagated from a loop with this wait time.
-        /// </summary>
-        [SerializeField] private float clientToServerNullSourceReportingIntervalSeconds = 1f;
-
+        private float sourceReportTimer = 0f;
         private AudioSourceData clientReportedSource;
 
         void Start()
@@ -84,11 +78,13 @@ namespace Resonance.Audio
 
             if (isClient)
             {
+                sourceReportTimer += Time.deltaTime;
+                if (sourceReportTimer < clientToServerSourceReportingIntervalSeconds) return;
+                sourceReportTimer = 0f;
+
                 AudioSourceData nearestSource = FindNearestSource();
                 if (nearestSource != null)
-                {
                     SetNearestAudioSourceOnServer(nearestSource);
-                }
             }
         }
 
@@ -132,7 +128,6 @@ namespace Resonance.Audio
             clientReportedSource = source;
         }
 
-        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
         private void CalculateAudioState()
         {
             if (clientReportedSource != null)
@@ -150,9 +145,7 @@ namespace Resonance.Audio
             }
 
             if (targetIntensity < threshold)
-            {
                 targetIntensity = 0f;
-            }
 
             // ADSR Envelope
             if (targetIntensity > currentIntensity)
@@ -172,36 +165,21 @@ namespace Resonance.Audio
                 sustainTimer -= Time.deltaTime;
 
                 if (sustainTimer <= 0f)
-                {
                     inSustain = false;
-                }
             }
             else
             {
                 currentIntensity = Mathf.Lerp(currentIntensity, targetIntensity, Time.deltaTime * releaseSpeed);
 
                 if (currentIntensity < 0.01f)
-                {
                     peakIntensity = 0f;
-                }
             }
 
-            // as a fallback for zero-division results
             if (float.IsNaN(currentIntensity))
-            {
                 currentIntensity = 0f;
-            }
 
             if (debugLog)
-            {
                 Debug.Log($"[AudioReactiveObject] Target: {targetIntensity:F3}, Current: {currentIntensity:F3}, Sustain: {sustainTimer:F2}s");
-            }
-        }
-
-        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
-        private void ResetTargetIntensity()
-        {
-            targetIntensity = 0f;
         }
 
         private void UpdateAudioFeedback(float intensity)
@@ -209,18 +187,14 @@ namespace Resonance.Audio
             bool shouldPlay = intensity > 0f;
 
             if (shouldPlay && !isFeedbackPlaying)
-            {
                 StartAudioFeedback();
-            }
             else if (!shouldPlay && isFeedbackPlaying)
-            {
                 StopAudioFeedback();
-            }
 
             if (isFeedbackPlaying)
             {
                 float volumeValue = Mathf.Clamp01(intensity) * 100f;
-                AkSoundEngine.SetRTPCValue("Reactive_Feedback_Volume", volumeValue, gameObject);
+                AkUnitySoundEngine.SetRTPCValue("Reactive_Feedback_Volume", volumeValue, gameObject);
             }
         }
 
@@ -239,9 +213,7 @@ namespace Resonance.Audio
         private void SetupMaterial()
         {
             if (targetRenderer == null)
-            {
                 targetRenderer = GetComponent<Renderer>();
-            }
 
             if (targetRenderer != null)
             {
@@ -264,22 +236,16 @@ namespace Resonance.Audio
             materialInstance.SetColor("_EmissionColor", finalEmission);
 
             if (enableAudioFeedback)
-            {
                 UpdateAudioFeedback(intensity);
-            }
         }
 
         void OnDestroy()
         {
             if (materialInstance != null)
-            {
                 Destroy(materialInstance);
-            }
 
             if (isFeedbackPlaying)
-            {
                 StopAudioFeedback();
-            }
         }
     }
 }

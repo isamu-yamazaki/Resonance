@@ -8,40 +8,25 @@ using UnityEngine;
 public class WwiseSmartReverb : MonoBehaviour
 {
     [Header("Mode")]
-    [Tooltip("If true, sets Global RTPCs. If false, sets RTPCs on target emitter")]
     public bool isGlobal = true;
-    
-    [Tooltip("Target game object for local mode (leave null for global)")]
     public GameObject targetEmitter;
 
     [Header("Wwise Parameters")]
-    [Tooltip("RTPC name for enclosure (0 = outdoor, 1 = indoor)")]
     public string enclosureParameter = "Enclosure";
-    
-    [Tooltip("RTPC name for room size (meters)")]
     public string roomSizeParameter = "RoomSize";
 
     [Header("Raycast Settings")]
-    [Tooltip("Number of rays in Fibonacci sphere")]
     [Range(10, 60)]
     public int raysCount = 30;
-    
-    [Tooltip("Maximum ray distance")]
     public float maxDistance = 50f;
-    
-    [Tooltip("Environment layer mask")]
     public LayerMask environmentLayer;
 
     [Header("Update Rate")]
-    [Tooltip("Scans per second (Hz)")]
     [Range(1f, 30f)]
     public float scanRate = 5f;
 
     [Header("Calibration")]
-    [Tooltip("Maps hit ratio to enclosure")]
     public AnimationCurve enclosureCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-    
-    [Tooltip("Maps average distance to room size")]
     public AnimationCurve roomSizeCurve = AnimationCurve.Linear(0f, 5f, 50f, 100f);
 
     [Header("Debug")]
@@ -49,35 +34,34 @@ public class WwiseSmartReverb : MonoBehaviour
     public Color hitColor = Color.red;
     public Color missColor = Color.green;
 
-    // Internal
     private Vector3[] rayDirections;
     private float lastScanTime;
     private float currentEnclosure;
     private float currentRoomSize;
     private float targetEnclosure;
     private float targetRoomSize;
+    private float lastSentEnclosure = -1f;
+    private float lastSentRoomSize = -1f;
     private const float smoothingSpeed = 5f;
+    private const float rtpcSendThreshold = 0.005f;
 
-    // Public accessors
     public float EnclosureFactor => currentEnclosure;
     public float RoomSize => currentRoomSize;
 
     void Start()
     {
         GenerateFibonacciSphere();
-        lastScanTime = -1f; // Force immediate scan
+        lastScanTime = -1f;
     }
 
     void Update()
     {
-        // Time-sliced scanning
         if (Time.time - lastScanTime >= 1f / scanRate)
         {
             PerformScan();
             lastScanTime = Time.time;
         }
 
-        // Smooth parameter updates
         SmoothParameters();
     }
 
@@ -127,7 +111,6 @@ public class WwiseSmartReverb : MonoBehaviour
             }
         }
 
-        // Calculate acoustic parameters
         float hitRatio = (float)hitCount / raysCount;
         float avgDistance = totalDistance / raysCount;
 
@@ -145,17 +128,24 @@ public class WwiseSmartReverb : MonoBehaviour
 
     void UpdateWwiseParameters()
     {
-        if (isGlobal)
+        if (Mathf.Abs(currentEnclosure - lastSentEnclosure) >= rtpcSendThreshold)
         {
-            // Global RTPCs
-            AkUnitySoundEngine.SetRTPCValue(enclosureParameter, currentEnclosure);
-            AkUnitySoundEngine.SetRTPCValue(roomSizeParameter, currentRoomSize);
+            if (isGlobal)
+                AkUnitySoundEngine.SetRTPCValue(enclosureParameter, currentEnclosure);
+            else if (targetEmitter != null)
+                AkUnitySoundEngine.SetRTPCValue(enclosureParameter, currentEnclosure, targetEmitter);
+
+            lastSentEnclosure = currentEnclosure;
         }
-        else if (targetEmitter != null)
+
+        if (Mathf.Abs(currentRoomSize - lastSentRoomSize) >= rtpcSendThreshold)
         {
-            // Local RTPCs
-            AkUnitySoundEngine.SetRTPCValue(enclosureParameter, currentEnclosure, targetEmitter);
-            AkUnitySoundEngine.SetRTPCValue(roomSizeParameter, currentRoomSize, targetEmitter);
+            if (isGlobal)
+                AkUnitySoundEngine.SetRTPCValue(roomSizeParameter, currentRoomSize);
+            else if (targetEmitter != null)
+                AkUnitySoundEngine.SetRTPCValue(roomSizeParameter, currentRoomSize, targetEmitter);
+
+            lastSentRoomSize = currentRoomSize;
         }
     }
 

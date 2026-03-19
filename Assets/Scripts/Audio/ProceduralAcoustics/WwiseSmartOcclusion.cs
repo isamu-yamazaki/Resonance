@@ -8,43 +8,25 @@ using UnityEngine;
 public class WwiseSmartOcclusion : MonoBehaviour
 {
     [Header("Wwise Parameters")]
-    [Tooltip("RTPC name for occlusion (0 = clear, 1 = blocked)")]
     public string occlusionParameter = "Occlusion";
-    
-    [Tooltip("RTPC name for diffraction")]
     public string diffractionParameter = "Diffraction";
 
     [Header("Volumetric Cone")]
-    [Tooltip("Number of rays in cone")]
     [Range(3, 12)]
     public int coneRayCount = 6;
-    
-    [Tooltip("Cone spread angle")]
     [Range(5f, 60f)]
     public float coneAngle = 30f;
-    
-    [Tooltip("Maximum check distance")]
     public float maxCheckDistance = 100f;
-    
-    [Tooltip("Occlusion layer mask")]
     public LayerMask occlusionLayer;
 
     [Header("Diffraction")]
-    [Tooltip("Enable diffraction simulation")]
     public bool enableDiffraction = true;
-    
-    [Tooltip("Near-field threshold (prevents false occlusion)")]
     public float nearFieldThreshold = 1.5f;
-    
-    [Tooltip("Diffraction curve (distance to amount)")]
     public AnimationCurve diffractionCurve = AnimationCurve.EaseInOut(0f, 1f, 5f, 0f);
 
     [Header("Optimization")]
-    [Tooltip("Scan rate (Hz)")]
     [Range(1f, 30f)]
     public float scanRate = 5f;
-    
-    [Tooltip("Distance culling")]
     public float cullingDistance = 50f;
 
     [Header("Debug")]
@@ -53,7 +35,6 @@ public class WwiseSmartOcclusion : MonoBehaviour
     public Color occludedColor = Color.red;
     public Color diffractionColor = Color.yellow;
 
-    // Internal
     private Transform listener;
     private Vector3[] coneDirections;
     private float lastScanTime;
@@ -61,9 +42,13 @@ public class WwiseSmartOcclusion : MonoBehaviour
     private float currentDiffraction;
     private float targetOcclusion;
     private float targetDiffraction;
+    private float lastSentOcclusion = -1f;
+    private float lastSentDiffraction = -1f;
+    private float listenerSearchCooldown;
+    private const float listenerSearchInterval = 1f;
     private const float smoothingSpeed = 5f;
+    private const float rtpcSendThreshold = 0.005f;
 
-    // Public accessors
     public float Occlusion => currentOcclusion;
     public float Diffraction => currentDiffraction;
 
@@ -73,13 +58,9 @@ public class WwiseSmartOcclusion : MonoBehaviour
         {
             int environmentLayer = LayerMask.NameToLayer("Environment");
             if (environmentLayer != -1)
-            {
                 occlusionLayer = 1 << environmentLayer;
-            }
             else
-            {
-                Debug.LogWarning("[WwiseSmartOcclusion] 'Environment' layer not found! Please set occlusion layer manually or create an 'Environment' layer.");
-            }
+                Debug.LogWarning("[WwiseSmartOcclusion] 'Environment' layer not found! Please set occlusion layer manually.");
         }
 
         FindListener();
@@ -92,14 +73,12 @@ public class WwiseSmartOcclusion : MonoBehaviour
         if (!ShouldProcess())
             return;
 
-        // Time-sliced scanning
         if (Time.time - lastScanTime >= 1f / scanRate)
         {
             PerformOcclusionScan();
             lastScanTime = Time.time;
         }
 
-        // Smooth updates
         SmoothParameters();
     }
 
@@ -107,13 +86,16 @@ public class WwiseSmartOcclusion : MonoBehaviour
     {
         if (listener == null)
         {
-            FindListener();
+            listenerSearchCooldown -= Time.deltaTime;
+            if (listenerSearchCooldown <= 0f)
+            {
+                FindListener();
+                listenerSearchCooldown = listenerSearchInterval;
+            }
             return false;
         }
 
-        // Distance culling
-        float distance = Vector3.Distance(transform.position, listener.position);
-        return distance <= cullingDistance;
+        return Vector3.Distance(transform.position, listener.position) <= cullingDistance;
     }
 
     void FindListener()
@@ -122,21 +104,18 @@ public class WwiseSmartOcclusion : MonoBehaviour
         if (akListener != null)
         {
             listener = akListener.transform;
+            return;
         }
-        else
-        {
-            AudioListener unityListener = FindAnyObjectByType<AudioListener>();
-            if (unityListener != null)
-            {
-                listener = unityListener.transform;
-            }
-        }
+
+        AudioListener unityListener = FindAnyObjectByType<AudioListener>();
+        if (unityListener != null)
+            listener = unityListener.transform;
     }
 
     void GenerateConeDirections()
     {
         coneDirections = new Vector3[coneRayCount];
-        coneDirections[0] = Vector3.zero; // Center ray (calculated dynamically)
+        coneDirections[0] = Vector3.zero;
 
         if (coneRayCount > 1)
         {
@@ -169,7 +148,6 @@ public class WwiseSmartOcclusion : MonoBehaviour
         bool centerIsBlocked = false;
         float minDiffractionDist = float.MaxValue;
 
-        // Center ray
         RaycastHit centerHit;
         if (Physics.Raycast(origin, dirToListener, out centerHit, distanceToListener, occlusionLayer))
         {
@@ -184,7 +162,6 @@ public class WwiseSmartOcclusion : MonoBehaviour
             Debug.DrawLine(origin, listener.position, clearColor, 1f / scanRate);
         }
 
-        // Surrounding rays
         for (int i = 1; i < coneRayCount; i++)
         {
             Vector3 localDir = coneDirections[i];
@@ -194,7 +171,6 @@ public class WwiseSmartOcclusion : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(origin, worldDir, out hit, distanceToListener, occlusionLayer))
             {
-                // Near-field logic: prevent false occlusion when next to walls
                 float distFromHitToListener = distanceToListener - hit.distance;
                 bool isNearField = (distFromHitToListener < nearFieldThreshold) && (!centerIsBlocked);
 
@@ -217,19 +193,10 @@ public class WwiseSmartOcclusion : MonoBehaviour
             }
         }
 
-        // Calculate occlusion
-        float blockRatio = (float)blockedCount / coneRayCount;
-        targetOcclusion = Mathf.Clamp01(blockRatio);
-
-        // Calculate diffraction
-        if (enableDiffraction && centerIsBlocked && minDiffractionDist < float.MaxValue)
-        {
-            targetDiffraction = diffractionCurve.Evaluate(minDiffractionDist);
-        }
-        else
-        {
-            targetDiffraction = 0f;
-        }
+        targetOcclusion = Mathf.Clamp01((float)blockedCount / coneRayCount);
+        targetDiffraction = (enableDiffraction && centerIsBlocked && minDiffractionDist < float.MaxValue)
+            ? diffractionCurve.Evaluate(minDiffractionDist)
+            : 0f;
     }
 
     void SmoothParameters()
@@ -242,19 +209,22 @@ public class WwiseSmartOcclusion : MonoBehaviour
 
     void UpdateWwiseParameters()
     {
-        AkUnitySoundEngine.SetRTPCValue(occlusionParameter, currentOcclusion, gameObject);
-        
-        if (enableDiffraction)
+        if (Mathf.Abs(currentOcclusion - lastSentOcclusion) >= rtpcSendThreshold)
+        {
+            AkUnitySoundEngine.SetRTPCValue(occlusionParameter, currentOcclusion, gameObject);
+            lastSentOcclusion = currentOcclusion;
+        }
+
+        if (enableDiffraction && Mathf.Abs(currentDiffraction - lastSentDiffraction) >= rtpcSendThreshold)
         {
             AkUnitySoundEngine.SetRTPCValue(diffractionParameter, currentDiffraction, gameObject);
+            lastSentDiffraction = currentDiffraction;
         }
     }
 
     void OnValidate()
     {
         if (coneDirections == null || coneDirections.Length != coneRayCount)
-        {
             GenerateConeDirections();
-        }
     }
 }

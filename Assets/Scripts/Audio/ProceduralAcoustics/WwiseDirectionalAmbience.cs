@@ -36,6 +36,8 @@ public class WwiseDirectionalAmbience : MonoBehaviour
     private float lastScanTime;
     private Vector3[] directions;
     private float globalEnclosure;
+    private float lastSentIndoorVolume = float.MinValue;
+    private const float rtpcSendThreshold = 0.5f; // dB threshold — indoor volume is in -96..0 range
 
     void Start()
     {
@@ -55,9 +57,7 @@ public class WwiseDirectionalAmbience : MonoBehaviour
         lastScanTime = -1f;
 
         if (autoStart)
-        {
             StartAmbience();
-        }
     }
 
     void Update()
@@ -69,10 +69,9 @@ public class WwiseDirectionalAmbience : MonoBehaviour
         if (Time.time - lastScanTime >= 1f / scanRate)
         {
             UpdateDirectionalEmitters();
+            UpdateIndoorVolume();
             lastScanTime = Time.time;
         }
-
-        UpdateIndoorVolume();
     }
 
     void InitializeDirections()
@@ -112,24 +111,19 @@ public class WwiseDirectionalAmbience : MonoBehaviour
 
         for (int i = 0; i < directionCount; i++)
         {
-            Vector3 worldDir = directions[i];
-            float openness = CalculateOpenness(headPos, worldDir);
+            float openness = CalculateOpenness(headPos, directions[i]);
             opennessValues[i] = openness;
 
             if (openness > activationThreshold)
-            {
                 activeCount++;
-            }
         }
 
         float volumeCompensation = activeCount > 0 ? -6f * Mathf.Log10(activeCount) : 0f;
 
         for (int i = 0; i < directionCount; i++)
         {
-            Vector3 worldDir = directions[i];
             float openness = opennessValues[i];
-
-            Vector3 emitterPos = listenerPos + worldDir * emitterDistance;
+            Vector3 emitterPos = listenerPos + directions[i] * emitterDistance;
             outdoorEmitters[i].transform.position = emitterPos;
 
             if (openness > activationThreshold)
@@ -137,14 +131,12 @@ public class WwiseDirectionalAmbience : MonoBehaviour
                 if (outdoorPlayingIDs[i] == AkUnitySoundEngine.AK_INVALID_PLAYING_ID)
                 {
                     if (outdoorAmbienceEvent != null && outdoorAmbienceEvent.IsValid())
-                    {
                         outdoorPlayingIDs[i] = outdoorAmbienceEvent.Post(outdoorEmitters[i]);
-                    }
                 }
 
                 float baseVolume = Mathf.Lerp(-96f, 0f, openness);
                 float compensatedVolume = baseVolume + volumeCompensation;
-                AkSoundEngine.SetRTPCValue("DirectionalAmbienceVolume", compensatedVolume, outdoorEmitters[i]);
+                AkUnitySoundEngine.SetRTPCValue("DirectionalAmbienceVolume", compensatedVolume, outdoorEmitters[i]);
             }
             else
             {
@@ -161,9 +153,7 @@ public class WwiseDirectionalAmbience : MonoBehaviour
             }
 
             if (debugLog)
-            {
                 Debug.Log($"[DirectionalAmbience] Dir {i}: Openness {openness:F2}");
-            }
         }
     }
 
@@ -179,13 +169,7 @@ public class WwiseDirectionalAmbience : MonoBehaviour
             Debug.DrawLine(origin, endPoint, rayColor, 1f / scanRate);
         }
 
-        if (!didHit)
-        {
-            return 1f;
-        }
-
-        float normalizedDist = hit.distance / rayDistance;
-        return normalizedDist;
+        return didHit ? hit.distance / rayDistance : 1f;
     }
 
     void UpdateIndoorVolume()
@@ -193,18 +177,19 @@ public class WwiseDirectionalAmbience : MonoBehaviour
         if (indoorPlayingID == AkUnitySoundEngine.AK_INVALID_PLAYING_ID)
         {
             if (debugLog)
-            {
                 Debug.LogWarning("[DirectionalAmbience] Indoor ambience not playing!");
-            }
             return;
         }
 
         float indoorVolume = Mathf.Lerp(-96f, 0f, globalEnclosure);
-        AkSoundEngine.SetRTPCValue("IndoorAmbienceVolume", indoorVolume, gameObject);
 
-        if (debugLog)
+        if (Mathf.Abs(indoorVolume - lastSentIndoorVolume) >= rtpcSendThreshold)
         {
-            Debug.Log($"[DirectionalAmbience] Indoor volume RTPC: {indoorVolume:F1} (enclosure: {globalEnclosure:F2})");
+            AkUnitySoundEngine.SetRTPCValue("IndoorAmbienceVolume", indoorVolume, gameObject);
+            lastSentIndoorVolume = indoorVolume;
+
+            if (debugLog)
+                Debug.Log($"[DirectionalAmbience] Indoor volume RTPC: {indoorVolume:F1} (enclosure: {globalEnclosure:F2})");
         }
     }
 
@@ -216,9 +201,7 @@ public class WwiseDirectionalAmbience : MonoBehaviour
         {
             indoorPlayingID = indoorAmbienceEvent.Post(gameObject);
             if (debugLog)
-            {
                 Debug.Log($"[DirectionalAmbience] Started indoor ambience, playingID: {indoorPlayingID}");
-            }
         }
         else
         {
@@ -263,22 +246,17 @@ public class WwiseDirectionalAmbience : MonoBehaviour
     void OnDisable()
     {
         if (isPlaying)
-        {
             StopAmbience();
-        }
     }
 
     void OnDestroy()
     {
-        if (outdoorEmitters != null)
+        if (outdoorEmitters == null) return;
+
+        foreach (var emitter in outdoorEmitters)
         {
-            foreach (var emitter in outdoorEmitters)
-            {
-                if (emitter != null)
-                {
-                    Destroy(emitter);
-                }
-            }
+            if (emitter != null)
+                Destroy(emitter);
         }
     }
 }
