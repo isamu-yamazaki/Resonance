@@ -41,8 +41,8 @@ namespace Resonance.PlayerController
                 return;
             }
             
-            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
-            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
+            // PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
+            // PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
         }
         
         private void OnDisable()
