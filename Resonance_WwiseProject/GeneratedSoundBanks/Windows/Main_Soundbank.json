@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{3EAF9F6A-2845-194D-82F8-CD54134BB357}",
+    "Hash": "{6AC435A5-DBC5-0A7C-A27C-CA3424208B80}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -48,6 +48,14 @@
       "CachePath": "2D/{2D98AB83-F1DD-6D72-63EF-305AC133EA0E}.wem"
      },
      {
+      "Id": "152698026",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_UI_button_hover.wav",
+      "CachePath": "B3/{B393C2A7-55C1-20DA-6AA4-E7541429F585}.wem"
+     },
+     {
       "Id": "178954702",
       "Language": "SFX",
       "Streaming": "false",
@@ -62,6 +70,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_metal_run_02.wav",
       "CachePath": "E9/{E997263F-1F3F-1175-8BD4-C6D646C2E6DD}.wem"
+     },
+     {
+      "Id": "223167884",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_UI_button_click.wav",
+      "CachePath": "15/{156CB88D-D51F-DCB6-40C0-B0D2E2053123}.wem"
      },
      {
       "Id": "251517408",
@@ -80,12 +96,28 @@
       "CachePath": "E4/{E4A78C98-054B-C357-44FF-136019D1D519}.wem"
      },
      {
+      "Id": "320214379",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_UI_shop_item_buy.wav",
+      "CachePath": "D9/{D94A74DF-BEEF-F105-0DCF-FB9B910699D4}.wem"
+     },
+     {
       "Id": "350734022",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_metal_run_05.wav",
       "CachePath": "17/{176714DE-5172-DB84-CD39-E7468B57F46E}.wem"
+     },
+     {
+      "Id": "359440859",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_UI_shop_close.wav",
+      "CachePath": "20/{20BE6388-EBC1-F63A-B6B5-65FF095E39A1}.wem"
      },
      {
       "Id": "394509402",
@@ -174,6 +206,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_gravel_land_01.wav",
       "CachePath": "8B/{8B44CA97-AF29-2FEA-839D-4370602D876E}.wem"
+     },
+     {
+      "Id": "615216494",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_UI_shop_open.wav",
+      "CachePath": "8B/{8B410331-C4EA-12BF-A70F-75F939159D7E}.wem"
      },
      {
       "Id": "644863526",
@@ -310,6 +350,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_metal_run_01.wav",
       "CachePath": "52/{52A1F936-1F9A-9F66-629C-32080999EE94}.wem"
+     },
+     {
+      "Id": "926086438",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_UI_shop_page_switch.wav",
+      "CachePath": "AC/{AC952E79-9275-9A97-8A8D-BAEBAC85FEEE}.wem"
      },
      {
       "Id": "941471142",
@@ -643,6 +691,90 @@
       ]
      },
      {
+      "Id": "1661558166",
+      "Name": "Play_UI_Button_Click",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Button_Click",
+      "GUID": "{74BD7C0B-CBBB-4C86-9626-AE41A525D599}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.19764583",
+      "DurationMax": "0.19764583",
+      "MediaRefs": [
+       {
+        "Id": "223167884"
+       }
+      ]
+     },
+     {
+      "Id": "3815471520",
+      "Name": "Play_UI_Buttton_Hover",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Buttton_Hover",
+      "GUID": "{FCF609DB-9020-4B93-8189-62929FCEF7D5}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.06933333",
+      "DurationMax": "0.06933333",
+      "MediaRefs": [
+       {
+        "Id": "152698026"
+       }
+      ]
+     },
+     {
+      "Id": "3153218754",
+      "Name": "Play_UI_Shop_Close",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Shop_Close",
+      "GUID": "{828D026E-71D8-418D-B682-6905E6250772}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.27177083",
+      "DurationMax": "0.27177083",
+      "MediaRefs": [
+       {
+        "Id": "359440859"
+       }
+      ]
+     },
+     {
+      "Id": "2394254510",
+      "Name": "Play_UI_Shop_Item_Buy",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Shop_Item_Buy",
+      "GUID": "{7A8F900D-FAE3-49E9-B72E-8E7885A4821A}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.26425",
+      "DurationMax": "0.26425",
+      "MediaRefs": [
+       {
+        "Id": "320214379"
+       }
+      ]
+     },
+     {
+      "Id": "2720966806",
+      "Name": "Play_UI_Shop_Open",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Shop_Open",
+      "GUID": "{8FB1BAAD-75C8-4499-9733-DC885D7485A1}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.9813333",
+      "DurationMax": "0.9813333",
+      "MediaRefs": [
+       {
+        "Id": "615216494"
+       }
+      ]
+     },
+     {
+      "Id": "1681007094",
+      "Name": "Play_UI_Shop_Page_Switch",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Shop_Page_Switch",
+      "GUID": "{610B3A42-FE55-46BF-85B8-9C1368BA1498}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.36266667",
+      "DurationMax": "0.36266667",
+      "MediaRefs": [
+       {
+        "Id": "926086438"
+       }
+      ]
+     },
+     {
       "Id": "3211783545",
       "Name": "Stop_Reactive_Feedback",
       "ObjectPath": "\\Events\\Default Work Unit\\Stop_Reactive_Feedback",
@@ -727,6 +859,6 @@
     ]
    }
   ],
-  "FileHash": "{FDA97E32-049D-D5D7-D2F5-26BED5974A96}"
+  "FileHash": "{744F24E1-F3BB-C857-5D04-F25A1916BCD0}"
  }
 }
