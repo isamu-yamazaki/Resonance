@@ -6714,6 +6714,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 366d413629cf5254785a853493ba40fe, type: 2}
+  updateInterval: 0.05
 --- !u!114 &1663544556
 MonoBehaviour:
   m_ObjectHideFlags: 0
