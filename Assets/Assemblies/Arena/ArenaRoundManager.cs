@@ -13,7 +13,7 @@ namespace Resonance.Assemblies.Arena
         #region Configuration
         public struct ArenaRoundManagerConfig
         {
-            public int eliminationsToWin;
+            public float ratingToWin;
             public bool autoStartNextMatch;
             public float autoStartDelaySeconds;
             public float matchStartCountdownSeconds;
@@ -21,14 +21,14 @@ namespace Resonance.Assemblies.Arena
 
             public static ArenaRoundManagerConfig Default => new()
             {
-                eliminationsToWin = 10,
+                ratingToWin =  2000f,
                 autoStartNextMatch = false,
                 autoStartDelaySeconds = 5f,
                 matchStartCountdownSeconds = 5f,
                 matchDurationSeconds = 300f,
             };
         }
-        private int eliminationsToWin = 10;
+        private float ratingToWin = 2000f;
         private float autoStartDelaySeconds = 3f;
         private bool autoStartNextMatch = false;
         private float matchDurationSeconds = 300f;
@@ -36,21 +36,23 @@ namespace Resonance.Assemblies.Arena
 
         #region State
         private ulong? currentLeader = null;
-        private int highestEliminations = 0;
+        private float highestRating = 0;
+        private bool firstKillHappened = false;
         private DateTime timeOfLastMatchStart = default;
         private Timer matchEndCheckTimer = null;
         #endregion
 
         #region Events
         public event Action<ulong?> OnMatchEnd;
-        public event Action<ulong, int> OnLeaderChanged;
+        public event Action<ulong, float> OnLeaderChanged;
+        public event Action OnFirstKill;
         public event Action<double> OnMatchTimerElapsed;
         #endregion
 
         #region Properties
-        public int EliminationsToWin => eliminationsToWin;
+        public float RatingToWin => ratingToWin;
         public ulong? CurrentLeader => currentLeader;
-        public int HighestEliminations => highestEliminations;
+        public float HighestRating => highestRating;
         public DateTime TimeOfMatchEnd => timeOfLastMatchStart.AddSeconds(matchDurationSeconds);
         public double SecondsRemainingForMatch
         {
@@ -75,7 +77,7 @@ namespace Resonance.Assemblies.Arena
             : base(tracker, config.matchStartCountdownSeconds)
         {
             autoStartNextMatch = config.autoStartNextMatch;
-            eliminationsToWin = config.eliminationsToWin;
+            ratingToWin = config.ratingToWin;
             autoStartDelaySeconds = config.autoStartDelaySeconds;
             matchDurationSeconds = config.matchDurationSeconds;
 
@@ -88,6 +90,7 @@ namespace Resonance.Assemblies.Arena
             if (matchStatTracker != null)
             {
                 matchStatTracker.OnPlayerKill += OnPlayerKilled;
+                matchStatTracker.OnAllStatsUpdated += OnAllStatsUpdated;
             }
         }
         #endregion
@@ -101,7 +104,8 @@ namespace Resonance.Assemblies.Arena
             matchState = BaseMatchState.MatchActive;
 
             currentLeader = null;
-            highestEliminations = 0;
+            highestRating = 0;
+            firstKillHappened = false;
             timeOfLastMatchStart = DateTime.Now;
 
             matchStatTracker?.ResetAllStats();
@@ -167,36 +171,44 @@ namespace Resonance.Assemblies.Arena
         {
             if (!IsMatchActive || IsMatchEnded) { return; }
 
-            PlayerMatchStats? killerStats = matchStatTracker.GetStats(killer);
-            if (killerStats is PlayerMatchStats stats)
+            if (!firstKillHappened)
             {
-                ConditionallyUpdateLeader(killer, stats);
-
-                int currentEliminations = stats.kills;
-                if (currentEliminations >= eliminationsToWin)
-                {
-                    _ = EndMatch(killer);
-                }
+                firstKillHappened = true;
+                OnFirstKill?.Invoke();
             }
         }
-
-        private int ConditionallyUpdateLeader(ulong killer, PlayerMatchStats stats)
+        
+        private void OnAllStatsUpdated(Dictionary<ulong, PlayerMatchStats> allStats)
         {
-            int currentEliminations = stats.kills;
+            if (!IsMatchActive || IsMatchEnded) { return; }
+            if (!firstKillHappened) { return; }
 
-            if (currentEliminations > highestEliminations)
+            ulong? newLeader = null;
+            float newHighestRating = 0f;
+
+            foreach (var kvp in allStats)
             {
-                highestEliminations = currentEliminations;
-                var previousLeader = currentLeader;
-                currentLeader = killer;
-
-                if (previousLeader != killer)
+                if (kvp.Value.rating > newHighestRating)
                 {
-                    OnLeaderChanged?.Invoke(killer, currentEliminations);
+                    newHighestRating = kvp.Value.rating;
+                    newLeader = kvp.Key;
                 }
             }
 
-            return currentEliminations;
+            if (newLeader.HasValue)
+            {
+                if (newHighestRating >= ratingToWin)
+                {
+                    _ = EndMatch(newLeader);
+                }
+
+                if (newLeader != currentLeader)
+                {
+                    currentLeader = newLeader;
+                    highestRating = newHighestRating;
+                    OnLeaderChanged?.Invoke(newLeader.Value, newHighestRating);
+                }
+            }
         }
         #endregion
 
@@ -217,10 +229,10 @@ namespace Resonance.Assemblies.Arena
                 });
             }
 
-            rankings = rankings.OrderByDescending(r => r.stats.kills)
-                              .ThenByDescending(r => r.stats.KDA)
-                              .ThenBy(r => r.stats.deaths)
-                              .ToList();
+            rankings = rankings.OrderByDescending(r => r.stats.rating)
+                .ThenByDescending(r => r.stats.KDA)
+                .ThenBy(r => r.stats.deaths)
+                .ToList();
 
             return rankings;
         }

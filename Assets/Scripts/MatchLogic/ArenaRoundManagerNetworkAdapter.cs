@@ -22,16 +22,17 @@ namespace Resonance.Match
         private ArenaRatingManager arenaRatingManager;
 
         #region Cached Client-Side State
-        private int cachedEliminationsToWin;
+        private float cachedRatingToWin;
         private double cachedSecondsRemainingForMatch;
 
-        public int EliminationsToWin => cachedEliminationsToWin;
+        public float RatingToWin => cachedRatingToWin;
         public double SecondsRemainingForMatch => cachedSecondsRemainingForMatch;
         #endregion
 
         #region Events
         public event Action<PlayerID?> OnMatchEnd;
-        public event Action<PlayerID, int> OnLeaderChanged;
+        public event Action<PlayerID, float> OnLeaderChanged;
+        public event Action OnFirstKill;
         public event Action<double> OnMatchTimerElapsed;
         #endregion
 
@@ -61,10 +62,11 @@ namespace Resonance.Match
             arenaRoundManager.OnMatchStart += OnArenaMatchStart;
             arenaRoundManager.OnMatchEnd += OnArenaMatchEnd;
             arenaRoundManager.OnLeaderChanged += OnArenaLeaderChanged;
+            arenaRoundManager.OnFirstKill += OnArenaFirstKill;
             arenaRoundManager.OnMatchCountdownStart += HandleMatchCountdownStart;
             arenaRoundManager.OnMatchStateChange += HandleMatchStateChange;
             arenaRoundManager.OnMatchTimerElapsed += OnArenaMatchTimerElapsed;
-            
+
             arenaRatingManager = new ArenaRatingManager(tracker, arenaRoundManager);
         }
 
@@ -75,18 +77,20 @@ namespace Resonance.Match
                 arenaRoundManager.OnMatchStart -= OnArenaMatchStart;
                 arenaRoundManager.OnMatchEnd -= OnArenaMatchEnd;
                 arenaRoundManager.OnLeaderChanged -= OnArenaLeaderChanged;
+                arenaRoundManager.OnFirstKill -= OnArenaFirstKill;
                 arenaRoundManager.OnMatchCountdownStart -= HandleMatchCountdownStart;
                 arenaRoundManager.OnMatchStateChange -= HandleMatchStateChange;
                 arenaRoundManager.OnMatchTimerElapsed -= OnArenaMatchTimerElapsed;
-                
+
                 arenaRatingManager?.Unsubscribe();
                 arenaRatingManager = null;
+                arenaRoundManager = null;
             }
         }
         #endregion
 
         #region Base Class Abstract Implementations
-        protected override void CacheMatchStartParam(int param) => cachedEliminationsToWin = param;
+        protected override void CacheMatchStartParam(int param) => cachedRatingToWin = param;
         protected override void CallStartMatchCountdown() => arenaRoundManager?.StartMatchCountdown();
         protected override bool GetRoundManagerIsMatchActive() => arenaRoundManager?.IsMatchActive ?? false;
         protected override bool GetRoundManagerIsMatchEnded() => arenaRoundManager?.IsMatchEnded ?? false;
@@ -95,7 +99,7 @@ namespace Resonance.Match
         #region Server Event Handlers
         private void OnArenaMatchStart()
         {
-            FireMatchStartObservers(arenaRoundManager.EliminationsToWin);
+            FireMatchStartObservers((int)arenaRoundManager.RatingToWin);
         }
 
         private void OnArenaMatchEnd(ulong? winner)
@@ -103,9 +107,14 @@ namespace Resonance.Match
             FireMatchEndObservers(winner);
         }
 
-        private void OnArenaLeaderChanged(ulong newLeader, int eliminations)
+        private void OnArenaLeaderChanged(ulong newLeader, float rating)
         {
-            FireLeaderChangedObservers(newLeader, eliminations);
+            FireLeaderChangedObservers(newLeader, rating);
+        }
+
+        private void OnArenaFirstKill()
+        {
+            FireFirstKillObservers();
         }
 
         private void OnArenaMatchTimerElapsed(double secondsRemaining)
@@ -124,13 +133,20 @@ namespace Resonance.Match
         }
 
         [ObserversRpc]
-        private void FireLeaderChangedObservers(ulong newLeader, int eliminations)
+        private void FireLeaderChangedObservers(ulong newLeader, float rating)
         {
-            Debug.Log($"[ArenaRoundManagerNetworkAdapter] Leader changed: {newLeader} with {eliminations} eliminations");
+            Debug.Log($"[ArenaRoundManagerNetworkAdapter] Leader changed: {newLeader} with {rating} rating");
             OnLeaderChanged?.Invoke(
                 OwnerIDExtractor.UlongToPlayerId(newLeader),
-                eliminations
+                rating
             );
+        }
+
+        [ObserversRpc]
+        private void FireFirstKillObservers()
+        {
+            Debug.Log("[ArenaRoundManagerNetworkAdapter] First kill happened");
+            OnFirstKill?.Invoke();
         }
 
         [ObserversRpc]
@@ -162,9 +178,9 @@ namespace Resonance.Match
 
         #region Getters (Client Callable)
         [ServerRpc]
-        public async Task<int> GetEliminationsToWin()
+        public async Task<float> GetRatingToWin()
         {
-            return arenaRoundManager?.EliminationsToWin ?? 0;
+            return arenaRoundManager?.RatingToWin ?? 0f;
         }
 
         [ServerRpc]
@@ -174,9 +190,9 @@ namespace Resonance.Match
         }
 
         [ServerRpc]
-        public async Task<int> GetHighestEliminations()
+        public async Task<float> GetHighestRating()
         {
-            return arenaRoundManager?.HighestEliminations ?? 0;
+            return arenaRoundManager?.HighestRating ?? 0f;
         }
 
         [ServerRpc]
