@@ -111,7 +111,7 @@ namespace Resonance.Shop
 
                 RefreshModWeaponButtons();
 
-                // 🔥 NEW: clear slot selection
+                // clear slot selection
                 activeModSlotSubTab = null;
                 modSlotEverSelected = false;
 
