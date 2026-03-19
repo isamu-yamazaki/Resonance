@@ -1,4 +1,5 @@
 using PurrNet;
+using Resonance.Match;
 using UnityEngine;
 
 namespace Resonance
@@ -38,8 +39,16 @@ namespace Resonance
             {
                 SpawnBeam();
                 SpawnLight();
+                beamObject.SetActive(false);
+                lightObject.SetActive(false);
+            }
+
+            if (ArenaRoundManagerBridge.Instance != null)
+            {
+                ArenaRoundManagerBridge.Instance.OnLeaderChanged += OnLeaderChanged;
             }
         }
+
 
         protected override void OnDespawned(bool asServer)
         {
@@ -51,8 +60,25 @@ namespace Resonance
                 Destroy(beamObject);
             if (lightObject != null)
                 Destroy(lightObject);
+
+            if (ArenaRoundManagerBridge.Instance != null)
+            {
+                ArenaRoundManagerBridge.Instance.OnLeaderChanged -= OnLeaderChanged;
+            }
         }
 
+        private void OnLeaderChanged(PlayerID id, float rating)
+        {
+            bool isLeader = owner == id;
+            if (isLeader)
+                Debug.Log($"[PlayerSpotlight] {id} has the spotlight");
+
+            if (beamObject != null)
+                beamObject.SetActive(isLeader);
+            if (lightObject != null)
+                lightObject.SetActive(isLeader);
+        }
+        
         private void SpawnBeam()
         {
             if (spotlightMaterial == null)
