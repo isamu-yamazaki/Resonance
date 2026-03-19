@@ -322,6 +322,7 @@ GameObject:
   - component: {fileID: 1311654643413597327}
   - component: {fileID: -4167557731683194747}
   - component: {fileID: 6963169189660805957}
+  - component: {fileID: -6030594833308951699}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -1136,3 +1137,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteract
   player: {fileID: 6809321870534573542}
+--- !u!114 &-6030594833308951699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103cbf7204e768746879e6fb3d2697e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerSpotlight
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  spotlightMaterial: {fileID: 2100000, guid: ae81d471c5be8d74094053120d3f7523, type: 2}
+  beamColor: {r: 0.6, g: 0.85, b: 1, a: 1}
+  beamIntensity: 2
+  beamWidth: 10
+  beamHeight: 20
+  lightIntensity: 500
+  lightRange: 25
+  lightSpotAngle: 30
