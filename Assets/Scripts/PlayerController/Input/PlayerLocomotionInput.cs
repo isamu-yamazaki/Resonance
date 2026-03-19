@@ -33,8 +33,8 @@ namespace Resonance.PlayerController
                 return;
             }
             
-            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
-            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.AddCallbacks(this);
+            // PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
+            // PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.AddCallbacks(this);
         }
 
         private void OnDisable()
