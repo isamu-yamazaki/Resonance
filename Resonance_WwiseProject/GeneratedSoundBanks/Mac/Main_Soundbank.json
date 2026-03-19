@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{6AC435A5-DBC5-0A7C-A27C-CA3424208B80}",
+    "Hash": "{A8BFA27A-673F-A412-5BD2-F3B2C33D7AF1}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -705,9 +705,9 @@
       ]
      },
      {
-      "Id": "3815471520",
-      "Name": "Play_UI_Buttton_Hover",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Buttton_Hover",
+      "Id": "310530060",
+      "Name": "Play_UI_Button_Hover",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Button_Hover",
       "GUID": "{FCF609DB-9020-4B93-8189-62929FCEF7D5}",
       "DurationType": "OneShot",
       "DurationMin": "0.06933333",
@@ -859,6 +859,6 @@
     ]
    }
   ],
-  "FileHash": "{904CEA78-5D16-18AD-F715-8DDD2BA11E5C}"
+  "FileHash": "{38C37473-8F40-DB11-DD23-9607BF53AA7B}"
  }
 }

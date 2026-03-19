@@ -1,5 +1,6 @@
 Event	ID	Name			Wwise Object Path	Notes
 	278146749	Play_GlassShardLand			\Default Work Unit\Play_GlassShardLand	
+	310530060	Play_UI_Button_Hover			\Default Work Unit\Play_UI_Button_Hover	
 	1529325343	Play_IndoorAmbience			\Default Work Unit\Play_IndoorAmbience	
 	1602358412	Play_Footstep			\Default Work Unit\Play_Footstep	
 	1661558166	Play_UI_Button_Click			\Default Work Unit\Play_UI_Button_Click	
@@ -13,7 +14,6 @@ Event	ID	Name			Wwise Object Path	Notes
 	3211564518	Play_Test_Sound			\Default Work Unit\Play_Test_Sound	
 	3211783545	Stop_Reactive_Feedback			\Default Work Unit\Stop_Reactive_Feedback	
 	3267244670	Play_OutdoorAmbience			\Default Work Unit\Play_OutdoorAmbience	
-	3815471520	Play_UI_Buttton_Hover			\Default Work Unit\Play_UI_Buttton_Hover	
 
 Switch Group	ID	Name			Wwise Object Path	Notes
 	63790334	SurfaceType			\Default Work Unit\SurfaceType	

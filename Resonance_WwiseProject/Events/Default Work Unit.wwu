@@ -105,7 +105,7 @@
 						</Action>
 					</ChildrenList>
 				</Event>
-				<Event Name="Play_UI_Buttton_Hover" ID="{FCF609DB-9020-4B93-8189-62929FCEF7D5}">
+				<Event Name="Play_UI_Button_Hover" ID="{FCF609DB-9020-4B93-8189-62929FCEF7D5}">
 					<ChildrenList>
 						<Action Name="" ID="{8F06561E-8E46-4945-B6CC-913B76278D0B}" ShortID="653619431">
 							<ReferenceList>

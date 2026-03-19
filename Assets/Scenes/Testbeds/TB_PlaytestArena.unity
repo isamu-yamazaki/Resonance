@@ -3539,6 +3539,7 @@ GameObject:
   - component: {fileID: 133407675}
   - component: {fileID: 133407674}
   - component: {fileID: 133407673}
+  - component: {fileID: 133407676}
   m_Layer: 5
   m_Name: UpperTab
   m_TagString: Untagged
@@ -3648,6 +3649,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133407671}
   m_CullTransparentMesh: 1
+--- !u!114 &133407676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133407671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &138621196
 GameObject:
   m_ObjectHideFlags: 0
@@ -14934,6 +14951,7 @@ GameObject:
   - component: {fileID: 401157504}
   - component: {fileID: 401157503}
   - component: {fileID: 401157502}
+  - component: {fileID: 401157505}
   m_Layer: 5
   m_Name: Augment Tab
   m_TagString: Untagged
@@ -15043,6 +15061,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 401157500}
   m_CullTransparentMesh: 1
+--- !u!114 &401157505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401157500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &402365139
 GameObject:
   m_ObjectHideFlags: 0
@@ -16820,6 +16854,7 @@ GameObject:
   - component: {fileID: 462759965}
   - component: {fileID: 462759964}
   - component: {fileID: 462759963}
+  - component: {fileID: 462759966}
   m_Layer: 5
   m_Name: PrimaryTab
   m_TagString: Untagged
@@ -16929,6 +16964,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 462759961}
   m_CullTransparentMesh: 1
+--- !u!114 &462759966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462759961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &463464438
 GameObject:
   m_ObjectHideFlags: 0
@@ -33420,6 +33471,10 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: af50a7325c68acf42be426a770bf622f, type: 2}
+  buttonClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: fddd338db2839d249926288e3b01c952, type: 2}
 --- !u!114 &787411394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36856,6 +36911,7 @@ GameObject:
   - component: {fileID: 917600722}
   - component: {fileID: 917600721}
   - component: {fileID: 917600720}
+  - component: {fileID: 917600723}
   m_Layer: 5
   m_Name: Slot Tab (1)
   m_TagString: Untagged
@@ -36965,6 +37021,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 917600718}
   m_CullTransparentMesh: 1
+--- !u!114 &917600723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917600718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &922112484
 GameObject:
   m_ObjectHideFlags: 0
@@ -45633,6 +45705,7 @@ GameObject:
   - component: {fileID: 1076083486}
   - component: {fileID: 1076083485}
   - component: {fileID: 1076083484}
+  - component: {fileID: 1076083487}
   m_Layer: 5
   m_Name: Slot Tab (3)
   m_TagString: Untagged
@@ -45742,6 +45815,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1076083482}
   m_CullTransparentMesh: 1
+--- !u!114 &1076083487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1076083482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &1097237653
 GameObject:
   m_ObjectHideFlags: 0
@@ -47059,6 +47148,7 @@ GameObject:
   - component: {fileID: 1145562500}
   - component: {fileID: 1145562499}
   - component: {fileID: 1145562498}
+  - component: {fileID: 1145562501}
   m_Layer: 5
   m_Name: Mod Tab
   m_TagString: Untagged
@@ -47168,6 +47258,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1145562496}
   m_CullTransparentMesh: 1
+--- !u!114 &1145562501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145562496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &1155890549
 GameObject:
   m_ObjectHideFlags: 0
@@ -49910,6 +50016,7 @@ GameObject:
   - component: {fileID: 1224728340}
   - component: {fileID: 1224728339}
   - component: {fileID: 1224728338}
+  - component: {fileID: 1224728341}
   m_Layer: 5
   m_Name: SecondaryTab
   m_TagString: Untagged
@@ -50019,6 +50126,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1224728336}
   m_CullTransparentMesh: 1
+--- !u!114 &1224728341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224728336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &1225290915
 GameObject:
   m_ObjectHideFlags: 0
@@ -53930,6 +54053,7 @@ GameObject:
   - component: {fileID: 1331988235}
   - component: {fileID: 1331988234}
   - component: {fileID: 1331988233}
+  - component: {fileID: 1331988236}
   m_Layer: 5
   m_Name: Slot Tab (5)
   m_TagString: Untagged
@@ -54039,6 +54163,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1331988231}
   m_CullTransparentMesh: 1
+--- !u!114 &1331988236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331988231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &1335149816
 GameObject:
   m_ObjectHideFlags: 0
@@ -54429,6 +54569,7 @@ GameObject:
   - component: {fileID: 1346416675}
   - component: {fileID: 1346416674}
   - component: {fileID: 1346416673}
+  - component: {fileID: 1346416676}
   m_Layer: 5
   m_Name: Slot Tab (1)
   m_TagString: Untagged
@@ -54538,6 +54679,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346416671}
   m_CullTransparentMesh: 1
+--- !u!114 &1346416676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346416671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!43 &1347809101
 Mesh:
   m_ObjectHideFlags: 0
@@ -61751,6 +61908,7 @@ GameObject:
   - component: {fileID: 1607046797}
   - component: {fileID: 1607046796}
   - component: {fileID: 1607046795}
+  - component: {fileID: 1607046798}
   m_Layer: 5
   m_Name: Slot Tab (2)
   m_TagString: Untagged
@@ -61860,6 +62018,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607046793}
   m_CullTransparentMesh: 1
+--- !u!114 &1607046798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607046793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!43 &1612801396
 Mesh:
   m_ObjectHideFlags: 0
@@ -63116,6 +63290,7 @@ GameObject:
   - component: {fileID: 1660625620}
   - component: {fileID: 1660625619}
   - component: {fileID: 1660625618}
+  - component: {fileID: 1660625621}
   m_Layer: 5
   m_Name: Slot Tab
   m_TagString: Untagged
@@ -63225,6 +63400,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1660625616}
   m_CullTransparentMesh: 1
+--- !u!114 &1660625621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660625616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &1661596475
 GameObject:
   m_ObjectHideFlags: 0
@@ -68049,6 +68240,7 @@ GameObject:
   - component: {fileID: 1767431930}
   - component: {fileID: 1767431929}
   - component: {fileID: 1767431928}
+  - component: {fileID: 1767431931}
   m_Layer: 5
   m_Name: Slot Tab (4)
   m_TagString: Untagged
@@ -68158,6 +68350,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1767431926}
   m_CullTransparentMesh: 1
+--- !u!114 &1767431931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767431926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!43 &1773970844
 Mesh:
   m_ObjectHideFlags: 0
@@ -69815,6 +70023,7 @@ GameObject:
   - component: {fileID: 1823220742}
   - component: {fileID: 1823220741}
   - component: {fileID: 1823220740}
+  - component: {fileID: 1823220743}
   m_Layer: 5
   m_Name: Slot Tab
   m_TagString: Untagged
@@ -69924,6 +70133,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1823220738}
   m_CullTransparentMesh: 1
+--- !u!114 &1823220743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823220738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &1823501992
 GameObject:
   m_ObjectHideFlags: 0
@@ -74100,6 +74325,7 @@ GameObject:
   - component: {fileID: 1893712184}
   - component: {fileID: 1893712183}
   - component: {fileID: 1893712182}
+  - component: {fileID: 1893712185}
   m_Layer: 5
   m_Name: Weapon Tab
   m_TagString: Untagged
@@ -74209,6 +74435,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1893712180}
   m_CullTransparentMesh: 1
+--- !u!114 &1893712185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893712180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &1896297283
 GameObject:
   m_ObjectHideFlags: 0
@@ -75278,6 +75520,7 @@ GameObject:
   - component: {fileID: 1954954686}
   - component: {fileID: 1954954685}
   - component: {fileID: 1954954684}
+  - component: {fileID: 1954954687}
   m_Layer: 5
   m_Name: LowerTab
   m_TagString: Untagged
@@ -75387,6 +75630,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1954954682}
   m_CullTransparentMesh: 1
+--- !u!114 &1954954687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954954682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+  buttonHoverEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: a1ee70215744cbd44813351cd77897a1, type: 2}
 --- !u!1 &1956581392
 GameObject:
   m_ObjectHideFlags: 0

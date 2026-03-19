@@ -22,7 +22,7 @@ namespace AK
         static const AkUniqueID PLAY_REACTIVE_FEEDBACK = 3062989335U;
         static const AkUniqueID PLAY_TEST_SOUND = 3211564518U;
         static const AkUniqueID PLAY_UI_BUTTON_CLICK = 1661558166U;
-        static const AkUniqueID PLAY_UI_BUTTTON_HOVER = 3815471520U;
+        static const AkUniqueID PLAY_UI_BUTTON_HOVER = 310530060U;
         static const AkUniqueID PLAY_UI_SHOP_CLOSE = 3153218754U;
         static const AkUniqueID PLAY_UI_SHOP_ITEM_BUY = 2394254510U;
         static const AkUniqueID PLAY_UI_SHOP_OPEN = 2720966806U;

@@ -67,6 +67,9 @@ namespace Resonance.Shop
         [SerializeField] private AK.Wwise.Event shopCloseEvent;
         [SerializeField] private AK.Wwise.Event shopPageSwitchEvent;
         [SerializeField] private AK.Wwise.Event shopItemBuyEvent;
+        [SerializeField] private AK.Wwise.Event buttonClickEvent;
+
+        private bool isInitialized;
 
         private Button activeMainTab;
         private Button activeWeaponSubTab;
@@ -272,6 +275,8 @@ namespace Resonance.Shop
 
             // Populate
             PopulateWeapons();
+
+            isInitialized = true;
         }
 
         private PlayerEquip GetPlayerEquip()
@@ -320,7 +325,7 @@ namespace Resonance.Shop
             SetButtonSelected(button, true);
             activeMainTab = button;
 
-            if (shopPageSwitchEvent != null && shopPageSwitchEvent.IsValid())
+            if (isInitialized && shopPageSwitchEvent != null && shopPageSwitchEvent.IsValid())
                 shopPageSwitchEvent.Post(gameObject);
         }
 
@@ -329,6 +334,9 @@ namespace Resonance.Shop
             SetButtonSelected(activeWeaponSubTab, false);
             SetButtonSelected(button, true);
             activeWeaponSubTab = button;
+
+            if (isInitialized && buttonClickEvent != null && buttonClickEvent.IsValid())
+                buttonClickEvent.Post(gameObject);
         }
 
         private void SwitchAugmentSubTab(Button button)
@@ -336,6 +344,9 @@ namespace Resonance.Shop
             SetButtonSelected(activeAugmentSubTab, false);
             SetButtonSelected(button, true);
             activeAugmentSubTab = button;
+
+            if (isInitialized && buttonClickEvent != null && buttonClickEvent.IsValid())
+                buttonClickEvent.Post(gameObject);
         }
 
         private void SwitchModWeaponSubTab(Button button)
@@ -343,6 +354,9 @@ namespace Resonance.Shop
             SetButtonSelected(activeModWeaponSubTab, false);
             SetButtonSelected(button, true);
             activeModWeaponSubTab = button;
+
+            if (isInitialized && buttonClickEvent != null && buttonClickEvent.IsValid())
+                buttonClickEvent.Post(gameObject);
         }
 
         private void SwitchModSlotSubTab(Button button)
@@ -350,6 +364,9 @@ namespace Resonance.Shop
             SetButtonSelected(activeModSlotSubTab, false);
             SetButtonSelected(button, true);
             activeModSlotSubTab = button;
+
+            if (isInitialized && buttonClickEvent != null && buttonClickEvent.IsValid())
+                buttonClickEvent.Post(gameObject);
         }
 
         private void SetButtonSelected(Button button, bool selected)
