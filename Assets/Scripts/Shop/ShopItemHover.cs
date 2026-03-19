@@ -4,25 +4,21 @@ using Resonance.Combat.Weapons;
 
 public class ShopItemHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private WeaponProperties weapon;                 // The weapon this shop item represents
-    private WeaponStatsDisplay statsDisplay;         // Reference to the stats panel
+    private WeaponProperties weapon;
+    private WeaponStatsDisplay statsDisplay;
 
-    public void Setup(WeaponProperties weapon)
+    // Pass in the display directly
+    public void Setup(WeaponProperties weapon, WeaponStatsDisplay display)
     {
         this.weapon = weapon;
-
-        // Find the panel in the scene at runtime
-        if (statsDisplay == null)
-        {
-            statsDisplay = FindObjectOfType<WeaponStatsDisplay>();
-        }
+        this.statsDisplay = display;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (weapon != null && statsDisplay != null)
         {
-            statsDisplay.ShowStats(weapon);  // Show the panel
+            statsDisplay.ShowStats(weapon);
         }
     }
 
@@ -30,7 +26,7 @@ public class ShopItemHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (statsDisplay != null)
         {
-            statsDisplay.Hide();             // Hide the panel
+            statsDisplay.Hide();
         }
     }
 }
