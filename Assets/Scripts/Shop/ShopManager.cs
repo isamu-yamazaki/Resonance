@@ -570,18 +570,19 @@ namespace Resonance.Shop
             PlayerInventory inventory = GetPlayerInventory();
 
             if (inventory == null)
-            {
                 return;
-            }
 
             WeaponProperties targetWeapon = selectedModWeaponSlot == WeaponSlot.Primary
                 ? inventory.weaponInventory[0]
                 : inventory.weaponInventory[1];
 
             if (targetWeapon == null)
-            {
                 return;
-            }
+
+            // Remove existing mod in the same slot if present
+            WeaponModProperties existing = targetWeapon.ModList.FirstOrDefault(m => m != null && m.Slot == mod.Slot);
+            if (existing != null)
+                targetWeapon.ModList.Remove(existing);
 
             targetWeapon.ModList.Add(mod);
 
