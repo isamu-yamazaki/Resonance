@@ -21525,7 +21525,7 @@ GameObject:
   - component: {fileID: 515581300}
   m_Layer: 0
   m_Name: Main Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69496,7 +69496,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1228576004}
+  m_Mesh: {fileID: 1628451498}
 --- !u!33 &1668947728
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -73934,7 +73934,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1825158974}
+  m_Mesh: {fileID: 915058931}
 --- !u!33 &1755871312
 MeshFilter:
   m_ObjectHideFlags: 10
