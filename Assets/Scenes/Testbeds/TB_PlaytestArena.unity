@@ -33404,6 +33404,22 @@ MonoBehaviour:
   modItemSpawn: {fileID: 802666837}
   shopItemPrefab: {fileID: 4640606343781412128, guid: ae83a8f6f711c1b44beba717b8be134e, type: 3}
   weaponStatsDisplay: {fileID: 2067273187}
+  shopOpenEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 9d5a1dafe29974c43b6438a6cee9ac67, type: 2}
+  shopCloseEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 7aced40db1806df4e8ee1b28ebabfef3, type: 2}
+  shopPageSwitchEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: b81d63a88a20c1a49a94b5a49b98aaad, type: 2}
+  shopItemBuyEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: af50a7325c68acf42be426a770bf622f, type: 2}
 --- !u!114 &787411394
 MonoBehaviour:
   m_ObjectHideFlags: 0
