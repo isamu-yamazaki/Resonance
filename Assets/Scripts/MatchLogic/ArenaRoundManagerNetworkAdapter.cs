@@ -19,6 +19,7 @@ namespace Resonance.Match
     {
         private ArenaRoundManager.ArenaRoundManagerConfig config;
         private ArenaRoundManager arenaRoundManager;
+        private ArenaRatingManager arenaRatingManager;
 
         #region Cached Client-Side State
         private int cachedEliminationsToWin;
@@ -63,6 +64,8 @@ namespace Resonance.Match
             arenaRoundManager.OnMatchCountdownStart += HandleMatchCountdownStart;
             arenaRoundManager.OnMatchStateChange += HandleMatchStateChange;
             arenaRoundManager.OnMatchTimerElapsed += OnArenaMatchTimerElapsed;
+            
+            arenaRatingManager = new ArenaRatingManager(tracker, arenaRoundManager);
         }
 
         protected override void DestroyRoundManager()
@@ -75,7 +78,9 @@ namespace Resonance.Match
                 arenaRoundManager.OnMatchCountdownStart -= HandleMatchCountdownStart;
                 arenaRoundManager.OnMatchStateChange -= HandleMatchStateChange;
                 arenaRoundManager.OnMatchTimerElapsed -= OnArenaMatchTimerElapsed;
-                arenaRoundManager = null;
+                
+                arenaRatingManager?.Unsubscribe();
+                arenaRatingManager = null;
             }
         }
         #endregion

@@ -10,6 +10,8 @@ namespace Resonance.Assemblies.MatchStat
         public int assists;
         public int killStreak;
         public int bestKillStreak;
+        
+        public float rating;
 
         /// <summary>
         /// Total damage dealt by the player to all players for the game.
@@ -29,7 +31,8 @@ namespace Resonance.Assemblies.MatchStat
             int? assists = null,
             int? killStreak = null,
             int? bestKillStreak = null,
-            float? totalDamageDealt = null)
+            float? totalDamageDealt = null, 
+            float? rating = null)
         {
             return new PlayerMatchStats
             {
@@ -38,7 +41,8 @@ namespace Resonance.Assemblies.MatchStat
                 assists = assists ?? this.assists,
                 killStreak = killStreak ?? this.killStreak,
                 bestKillStreak = bestKillStreak ?? this.bestKillStreak,
-                totalDamageDealt = totalDamageDealt ?? this.totalDamageDealt
+                totalDamageDealt = totalDamageDealt ?? this.totalDamageDealt,
+                rating = rating ?? this.rating
             };
         }
 
@@ -65,6 +69,11 @@ namespace Resonance.Assemblies.MatchStat
         public PlayerMatchStats RecordDamage(float damage)
         {
             return With(totalDamageDealt: totalDamageDealt + damage);
+        }
+
+        public PlayerMatchStats RecordRating(float amount)
+        {
+            return With(rating: rating + amount);
         }
     }
 }
