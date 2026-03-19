@@ -356,6 +356,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15156e7f57bff964485891eba8344bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.Providers.SteamLobbyProvider
+  lobbyType: 2
+  maxLobbiesToFind: 10
+  handleSteamInit: 1
 --- !u!1 &92920406
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +443,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.75
+  m_fontSize: 42.45
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1444,7 +1447,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 706456176}
   m_HandleRect: {fileID: 706456175}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3601,7 +3604,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.85
+  m_fontSize: 35.1
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5363,7 +5366,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 843194953}
   m_HandleRect: {fileID: 843194952}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 1.0000036
   m_Size: 0.9724757
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5866,7 +5869,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 43.75
+  m_fontSize: 44.05
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
