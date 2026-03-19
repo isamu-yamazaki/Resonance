@@ -1159,6 +1159,9 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   spotlightMaterial: {fileID: 2100000, guid: ae81d471c5be8d74094053120d3f7523, type: 2}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 257
   beamColor: {r: 0.6, g: 0.85, b: 1, a: 1}
   beamIntensity: 2
   beamWidth: 10

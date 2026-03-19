@@ -21,11 +21,14 @@ namespace Resonance
         [SerializeField] private float lightIntensity = 5f;
         [SerializeField] private float lightRange = 25f;
         [SerializeField] private float lightSpotAngle = 30f;
+        [SerializeField] private float lightSmoothSpeed = 5f;
 
         private GameObject beamObject;
         private GameObject lightObject;
         private Material beamMaterialInstance;
         private MeshRenderer beamRenderer;
+        private Light spotLight;
+        private float lastKnownGroundY = 0f;
 
         protected override void OnSpawned(bool asServer)
         {
@@ -60,8 +63,6 @@ namespace Resonance
 
             beamObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             beamObject.name = "PlayerSpotlight_Beam";
-
-            // Detach from player — we'll manually update position in Update
             beamObject.transform.SetParent(null);
 
             Destroy(beamObject.GetComponent<CapsuleCollider>());
@@ -77,55 +78,52 @@ namespace Resonance
         private void SpawnLight()
         {
             lightObject = new GameObject("PlayerSpotlight_Light");
-
-            // Also detach light — manually tracked
             lightObject.transform.SetParent(null);
             lightObject.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
 
-            Light spotlight = lightObject.AddComponent<Light>();
-            spotlight.type = LightType.Spot;
-            spotlight.color = beamColor;
-            spotlight.intensity = lightIntensity;
-            spotlight.range = lightRange;
-            spotlight.spotAngle = lightSpotAngle;
+            spotLight = lightObject.AddComponent<Light>();
+            spotLight.type = LightType.Spot;
+            spotLight.color = beamColor;
+            spotLight.intensity = lightIntensity;
+            spotLight.range = lightRange;
+            spotLight.spotAngle = lightSpotAngle;
         }
 
         private void LateUpdate()
         {
             if (beamObject == null && lightObject == null) return;
 
-            // Raycast down from high above the player to find the ground
-            Vector3 playerXZ = new Vector3(transform.position.x, 0f, transform.position.z);
-            Vector3 rayOrigin = new Vector3(transform.position.x, transform.position.y + beamHeight, transform.position.z);
-
-            float groundY = 0f;
+            // Raycast downward from player feet — ignore anything above
+            Vector3 rayOrigin = transform.position;
             if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, beamHeight * 2f, groundLayer))
             {
-                groundY = hit.point.y;
-            }
-            else
-            {
-                // Fallback — assume flat ground at y=0
-                groundY = 0f;
+                if (hit.point.y < transform.position.y)
+                    lastKnownGroundY = hit.point.y;
             }
 
+            float groundY = lastKnownGroundY;
             float topY = groundY + beamHeight;
-            float actualHeight = topY - groundY; // = beamHeight, but correct if terrain varies
+            float actualHeight = topY - groundY;
             float centerY = groundY + actualHeight * 0.5f;
 
-            // Position beam centered between ground and top
             if (beamObject != null)
             {
-                beamObject.transform.position = new Vector3(transform.position.x, centerY, transform.position.z);
+                Vector3 targetBeamPos = new Vector3(transform.position.x, centerY, transform.position.z);
+                beamObject.transform.position = Vector3.Lerp(beamObject.transform.position, targetBeamPos, Time.deltaTime * lightSmoothSpeed);
                 beamObject.transform.rotation = Quaternion.identity;
                 beamObject.transform.localScale = new Vector3(beamWidth, actualHeight * 0.5f, beamWidth);
             }
 
-            // Position light at the top of the beam pointing down
-            if (lightObject != null)
+            if (lightObject != null && spotLight != null)
             {
-                lightObject.transform.position = new Vector3(transform.position.x, topY, transform.position.z);
+                Vector3 targetLightPos = new Vector3(transform.position.x, topY, transform.position.z);
+                lightObject.transform.position = Vector3.Lerp(lightObject.transform.position, targetLightPos, Time.deltaTime * lightSmoothSpeed);
                 lightObject.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
+                float playerHeightAboveGround = transform.position.y - groundY;
+                float heightRatio = Mathf.Clamp01(playerHeightAboveGround / beamHeight);
+                float targetIntensity = Mathf.Lerp(lightIntensity, 0f, heightRatio);
+                spotLight.intensity = Mathf.Lerp(spotLight.intensity, targetIntensity, Time.deltaTime * lightSmoothSpeed);
             }
         }
 
@@ -138,16 +136,12 @@ namespace Resonance
                 beamMaterialInstance.SetFloat("_Intensity", beamIntensity);
             }
 
-            if (lightObject != null)
+            if (spotLight != null)
             {
-                Light spotlight = lightObject.GetComponent<Light>();
-                if (spotlight != null)
-                {
-                    spotlight.color = beamColor;
-                    spotlight.intensity = lightIntensity;
-                    spotlight.range = lightRange;
-                    spotlight.spotAngle = lightSpotAngle;
-                }
+                spotLight.color = beamColor;
+                spotLight.intensity = lightIntensity;
+                spotLight.range = lightRange;
+                spotLight.spotAngle = lightSpotAngle;
             }
         }
 #endif
