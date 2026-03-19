@@ -59,8 +59,14 @@ namespace Resonance.Shop
 
         [Header("Shop Item Prefab")]
         [SerializeField] private GameObject shopItemPrefab;
-        
+
         [SerializeField] private WeaponStatsDisplay weaponStatsDisplay;
+
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event shopOpenEvent;
+        [SerializeField] private AK.Wwise.Event shopCloseEvent;
+        [SerializeField] private AK.Wwise.Event shopPageSwitchEvent;
+        [SerializeField] private AK.Wwise.Event shopItemBuyEvent;
 
         private Button activeMainTab;
         private Button activeWeaponSubTab;
@@ -261,7 +267,7 @@ namespace Resonance.Shop
             activeModWeaponSubTab = modSecondaryButton;
             SwitchModWeaponSubTab(modSecondaryButton);
             selectedModWeaponSlot = WeaponSlot.Secondary;
-            
+
             selectedModSlot = ModSlot.Barrel;
 
             // Populate
@@ -313,6 +319,9 @@ namespace Resonance.Shop
             SetButtonSelected(activeMainTab, false);
             SetButtonSelected(button, true);
             activeMainTab = button;
+
+            if (shopPageSwitchEvent != null && shopPageSwitchEvent.IsValid())
+                shopPageSwitchEvent.Post(gameObject);
         }
 
         private void SwitchWeaponSubTab(Button button)
@@ -349,7 +358,7 @@ namespace Resonance.Shop
 
             Color active = Color.white;
             Color inactive = new Color(0.5f, 0.5f, 0.5f);
-            Color disabled = new Color(0.3f, 0.3f, 0.3f); // darker gray
+            Color disabled = new Color(0.3f, 0.3f, 0.3f);
 
             ColorBlock colors = button.colors;
 
@@ -409,7 +418,7 @@ namespace Resonance.Shop
                     selectedModWeaponSlot = WeaponSlot.Primary;
                 }
             }
-            
+
             SwitchModWeaponSubTab(activeModWeaponSubTab);
         }
 
@@ -444,7 +453,7 @@ namespace Resonance.Shop
                 GameObject go = Instantiate(shopItemPrefab, weaponItemSpawn.transform);
                 ShopItem item = go.GetComponent<ShopItem>();
                 item.SetupWeapon(weapon);
-                
+
                 ShopItemHover hover = go.GetComponent<ShopItemHover>();
                 if (hover != null)
                 {
@@ -549,6 +558,9 @@ namespace Resonance.Shop
                 inventory.AddWeapon(weapon);
             }
 
+            if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
+                shopItemBuyEvent.Post(gameObject);
+
             inventoryDisplay.Refresh();
         }
 
@@ -562,6 +574,10 @@ namespace Resonance.Shop
             }
 
             equip.EquipAugment(augment);
+
+            if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
+                shopItemBuyEvent.Post(gameObject);
+
             inventoryDisplay.Refresh();
         }
 
@@ -586,6 +602,10 @@ namespace Resonance.Shop
             targetWeapon.ModList.Add(mod);
 
             GetPlayerShooter()?.RefreshWeaponStats();
+
+            if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
+                shopItemBuyEvent.Post(gameObject);
+
             inventoryDisplay.Refresh();
         }
 
@@ -607,6 +627,9 @@ namespace Resonance.Shop
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
 
+                if (shopCloseEvent != null && shopCloseEvent.IsValid())
+                    shopCloseEvent.Post(gameObject);
+
                 playerState?.SetPlayerMovementState(PlayerMovementState.Idling);
             }
             else
@@ -614,6 +637,9 @@ namespace Resonance.Shop
                 shopMenu.SetActive(true);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+
+                if (shopOpenEvent != null && shopOpenEvent.IsValid())
+                    shopOpenEvent.Post(gameObject);
 
                 playerState?.SetPlayerMovementState(PlayerMovementState.InShop);
                 RefreshModWeaponButtons();
