@@ -141,6 +141,21 @@ namespace Resonance.Match
         {
             _tracker?.RecordDeath(idPrimitive);
         }
+        
+        public void RecordMiss(GameObject player)
+        {
+            if (OwnerIDExtractor.TryExtractPlayerIds(player, out ulong id))
+            {
+                Debug.Log($"[MatchStatNetworkAdapter] Logging miss: id={id}");
+                RecordMiss_Server(id);
+            }
+        }
+
+        [ServerRpc]
+        private void RecordMiss_Server(ulong id)
+        {
+            _tracker?.RecordMiss(id);
+        }
 
         public void RegisterPlayer(GameObject player)
         {
