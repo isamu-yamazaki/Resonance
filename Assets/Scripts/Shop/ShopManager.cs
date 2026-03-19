@@ -59,6 +59,8 @@ namespace Resonance.Shop
 
         [Header("Shop Item Prefab")]
         [SerializeField] private GameObject shopItemPrefab;
+        
+        [SerializeField] private WeaponStatsDisplay weaponStatsDisplay;
 
         private Button activeMainTab;
         private Button activeWeaponSubTab;
@@ -90,6 +92,7 @@ namespace Resonance.Shop
 
         private void Start()
         {
+            // Button Listeners
             weaponTabButton.onClick.AddListener(() =>
             {
                 SwitchMainTab(weaponBuyTab, weaponTabButton);
@@ -105,7 +108,21 @@ namespace Resonance.Shop
             modTabButton.onClick.AddListener(() =>
             {
                 SwitchMainTab(modBuyTab, modTabButton);
+
                 RefreshModWeaponButtons();
+
+                // 🔥 NEW: clear slot selection
+                activeModSlotSubTab = null;
+                modSlotEverSelected = false;
+
+                // Turn all slot buttons gray
+                SetButtonSelected(modBarrelButton, false);
+                SetButtonSelected(modGripButton, false);
+                SetButtonSelected(modStockButton, false);
+                SetButtonSelected(modMagazineButton, false);
+                SetButtonSelected(modOpticButton, false);
+                SetButtonSelected(modSpecialButton, false);
+
                 PopulateMods();
             });
 
@@ -201,9 +218,53 @@ namespace Resonance.Shop
                 PopulateMods();
             });
 
+            // RESET ALL BUTTON VISUALS
+            // Main tabs
+            SetButtonSelected(weaponTabButton, false);
+            SetButtonSelected(augmentTabButton, false);
+            SetButtonSelected(modTabButton, false);
+
+            // Weapon tabs
+            SetButtonSelected(weaponPrimaryButton, false);
+            SetButtonSelected(weaponSecondaryButton, false);
+
+            // Augment tabs
+            SetButtonSelected(augmentUpperButton, false);
+            SetButtonSelected(augmentLowerButton, false);
+
+            // Mod weapon tabs
+            SetButtonSelected(modPrimaryButton, false);
+            SetButtonSelected(modSecondaryButton, false);
+
+            // Mod slot tabs
+            SetButtonSelected(modBarrelButton, false);
+            SetButtonSelected(modGripButton, false);
+            SetButtonSelected(modStockButton, false);
+            SetButtonSelected(modMagazineButton, false);
+            SetButtonSelected(modOpticButton, false);
+            SetButtonSelected(modSpecialButton, false);
+
+            // SET DEFAULT ACTIVE TABS
+
+            // Main tab
             SwitchMainTab(weaponBuyTab, weaponTabButton);
+
+            // Weapon sub
             SwitchWeaponSubTab(weaponPrimaryButton);
+            selectedWeaponSlot = WeaponSlot.Primary;
+
+            // Augment sub
             SwitchAugmentSubTab(augmentUpperButton);
+            selectedAugmentSlot = AugmentSlot.Upper;
+
+            // Mod defaults
+            activeModWeaponSubTab = modSecondaryButton;
+            SwitchModWeaponSubTab(modSecondaryButton);
+            selectedModWeaponSlot = WeaponSlot.Secondary;
+            
+            selectedModSlot = ModSlot.Barrel;
+
+            // Populate
             PopulateWeapons();
         }
 
@@ -284,18 +345,29 @@ namespace Resonance.Shop
 
         private void SetButtonSelected(Button button, bool selected)
         {
-            if (button == null)
-            {
-                return;
-            }
+            if (button == null) return;
 
-            Color active = new Color(0.5f, 0.5f, 0.5f);
-            Color inactive = Color.white;
+            Color active = Color.white;
+            Color inactive = new Color(0.5f, 0.5f, 0.5f);
+            Color disabled = new Color(0.3f, 0.3f, 0.3f); // darker gray
 
             ColorBlock colors = button.colors;
-            colors.normalColor = selected ? active : inactive;
-            colors.selectedColor = selected ? active : inactive;
-            colors.highlightedColor = selected ? new Color(0.6f, 0.6f, 0.6f) : new Color(0.9f, 0.9f, 0.9f);
+
+            if (!button.interactable)
+            {
+                colors.normalColor = disabled;
+                colors.selectedColor = disabled;
+                colors.highlightedColor = disabled;
+            }
+            else
+            {
+                colors.normalColor = selected ? active : inactive;
+                colors.selectedColor = selected ? active : inactive;
+                colors.highlightedColor = selected
+                    ? new Color(0.9f, 0.9f, 0.9f)
+                    : new Color(0.6f, 0.6f, 0.6f);
+            }
+
             button.colors = colors;
         }
 
@@ -337,6 +409,8 @@ namespace Resonance.Shop
                     selectedModWeaponSlot = WeaponSlot.Primary;
                 }
             }
+            
+            SwitchModWeaponSubTab(activeModWeaponSubTab);
         }
 
         #endregion
@@ -370,6 +444,12 @@ namespace Resonance.Shop
                 GameObject go = Instantiate(shopItemPrefab, weaponItemSpawn.transform);
                 ShopItem item = go.GetComponent<ShopItem>();
                 item.SetupWeapon(weapon);
+                
+                ShopItemHover hover = go.GetComponent<ShopItemHover>();
+                if (hover != null)
+                {
+                    hover.Setup(weapon, weaponStatsDisplay);
+                }
             }
         }
 
