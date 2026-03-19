@@ -1169,3 +1169,4 @@ MonoBehaviour:
   lightIntensity: 1000
   lightRange: 25
   lightSpotAngle: 35
+  lightSmoothSpeed: 5

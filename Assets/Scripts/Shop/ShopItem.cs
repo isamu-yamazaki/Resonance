@@ -48,6 +48,7 @@ namespace Resonance.Shop
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            AkSoundEngine.PostEvent("Play_UI_Button_Hover", gameObject);
             ShopManager.Instance.OnItemHovered(this);
         }
     }
