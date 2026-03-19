@@ -1163,6 +1163,6 @@ MonoBehaviour:
   beamIntensity: 2
   beamWidth: 10
   beamHeight: 20
-  lightIntensity: 500
+  lightIntensity: 1000
   lightRange: 25
-  lightSpotAngle: 30
+  lightSpotAngle: 35

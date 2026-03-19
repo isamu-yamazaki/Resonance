@@ -7,6 +7,7 @@ namespace Resonance
     {
         [Header("References")]
         [SerializeField] private Material spotlightMaterial;
+        [SerializeField] private LayerMask groundLayer;
 
         [Header("Appearance")]
         [SerializeField] private Color beamColor = new Color(0.9f, 0.95f, 1f, 1f);
@@ -24,6 +25,7 @@ namespace Resonance
         private GameObject beamObject;
         private GameObject lightObject;
         private Material beamMaterialInstance;
+        private MeshRenderer beamRenderer;
 
         protected override void OnSpawned(bool asServer)
         {
@@ -58,25 +60,27 @@ namespace Resonance
 
             beamObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             beamObject.name = "PlayerSpotlight_Beam";
-            beamObject.transform.SetParent(transform);
-            beamObject.transform.localPosition = new Vector3(0f, beamHeight * 0.5f, 0f);
-            beamObject.transform.localRotation = Quaternion.identity;
-            beamObject.transform.localScale = new Vector3(beamWidth, beamHeight * 0.5f, beamWidth);
+
+            // Detach from player — we'll manually update position in Update
+            beamObject.transform.SetParent(null);
 
             Destroy(beamObject.GetComponent<CapsuleCollider>());
 
             beamMaterialInstance = new Material(spotlightMaterial);
             beamMaterialInstance.SetColor("_Color", beamColor);
             beamMaterialInstance.SetFloat("_Intensity", beamIntensity);
-            beamObject.GetComponent<MeshRenderer>().material = beamMaterialInstance;
+
+            beamRenderer = beamObject.GetComponent<MeshRenderer>();
+            beamRenderer.material = beamMaterialInstance;
         }
 
         private void SpawnLight()
         {
             lightObject = new GameObject("PlayerSpotlight_Light");
-            lightObject.transform.SetParent(transform);
-            lightObject.transform.localPosition = new Vector3(0f, beamHeight, 0f);
-            lightObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
+            // Also detach light — manually tracked
+            lightObject.transform.SetParent(null);
+            lightObject.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
 
             Light spotlight = lightObject.AddComponent<Light>();
             spotlight.type = LightType.Spot;
@@ -84,6 +88,45 @@ namespace Resonance
             spotlight.intensity = lightIntensity;
             spotlight.range = lightRange;
             spotlight.spotAngle = lightSpotAngle;
+        }
+
+        private void LateUpdate()
+        {
+            if (beamObject == null && lightObject == null) return;
+
+            // Raycast down from high above the player to find the ground
+            Vector3 playerXZ = new Vector3(transform.position.x, 0f, transform.position.z);
+            Vector3 rayOrigin = new Vector3(transform.position.x, transform.position.y + beamHeight, transform.position.z);
+
+            float groundY = 0f;
+            if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, beamHeight * 2f, groundLayer))
+            {
+                groundY = hit.point.y;
+            }
+            else
+            {
+                // Fallback — assume flat ground at y=0
+                groundY = 0f;
+            }
+
+            float topY = groundY + beamHeight;
+            float actualHeight = topY - groundY; // = beamHeight, but correct if terrain varies
+            float centerY = groundY + actualHeight * 0.5f;
+
+            // Position beam centered between ground and top
+            if (beamObject != null)
+            {
+                beamObject.transform.position = new Vector3(transform.position.x, centerY, transform.position.z);
+                beamObject.transform.rotation = Quaternion.identity;
+                beamObject.transform.localScale = new Vector3(beamWidth, actualHeight * 0.5f, beamWidth);
+            }
+
+            // Position light at the top of the beam pointing down
+            if (lightObject != null)
+            {
+                lightObject.transform.position = new Vector3(transform.position.x, topY, transform.position.z);
+                lightObject.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            }
         }
 
 #if UNITY_EDITOR
