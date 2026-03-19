@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using PurrNet;
+using Resonance.Assemblies.MatchStat;
 using UnityEngine;
 using Resonance.Helper;
 using Resonance.Match;
@@ -19,9 +22,20 @@ public class PlayerViewModel : MonoBehaviour
     public ObservableValue<bool> IsReloading { get; private set; }
     public ObservableValue<float> ReloadProgress { get; private set; } // 0 → 1
 
+    // -----------------
+    // ELIMINATION POPUP
+    // -----------------
     public ObservableValue<bool> GotKill { get; private set; }
 
     private MatchStatNetworkAdapter matchStats;
+    
+    // -----------------
+    // RATING
+    // -----------------
+    public ObservableValue<float> Rating { get; private set; }
+    public ObservableValue<int> Rank { get; private set; }
+    public ObservableValue<float> RatingDelta { get; private set; } // fires the pulse
+
 
     void Awake()
     {
@@ -34,6 +48,15 @@ public class PlayerViewModel : MonoBehaviour
         
         GotKill = new ObservableValue<bool>(false);
     
+        matchStats = MatchLogicNetworkAdapter.Instance?.MatchStats;
+        
+        Rating = new ObservableValue<float>(0f);
+        Rank = new ObservableValue<int>(0);
+        RatingDelta = new ObservableValue<float>(0f);
+    }
+    
+    private void Start()
+    {
         matchStats = MatchLogicNetworkAdapter.Instance?.MatchStats;
     }
 
@@ -84,22 +107,61 @@ public class PlayerViewModel : MonoBehaviour
         GotKill.Value = true;
         GotKill.Value = false;
     }
-    
+
     private void OnEnable()
     {
         if (matchStats != null)
+        {
             matchStats.OnPlayerKill += HandlePlayerKill;
-    }
+            matchStats.OnAllStatsUpdate += HandleAllStatsUpdate;
+        }
+}
 
     private void OnDisable()
     {
         if (matchStats != null)
+        {
             matchStats.OnPlayerKill -= HandlePlayerKill;
+            matchStats.OnAllStatsUpdate -= HandleAllStatsUpdate;
+        }
     }
 
     private void HandlePlayerKill(PlayerID killer, PlayerID victim)
     {
         if (killer == NetworkManager.main.localPlayer)
             NotifyKill();
+    }
+    
+    public void SetRating(float newRating)
+    {
+        float delta = newRating - Rating.Value;
+        Rating.Value = newRating;
+    
+        if (Mathf.Abs(delta) > 0.01f)
+        {
+            RatingDelta.Value = delta;
+            RatingDelta.Value = 0f;
+        }
+    }
+
+    public void SetRank(int rank)
+    {
+        Rank.Value = rank;
+    }
+    
+    private void HandleAllStatsUpdate(Dictionary<PlayerID, PlayerMatchStats> allStats)
+    {
+        // Only care about the local player
+        PlayerID localId = NetworkManager.main.localPlayer;
+        if (!allStats.TryGetValue(localId, out PlayerMatchStats newStats)) return;
+
+        float prev = Rating.Value;
+        float next = newStats.rating;
+        SetRating(next);
+
+        // Rank: sort all players by rating descending, find local player's index
+        var sorted = allStats.OrderByDescending(kv => kv.Value.rating).ToList();
+        int rank = sorted.FindIndex(kv => kv.Key == localId) + 1;
+        SetRank(rank);
     }
 }
