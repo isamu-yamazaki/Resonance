@@ -25,7 +25,7 @@ public class WeaponStatsDisplay : MonoBehaviour
 
         AddStat("Damage", weapon.Damage);
         AddStat("Fire Rate", weapon.FireRate);
-        AddStat("Projectiles", weapon.ProjectilesPerShot);
+        AddStat("Bullets per Shot", weapon.ProjectilesPerShot);
         AddStat("Range", weapon.Range);
         AddStat("Accuracy", weapon.Accuracy);
         AddStat("Control", weapon.Control);
@@ -53,7 +53,7 @@ public class WeaponStatsDisplay : MonoBehaviour
     {
         GameObject go = Instantiate(statLinePrefab, contentParent);
 
-        // 🔥 Explicit references instead of array guessing
+        // Explicit references instead of array guessing
         Transform nameTransform = go.transform.Find("StatName");
         Transform valueTransform = go.transform.Find("StatValue");
 
@@ -72,7 +72,7 @@ public class WeaponStatsDisplay : MonoBehaviour
         statLines.Add(go);
     }
 
-    // ✨ Cleaner formatting (no unnecessary decimals)
+    // Cleaner formatting (no unnecessary decimals)
     private string FormatValue(float value)
     {
         if (Mathf.Approximately(value % 1, 0))
