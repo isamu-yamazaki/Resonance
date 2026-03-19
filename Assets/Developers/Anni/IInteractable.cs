@@ -2,6 +2,6 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    Collider InteractRange { get; set; }
+    Collider InteractRange { get; }
     void Interact(GameObject interactor);
 }
