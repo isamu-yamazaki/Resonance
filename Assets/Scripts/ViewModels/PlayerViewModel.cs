@@ -26,7 +26,7 @@ public class PlayerViewModel : MonoBehaviour
     // ELIMINATION POPUP
     // -----------------
     public ObservableValue<bool> GotKill { get; private set; }
-
+    public ObservableValue<string> LastVictimName { get; private set; }
     private MatchStatNetworkAdapter matchStats;
     
     // -----------------
@@ -35,7 +35,6 @@ public class PlayerViewModel : MonoBehaviour
     public ObservableValue<float> Rating { get; private set; }
     public ObservableValue<int> Rank { get; private set; }
     public ObservableValue<float> RatingDelta { get; private set; } // fires the pulse
-
 
     void Awake()
     {
@@ -47,7 +46,8 @@ public class PlayerViewModel : MonoBehaviour
         ReloadProgress = new ObservableValue<float>(0f);
         
         GotKill = new ObservableValue<bool>(false);
-    
+        LastVictimName = new ObservableValue<string>("");
+
         matchStats = MatchLogicNetworkAdapter.Instance?.MatchStats;
         
         Rating = new ObservableValue<float>(0f);
@@ -102,8 +102,9 @@ public class PlayerViewModel : MonoBehaviour
         Health.Value = Mathf.Min(Health.Value + amount, MaxHealth);
     }
     
-    public void NotifyKill()
+    public void NotifyKill(string victimName)
     {
+        LastVictimName.Value = victimName;
         GotKill.Value = true;
         GotKill.Value = false;
     }
@@ -129,7 +130,7 @@ public class PlayerViewModel : MonoBehaviour
     private void HandlePlayerKill(PlayerID killer, PlayerID victim)
     {
         if (killer == NetworkManager.main.localPlayer)
-            NotifyKill();
+            NotifyKill(victim.ToString()); // or however you resolve a PlayerID to a display name
     }
     
     public void SetRating(float newRating)
