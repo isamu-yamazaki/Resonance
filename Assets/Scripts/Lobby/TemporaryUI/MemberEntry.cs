@@ -8,7 +8,6 @@ namespace Resonance.LobbySystem.TemporaryUI
     public class MemberEntry : MonoBehaviour
     {
         [SerializeField] private TMP_Text userName;
-        [SerializeField] private RawImage avatar;
         [SerializeField] private Color readyColor;
 
         private Color _defaultColor;
@@ -19,7 +18,6 @@ namespace Resonance.LobbySystem.TemporaryUI
         {
             _defaultColor = userName.color;
             _memberId = user.Id;
-            // avatar.texture = user.Avatar;
             userName.text = user.DisplayName;
             SetReady(user.IsReady);
         }
