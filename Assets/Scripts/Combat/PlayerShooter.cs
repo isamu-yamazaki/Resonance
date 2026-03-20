@@ -4,6 +4,7 @@ using PurrNet;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.Helper;
+using Resonance.Match;
 using Resonance.PlayerController;
 using UnityEngine;
 
@@ -266,6 +267,7 @@ namespace Resonance.Combat
 
             Vector3 rayOrigin = playerCamera.transform.position;
             float hitscanMaxDistance = weaponStatManager.Range;
+            bool hitPlayer = false;
 
             for (int i = 0; i < count; i++)
             {
@@ -281,6 +283,7 @@ namespace Resonance.Combat
                     if (target != null && hit.collider.gameObject != gameObject && !hit.collider.transform.IsChildOf(transform))
                     {
                         target.TakeDamage(finalDamage, payload.Shooter);
+                        hitPlayer = true;
                         if (damageNumberPrefab != null && hit.collider.GetComponent<IDamageNumberTarget>() != null)
                         {
                             if (count > 1)
@@ -325,6 +328,9 @@ namespace Resonance.Combat
                     SpawnTrailOnAllClients(view.Muzzle.position, endPoint, hitscanBullet.Key);
                 }
             }
+
+            if (!hitPlayer)
+                NotifyMissOnServer();
         }
 
         [ObserversRpc(runLocally: true)]
@@ -357,6 +363,13 @@ namespace Resonance.Combat
         private void SpawnImpactDecal(RaycastHit hitInfo)
         {
             Debug.Log($"Spawn decal at {hitInfo.point}");
+        }
+        
+        [ServerRpc]
+        private void NotifyMissOnServer()
+        {
+            if (MatchStatBridge.Instance != null && owner.HasValue)
+                MatchStatBridge.Instance.RecordMiss(gameObject);
         }
 
         private float ComputeDamageWithFalloff(float payloadDamage, float distance, WeaponProperties weapon)
