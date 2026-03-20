@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PurrNet;
 using PurrNet.Logging;
+using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 using UnityEngine.Events;
 

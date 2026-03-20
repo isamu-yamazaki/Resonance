@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Resonance.LobbySystem
+namespace Resonance.Assemblies.LobbySystem
 {
-    public struct Lobby
+    public partial struct Lobby
     {
         public string Name;
         public bool IsValid;
@@ -68,7 +68,7 @@ namespace Resonance.LobbySystem
                 var newMember = @new.Members[i];
                 var oldMember = Members[i];
 
-                if (newMember.Id != oldMember.Id || newMember.IsReady != oldMember.IsReady || newMember.DisplayName != oldMember.DisplayName || newMember.Avatar != oldMember.Avatar)
+                if (newMember.Id != oldMember.Id || newMember.IsReady != oldMember.IsReady || newMember.DisplayName != oldMember.DisplayName)
                     return true;
             }
 

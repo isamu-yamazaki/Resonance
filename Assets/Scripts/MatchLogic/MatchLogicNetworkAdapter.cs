@@ -1,5 +1,6 @@
 using PurrNet;
 using Resonance.Assemblies.Arena;
+using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.Polarity;
 using Resonance.GameBootstrap;

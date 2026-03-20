@@ -1,3 +1,4 @@
+using Resonance.Assemblies.LobbySystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +19,7 @@ namespace Resonance.LobbySystem.TemporaryUI
         {
             _defaultColor = userName.color;
             _memberId = user.Id;
-            avatar.texture = user.Avatar;
+            // avatar.texture = user.Avatar;
             userName.text = user.DisplayName;
             SetReady(user.IsReady);
         }

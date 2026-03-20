@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Resonance.Assemblies.LobbySystem;
 using UnityEngine.Events;
 
 namespace Resonance.LobbySystem {

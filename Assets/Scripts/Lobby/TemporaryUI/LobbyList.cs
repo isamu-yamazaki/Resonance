@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using PurrNet.Logging;
+using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 
 namespace Resonance.LobbySystem.TemporaryUI

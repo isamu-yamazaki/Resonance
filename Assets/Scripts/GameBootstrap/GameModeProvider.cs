@@ -1,4 +1,4 @@
-using Resonance.LobbySystem;
+using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 
 namespace Resonance.GameBootstrap

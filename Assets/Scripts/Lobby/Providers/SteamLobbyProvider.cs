@@ -16,6 +16,7 @@ using Steamworks;
 using UnityEngine;
 using UnityEngine.Events;
 using WebSocketSharp;
+using Resonance.Assemblies.LobbySystem;
 
 namespace Resonance.LobbySystem.Providers
 {
@@ -431,17 +432,17 @@ namespace Resonance.LobbySystem.Providers
             var isReady = !string.IsNullOrEmpty(isReadyString) && isReadyString == "True";
 
             var avatarHandle = Steamworks.SteamFriends.GetLargeFriendAvatar(steamId);
-            Texture2D avatar = null;
+            // Texture2D avatar = null;
 
             if (avatarHandle != -1 && Steamworks.SteamUtils.GetImageSize(avatarHandle, out uint width, out uint height))
             {
                 byte[] imageBuffer = new byte[width * height * 4];
                 if (Steamworks.SteamUtils.GetImageRGBA(avatarHandle, imageBuffer, imageBuffer.Length))
                 {
-                    avatar = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
-                    avatar.LoadRawTextureData(imageBuffer);
-                    FlipTextureVertically(avatar);
-                    avatar.Apply();
+                    // avatar = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
+                    // avatar.LoadRawTextureData(imageBuffer);
+                    // FlipTextureVertically(avatar);
+                    // avatar.Apply();
                 }
             }
 
@@ -450,7 +451,7 @@ namespace Resonance.LobbySystem.Providers
                 Id = steamId.m_SteamID.ToString(),
                 DisplayName = displayName,
                 IsReady = isReady,
-                Avatar = avatar,
+                // Avatar = avatar,
             };
         }
 
@@ -539,7 +540,7 @@ namespace Resonance.LobbySystem.Providers
                 if (updatedMembers[i].Id == steamId.m_SteamID.ToString())
                 {
                     var updatedUser = updatedMembers[i];
-                    updatedUser.Avatar = avatar;
+                    // updatedUser.Avatar = avatar;
                     updatedMembers[i] = updatedUser;
                     break;
                 }
