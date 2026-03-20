@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PurrNet;
 using PurrNet.Logging;
+using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -51,6 +52,7 @@ namespace Resonance.LobbySystem
 
         private Lobby _lastKnownState;
         public Lobby CurrentLobby => _currentLobby;
+        public string LocalUserId => _lobbyDataHolder?.LocalUserId;
         private LobbyDataHolder _lobbyDataHolder;
 
         private bool IsStarting = false;
@@ -220,6 +222,7 @@ namespace Resonance.LobbySystem
             RunTask(async () =>
             {
                 EnsureProviderSet();
+                await CacheLocalUserId();
                 var room = await _currentProvider.CreateLobbyAsync(maxPlayers, roomProperties);
                 _currentLobby = room;
                 OnRoomJoined?.Invoke(room);
@@ -268,6 +271,7 @@ namespace Resonance.LobbySystem
             RunTask(async () =>
             {
                 EnsureProviderSet();
+                await CacheLocalUserId();
                 var room = await _currentProvider.JoinLobbyAsync(roomId);
                 if (room.IsValid)
                 {
@@ -320,6 +324,12 @@ namespace Resonance.LobbySystem
         {
             EnsureProviderSet();
             return await _currentProvider.GetLocalUserIdAsync();
+        }
+
+        private async Task CacheLocalUserId()
+        {
+            var userId = await _currentProvider.GetLocalUserIdAsync();
+            _lobbyDataHolder.SetLocalUserId(userId);
         }
 
         /// <summary>

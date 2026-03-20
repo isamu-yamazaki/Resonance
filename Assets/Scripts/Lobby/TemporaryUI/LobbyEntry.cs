@@ -1,3 +1,4 @@
+using Resonance.Assemblies.LobbySystem;
 using TMPro;
 using UnityEngine;
 

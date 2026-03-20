@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 
 namespace Resonance.LobbySystem
@@ -21,7 +22,7 @@ namespace Resonance.LobbySystem
 
         public void SetDefaultSceneName()
         {
-            if (lobbyManager.CurrentLobby.IsOwner)
+            if (lobbyManager.CurrentLobby.IsOwner(lobbyManager.LocalUserId))
             {
                 lobbyManager.SetSceneNameOnLobby(sceneName);
             }

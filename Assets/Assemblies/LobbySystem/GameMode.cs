@@ -1,4 +1,4 @@
-namespace Resonance.LobbySystem
+namespace Resonance.Assemblies.LobbySystem
 {
     public enum GameMode
     {

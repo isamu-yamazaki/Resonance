@@ -142,10 +142,8 @@ namespace Resonance.LobbySystem.Providers {
                 CurrentLobby.Id,
                 CurrentLobby.LobbyCode,
                 CurrentLobby.MaxPlayers,
-                IsLocalPlayerHost,
                 GetLobbyUsers(CurrentLobby),
-                GetLobbyProperties(CurrentLobby),
-                RelayServerAllocation
+                GetLobbyProperties(CurrentLobby)
             );
 
             OnLobbyUpdated?.Invoke(updatedLobby);
@@ -240,6 +238,7 @@ namespace Resonance.LobbySystem.Providers {
                         Id = player.Id,
                         DisplayName = player.Data["Name"]?.Value,
                         IsReady = player.Data["IsReady"]?.Value == "True",
+                        IsOwner = player.Id == lobby.HostId,
                         Avatar = null
                     });
                 } catch { } //player dataobject can throw
