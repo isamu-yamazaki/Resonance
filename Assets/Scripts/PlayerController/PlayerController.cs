@@ -127,12 +127,6 @@ namespace Resonance.PlayerController
 
             enabled = isOwner;
             _virtualCamera.gameObject.SetActive(isOwner);
-
-            if (isOwner && _playerLocomotionInput != null)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.SetCallbacks(_playerLocomotionInput);
-            }
         }
 
         private void Awake()
