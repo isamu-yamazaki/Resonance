@@ -4,7 +4,7 @@ using Resonance.Assemblies.LobbySystem;
 public class LobbyJsonTests
 {
     [Test]
-    public void LobbyJsonSerializationAndDeserializationResultsInEquality()
+    public void LobbyJsonSerializationAndDeserialization_ResultsInEquality()
     {
         var lobby = LobbyFactory.Create(
             "Test Lobby",
