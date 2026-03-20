@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Resonance.Assemblies.LobbySystem
 {
+    [Serializable]
     public partial struct Lobby
     {
         public string Name;
