@@ -82,26 +82,6 @@ namespace Resonance.Combat
         {
             base.OnSpawned();
             enabled = isOwner;
-
-            var behaviour = GetComponent<NetworkBehaviour>();
-            GiveOwnership(behaviour.owner);
-
-            if (isOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.SetCallbacks(playerActionsInput);
-            }
-        }
-
-        protected override void OnDespawned()
-        {
-            base.OnDespawned();
-
-            if (isOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(playerActionsInput);
-            }
         }
 
         #endregion
