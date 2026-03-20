@@ -101,7 +101,7 @@ namespace Resonance.LobbySystem
             }
         }
 
-        private async Task<DummyLobbyServer.Lobby> GetLobbyDataFullAsync()
+        private async Task<Lobby> GetLobbyDataFullAsync()
         {
             if (string.IsNullOrEmpty(currentLobbyId))
             {
@@ -116,7 +116,7 @@ namespace Resonance.LobbySystem
             }
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<DummyLobbyServer.Lobby>(content);
+            return Lobby.FromJson(content);
         }
 
         private async Task<Lobby> RefreshLobbyDataAndTriggerUpdate()
@@ -128,7 +128,6 @@ namespace Resonance.LobbySystem
 
             try
             {
-                // Get lobby info
                 var lobbyResponse = await client.GetAsync($"api/lobby/{currentLobbyId}");
                 if (!lobbyResponse.IsSuccessStatusCode)
                 {
@@ -136,36 +135,7 @@ namespace Resonance.LobbySystem
                 }
 
                 var lobbyContent = await lobbyResponse.Content.ReadAsStringAsync();
-                var lobby = JsonConvert.DeserializeObject<DummyLobbyServer.Lobby>(lobbyContent);
-
-                var membersResponse = await client.GetAsync($"api/lobby/{currentLobbyId}/users");
-                List<LobbyUser> members = new List<LobbyUser>();
-
-                if (membersResponse.IsSuccessStatusCode)
-                {
-                    var membersContent = await membersResponse.Content.ReadAsStringAsync();
-                    var serverUsers = JsonConvert.DeserializeObject<List<DummyLobbyServer.User>>(membersContent);
-
-                    foreach (var serverUser in serverUsers)
-                    {
-                        members.Add(new LobbyUser
-                        {
-                            Id = serverUser.Id,
-                            DisplayName = serverUser.DisplayName,
-                            IsReady = serverUser.IsReady,
-                            IsOwner = serverUser.Id == lobby.OwnerId,
-                        });
-                    }
-                }
-
-                // Create the lobby object and trigger update
-                var result = LobbyFactory.Create(
-                    name: lobby.Name,
-                    lobbyId: lobby.LobbyId,
-                    maxPlayers: lobby.MaxPlayers,
-                    members: members,
-                    properties: lobby.Properties ?? new Dictionary<string, string>()
-                );
+                var result = Lobby.FromJson(lobbyContent);
 
                 OnLobbyUpdated?.Invoke(result);
                 return result;
@@ -218,7 +188,7 @@ namespace Resonance.LobbySystem
                 }
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var lobby = JsonConvert.DeserializeObject<DummyLobbyServer.Lobby>(responseContent);
+                var lobby = Lobby.FromJson(responseContent);
 
                 if (string.IsNullOrEmpty(lobby.LobbyId))
                 {
@@ -262,9 +232,9 @@ namespace Resonance.LobbySystem
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                var lobby = JsonConvert.DeserializeObject<DummyLobbyServer.Lobby>(content);
+                var lobby = Lobby.FromJson(content);
 
-                if (lobby.Properties != null && lobby.Properties.TryGetValue(key, out string value))
+                if (lobby.UnderlyingProviderProperties != null && lobby.UnderlyingProviderProperties.TryGetValue(key, out string value))
                 {
                     return value;
                 }
@@ -288,32 +258,11 @@ namespace Resonance.LobbySystem
 
             try
             {
-                var response = await client.GetAsync($"api/lobby/{currentLobbyId}/users");
+                var lobby = await GetLobbyDataFullAsync();
+                var members = lobby.Members ?? new List<LobbyUser>();
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    OnError?.Invoke("Failed to get lobby members: " + response.StatusCode);
-                    return new List<LobbyUser>();
-                }
-
-                var content = await response.Content.ReadAsStringAsync();
-                var serverUsers = JsonConvert.DeserializeObject<List<DummyLobbyServer.User>>(content);
-
-                var lobbyData = await GetLobbyDataFullAsync();
-                var lobbyUsers = new List<LobbyUser>();
-                foreach (var serverUser in serverUsers)
-                {
-                    lobbyUsers.Add(new LobbyUser
-                    {
-                        Id = serverUser.Id,
-                        DisplayName = serverUser.DisplayName,
-                        IsReady = serverUser.IsReady,
-                        IsOwner = serverUser.Id == lobbyData.OwnerId,
-                    });
-                }
-
-                OnLobbyPlayerListUpdated?.Invoke(lobbyUsers);
-                return lobbyUsers;
+                OnLobbyPlayerListUpdated?.Invoke(members);
+                return members;
             }
             catch (Exception ex)
             {
@@ -349,7 +298,7 @@ namespace Resonance.LobbySystem
                 }
 
                 var lobbyContent = await lobbyResponse.Content.ReadAsStringAsync();
-                var lobby = JsonConvert.DeserializeObject<DummyLobbyServer.Lobby>(lobbyContent);
+                var lobby = Lobby.FromJson(lobbyContent);
 
                 if (string.IsNullOrEmpty(lobby.LobbyId))
                 {
@@ -428,21 +377,8 @@ namespace Resonance.LobbySystem
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                var serverLobbies = JsonConvert.DeserializeObject<List<DummyLobbyServer.Lobby>>(content);
-
-                var result = new List<Lobby>();
-                foreach (var serverLobby in serverLobbies)
-                {
-                    result.Add(LobbyFactory.Create(
-                        name: serverLobby.Name,
-                        lobbyId: serverLobby.LobbyId,
-                        maxPlayers: serverLobby.MaxPlayers,
-                        members: new List<LobbyUser>(),
-                        properties: serverLobby.Properties ?? new Dictionary<string, string>()
-                    ));
-                }
-
-                return result;
+                var result = JsonConvert.DeserializeObject<List<Lobby>>(content);
+                return result ?? new List<Lobby>();
             }
             catch (Exception ex)
             {
@@ -514,12 +450,12 @@ namespace Resonance.LobbySystem
             try
             {
                 var lobbyData = await GetLobbyDataFullAsync();
-                if (lobbyData.Properties == null)
+                if (lobbyData.UnderlyingProviderProperties == null)
                 {
-                    lobbyData.Properties = new Dictionary<string, string>();
+                    lobbyData.UnderlyingProviderProperties = new Dictionary<string, string>();
                 }
 
-                lobbyData.Properties[key] = value;
+                lobbyData.UnderlyingProviderProperties[key] = value;
 
                 string jsonData = JsonConvert.SerializeObject(lobbyData);
                 var response = await client.PutAsync($"api/lobby/{currentLobbyId}", new Content(jsonData));
