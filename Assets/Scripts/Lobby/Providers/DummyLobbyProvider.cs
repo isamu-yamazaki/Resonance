@@ -153,6 +153,7 @@ namespace Resonance.LobbySystem
                             Id = serverUser.Id,
                             DisplayName = serverUser.DisplayName,
                             IsReady = serverUser.IsReady,
+                            IsOwner = serverUser.Id == lobby.OwnerId,
                         });
                     }
                 }
@@ -162,7 +163,6 @@ namespace Resonance.LobbySystem
                     name: lobby.Name,
                     lobbyId: lobby.LobbyId,
                     maxPlayers: lobby.MaxPlayers,
-                    isOwner: lobby.OwnerId == localUserId,
                     members: members,
                     properties: lobby.Properties ?? new Dictionary<string, string>()
                 );
@@ -299,6 +299,7 @@ namespace Resonance.LobbySystem
                 var content = await response.Content.ReadAsStringAsync();
                 var serverUsers = JsonConvert.DeserializeObject<List<DummyLobbyServer.User>>(content);
 
+                var lobbyData = await GetLobbyDataFullAsync();
                 var lobbyUsers = new List<LobbyUser>();
                 foreach (var serverUser in serverUsers)
                 {
@@ -307,6 +308,7 @@ namespace Resonance.LobbySystem
                         Id = serverUser.Id,
                         DisplayName = serverUser.DisplayName,
                         IsReady = serverUser.IsReady,
+                        IsOwner = serverUser.Id == lobbyData.OwnerId,
                     });
                 }
 
@@ -435,7 +437,6 @@ namespace Resonance.LobbySystem
                         name: serverLobby.Name,
                         lobbyId: serverLobby.LobbyId,
                         maxPlayers: serverLobby.MaxPlayers,
-                        isOwner: false, // Not owner when searching
                         members: new List<LobbyUser>(),
                         properties: serverLobby.Properties ?? new Dictionary<string, string>()
                     ));

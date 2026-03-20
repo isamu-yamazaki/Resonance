@@ -11,8 +11,30 @@ namespace Resonance.Assemblies.LobbySystem
         public string LobbyId;
         public string LobbyCode;
         public int MaxPlayers;
-        public bool IsOwner;
         public List<LobbyUser> Members;
+
+        public readonly string OwnerId
+        {
+            get
+            {
+                if (Members == null) return null;
+                foreach (var member in Members)
+                {
+                    if (member.IsOwner) return member.Id;
+                }
+                return null;
+            }
+        }
+
+        public bool IsOwner(string userId)
+        {
+            if (Members == null) return false;
+            foreach (var member in Members)
+            {
+                if (member.Id == userId && member.IsOwner) return true;
+            }
+            return false;
+        }
         public readonly GameMode GameMode
         {
             get
@@ -84,7 +106,7 @@ namespace Resonance.Assemblies.LobbySystem
 
     public static class LobbyFactory
     {
-        public static Lobby Create(string name, string lobbyId, int maxPlayers, bool isOwner, List<LobbyUser> members, Dictionary<string, string> properties)
+        public static Lobby Create(string name, string lobbyId, int maxPlayers, List<LobbyUser> members, Dictionary<string, string> properties)
         {
             return new Lobby
             {
@@ -93,12 +115,11 @@ namespace Resonance.Assemblies.LobbySystem
                 LobbyId = lobbyId,
                 MaxPlayers = maxPlayers,
                 UnderlyingProviderProperties = properties ?? new Dictionary<string, string>(),
-                IsOwner = isOwner,
                 Members = members,
             };
         }
 
-        public static Lobby Create(string name, string lobbyId, string lobbyCode, int maxPlayers, bool isOwner, List<LobbyUser> members, Dictionary<string, string> properties)
+        public static Lobby Create(string name, string lobbyId, string lobbyCode, int maxPlayers, List<LobbyUser> members, Dictionary<string, string> properties)
         {
             return new Lobby
             {
@@ -108,7 +129,6 @@ namespace Resonance.Assemblies.LobbySystem
                 LobbyCode = lobbyCode,
                 MaxPlayers = maxPlayers,
                 UnderlyingProviderProperties = properties ?? new Dictionary<string, string>(),
-                IsOwner = isOwner,
                 Members = members,
             };
         }

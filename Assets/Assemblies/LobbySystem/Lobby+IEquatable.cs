@@ -13,7 +13,6 @@ namespace Resonance.Assemblies.LobbySystem
                 && LobbyId == other.LobbyId
                 && LobbyCode == other.LobbyCode
                 && MaxPlayers == other.MaxPlayers
-                && IsOwner == other.IsOwner
                 && MembersEqual(other.Members)
                 && PropertiesEqual(other.UnderlyingProviderProperties);
         }

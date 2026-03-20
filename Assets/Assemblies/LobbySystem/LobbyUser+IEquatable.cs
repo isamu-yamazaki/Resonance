@@ -8,7 +8,8 @@ namespace Resonance.Assemblies.LobbySystem
         {
             return Id == other.Id
                 && DisplayName == other.DisplayName
-                && IsReady == other.IsReady;
+                && IsReady == other.IsReady
+                && IsOwner == other.IsOwner;
         }
 
         public override bool Equals(object obj) => obj is LobbyUser other && Equals(other);

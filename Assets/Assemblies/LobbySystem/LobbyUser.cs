@@ -8,6 +8,7 @@ namespace Resonance.Assemblies.LobbySystem
         public string Id;
         public string DisplayName;
         public bool IsReady;
+        public bool IsOwner;
 
     }
 }

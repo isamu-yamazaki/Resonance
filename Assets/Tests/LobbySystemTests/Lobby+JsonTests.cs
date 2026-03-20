@@ -11,7 +11,6 @@ public class LobbyJsonTests
             lobbyId: "12345",
             lobbyCode: "12345",
             maxPlayers: 5,
-            isOwner: true,
             members: new(),
             properties: new()
         );

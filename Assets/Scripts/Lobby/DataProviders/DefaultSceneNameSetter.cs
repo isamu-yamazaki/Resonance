@@ -22,7 +22,7 @@ namespace Resonance.LobbySystem
 
         public void SetDefaultSceneName()
         {
-            if (lobbyManager.CurrentLobby.IsOwner)
+            if (lobbyManager.CurrentLobby.IsOwner(lobbyManager.LocalUserId))
             {
                 lobbyManager.SetSceneNameOnLobby(sceneName);
             }
