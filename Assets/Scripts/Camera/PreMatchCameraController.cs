@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Resonance;
 using Resonance.PlayerController;
 using Resonance.Match;
 
@@ -78,6 +79,8 @@ public class PreMatchCameraController : MonoBehaviour
 
     private void EndSequence()
     {
+        GetComponent<CinematicCameraPostProcessing>()?.OnCinematicEnd();
+
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(true);
 

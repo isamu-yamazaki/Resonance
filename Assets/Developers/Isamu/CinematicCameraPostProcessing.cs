@@ -137,5 +137,15 @@ namespace Resonance
         }
 
         #endregion
+
+        #region Public Methods
+
+        public void OnCinematicEnd()
+        {
+            if (_volume != null)
+                _volume.gameObject.SetActive(false);
+        }
+
+        #endregion
     }
 }
