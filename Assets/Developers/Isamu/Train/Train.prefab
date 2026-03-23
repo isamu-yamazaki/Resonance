@@ -519,7 +519,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0573e9e09aca44860bf9e0a829375e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainAudioReactivePropagator
-  _trainController: {fileID: 0}
+  _trainController: {fileID: 3448999368842045501}
+  _trainMeshCollider: {fileID: 4399852281256614953}
+  _expansionRange: 20
   _pulseDuration: 0.5
   _pulseRate: 10
 --- !u!1 &5660052391384256175
