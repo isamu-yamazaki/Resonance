@@ -2,6 +2,7 @@ Shader "Custom/VolumetricFog"
 {
     Properties
     {
+        _Color("Color", Color) = (1, 1, 1, 1)
         _MaxDistance("Max distance", float) = 100
         _StepSize("Step size", Range(0.1, 20)) = 1
         _DensityMultiplier("Density multiplier", Range(0, 10)) = 1
@@ -21,6 +22,7 @@ Shader "Custom/VolumetricFog"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
+            float4 _Color;
             float _MaxDistance;
             float _DensityMultiplier;
             float _StepSize;
@@ -32,6 +34,7 @@ Shader "Custom/VolumetricFog"
 
             half4 frag(Varyings IN) : SV_Target
             {
+                float4 col = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, IN.texcoord);
                 float depth = SampleSceneDepth(IN.texcoord);
                 float3 worldPos = ComputeWorldSpacePosition(IN.texcoord, depth, UNITY_MATRIX_I_VP);
 
@@ -54,7 +57,7 @@ Shader "Custom/VolumetricFog"
                     distTravelled += _StepSize;
                 }
                 
-                return transmittance;
+                return lerp(col, _Color, saturate(transmittance));
             }
             ENDHLSL
         }
