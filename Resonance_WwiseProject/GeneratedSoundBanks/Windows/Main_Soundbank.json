@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{8493E091-5FDA-A58C-D710-F04C76CE4C46}",
+    "Hash": "{42BA759D-5AA2-EC0F-C2EF-FCC8CBE66B80}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -29,7 +29,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_props_train_moving.wav",
-      "CachePath": "35/{35D19C79-59CB-5156-3F24-47161EF08D63}.wem"
+      "CachePath": "E4/{E45A1232-B2F3-92CF-BA46-EB7D4A8DB354}.wem"
      },
      {
       "Id": "117358700",
@@ -773,9 +773,7 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Moving",
       "GUID": "{3C5E15D5-9DF8-4C03-9A2A-C8C585369995}",
       "MaxAttenuation": "50",
-      "DurationType": "OneShot",
-      "DurationMin": "30.66475",
-      "DurationMax": "30.66475",
+      "DurationType": "Infinite",
       "MediaRefs": [
        {
         "Id": "106684015"
@@ -889,6 +887,6 @@
     ]
    }
   ],
-  "FileHash": "{E51892F9-00EC-63E8-E6CF-19822AF4316F}"
+  "FileHash": "{AADF9F79-A7FE-4F96-E583-BB2E5E80B767}"
  }
 }
