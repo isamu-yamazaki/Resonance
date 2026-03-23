@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{B9F97D80-5579-A6D6-3844-468C478EAC47}",
+    "Hash": "{9296B765-3509-F39D-25B4-D24CBD8D4C1F}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -297,12 +297,18 @@
         "Name": "Metal",
         "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Metal",
         "GUID": "{03214074-974A-4AC1-AA95-ABF83F648055}"
+       },
+       {
+        "Id": "4248645337",
+        "Name": "Grass",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Grass",
+        "GUID": "{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{DE7C7009-8563-B8EC-FDFB-2AE54EF6ED6F}"
+  "FileHash": "{D34F5DD5-763B-8D4F-81CB-84E5D1AE4171}"
  }
 }

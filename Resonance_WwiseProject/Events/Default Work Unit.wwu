@@ -110,7 +110,7 @@
 						<Action Name="" ID="{03EE6C6E-6962-4302-97B2-1C6446D3326C}" ShortID="926886055">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="sfx_props_train_moving" ID="{DB605F27-AFC6-4AB4-9610-BCA2D7ECB3AD}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+									<ObjectRef Name="sfx_props_train_moving" ID="{BEF944C7-9CDF-4825-8C25-D2D13E9D4BF2}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -124,7 +124,7 @@
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="sfx_props_train_moving" ID="{DB605F27-AFC6-4AB4-9610-BCA2D7ECB3AD}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+									<ObjectRef Name="sfx_props_train_moving" ID="{BEF944C7-9CDF-4825-8C25-D2D13E9D4BF2}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
