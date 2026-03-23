@@ -45,19 +45,19 @@ Shader "Custom/VolumetricFog"
 
                 float distLimit = min(viewLenght, _MaxDistance);
                 float distTravelled = 0;
-                float transmittance = 0;
+                float transmittance = 1;
 
                 while (distTravelled < distLimit)
                 {
                     float density = get_density();
                     if (density > 0)
                     {
-                        transmittance += density * _StepSize;
+                        transmittance *= exp(-density * _StepSize);
                     }
                     distTravelled += _StepSize;
                 }
                 
-                return lerp(col, _Color, saturate(transmittance));
+                return lerp(col, _Color, 1.0 - saturate(transmittance));
             }
             ENDHLSL
         }
