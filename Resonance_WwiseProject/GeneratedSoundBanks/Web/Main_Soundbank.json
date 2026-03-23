@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{A8BFA27A-673F-A412-5BD2-F3B2C33D7AF1}",
+    "Hash": "{87906752-876D-B506-361F-84F7BF8555BD}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -22,6 +22,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_metal_land_02.wav",
       "CachePath": "0C/{0CE17BE5-2178-58BC-E104-0681F54900C2}.wem"
+     },
+     {
+      "Id": "71859958",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_foley_footstep_grass_run_02.wav",
+      "CachePath": "DD/{DD5B52E1-DE71-4340-BED6-074C40D7FEFF}.wem"
      },
      {
       "Id": "117358700",
@@ -86,6 +94,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_wood_run_02.wav",
       "CachePath": "CB/{CB9EF375-C645-22FA-D6EA-99071E83844C}.wem"
+     },
+     {
+      "Id": "306868576",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_foley_footstep_grass_run_03.wav",
+      "CachePath": "43/{433129F0-78D3-428F-F093-AB1082E521B0}.wem"
      },
      {
       "Id": "311624981",
@@ -176,6 +192,22 @@
       "CachePath": "7D/{7D3B5EBB-1E5C-8081-CBAD-0FE4BD5295C1}.wem"
      },
      {
+      "Id": "535985515",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_foley_footstep_grass_land_02.wav",
+      "CachePath": "0D/{0DD200DE-1852-B449-CF56-5FA4283F0E3E}.wem"
+     },
+     {
+      "Id": "546173227",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_foley_footstep_grass_run_04.wav",
+      "CachePath": "39/{39E245C4-A9A7-0614-9791-F2580074163E}.wem"
+     },
+     {
       "Id": "566025932",
       "Language": "SFX",
       "Streaming": "false",
@@ -230,6 +262,22 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_metal_run_03.wav",
       "CachePath": "9D/{9D6C8141-24D7-0C3F-BEA4-BD86003D129C}.wem"
+     },
+     {
+      "Id": "675433608",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_foley_footstep_grass_run_01.wav",
+      "CachePath": "30/{30B3827D-58AB-B81C-6D5D-561BAE1D3A42}.wem"
+     },
+     {
+      "Id": "688133373",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_foley_footstep_grass_run_05.wav",
+      "CachePath": "34/{34C98874-5161-78E4-28B7-F20641CCC338}.wem"
      },
      {
       "Id": "695342955",
@@ -294,6 +342,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_wood_run_01.wav",
       "CachePath": "3C/{3C5C3B69-6F07-1FB7-76B6-533F82D676C8}.wem"
+     },
+     {
+      "Id": "818927596",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_foley_footstep_grass_land_01.wav",
+      "CachePath": "80/{8072AEB0-0AC3-B580-A73F-22AAEF1B109B}.wem"
      },
      {
       "Id": "842644164",
@@ -397,7 +453,7 @@
       "MaxAttenuation": "30",
       "DurationType": "OneShot",
       "DurationMin": "0.108",
-      "DurationMax": "0.35408333",
+      "DurationMax": "0.3803125",
       "SwitchContainers": [
        {
         "SwitchValue": {
@@ -446,6 +502,31 @@
          },
          {
           "Id": "909837310"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "63790334",
+         "Id": "4248645337",
+         "GUID": "{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "71859958"
+         },
+         {
+          "Id": "306868576"
+         },
+         {
+          "Id": "546173227"
+         },
+         {
+          "Id": "675433608"
+         },
+         {
+          "Id": "688133373"
          }
         ]
        },
@@ -601,6 +682,22 @@
          },
          {
           "Id": "598226072"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "Switch",
+         "GroupId": "63790334",
+         "Id": "4248645337",
+         "GUID": "{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "535985515"
+         },
+         {
+          "Id": "818927596"
          }
         ]
        },
@@ -853,12 +950,18 @@
         "Name": "Metal",
         "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Metal",
         "GUID": "{03214074-974A-4AC1-AA95-ABF83F648055}"
+       },
+       {
+        "Id": "4248645337",
+        "Name": "Grass",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Grass",
+        "GUID": "{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{805022C2-2CE3-B46A-C362-BB9896F9D4F8}"
+  "FileHash": "{E365EA9F-E058-B55A-5B6D-3FD40E27AAD3}"
  }
 }

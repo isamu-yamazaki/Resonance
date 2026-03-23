@@ -23,6 +23,7 @@ Switch	ID	Name	Switch Group			Notes
 	2058049674	Wood	SurfaceType			
 	2185786256	Gravel	SurfaceType			
 	2473969246	Metal	SurfaceType			
+	4248645337	Grass	SurfaceType			
 
 Game Parameter	ID	Name			Wwise Object Path	Notes
 	183903552	Occlusion			\Default Work Unit\Occlusion	
@@ -37,6 +38,7 @@ Source plug-ins	ID	Name	Type		Wwise Object Path	Notes
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	39040200	sfx_foley_footstep_metal_land_02	.cache\0C\{0CE17BE5-2178-58BC-E104-0681F54900C2}.wem		\Containers\Default Work Unit\Landing\Metal\sfx_foley_footstep_metal_land_02		125156
+	71859958	sfx_foley_footstep_grass_run_02	.cache\DD\{DD5B52E1-DE71-4340-BED6-074C40D7FEFF}.wem		\Containers\Default Work Unit\Footsteps\Grass\sfx_foley_footstep_grass_run_02		63028
 	117358700	sfx_foley_footstep_gravel_land_02	.cache\7B\{7BABE657-3E4A-FAC8-B847-4AF673B33234}.wem		\Containers\Default Work Unit\Landing\Gravel\sfx_foley_footstep_gravel_land_02		111736
 	151765522	sfx_props_glass_shatter_03	.cache\82\{82392F02-F3B7-2D82-04CD-01134489CF25}.wem		\Containers\Default Work Unit\Glass_Shatter\sfx_props_glass_shatter_03		187624
 	152568559	sfx_foley_footstep_gravel_run_02	.cache\2D\{2D98AB83-F1DD-6D72-63EF-305AC133EA0E}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_02		63568
@@ -45,6 +47,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	211680909	sfx_foley_footstep_metal_run_02	.cache\E9\{E997263F-1F3F-1175-8BD4-C6D646C2E6DD}.wem		\Containers\Default Work Unit\Footsteps\Metal\sfx_foley_footstep_metal_run_02		51304
 	223167884	sfx_UI_button_click	.cache\15\{156CB88D-D51F-DCB6-40C0-B0D2E2053123}.wem		\Containers\Default Work Unit\UI\sfx_UI_button_click		38044
 	251517408	sfx_foley_footstep_wood_run_02	.cache\CB\{CB9EF375-C645-22FA-D6EA-99071E83844C}.wem		\Containers\Default Work Unit\Footsteps\Wood\sfx_foley_footstep_wood_run_02		20832
+	306868576	sfx_foley_footstep_grass_run_03	.cache\43\{433129F0-78D3-428F-F093-AB1082E521B0}.wem		\Containers\Default Work Unit\Footsteps\Grass\sfx_foley_footstep_grass_run_03		69484
 	311624981	sfx_props_glass_land_03	.cache\E4\{E4A78C98-054B-C357-44FF-136019D1D519}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_03		60096
 	320214379	sfx_UI_shop_item_buy	.cache\D9\{D94A74DF-BEEF-F105-0DCF-FB9B910699D4}.wem		\Containers\Default Work Unit\UI\Shop\sfx_UI_shop_item_buy		50832
 	350734022	sfx_foley_footstep_metal_run_05	.cache\17\{176714DE-5172-DB84-CD39-E7468B57F46E}.wem		\Containers\Default Work Unit\Footsteps\Metal\sfx_foley_footstep_metal_run_05		48488
@@ -56,6 +59,8 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	498119391	sfx_foley_footstep_gravel_run_05	.cache\81\{81BFFE35-2A1E-6D2F-1D5B-FCDF30A30CF3}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_05		68080
 	522480143	sfx_foley_footstep_concrete_land_02	.cache\AC\{AC546118-D92E-A071-DA48-38846D638CEA}.wem		\Containers\Default Work Unit\Landing\Concrete\sfx_foley_footstep_concrete_land_02		87440
 	522615953	amb_indoor_loop	.cache\7D\{7D3B5EBB-1E5C-8081-CBAD-0FE4BD5295C1}.wem		\Containers\Default Work Unit\amb_indoor_loop		3552096
+	535985515	sfx_foley_footstep_grass_land_02	.cache\0D\{0DD200DE-1852-B449-CF56-5FA4283F0E3E}.wem		\Containers\Default Work Unit\Landing\Grass\sfx_foley_footstep_grass_land_02		80644
+	546173227	sfx_foley_footstep_grass_run_04	.cache\39\{39E245C4-A9A7-0614-9791-F2580074163E}.wem		\Containers\Default Work Unit\Footsteps\Grass\sfx_foley_footstep_grass_run_04		58592
 	566025932	sfx_foley_footstep_gravel_run_03	.cache\33\{3385E922-2DE8-3025-948B-D52B34E8A500}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_03		62692
 	598226072	sfx_foley_footstep_metal_land_01	.cache\3F\{3F99F8BC-C824-6A6C-945E-5D537C4D63F3}.wem		\Containers\Default Work Unit\Landing\Metal\sfx_foley_footstep_metal_land_01		110724
 	608212495	sfx_foley_footstep_concrete_run_03	.cache\13\{135DE354-C9CA-4D4B-27F8-E5DA44EACB61}.wem		\Containers\Default Work Unit\Footsteps\Concrete\sfx_foley_footstep_concrete_run_03		50120
@@ -63,6 +68,8 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	615216494	sfx_UI_shop_open	.cache\8B\{8B410331-C4EA-12BF-A70F-75F939159D7E}.wem		\Containers\Default Work Unit\UI\Shop\sfx_UI_shop_open		188512
 	644863526	sfx_props_glass_land_05	.cache\E3\{E36AE422-6376-38B3-79F2-B99A5C5768B6}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_05		39096
 	648897598	sfx_foley_footstep_metal_run_03	.cache\9D\{9D6C8141-24D7-0C3F-BEA4-BD86003D129C}.wem		\Containers\Default Work Unit\Footsteps\Metal\sfx_foley_footstep_metal_run_03		50900
+	675433608	sfx_foley_footstep_grass_run_01	.cache\30\{30B3827D-58AB-B81C-6D5D-561BAE1D3A42}.wem		\Containers\Default Work Unit\Footsteps\Grass\sfx_foley_footstep_grass_run_01		73116
+	688133373	sfx_foley_footstep_grass_run_05	.cache\34\{34C98874-5161-78E4-28B7-F20641CCC338}.wem		\Containers\Default Work Unit\Footsteps\Grass\sfx_foley_footstep_grass_run_05		62468
 	695342955	sfx_props_glass_land_04	.cache\4F\{4F63AB35-73B8-CCC8-086C-FFE66447BCA7}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_04		72096
 	697658533	sfx_foley_footstep_wood_run_05	.cache\D4\{D4648B31-944B-965E-DDE1-9DADF08C731E}.wem		\Containers\Default Work Unit\Footsteps\Wood\sfx_foley_footstep_wood_run_05		37216
 	698658536	sfx_foley_footstep_gravel_run_01	.cache\D7\{D7654DA1-E972-E3C0-DBFB-321BE5879310}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_01		67680
@@ -71,6 +78,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	776817998	sfx_foley_footstep_gravel_run_04	.cache\BA\{BA9DE769-F482-8E5A-9D81-D8725EAF1C1C}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_04		65856
 	780243718	sfx_foley_footstep_wood_run_03	.cache\3B\{3B442446-C6F7-6217-AF47-6082C0E18921}.wem		\Containers\Default Work Unit\Footsteps\Wood\sfx_foley_footstep_wood_run_03		26720
 	781293176	sfx_foley_footstep_wood_run_01	.cache\3C\{3C5C3B69-6F07-1FB7-76B6-533F82D676C8}.wem		\Containers\Default Work Unit\Footsteps\Wood\sfx_foley_footstep_wood_run_01		26976
+	818927596	sfx_foley_footstep_grass_land_01	.cache\80\{8072AEB0-0AC3-B580-A73F-22AAEF1B109B}.wem		\Containers\Default Work Unit\Landing\Grass\sfx_foley_footstep_grass_land_01		83296
 	842644164	sfx_foley_footstep_wood_land_02	.cache\D2\{D24EF7A5-E755-DD7D-8B3C-57ED39073D78}.wem		\Containers\Default Work Unit\Landing\Wood\sfx_foley_footstep_wood_land_02		75872
 	851657515	sfx_foley_footstep_metal_run_04	.cache\50\{50C05589-B75B-763A-899F-C8B59E72EBEC}.wem		\Containers\Default Work Unit\Footsteps\Metal\sfx_foley_footstep_metal_run_04		48900
 	856630456	sfx_foley_footstep_concrete_run_04	.cache\76\{76FF4DDE-08CB-E7A3-A24F-1080E5C9E361}.wem		\Containers\Default Work Unit\Footsteps\Concrete\sfx_foley_footstep_concrete_run_04		61088

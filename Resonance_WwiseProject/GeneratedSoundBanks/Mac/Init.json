@@ -291,12 +291,18 @@
         "Name": "Metal",
         "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Metal",
         "GUID": "{03214074-974A-4AC1-AA95-ABF83F648055}"
+       },
+       {
+        "Id": "4248645337",
+        "Name": "Grass",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Grass",
+        "GUID": "{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{3E8EEA96-4634-9A99-DAE2-E8938FBC956F}"
+  "FileHash": "{1C934514-52E3-0AC7-2DBC-AD6DCCC957AF}"
  }
 }
