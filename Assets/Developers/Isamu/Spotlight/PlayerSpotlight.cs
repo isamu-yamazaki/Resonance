@@ -37,6 +37,9 @@ namespace Resonance
 
             if (!asServer)
             {
+                if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundLayer))
+                    lastKnownGroundY = hit.point.y;
+
                 SpawnBeam();
                 SpawnLight();
                 beamObject.SetActive(false);
@@ -119,9 +122,7 @@ namespace Resonance
         {
             if (beamObject == null && lightObject == null) return;
 
-            // Raycast downward from player feet — ignore anything above
-            Vector3 rayOrigin = transform.position;
-            if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, beamHeight * 2f, groundLayer))
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundLayer))
             {
                 if (hit.point.y < transform.position.y)
                     lastKnownGroundY = hit.point.y;
