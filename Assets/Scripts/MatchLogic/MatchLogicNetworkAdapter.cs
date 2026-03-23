@@ -74,7 +74,7 @@ namespace Resonance.Match
 
         protected override void OnDestroy()
         {
-            if (InstanceHandler.TryGetInstance<MatchLogicNetworkAdapter>(out var _))
+            if (InstanceHandler.TryGetInstance<MatchLogicNetworkAdapter>(out var instance) && instance == this)
             {
                 InstanceHandler.UnregisterInstance<MatchLogicNetworkAdapter>();
             }

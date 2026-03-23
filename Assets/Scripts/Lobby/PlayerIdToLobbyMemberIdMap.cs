@@ -68,7 +68,7 @@ namespace Resonance.LobbySystem
 
         protected override void OnDestroy()
         {
-            if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var _))
+            if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var instance) && instance == this)
             {
                 InstanceHandler.UnregisterInstance<PlayerIdToLobbyMemberIdMap>();
             }
