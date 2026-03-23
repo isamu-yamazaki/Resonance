@@ -1,3 +1,5 @@
+using System;
+using Resonance.Combat.Weapons.Enums;
 using UnityEngine;
 
 namespace Resonance.PlayerController
@@ -6,6 +8,14 @@ namespace Resonance.PlayerController
     {
         [field: SerializeField]
         public PlayerMovementState CurrentPlayerMovementState { get; private set; } = PlayerMovementState.Idling;
+        public WeaponClass CurrentWeaponClass { get; private set; }
+        public bool WeaponClassInitialized { get; private set; }
+
+        public bool IsReloading { get; private set; }
+        public bool IsAttacking { get; private set; }
+
+        public void SetReloading(bool value) => IsReloading = value;
+        public void SetAttacking(bool value) => IsAttacking = value;
 
         public void SetPlayerMovementState(PlayerMovementState playerMovementState)
         {
@@ -15,7 +25,6 @@ namespace Resonance.PlayerController
         public bool InGroundedState()
         {
             return IsStateGroundedState(CurrentPlayerMovementState);
-
         }
 
         public bool IsStateGroundedState(PlayerMovementState movementState)
@@ -31,13 +40,27 @@ namespace Resonance.PlayerController
         {
             return CurrentPlayerMovementState == PlayerMovementState.Dead;
         }
-        
+
         public bool IsInShop()
         {
             return CurrentPlayerMovementState == PlayerMovementState.InShop;
         }
+
+        public bool IsZiplining()
+        {
+            return CurrentPlayerMovementState == PlayerMovementState.Ziplining;
+        }
+
+        public event Action<WeaponClass> OnWeaponClassChanged;
+
+        public void SetWeaponClass(WeaponClass weaponClass)
+        {
+            CurrentWeaponClass = weaponClass;
+            WeaponClassInitialized = true;
+            OnWeaponClassChanged?.Invoke(weaponClass);
+        }
     }
-    
+
     public enum PlayerMovementState
     {
         Idling = 0,
@@ -48,6 +71,7 @@ namespace Resonance.PlayerController
         Falling = 5,
         Sliding = 6,
         Dead = 7,
-        InShop = 8
+        InShop = 8,
+        Ziplining = 9
     }
 }

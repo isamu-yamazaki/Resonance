@@ -16,6 +16,7 @@ namespace Resonance.Shop
         [Header("Mod Containers")]
         [SerializeField] private GameObject primaryModContainer;
         [SerializeField] private GameObject secondaryModContainer;
+        [SerializeField] private GameObject modTextPrefab;
 
         [Header("Augment Display")]
         [SerializeField] private TextMeshProUGUI upperAugmentName;
@@ -86,11 +87,10 @@ namespace Resonance.Shop
                     continue;
                 }
 
-                GameObject go = new GameObject(mod.ModName);
-                go.transform.SetParent(modContainer.transform, false);
+                GameObject go = Instantiate(modTextPrefab, modContainer.transform);
 
-                TextMeshProUGUI text = go.AddComponent<TextMeshProUGUI>();
-                text.text = $"- {mod.ModName}";
+                TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
+                text.text = $"{mod.ModName}";
 
                 modTexts.Add(go);
             }

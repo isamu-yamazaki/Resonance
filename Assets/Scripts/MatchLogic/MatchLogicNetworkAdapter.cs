@@ -1,5 +1,6 @@
 using PurrNet;
 using Resonance.Assemblies.Arena;
+using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.Polarity;
 using Resonance.GameBootstrap;
@@ -36,7 +37,7 @@ namespace Resonance.Match
         [SerializeField] private float matchStartCountdownSeconds = 5f;
 
         [Header("Arena Settings")]
-        [SerializeField] private int eliminationsToWin = 10;
+        [SerializeField] private float ratingToWin = 2000f;
         [SerializeField] private float autoStartDelaySeconds = 5f;
         [SerializeField] private bool autoStartNextMatch = false;
         [SerializeField] private float matchDurationSeconds = 300f;
@@ -85,7 +86,7 @@ namespace Resonance.Match
             {
                 var arenaConfig = new ArenaRoundManager.ArenaRoundManagerConfig
                 {
-                    eliminationsToWin = eliminationsToWin,
+                    ratingToWin = ratingToWin,
                     autoStartNextMatch = autoStartNextMatch,
                     autoStartDelaySeconds = autoStartDelaySeconds,
                     matchStartCountdownSeconds = matchStartCountdownSeconds,

@@ -106,6 +106,12 @@ MonoBehaviour:
     groupIdInternal: 0
     groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 34e918b5320f2394486160c7307a58ef, type: 2}
+  grassSurface:
+    idInternal: 0
+    valueGuidInternal: 
+    groupIdInternal: 0
+    groupGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: d48893ac1a8654d0e95d9b7e8d503412, type: 2}
 --- !u!114 &8375709091427389756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +191,7 @@ Transform:
   m_GameObject: {fileID: 5642366538942606948}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.67, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -321,6 +327,8 @@ GameObject:
   - component: {fileID: 2324411731792430973}
   - component: {fileID: 1311654643413597327}
   - component: {fileID: -4167557731683194747}
+  - component: {fileID: 6963169189660805957}
+  - component: {fileID: -6030594833308951699}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -337,7 +345,7 @@ Transform:
   m_GameObject: {fileID: 6809321870534573542}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.52246, y: 0, z: -8.93903}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -396,6 +404,13 @@ MonoBehaviour:
   sprintFOV: 85
   overdriveFOV: 95
   fovTransitionSpeed: 10
+  defaultConfig: {fileID: 11400000, guid: 3fdceac9f513e2547b0e6a3a3f10f29d, type: 2}
+  pistolConfig: {fileID: 11400000, guid: 3dddd0fda2c98d54da43526732666bfe, type: 2}
+  rifleConfig: {fileID: 11400000, guid: d151d9ed4584ec848958dd6406de4306, type: 2}
+  shotgunConfig: {fileID: 0}
+  heavyMGConfig: {fileID: 0}
+  sniperConfig: {fileID: 0}
+  swordConfig: {fileID: 0}
   _groundLayers:
     serializedVersion: 2
     m_Bits: 257
@@ -411,6 +426,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9baf2753d051ed5429094497e7e104e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLocomotionInput
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   holdToSprint: 1
 --- !u!143 &3494420511587806199
 CharacterController:
@@ -487,6 +511,7 @@ MonoBehaviour:
   _animator: {fileID: 186030322157751487}
   _networkAnimator: {fileID: 5378828892324781899}
   locomotionBlendSpeed: 4
+  rifleChestCorrection: 16
 --- !u!114 &3887967411063251530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,6 +524,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9013b3fa3d70ab04c93dacdd173ebf4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerActionsInput
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
 --- !u!114 &7288220896636920470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1073,6 +1107,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae81c8d7f5408c444acb6669e9e5cd6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerPostProcessing
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _playerVolume: {fileID: 1311654643413597327}
   overdriveBloomIntensity: 1.4
   baseBloomIntensity: 0.75
@@ -1114,3 +1157,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerHealthStim
   stimCooldown: 15
   maxCharges: 2
+--- !u!114 &6963169189660805957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ce0fb1f407f3543b800c5c2def9b1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteract
+  player: {fileID: 6809321870534573542}
+--- !u!114 &-6030594833308951699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103cbf7204e768746879e6fb3d2697e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerSpotlight
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  spotlightMaterial: {fileID: 2100000, guid: ae81d471c5be8d74094053120d3f7523, type: 2}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 257
+  beamColor: {r: 0.6, g: 0.85, b: 1, a: 1}
+  beamIntensity: 2
+  beamWidth: 10
+  beamHeight: 20
+  lightIntensity: 1000
+  lightRange: 25
+  lightSpotAngle: 35
+  lightSmoothSpeed: 5

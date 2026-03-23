@@ -283,6 +283,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "54707955-d7d7-437b-8aa3-c2a9dab91794",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "SwapSlotOne",
                     "type": "Button",
                     "id": "87301078-3863-4764-958b-85010e1eae2e",
@@ -379,6 +388,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Overdrive",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "da70440f-855c-4bce-a890-36ea41631434",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

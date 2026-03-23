@@ -19,7 +19,7 @@ MonoBehaviour:
   weaponClass: 3
   firingType: 1
   icon: {fileID: 0}
-  weaponPrefab: {fileID: 1737148184329554707, guid: a9a8aed849c03db4e8722bf54fb9d010, type: 3}
+  weaponPrefab: {fileID: 1737148184329554707, guid: abac27ae7a7c8f74db29e88b2f8e646d, type: 3}
   damage: 2
   fireRate: 20
   projectilesPerShot: 1

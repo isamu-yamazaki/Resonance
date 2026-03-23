@@ -2,11 +2,12 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using Resonance.Player;
+using PurrNet;
 
 namespace Resonance.PlayerController
 {
     [RequireComponent(typeof(Volume))]
-    public class PlayerPostProcessing : MonoBehaviour
+    public class PlayerPostProcessing : NetworkBehaviour
     {
         #region Inspector Fields
 
@@ -52,6 +53,11 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Startup
+        protected override void OnSpawned()
+        {
+            base.OnSpawned();
+            enabled = isOwner;
+        }
 
         private void Awake()
         {

@@ -27,8 +27,11 @@ namespace Resonance.Assemblies.MatchStat
         #region Events
         public event Action<Dictionary<ulong, PlayerMatchStats>> OnAllStatsUpdated;
         public event Action<ulong, PlayerMatchStats> OnStatsUpdated;
-        public event Action<ulong, ulong> OnPlayerKill; // (killer, victim)
-        public event Action<ulong, ulong> OnPlayerAssist; // (assister, victim)
+        public event Action<ulong, ulong> OnPlayerKill;         // (killer, victim)
+        public event Action<ulong, ulong> OnPlayerAssist;       // (assister, victim)
+        public event Action<ulong, ulong, float> OnDamageDealt; // (attacker, victim, damageDealt)
+        public event Action<ulong> OnPlayerDeath;
+        public event Action<ulong> OnPlayerMiss;
         #endregion
 
         #region Startup
@@ -48,6 +51,7 @@ namespace Resonance.Assemblies.MatchStat
             if (!playerStats.ContainsKey(playerId))
             {
                 playerStats[playerId] = new PlayerMatchStats();
+                OnAllStatsUpdated?.Invoke(playerStats);
             }
         }
 
@@ -60,12 +64,15 @@ namespace Resonance.Assemblies.MatchStat
         #region Damage Tracking
         public void RecordDamage(ulong attackerId, ulong victimId, float damageAmount)
         {
-            RegisterPlayer(attackerId);
             RegisterPlayer(victimId);
 
-            playerStats[attackerId] = playerStats[attackerId].RecordDamage(damageAmount);
-
-            assistCalculator.RecordDamage(attackerId, victimId, damageAmount);
+            if (attackerId != 0)
+            {
+                RegisterPlayer(attackerId);
+                playerStats[attackerId] = playerStats[attackerId].RecordDamage(damageAmount);
+                OnDamageDealt?.Invoke(attackerId, victimId, damageAmount);
+                assistCalculator.RecordDamage(attackerId, victimId, damageAmount);
+            }
         }
         #endregion
 
@@ -81,6 +88,7 @@ namespace Resonance.Assemblies.MatchStat
             playerStats[victimId] = playerStats[victimId].RecordDeath();
 
             OnPlayerKill?.Invoke(killerId, victimId);
+            OnPlayerDeath?.Invoke(victimId);
 
             // Process assists
             ProcessAssists(killerId, victimId);
@@ -114,8 +122,30 @@ namespace Resonance.Assemblies.MatchStat
             RegisterPlayer(victimId);
             playerStats[victimId] = playerStats[victimId].RecordDeath();
 
+            OnPlayerDeath?.Invoke(victimId);
+            
             OnStatsUpdated?.Invoke(victimId, playerStats[victimId]);
             OnAllStatsUpdated?.Invoke(playerStats);
+        }
+        #endregion
+        
+        #region Rating Recording
+
+        public void RecordRating(ulong playerId, float amount)
+        {
+            RegisterPlayer(playerId);
+            playerStats[playerId] = playerStats[playerId].RecordRating(amount);
+            
+            OnStatsUpdated?.Invoke(playerId, playerStats[playerId]);
+            OnAllStatsUpdated?.Invoke(playerStats);
+        }
+        #endregion
+        
+        #region Miss Recording
+
+        public void RecordMiss(ulong playerId)
+        {
+            OnPlayerMiss?.Invoke(playerId);
         }
         #endregion
 

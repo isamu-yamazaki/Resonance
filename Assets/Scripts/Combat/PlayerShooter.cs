@@ -4,6 +4,7 @@ using PurrNet;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.Helper;
+using Resonance.Match;
 using Resonance.PlayerController;
 using UnityEngine;
 
@@ -26,7 +27,6 @@ namespace Resonance.Combat
         [SerializeField] private bool debugAmmoLogs;
 
         private float nextFireTime;
-        private bool isReloading;
         private float reloadEndTime;
         private float currentSpread;
 
@@ -68,9 +68,9 @@ namespace Resonance.Combat
 
         private PlayerViewModel viewModel;
         private WeaponStatManager weaponStatManager;
+        private PlayerState playerState;
 
         public int CurrentAmmo => currentAmmo;
-        public bool IsReloading => isReloading;
 
         private BulletProperties[] bulletProperties;
 
@@ -82,26 +82,6 @@ namespace Resonance.Combat
         {
             base.OnSpawned();
             enabled = isOwner;
-
-            var behaviour = GetComponent<NetworkBehaviour>();
-            GiveOwnership(behaviour.owner);
-
-            if (isOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.SetCallbacks(playerActionsInput);
-            }
-        }
-
-        protected override void OnDespawned()
-        {
-            base.OnDespawned();
-
-            if (isOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(playerActionsInput);
-            }
         }
 
         #endregion
@@ -111,6 +91,7 @@ namespace Resonance.Combat
         private void Awake()
         {
             viewModel = GetComponent<PlayerViewModel>();
+            playerState = GetComponent<PlayerState>();
 
             if (playerCamera == null)
             {
@@ -146,6 +127,7 @@ namespace Resonance.Combat
 
             if (!playerActionsInput.AttackHeld && !playerActionsInput.AttackPressed)
             {
+                playerState.SetAttacking(false);
                 currentSpread = Mathf.Max(
                     weaponStatManager.Spread,
                     currentSpread - weaponStatManager.SpreadRecoveryRate * Time.deltaTime
@@ -177,7 +159,7 @@ namespace Resonance.Combat
 
         private void TryShoot()
         {
-            if (isReloading) return;
+            if (playerState.IsReloading) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
@@ -203,6 +185,7 @@ namespace Resonance.Combat
 
                 currentAmmo -= 1;
                 viewModel.SetAmmo(currentAmmo, MagazineSize);
+                playerState.SetAttacking(true);
 
                 currentSpread += weaponStatManager.SpreadPerShot;
                 currentSpread = Mathf.Min(currentSpread, weaponStatManager.MaxSpread);
@@ -264,6 +247,7 @@ namespace Resonance.Combat
 
             Vector3 rayOrigin = playerCamera.transform.position;
             float hitscanMaxDistance = weaponStatManager.Range;
+            bool hitPlayer = false;
 
             for (int i = 0; i < count; i++)
             {
@@ -279,6 +263,7 @@ namespace Resonance.Combat
                     if (target != null && hit.collider.gameObject != gameObject && !hit.collider.transform.IsChildOf(transform))
                     {
                         target.TakeDamage(finalDamage, payload.Shooter);
+                        hitPlayer = true;
                         if (damageNumberPrefab != null && hit.collider.GetComponent<IDamageNumberTarget>() != null)
                         {
                             if (count > 1)
@@ -323,6 +308,9 @@ namespace Resonance.Combat
                     SpawnTrailOnAllClients(view.Muzzle.position, endPoint, hitscanBullet.Key);
                 }
             }
+
+            if (!hitPlayer)
+                NotifyMissOnServer();
         }
 
         [ObserversRpc(runLocally: true)]
@@ -356,6 +344,13 @@ namespace Resonance.Combat
         {
             Debug.Log($"Spawn decal at {hitInfo.point}");
         }
+        
+        [ServerRpc]
+        private void NotifyMissOnServer()
+        {
+            if (MatchStatBridge.Instance != null && owner.HasValue)
+                MatchStatBridge.Instance.RecordMiss(gameObject);
+        }
 
         private float ComputeDamageWithFalloff(float payloadDamage, float distance, WeaponProperties weapon)
         {
@@ -387,7 +382,7 @@ namespace Resonance.Combat
 
         private void TickReload()
         {
-            if (!isReloading)
+            if (!playerState.IsReloading)
             {
                 return;
             }
@@ -409,7 +404,7 @@ namespace Resonance.Combat
 
         private void TryStartReload()
         {
-            if (isReloading)
+            if (playerState.IsReloading)
             {
                 return;
             }
@@ -452,7 +447,7 @@ namespace Resonance.Combat
                 return;
             }
 
-            isReloading = true;
+            playerState.SetReloading(true);
             reloadEndTime = Time.time + reloadTime;
 
             viewModel.SetReloadState(true);
@@ -466,7 +461,7 @@ namespace Resonance.Combat
 
         private void FinishReload()
         {
-            isReloading = false;
+            playerState.SetReloading(false);
 
             if (playerEquip == null)
             {
@@ -514,7 +509,7 @@ namespace Resonance.Combat
             }
 
             lastWeapon = weapon;
-            isReloading = false;
+            playerState.SetReloading(false);
 
             currentSpread = weaponStatManager.Spread;
 
@@ -621,7 +616,7 @@ namespace Resonance.Combat
         {
             get
             {
-                if (!isReloading) return 0f;
+                if (!playerState.IsReloading) return 0f;
 
                 float reloadDuration = weaponStatManager.ReloadTime;
                 float timeRemaining = reloadEndTime - Time.time;
