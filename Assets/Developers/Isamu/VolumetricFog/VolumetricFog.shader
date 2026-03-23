@@ -7,6 +7,10 @@ Shader "Custom/VolumetricFog"
         _StepSize("Step size", Range(0.1, 20)) = 1
         _DensityMultiplier("Density multiplier", Range(0, 10)) = 1
         _NoiseOffset("Noise offset", float) = 0
+        
+        _FogNoise("Fog noise", 3D) = "white" {}
+        _NoiseTiling("Noise tiling", float) = 1
+        _DensityThreshold("Density threshold", Range(0, 1)) = 0.1
     }
 
     SubShader
@@ -28,10 +32,16 @@ Shader "Custom/VolumetricFog"
             float _DensityMultiplier;
             float _StepSize;
             float _NoiseOffset;
+            TEXTURE3D(_FogNoise);
+            float _DensityThreshold;
+            float _NoiseTiling;
 
-            float get_density()
+            float get_density(float3 worldPos)
             {
-                return _DensityMultiplier;
+                float4 noise = _FogNoise.SampleLevel(sampler_TrilinearRepeat, worldPos * 0.01 * _NoiseTiling, 0);
+                float density = dot(noise, noise);
+                density = saturate(density - _DensityThreshold) * _DensityMultiplier;
+                return density;
             }
 
             half4 frag(Varyings IN) : SV_Target
@@ -52,7 +62,8 @@ Shader "Custom/VolumetricFog"
 
                 while (distTravelled < distLimit)
                 {
-                    float density = get_density();
+                    float3 rayPos = entryPoint + rayDir * distTravelled;
+                    float density = get_density(rayPos);
                     if (density > 0)
                     {
                         transmittance *= exp(-density * _StepSize);
