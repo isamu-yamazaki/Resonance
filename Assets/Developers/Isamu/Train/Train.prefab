@@ -521,7 +521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainAudioReactiveTrigger
   _trainController: {fileID: 3448999368842045501}
   _baseHalfExtents: {x: 3, y: 3, z: 40}
-  _expansionAtFullSpeed: {x: 10, y: 7, z: 6}
+  _expansionAtFullSpeed: {x: 10, y: 7, z: 8}
   _reactiveLayer:
     serializedVersion: 2
     m_Bits: 4294967295
