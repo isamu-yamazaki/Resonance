@@ -43,8 +43,18 @@ Shader "Custom/VolumetricFog"
                 float distLimit = min(viewLenght, _MaxDistance);
                 float distTravelled = 0;
                 float transmittance = 0;
+
+                while (distTravelled < distLimit)
+                {
+                    float density = get_density();
+                    if (density > 0)
+                    {
+                        transmittance += density * _StepSize;
+                    }
+                    distTravelled += _StepSize;
+                }
                 
-                return float4(frac(worldPos), 1);
+                return transmittance;
             }
             ENDHLSL
         }
