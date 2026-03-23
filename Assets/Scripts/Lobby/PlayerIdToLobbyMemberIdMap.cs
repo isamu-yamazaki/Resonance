@@ -1,0 +1,69 @@
+using PurrNet;
+using UnityEngine;
+
+namespace Resonance.LobbySystem
+{
+    public class PlayerIdToLobbyMemberIdMap : NetworkBehaviour
+    {
+        [SerializeField] private SyncDictionary<PlayerID, string> lobbyMemberIdsByPlayerId = new();
+
+        private LobbyDataHolder lobbyDataHolder;
+
+        [ServerRpc(requireOwnership: false)]
+        private void RegisterLobbyMemberIdWithPlayerId(PlayerID playerId, string lobbyMemberId)
+        {
+            lobbyMemberIdsByPlayerId.Add(playerId, lobbyMemberId);
+        }
+
+        public string GetLobbyMemberId(PlayerID playerId)
+        {
+            if (lobbyMemberIdsByPlayerId.ContainsKey(playerId))
+            {
+                return lobbyMemberIdsByPlayerId[playerId];
+            }
+            return null;
+        }
+
+        private void Awake()
+        {
+            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
+            if (lobbyDataHolder == null)
+            {
+                Debug.LogError($"[{GetType()}] Unable to find {nameof(LobbyDataHolder)} component");
+                Destroy(this);
+            }
+
+            if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var _))
+            {
+                Destroy(this);
+            }
+            InstanceHandler.RegisterInstance(this);
+            DontDestroyOnLoad(this);
+        }
+
+        protected override void OnSpawned(bool asServer)
+        {
+            base.OnSpawned(asServer);
+
+            if (!asServer)
+            {
+                RegisterLobbyMemberIdWithPlayerId(networkManager.localPlayer, lobbyDataHolder.LocalUserId);
+            }
+        }
+
+        protected override void OnDestroy()
+        {
+            if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var _))
+            {
+                InstanceHandler.UnregisterInstance<PlayerIdToLobbyMemberIdMap>();
+            }
+        }
+
+        [ContextMenu("Get lobby member ID of local player ID")]
+        private void TestGetLobbyMemberIdOfLocalPlayerId()
+        {
+            var lobbyMemberId = GetLobbyMemberId(networkManager.localPlayer);
+            Debug.Log($"[PlayerIdToLobbyMemberIdMap] Lobby member ID of local player ID: {lobbyMemberId}");
+        }
+    }
+}
