@@ -20,7 +20,8 @@ Shader "Custom/VolumetricFog"
             half4 frag(Varyings IN) : SV_Target
             {
                 float depth = SampleSceneDepth(IN.texcoord);
-                return frac(LinearEyeDepth(depth, _ZBufferParams));
+                float3 worldPos = ComputeWorldSpacePosition(IN.texcoord, depth, UNITY_MATRIX_I_VP);
+                return float4(frac(worldPos), 1);
             }
             ENDHLSL
         }
