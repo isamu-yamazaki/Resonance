@@ -83,7 +83,7 @@ namespace Resonance.Train
 
             if (distance > _cullingDistance) return;
 
-            AkSoundEngine.SetRTPCValue(_speedRtpc, _trainController.NormalizedSpeed, _emitterObject);
+            AkUnitySoundEngine.SetRTPCValue(_speedRtpc, _trainController.NormalizedSpeed, _emitterObject);
         }
 
         private void OnDestroy()
