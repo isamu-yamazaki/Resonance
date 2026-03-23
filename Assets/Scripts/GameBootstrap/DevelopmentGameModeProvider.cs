@@ -7,15 +7,9 @@ namespace Resonance.GameBootstrap
     {
         [SerializeField] private GameMode gameModeToSet;
 
-        private void Awake()
+        protected override void Awake()
         {
-            var existing = FindFirstObjectByType<GameModeProvider>();
-            if (existing != null && existing != this)
-            {
-                Destroy(this);
-                return;
-            }
-
+            base.Awake();
             gameMode = gameModeToSet;
         }
     }
