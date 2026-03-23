@@ -11,18 +11,18 @@ namespace Resonance.Train
         [Header("Emitter")]
         [SerializeField] private GameObject _emitterObject;
 
-        [Header("Wwise Events")]
-        [SerializeField] private AK.Wwise.Event _playTrainMovingEvent;
-        [SerializeField] private AK.Wwise.Event _stopTrainMovingEvent;
-        [SerializeField] private AK.Wwise.Event _playTrainDisembarkEvent;
-        [SerializeField] private AK.Wwise.Event _playTrainArrivalEvent;
-
-        [Header("Wwise RTPCs")]
-        [SerializeField] private string _speedRtpc = "Train_Speed";
-
         [Header("Distance Culling")]
         [Tooltip("Beyond this distance the emitter still tracks but RTPC updates pause.")]
         [SerializeField] private float _cullingDistance = 80f;
+
+        [Header("Gizmos")]
+        [SerializeField] private float _gizmoRadius = 100f;
+
+        private const string PlayTrainMovingEvent = "Play_Train_Moving";
+        private const string StopTrainMovingEvent = "Stop_Train_Moving";
+        private const string PlayTrainDisembarkEvent = "Play_Train_Disembark";
+        private const string PlayTrainArrivalEvent = "Play_Train_Arrival";
+        private const string SpeedRtpc = "Train_Speed";
 
         private TrainAudioSpline _spline;
         private Transform _playerTransform;
@@ -80,7 +80,7 @@ namespace Resonance.Train
 
             if (distance > _cullingDistance) return;
 
-            AkSoundEngine.SetRTPCValue(_speedRtpc, _trainController.NormalizedSpeed, _emitterObject);
+            AkSoundEngine.SetRTPCValue(SpeedRtpc, _trainController.NormalizedSpeed, _emitterObject);
         }
 
         private void OnDestroy()
@@ -90,37 +90,25 @@ namespace Resonance.Train
 
         private void OnDeparted(int index, TrainStation station)
         {
-            if (_playTrainDisembarkEvent != null && _playTrainDisembarkEvent.IsValid())
-                _playTrainDisembarkEvent.Post(_emitterObject);
+            AkUnitySoundEngine.PostEvent(PlayTrainDisembarkEvent, _emitterObject);
         }
 
         private void OnArrived(int index, TrainStation station)
         {
-            if (_playTrainArrivalEvent != null && _playTrainArrivalEvent.IsValid())
-                _playTrainArrivalEvent.Post(_emitterObject);
+            AkUnitySoundEngine.PostEvent(PlayTrainArrivalEvent, _emitterObject);
         }
 
         private void StartLoop()
         {
             if (_isLoopPlaying) return;
-
-            if (_playTrainMovingEvent == null || !_playTrainMovingEvent.IsValid())
-            {
-                Debug.LogWarning("[TrainAudioEmitter] Play Train Moving event not assigned or invalid.", this);
-                return;
-            }
-
-            _playTrainMovingEvent.Post(_emitterObject);
+            AkUnitySoundEngine.PostEvent(PlayTrainMovingEvent, _emitterObject);
             _isLoopPlaying = true;
         }
 
         private void StopLoop()
         {
             if (!_isLoopPlaying) return;
-
-            if (_stopTrainMovingEvent != null && _stopTrainMovingEvent.IsValid())
-                _stopTrainMovingEvent.Post(_emitterObject);
-
+            AkUnitySoundEngine.PostEvent(StopTrainMovingEvent, _emitterObject);
             _isLoopPlaying = false;
         }
 
@@ -129,7 +117,7 @@ namespace Resonance.Train
             if (_emitterObject == null) return;
 
             Gizmos.color = new Color(1f, 0.5f, 0f, 0.8f);
-            Gizmos.DrawWireSphere(_emitterObject.transform.position, 2f);
+            Gizmos.DrawWireSphere(_emitterObject.transform.position, _gizmoRadius);
         }
     }
 }
