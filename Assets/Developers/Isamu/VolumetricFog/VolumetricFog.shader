@@ -6,6 +6,7 @@ Shader "Custom/VolumetricFog"
         _MaxDistance("Max distance", float) = 100
         _StepSize("Step size", Range(0.1, 20)) = 1
         _DensityMultiplier("Density multiplier", Range(0, 10)) = 1
+        _NoiseOffset("Noise offset", float) = 0
     }
 
     SubShader
@@ -26,6 +27,7 @@ Shader "Custom/VolumetricFog"
             float _MaxDistance;
             float _DensityMultiplier;
             float _StepSize;
+            float _NoiseOffset;
 
             float get_density()
             {
@@ -43,8 +45,9 @@ Shader "Custom/VolumetricFog"
                 float viewLenght = length(viewDir);
                 float3 rayDir = normalize(viewDir);
 
+                float2 pixelCoords = IN.texcoord * _BlitTexture_TexelSize.zw;
                 float distLimit = min(viewLenght, _MaxDistance);
-                float distTravelled = 0;
+                float distTravelled = InterleavedGradientNoise(pixelCoords, (int)(_Time.y / max(HALF_EPS, unity_DeltaTime.x))) * _NoiseOffset;
                 float transmittance = 1;
 
                 while (distTravelled < distLimit)
