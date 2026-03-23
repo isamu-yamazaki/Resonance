@@ -77,4 +77,37 @@ public class LobbyTests
     }
 
     #endregion
+
+    #region GetMemberById
+
+    [Test]
+    public void GetMemberById_ReturnsNull_WhenMembersListIsEmpty()
+    {
+        var lobby = LobbyTestsHelpers.CreateLobby(members: new List<LobbyUser>());
+        Assert.IsNull(lobby.GetMemberById("u1"));
+    }
+
+    [Test]
+    public void GetMemberById_ReturnsNull_WhenMemberNotFound()
+    {
+        var lobby = LobbyTestsHelpers.CreateLobby(members: new List<LobbyUser>
+        {
+            LobbyTestsHelpers.CreateUser("u1"),
+        });
+        Assert.IsNull(lobby.GetMemberById("u2"));
+    }
+
+    [Test]
+    public void GetMemberById_ReturnsMember_WhenMemberExists()
+    {
+        var user = LobbyTestsHelpers.CreateUser("u2", displayName: "Alice");
+        var lobby = LobbyTestsHelpers.CreateLobby(members: new List<LobbyUser>
+        {
+            LobbyTestsHelpers.CreateUser("u1"),
+            user,
+        });
+        Assert.AreEqual(user, lobby.GetMemberById("u2"));
+    }
+
+    #endregion
 }
