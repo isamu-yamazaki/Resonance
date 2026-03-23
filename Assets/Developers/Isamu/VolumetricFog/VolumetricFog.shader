@@ -11,6 +11,8 @@ Shader "Custom/VolumetricFog"
         _FogNoise("Fog noise", 3D) = "white" {}
         _NoiseTiling("Noise tiling", float) = 1
         _DensityThreshold("Density threshold", Range(0, 1)) = 0.1
+        
+        [HDR]_LightContribution("Light contribution", Color) = (1, 1, 1, 1)
     }
 
     SubShader
@@ -22,8 +24,10 @@ Shader "Custom/VolumetricFog"
             HLSLPROGRAM
             #pragma vertex Vert
             #pragma fragment frag
-
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+            
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
@@ -35,6 +39,7 @@ Shader "Custom/VolumetricFog"
             TEXTURE3D(_FogNoise);
             float _DensityThreshold;
             float _NoiseTiling;
+            float4 _LightContribution;
 
             float get_density(float3 worldPos)
             {
@@ -59,6 +64,7 @@ Shader "Custom/VolumetricFog"
                 float distLimit = min(viewLenght, _MaxDistance);
                 float distTravelled = InterleavedGradientNoise(pixelCoords, (int)(_Time.y / max(HALF_EPS, unity_DeltaTime.x))) * _NoiseOffset;
                 float transmittance = 1;
+                float4 fogCol = _Color;
 
                 while (distTravelled < distLimit)
                 {
@@ -66,12 +72,14 @@ Shader "Custom/VolumetricFog"
                     float density = get_density(rayPos);
                     if (density > 0)
                     {
+                        Light mainLight = GetMainLight(TransformWorldToShadowCoord(rayPos));
+                        fogCol.rgb += mainLight.color.rgb * _LightContribution.rgb * density * mainLight.shadowAttenuation * _StepSize;
                         transmittance *= exp(-density * _StepSize);
                     }
                     distTravelled += _StepSize;
                 }
                 
-                return lerp(col, _Color, 1.0 - saturate(transmittance));
+                return lerp(col, fogCol, 1.0 - saturate(transmittance));
             }
             ENDHLSL
         }
