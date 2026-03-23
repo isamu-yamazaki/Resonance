@@ -960,6 +960,16 @@
 								</Sound>
 							</ChildrenList>
 						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Grass" ID="{E82671E6-7023-434D-9562-BE2728BF11E3}" ShortID="706271477">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
+						</RandomSequenceContainer>
 					</ChildrenList>
 					<ObjectLists>
 						<ObjectList Name="RTPC">
@@ -1097,6 +1107,9 @@
 							<GroupingBehavior>
 								<ItemRef Name="Wood" ID="{94E67BD4-EBF4-4EC8-B8D0-810EB9A354D0}"/>
 							</GroupingBehavior>
+							<GroupingBehavior>
+								<ItemRef Name="Grass" ID="{E82671E6-7023-434D-9562-BE2728BF11E3}"/>
+							</GroupingBehavior>
 						</GroupingBehaviorList>
 						<GroupingList>
 							<Grouping>
@@ -1109,6 +1122,12 @@
 								<SwitchRef Name="Metal" ID="{03214074-974A-4AC1-AA95-ABF83F648055}"/>
 								<ItemList>
 									<ItemRef Name="Metal" ID="{5DDA6A5F-014A-4BC0-946C-0BF88C5458C7}"/>
+								</ItemList>
+							</Grouping>
+							<Grouping>
+								<SwitchRef Name="Grass" ID="{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"/>
+								<ItemList>
+									<ItemRef Name="Grass" ID="{E82671E6-7023-434D-9562-BE2728BF11E3}"/>
 								</ItemList>
 							</Grouping>
 							<Grouping>
@@ -1471,6 +1490,16 @@
 								</Sound>
 							</ChildrenList>
 						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Grass" ID="{22DBC854-D745-4E40-A3F8-5270FEEC924C}" ShortID="37347974">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
+						</RandomSequenceContainer>
 					</ChildrenList>
 					<ObjectLists>
 						<ObjectList Name="RTPC">
@@ -1603,6 +1632,9 @@
 								<ItemRef Name="Metal" ID="{7B827546-22EF-4447-B898-402A21FB4204}"/>
 							</GroupingBehavior>
 							<GroupingBehavior>
+								<ItemRef Name="Grass" ID="{22DBC854-D745-4E40-A3F8-5270FEEC924C}"/>
+							</GroupingBehavior>
+							<GroupingBehavior>
 								<ItemRef Name="Gravel" ID="{EDA7D3C3-D568-47EB-AD2F-4D2E4A5D3F0D}"/>
 							</GroupingBehavior>
 							<GroupingBehavior>
@@ -1620,6 +1652,12 @@
 								<SwitchRef Name="Metal" ID="{03214074-974A-4AC1-AA95-ABF83F648055}"/>
 								<ItemList>
 									<ItemRef Name="Metal" ID="{7B827546-22EF-4447-B898-402A21FB4204}"/>
+								</ItemList>
+							</Grouping>
+							<Grouping>
+								<SwitchRef Name="Grass" ID="{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"/>
+								<ItemList>
+									<ItemRef Name="Grass" ID="{22DBC854-D745-4E40-A3F8-5270FEEC924C}"/>
 								</ItemList>
 							</Grouping>
 							<Grouping>
