@@ -29,6 +29,7 @@ namespace Resonance.Audio
         private Material materialInstance;
         private float currentIntensity = 0f;
         private float targetIntensity = 0f;
+        private float externalIntensity = 0f;
         private float peakIntensity = 0f;
         private float sustainTimer = 0f;
         private bool inSustain = false;
@@ -37,12 +38,6 @@ namespace Resonance.Audio
         [Header("Network Update Intervals")]
         [SerializeField] private float serverToClientPropagationIntervalSeconds = 0.2f;
 
-        /// <summary>
-        /// A base control for how often clients emit updates to the server.
-        /// If there is a detected sound from the client, that will get reported
-        /// immediately outside of this coroutine loop.
-        /// Otherwise, `null` sound events are propagated from a loop with this wait time.
-        /// </summary>
         [SerializeField] private float clientToServerNullSourceReportingIntervalSeconds = 1f;
 
         private AudioSourceData clientReportedSource;
@@ -133,6 +128,12 @@ namespace Resonance.Audio
         }
 
         [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
+        public void SetExternalIntensity(float intensity)
+        {
+            externalIntensity = Mathf.Clamp01(intensity);
+        }
+
+        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
         private void CalculateAudioState()
         {
             if (clientReportedSource != null)
@@ -150,9 +151,9 @@ namespace Resonance.Audio
             }
 
             if (targetIntensity < threshold)
-            {
                 targetIntensity = 0f;
-            }
+
+            targetIntensity = Mathf.Max(targetIntensity, externalIntensity);
 
             // ADSR Envelope
             if (targetIntensity > currentIntensity)
@@ -172,30 +173,21 @@ namespace Resonance.Audio
                 sustainTimer -= Time.deltaTime;
 
                 if (sustainTimer <= 0f)
-                {
                     inSustain = false;
-                }
             }
             else
             {
                 currentIntensity = Mathf.Lerp(currentIntensity, targetIntensity, Time.deltaTime * releaseSpeed);
 
                 if (currentIntensity < 0.01f)
-                {
                     peakIntensity = 0f;
-                }
             }
 
-            // as a fallback for zero-division results
             if (float.IsNaN(currentIntensity))
-            {
                 currentIntensity = 0f;
-            }
 
             if (debugLog)
-            {
                 Debug.Log($"[AudioReactiveObject] Target: {targetIntensity:F3}, Current: {currentIntensity:F3}, Sustain: {sustainTimer:F2}s");
-            }
         }
 
         [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
@@ -209,13 +201,9 @@ namespace Resonance.Audio
             bool shouldPlay = intensity > 0f;
 
             if (shouldPlay && !isFeedbackPlaying)
-            {
                 StartAudioFeedback();
-            }
             else if (!shouldPlay && isFeedbackPlaying)
-            {
                 StopAudioFeedback();
-            }
 
             if (isFeedbackPlaying)
             {
@@ -239,9 +227,7 @@ namespace Resonance.Audio
         private void SetupMaterial()
         {
             if (targetRenderer == null)
-            {
                 targetRenderer = GetComponent<Renderer>();
-            }
 
             if (targetRenderer != null)
             {
@@ -264,22 +250,16 @@ namespace Resonance.Audio
             materialInstance.SetColor("_EmissionColor", finalEmission);
 
             if (enableAudioFeedback)
-            {
                 UpdateAudioFeedback(intensity);
-            }
         }
 
         void OnDestroy()
         {
             if (materialInstance != null)
-            {
                 Destroy(materialInstance);
-            }
 
             if (isFeedbackPlaying)
-            {
                 StopAudioFeedback();
-            }
         }
     }
 }
