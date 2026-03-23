@@ -2861,10 +2861,10 @@
 						<ActiveSource Name="sfx_world_audioreactive_loop" ID="{45798635-82F9-4398-AB83-68AF979BC947}" Platform="Linked"/>
 					</ActiveSourceList>
 				</Sound>
-				<Sound Name="sfx_props_train_moving" ID="{DB605F27-AFC6-4AB4-9610-BCA2D7ECB3AD}" ShortID="356867907">
+				<Sound Name="sfx_props_train_moving" ID="{BEF944C7-9CDF-4825-8C25-D2D13E9D4BF2}" ShortID="1008702340">
 					<PropertyList>
 						<Property Name="3DSpatialization" Type="int16" Value="1"/>
-						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+						<Property Name="AttenuationDistanceScaling" Type="Real32" Value="0.5"/>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
 								<Value>-5</Value>
@@ -2874,11 +2874,11 @@
 					<ReferenceList>
 						<Reference Name="Attenuation">
 							<Custom>
-								<Attenuation Name="Attenuation (Custom)" ID="{611D9555-8AB2-40CE-A287-DD044942C3A1}" ShortID="526254517">
+								<Attenuation Name="Attenuation (Custom)" ID="{F9739433-55C1-44D1-BDD5-9E0392D1AE55}" ShortID="825658650">
 									<CurveUsageInfoList>
 										<VolumeDryUsage>
 											<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
-												<Curve Name="VolumeDry" ID="{6763C126-F4B7-4EE4-9D97-6385618DCBEC}">
+												<Curve Name="VolumeDry" ID="{6146C17E-A76D-4DAA-BB40-CB5BB9922A61}">
 													<PropertyList>
 														<Property Name="Flags" Type="int32" Value="3"/>
 													</PropertyList>
@@ -2978,11 +2978,13 @@
 						</Reference>
 					</ReferenceList>
 					<ChildrenList>
-						<AudioFileSource Name="sfx_props_train_moving" ID="{F7F2E664-BA84-4DBD-A216-9D73CDC929BA}">
+						<AudioFileSource Name="sfx_props_train_moving" ID="{BDC91E08-9CC2-4003-8548-2081E02F73E6}">
 							<PropertyList>
+								<Property Name="FadeInDuration" Type="Real64" Value="0.23021582733813"/>
+								<Property Name="FadeOutDuration" Type="Real64" Value="0.506474820143882"/>
 								<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-								<Property Name="TrimBegin" Type="Real64" Value="0.548736462093863"/>
-								<Property Name="TrimEnd" Type="Real64" Value="31.3357400722022"/>
+								<Property Name="TrimBegin" Type="Real64" Value="0.78273381294964"/>
+								<Property Name="TrimEnd" Type="Real64" Value="31.4474820143885"/>
 							</PropertyList>
 							<Language>SFX</Language>
 							<AudioFile>sfx_props_train_moving.wav</AudioFile>
@@ -2993,7 +2995,125 @@
 					</ChildrenList>
 					<ObjectLists>
 						<ObjectList Name="RTPC">
-							<RTPC Name="" ID="{5DB6187F-FA16-49B7-9298-4AB804C3B37F}" ShortID="1029186648">
+							<RTPC Name="" ID="{E579455E-B16B-47D5-8BDF-24F24989DC3B}" ShortID="994924337">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="Occlusion" ID="{DAAB43F5-A1A7-46AA-9E41-1AB0ABCD0152}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{4AB57FD2-3799-45D9-9823-F2B947B99DFB}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="65537"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>0</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>0.57219</XPos>
+														<YPos>49</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>0.71028</XPos>
+														<YPos>60</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>1</XPos>
+														<YPos>90</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+							<RTPC Name="" ID="{35F848CA-70B3-40E9-BDD4-DC6E1B8C6C6B}" ShortID="354043189">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="Volume"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="WallThickness" ID="{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{38F46FFE-D6A0-40EE-B345-954994CD368F}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="3"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>0</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>9.76283</XPos>
+														<YPos>-26.56588</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>9.87264</XPos>
+														<YPos>-29.57916</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>10</XPos>
+														<YPos>-30</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+							<RTPC Name="" ID="{B11FED3E-7009-42B5-96BF-9906C9DBB9ED}" ShortID="502035921">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="UserAuxSendVolume0"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="Diffraction" ID="{3AD53E5D-776D-45D4-B11B-3D1F723DD2F1}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{3DA07F2A-1D27-421A-9A5E-240DC0E0B1C8}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="3"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>-96</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>0.5</XPos>
+														<YPos>-18</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>1</XPos>
+														<YPos>-6</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+							<RTPC Name="" ID="{E037B35B-8291-4C61-894B-A881BFAA8B24}" ShortID="612844915">
 								<PropertyList>
 									<Property Name="PropertyName" Type="string" Value="Volume"/>
 								</PropertyList>
@@ -3003,7 +3123,7 @@
 									</Reference>
 									<Reference Name="Curve">
 										<Custom>
-											<Curve Name="" ID="{A58F2FB2-7A47-4EFA-8A68-D0936F346D19}">
+											<Curve Name="" ID="{B733762C-4F50-420E-96D1-2D91E950C743}">
 												<PropertyList>
 													<Property Name="Flags" Type="int32" Value="3"/>
 												</PropertyList>
@@ -3027,7 +3147,7 @@
 						</ObjectList>
 					</ObjectLists>
 					<ActiveSourceList>
-						<ActiveSource Name="sfx_props_train_moving" ID="{F7F2E664-BA84-4DBD-A216-9D73CDC929BA}" Platform="Linked"/>
+						<ActiveSource Name="sfx_props_train_moving" ID="{BDC91E08-9CC2-4003-8548-2081E02F73E6}" Platform="Linked"/>
 					</ActiveSourceList>
 				</Sound>
 			</ChildrenList>
