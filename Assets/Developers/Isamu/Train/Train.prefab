@@ -506,7 +506,7 @@ MonoBehaviour:
     WwiseObjectReference: {fileID: 11400000, guid: 1f50faa59b6353440bbcb6d96968f215, type: 2}
   _speedRtpc: Train_Speed
   _cullingDistance: 80
-  _gizmoRadius: 100
+  _gizmoRadius: 10
 --- !u!114 &6773602070252493702
 MonoBehaviour:
   m_ObjectHideFlags: 0

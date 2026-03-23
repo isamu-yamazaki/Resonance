@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{0D0EBBAE-B1B5-F062-8D03-3FBD9BF460B7}",
+    "Hash": "{8493E091-5FDA-A58C-D710-F04C76CE4C46}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -714,7 +714,7 @@
       "Name": "Play_Reactive_Feedback",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Reactive_Feedback",
       "GUID": "{96722AA4-1038-4FBD-A751-61F7B5327803}",
-      "MaxAttenuation": "100",
+      "MaxAttenuation": "50",
       "DurationType": "Infinite",
       "MediaRefs": [
        {
@@ -889,6 +889,6 @@
     ]
    }
   ],
-  "FileHash": "{36ED75CC-BC07-FED3-A2D3-A47B5A18D8DF}"
+  "FileHash": "{E51892F9-00EC-63E8-E6CF-19822AF4316F}"
  }
 }
