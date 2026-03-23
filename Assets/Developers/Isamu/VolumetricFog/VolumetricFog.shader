@@ -13,8 +13,9 @@ Shader "Custom/VolumetricFog"
         _DensityThreshold("Density threshold", Range(0, 1)) = 0.1
         
         [HDR]_LightContribution("Light contribution", Color) = (1, 1, 1, 1)
+        _LightScattering("Light scattering", Range(0,1)) = 0.2
     }
-
+    
     SubShader
     {
         Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
@@ -40,7 +41,13 @@ Shader "Custom/VolumetricFog"
             float _DensityThreshold;
             float _NoiseTiling;
             float4 _LightContribution;
+            float _LightScattering;
 
+            float henyey_greenstein(float angle, float scattering)
+            {
+                return (1.0 - angle * angle) / (4.0 * PI * pow(1.0 + scattering * scattering - (2.0 * scattering) * angle, 1.5f));
+            }
+            
             float get_density(float3 worldPos)
             {
                 float4 noise = _FogNoise.SampleLevel(sampler_TrilinearRepeat, worldPos * 0.01 * _NoiseTiling, 0);
@@ -73,7 +80,7 @@ Shader "Custom/VolumetricFog"
                     if (density > 0)
                     {
                         Light mainLight = GetMainLight(TransformWorldToShadowCoord(rayPos));
-                        fogCol.rgb += mainLight.color.rgb * _LightContribution.rgb * density * mainLight.shadowAttenuation * _StepSize;
+                        fogCol.rgb += mainLight.color.rgb * _LightContribution.rgb * henyey_greenstein(dot(rayDir, mainLight.direction), _LightScattering) * density * mainLight.shadowAttenuation * _StepSize;
                         transmittance *= exp(-density * _StepSize);
                     }
                     distTravelled += _StepSize;
