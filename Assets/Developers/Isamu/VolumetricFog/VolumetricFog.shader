@@ -3,6 +3,8 @@ Shader "Custom/VolumetricFog"
     Properties
     {
         _MaxDistance("Max distance", float) = 100
+        _StepSize("Step size", Range(0.1, 20)) = 1
+        _DensityMultiplier("Density multiplier", Range(0, 10)) = 1
     }
 
     SubShader
@@ -20,6 +22,13 @@ Shader "Custom/VolumetricFog"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
             float _MaxDistance;
+            float _DensityMultiplier;
+            float _StepSize;
+
+            float get_density()
+            {
+                return _DensityMultiplier;
+            }
 
             half4 frag(Varyings IN) : SV_Target
             {
