@@ -5,6 +5,18 @@ namespace Resonance.LobbySystem
 {
     public class PlayerIdToLobbyMemberIdMap : NetworkBehaviour
     {
+        public static PlayerIdToLobbyMemberIdMap Instance
+        {
+            get
+            {
+                if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var instance))
+                {
+                    return instance;
+                }
+                return null;
+            }
+        }
+
         [SerializeField] private SyncDictionary<PlayerID, string> lobbyMemberIdsByPlayerId = new();
 
         private LobbyDataHolder lobbyDataHolder;
@@ -26,17 +38,20 @@ namespace Resonance.LobbySystem
 
         private void Awake()
         {
+            if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var _))
+            {
+                Destroy(this);
+                return;
+            }
+
             lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
             if (lobbyDataHolder == null)
             {
                 Debug.LogError($"[{GetType()}] Unable to find {nameof(LobbyDataHolder)} component");
                 Destroy(this);
+                return;
             }
 
-            if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var _))
-            {
-                Destroy(this);
-            }
             InstanceHandler.RegisterInstance(this);
             DontDestroyOnLoad(this);
         }
