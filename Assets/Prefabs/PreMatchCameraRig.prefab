@@ -181,7 +181,7 @@ MonoBehaviour:
   vignetteSmoothness: 0.5
   filmGrainIntensity: 0.4
   postExposure: -0.05
-  saturation: 5
+  saturation: 6
   colorFilter: {r: 1, g: 0.97, b: 0.9, a: 1}
 --- !u!114 &-407153534576035995
 MonoBehaviour:
