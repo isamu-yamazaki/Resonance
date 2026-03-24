@@ -21,13 +21,11 @@ namespace AK
         static const AkUniqueID PLAY_OUTDOORAMBIENCE = 3267244670U;
         static const AkUniqueID PLAY_REACTIVE_FEEDBACK = 3062989335U;
         static const AkUniqueID PLAY_TEST_SOUND = 3211564518U;
-        static const AkUniqueID PLAY_UI_BUTTON_CLICK = 1661558166U;
-        static const AkUniqueID PLAY_UI_BUTTON_HOVER = 310530060U;
-        static const AkUniqueID PLAY_UI_SHOP_CLOSE = 3153218754U;
-        static const AkUniqueID PLAY_UI_SHOP_ITEM_BUY = 2394254510U;
-        static const AkUniqueID PLAY_UI_SHOP_OPEN = 2720966806U;
-        static const AkUniqueID PLAY_UI_SHOP_PAGE_SWITCH = 1681007094U;
+        static const AkUniqueID PLAY_TRAIN_ARRIVAL = 2305398106U;
+        static const AkUniqueID PLAY_TRAIN_DISEMBARK = 3903810609U;
+        static const AkUniqueID PLAY_TRAIN_MOVING = 2317729681U;
         static const AkUniqueID STOP_REACTIVE_FEEDBACK = 3211783545U;
+        static const AkUniqueID STOP_TRAIN_MOVING = 130138219U;
     } // namespace EVENTS
 
     namespace SWITCHES
@@ -61,6 +59,7 @@ namespace AK
         static const AkUniqueID REACTIVE_FEEDBACK_VOLUME = 1471093987U;
         static const AkUniqueID REVERBSEND = 1572469619U;
         static const AkUniqueID ROOMSIZE = 105837875U;
+        static const AkUniqueID TRAIN_SPEED = 4004916241U;
         static const AkUniqueID WALLTHICKNESS = 3602790513U;
     } // namespace GAME_PARAMETERS
 

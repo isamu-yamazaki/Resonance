@@ -124,11 +124,7 @@ namespace Resonance.Train
                     break;
 
                 case TrainState.Braking:
-                    float minApproachSpeed = _arrivalTolerance / Time.fixedDeltaTime;
-                    CurrentSpeed = Mathf.Max(
-                        Mathf.MoveTowards(CurrentSpeed, 0f, Deceleration * Time.fixedDeltaTime),
-                        minApproachSpeed * 0.5f
-                    );
+                    CurrentSpeed = Mathf.MoveTowards(CurrentSpeed, 0f, Deceleration * Time.fixedDeltaTime);
                     break;
             }
 
