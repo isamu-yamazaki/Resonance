@@ -1559,7 +1559,7 @@ MonoBehaviour:
   ratingToWin: 2000
   autoStartDelaySeconds: 5
   autoStartNextMatch: 0
-  matchDurationSeconds: 20
+  matchDurationSeconds: 300
   teamEliminationsToWin: 10
   timeBetweenRoleSwitchSeconds: 90
 --- !u!114 &25868481
