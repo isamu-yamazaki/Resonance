@@ -89,7 +89,7 @@ namespace Resonance.PlayerController
         #region Input Callbacks
         public void OnMovement(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead())
+            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
             {
                 MovementInput = Vector2.zero;
                 return;
@@ -100,7 +100,7 @@ namespace Resonance.PlayerController
 
         public void OnLook(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead())
+            if (_playerState.IsDead() || _playerState.CurrentPlayerMovementState == PlayerMovementState.MatchEndedFrozen)
             {
                 LookInput = Vector2.zero;
                 return;
@@ -111,7 +111,7 @@ namespace Resonance.PlayerController
 
         public void OnToggleSprint(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead()) return;
+            if (_playerState.IsDead() || _playerState.IsMatchFrozen()) return;
 
             if (context.performed)
             {
@@ -125,7 +125,7 @@ namespace Resonance.PlayerController
 
         public void OnJump(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             JumpPressed = true;
@@ -133,7 +133,7 @@ namespace Resonance.PlayerController
 
         public void OnToggleCrouch(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             CrouchToggledOn = !CrouchToggledOn;

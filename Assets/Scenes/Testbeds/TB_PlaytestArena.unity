@@ -2764,6 +2764,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &75143195
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3673,6 +3674,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &103600432
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9012,6 +9014,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &290945801
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21504,6 +21507,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &514244477
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24166,6 +24170,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &646137441
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -37337,8 +37342,8 @@ MonoBehaviour:
   waitingForHostText: {fileID: 18556961}
   playAgainButton: {fileID: 0}
   returnToLobbyButton: {fileID: 1070253236}
-  despawnerSceneLoader: {fileID: 0}
-  shopGameObject: {fileID: 0}
+  despawnerSceneLoader: {fileID: 463464439}
+  shopGameObject: {fileID: 787411391}
   playerObject: {fileID: 0}
   showKillStreak: 1
 --- !u!4 &800125031
@@ -48993,6 +48998,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1061036175
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -50389,6 +50395,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1111308592
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -54272,6 +54279,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1225290918
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -56555,6 +56563,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1265563637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -65767,6 +65776,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1561995115
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -78079,6 +78089,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1848838242
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -84861,6 +84872,7 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &2023304433
 BoxCollider:
   m_ObjectHideFlags: 0

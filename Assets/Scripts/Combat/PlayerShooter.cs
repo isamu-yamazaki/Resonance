@@ -159,6 +159,7 @@ namespace Resonance.Combat
 
         private void TryShoot()
         {
+            if (playerState.IsMatchFrozen()) return;
             if (playerState.IsReloading) return;
             if (playerEquip == null) return;
 
