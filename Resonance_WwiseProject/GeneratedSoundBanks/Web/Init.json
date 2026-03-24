@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{57C7D4AB-1B8C-33B9-586A-D6619729146E}",
+    "Hash": "{29C25CF9-9AE0-E811-3FEA-E96A8F84FC7A}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -249,6 +249,12 @@
       "GUID": "{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}"
      },
      {
+      "Id": "4004916241",
+      "Name": "Train_Speed",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Train_Speed",
+      "GUID": "{EE3D5125-14FF-49A4-A653-DE395AFE97A7}"
+     },
+     {
       "Id": "4004954295",
       "Name": "Enclosure",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Enclosure",
@@ -291,12 +297,18 @@
         "Name": "Metal",
         "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Metal",
         "GUID": "{03214074-974A-4AC1-AA95-ABF83F648055}"
+       },
+       {
+        "Id": "4248645337",
+        "Name": "Grass",
+        "ObjectPath": "\\Switches\\Default Work Unit\\SurfaceType\\Grass",
+        "GUID": "{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{413E68D2-459A-E228-3EFB-07DF7A1EF4F7}"
+  "FileHash": "{DD67B5C6-5B37-F4F4-F4B4-27103EB084B0}"
  }
 }

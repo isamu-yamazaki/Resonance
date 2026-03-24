@@ -23,6 +23,7 @@ namespace Resonance.Audio
         public AK.Wwise.Switch metalSurface;
         public AK.Wwise.Switch woodSurface;
         public AK.Wwise.Switch gravelSurface;
+        public AK.Wwise.Switch grassSurface;
         
         private CharacterController characterController;
         private PlayerState playerState;
@@ -117,6 +118,7 @@ namespace Resonance.Audio
             if (tag == "Metal" || tag == "Train") return "Metal";
             if (tag == "Wood") return "Wood";
             if (tag == "Gravel") return "Gravel";
+            if (tag == "Grass") return "Grass";
             
             // default to concrete if tag not recognized
             return "Concrete";
@@ -137,6 +139,9 @@ namespace Resonance.Audio
                     break;
                 case "Gravel":
                     gravelSurface?.SetValue(gameObject);
+                    break;
+                case "Grass":
+                    grassSurface?.SetValue(gameObject);
                     break;
             }
         }

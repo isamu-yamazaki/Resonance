@@ -35,6 +35,16 @@ namespace Resonance.Assemblies.LobbySystem
             }
             return false;
         }
+
+        public readonly LobbyUser? GetMemberById(string id)
+        {
+            if (Members == null) return null;
+            foreach (var member in Members)
+            {
+                if (member.Id == id) return member;
+            }
+            return null;
+        }
         public readonly GameMode GameMode
         {
             get
