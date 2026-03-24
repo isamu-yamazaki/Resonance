@@ -10,23 +10,23 @@ namespace Resonance
         [SerializeField] private VolumeProfile _profile;
 
         [Header("Lens Distortion")]
-        public float lensDistortionIntensity = -0.25f;
+        public float lensDistortionIntensity = 0.2f;
 
         [Header("Chromatic Aberration")]
-        public float chromaticAberrationIntensity = 0.65f;
+        public float chromaticAberrationIntensity = 0.2f;
 
         [Header("Vignette")]
         public Color vignetteColor = Color.black;
-        public float vignetteIntensity = 0.5f;
-        public float vignetteSmoothness = 0.4f;
+        public float vignetteIntensity = 0.45f;
+        public float vignetteSmoothness = 0.75f;
 
         [Header("Film Grain")]
-        public float filmGrainIntensity = 0.35f;
+        public float filmGrainIntensity = 0.45f;
 
         [Header("Color Adjustments")]
-        public float postExposure = -0.3f;
-        public float saturation = -15f;
-        public Color colorFilter = new Color(0.85f, 0.92f, 1f);
+        public float postExposure = -0.05f;
+        public float saturation = 5f;
+        public Color colorFilter = new Color(1f, 0.97f, 0.9f);
 
         private Volume _volume;
 
@@ -124,7 +124,7 @@ namespace Resonance
 
             if (_filmGrain != null)
             {
-                _filmGrain.type.value = FilmGrainLookup.Thin1;
+                _filmGrain.type.value = FilmGrainLookup.Medium2;
                 _filmGrain.intensity.value = filmGrainIntensity;
             }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2174288190483935931}
   - component: {fileID: 3169801335666442487}
   - component: {fileID: 6247499278280093554}
-  - component: {fileID: -4028126476074180903}
+  - component: {fileID: -5778283450321974640}
   m_Layer: 0
   m_Name: PreMatchCameraRig
   m_TagString: Untagged
@@ -146,7 +146,7 @@ MonoBehaviour:
   orbitDistance: 10
   orbitHeight: 5
   rotationSpeed: 25
---- !u!114 &-4028126476074180903
+--- !u!114 &-5778283450321974640
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -157,14 +157,14 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1842f494758b91d4f85397aa26e004b7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CinematicCameraPostProcessing
-  _profile: {fileID: 11400000, guid: 97f4af1012dafe54b914a49aca1ea381, type: 2}
-  lensDistortionIntensity: -0.25
-  chromaticAberrationIntensity: 0.65
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.CinematicCameraPostProcessing
+  _profile: {fileID: 0}
+  lensDistortionIntensity: 0.2
+  chromaticAberrationIntensity: 0.2
   vignetteColor: {r: 0, g: 0, b: 0, a: 1}
-  vignetteIntensity: 0.5
-  vignetteSmoothness: 0.4
-  filmGrainIntensity: 0.35
-  postExposure: -0.3
-  saturation: -15
-  colorFilter: {r: 0.85, g: 0.92, b: 1, a: 1}
+  vignetteIntensity: 0.45
+  vignetteSmoothness: 0.75
+  filmGrainIntensity: 0.45
+  postExposure: -0.05
+  saturation: 5
+  colorFilter: {r: 1, g: 0.97, b: 0.9, a: 1}
