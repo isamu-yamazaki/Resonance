@@ -9,6 +9,9 @@ public class PreMatchCameraController : MonoBehaviour
     [Header("Cameras")]
     public Camera cinematicCamera;
 
+    [Header("HUD")]
+    public GameObject hudCanvas;
+
     [Header("Drone Object")]
     public Drone dronePrefab;
 
@@ -92,6 +95,9 @@ public class PreMatchCameraController : MonoBehaviour
 
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(false);
+
+        if (hudCanvas != null)
+            hudCanvas.SetActive(false);
 
         cinematicCamera.transform.position = target.position + waypointOffsets[0];
         cinematicCamera.transform.LookAt(target.position + Vector3.up * 1.2f);
@@ -219,6 +225,9 @@ public class PreMatchCameraController : MonoBehaviour
     private void EndSequence()
     {
         GetComponent<CinematicCameraPostProcessing>()?.OnCinematicEnd();
+
+        if (hudCanvas != null)
+            hudCanvas.SetActive(true);
 
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(true);
