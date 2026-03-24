@@ -108,7 +108,7 @@ public class PreMatchCameraController : MonoBehaviour
         EndSequence();
 
         if (droneObject != null)
-            droneObject.FlyAway(target.forward);
+            droneObject.FlyAway(Vector3.up);
     }
 
     private IEnumerator FlyPath()

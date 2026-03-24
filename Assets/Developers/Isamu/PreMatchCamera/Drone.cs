@@ -37,16 +37,17 @@ namespace Resonance
         private IEnumerator FlyAwayRoutine(Vector3 direction)
         {
             float speed = 0f;
-            Vector3 flyDirection = (direction + Vector3.up * 0.4f).normalized;
-            Quaternion targetTilt = Quaternion.LookRotation(flyDirection);
+            float elapsed = 0f;
 
-            while (true)
+            while (elapsed < 3f)
             {
                 speed = Mathf.MoveTowards(speed, maxSpeed, acceleration * Time.deltaTime);
-                transform.position += flyDirection * speed * Time.deltaTime;
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetTilt, Time.deltaTime * tiltSpeed);
+                transform.position += direction * speed * Time.deltaTime;
+                elapsed += Time.deltaTime;
                 yield return null;
             }
+
+            Destroy(gameObject);
         }
     }
 }
