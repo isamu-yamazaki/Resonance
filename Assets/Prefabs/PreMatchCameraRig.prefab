@@ -146,7 +146,7 @@ MonoBehaviour:
   dronePrefab: {fileID: 4839061556287524663, guid: a899872793abf4690a7775239f4165dd, type: 3}
   flightSpeed: 2.5
   lookSmoothing: 4.5
-  heroOffset: {x: 0, y: 1.4, z: 3.5}
+  heroOffset: {x: 0, y: 1.4, z: 5}
   heroApproachSpeed: 3.5
   heroHoverDuration: 0.6
   positionalDriftStrength: 0.18
@@ -175,9 +175,9 @@ MonoBehaviour:
   lensDistortionIntensity: 0.2
   chromaticAberrationIntensity: 0.2
   vignetteColor: {r: 0, g: 0, b: 0, a: 1}
-  vignetteIntensity: 0.45
-  vignetteSmoothness: 0.75
-  filmGrainIntensity: 0.45
+  vignetteIntensity: 0.3
+  vignetteSmoothness: 0.5
+  filmGrainIntensity: 0.4
   postExposure: -0.05
   saturation: 5
   colorFilter: {r: 1, g: 0.97, b: 0.9, a: 1}
