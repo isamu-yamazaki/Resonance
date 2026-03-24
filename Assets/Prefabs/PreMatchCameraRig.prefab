@@ -143,9 +143,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PreMatchCameraController
   cinematicCamera: {fileID: 2174288190483935931}
-  orbitDistance: 10
-  orbitHeight: 5
-  rotationSpeed: 25
+  dronePrefab: {fileID: 4839061556287524663, guid: a899872793abf4690a7775239f4165dd, type: 3}
+  flightSpeed: 2.5
+  lookSmoothing: 4.5
+  heroOffset: {x: 0, y: 1.4, z: 3.5}
+  heroApproachSpeed: 3.5
+  heroHoverDuration: 0.6
+  positionalDriftStrength: 0.18
+  positionalDriftSpeed: 0.6
+  aimLagStrength: 0.06
+  aimLagSpeed: 2.8
+  altitudeBobStrength: 0.35
+  altitudeBobSpeed: 0.45
+  fovBreathStrength: 1.2
+  fovBreathSpeed: 0.25
+  baseFov: 72
+  waypointOffsets: []
 --- !u!114 &-5778283450321974640
 MonoBehaviour:
   m_ObjectHideFlags: 0

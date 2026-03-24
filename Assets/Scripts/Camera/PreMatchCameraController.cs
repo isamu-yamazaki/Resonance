@@ -9,9 +9,17 @@ public class PreMatchCameraController : MonoBehaviour
     [Header("Cameras")]
     public Camera cinematicCamera;
 
+    [Header("Drone Object")]
+    public Drone dronePrefab;
+
     [Header("Path")]
     public float flightSpeed = 2.5f;
     public float lookSmoothing = 4.5f;
+
+    [Header("Hero Position")]
+    public Vector3 heroOffset = new Vector3(0f, 1.4f, 3.5f);
+    public float heroApproachSpeed = 3.5f;
+    public float heroHoverDuration = 0.6f;
 
     [Header("Drone Feel")]
     public float positionalDriftStrength = 0.18f;
@@ -24,25 +32,9 @@ public class PreMatchCameraController : MonoBehaviour
     public float fovBreathSpeed = 0.25f;
     public float baseFov = 72f;
 
-    [Header("Fly Away")]
-    public float flyAwayDuration = 1.8f;
-    public float flyAwaySpeed = 18f;
+    [Header("Waypoint Offsets (from spawn)")]
+    public Vector3[] waypointOffsets;
 
-    private Transform target;
-    private Camera playerCamera;
-    private bool countdownStarted = false;
-
-    private Vector3 driftOffset = Vector3.zero;
-    private Vector3 driftVelocity = Vector3.zero;
-    private Quaternion smoothLookRotation;
-
-    private float driftNoiseOffsetX;
-    private float driftNoiseOffsetZ;
-    private float altitudeNoiseOffset;
-    private float fovNoiseOffset;
-
-    // Waypoints defined as offsets from spawn position
-    // Tune these in the Inspector via the array, or adjust defaults here
     private static readonly Vector3[] DefaultWaypointOffsets = new Vector3[]
     {
         new Vector3( -8f,  6f, -10f),
@@ -53,8 +45,18 @@ public class PreMatchCameraController : MonoBehaviour
         new Vector3(-10f,  4f,  -2f),
     };
 
-    [Header("Waypoint Offsets (from spawn)")]
-    public Vector3[] waypointOffsets;
+    private Transform target;
+    private Camera playerCamera;
+    private bool countdownStarted = false;
+
+    private Vector3 driftOffset = Vector3.zero;
+    private Vector3 driftVelocity = Vector3.zero;
+    private Quaternion smoothLookRotation;
+
+    private float driftNoiseOffsetX = 17.3f;
+    private float driftNoiseOffsetZ = 43.7f;
+    private float altitudeNoiseOffset = 61.2f;
+    private float fovNoiseOffset = 82.5f;
 
     private void OnEnable()
     {
@@ -84,11 +86,6 @@ public class PreMatchCameraController : MonoBehaviour
         if (waypointOffsets == null || waypointOffsets.Length < 2)
             waypointOffsets = DefaultWaypointOffsets;
 
-        driftNoiseOffsetX = 17.3f;
-        driftNoiseOffsetZ = 43.7f;
-        altitudeNoiseOffset = 61.2f;
-        fovNoiseOffset = 82.5f;
-
         cinematicCamera.gameObject.SetActive(true);
         cinematicCamera.depth = 100;
         cinematicCamera.fieldOfView = baseFov;
@@ -96,19 +93,22 @@ public class PreMatchCameraController : MonoBehaviour
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(false);
 
-        // Snap to first waypoint
         cinematicCamera.transform.position = target.position + waypointOffsets[0];
         cinematicCamera.transform.LookAt(target.position + Vector3.up * 1.2f);
         smoothLookRotation = cinematicCamera.transform.rotation;
 
+        Drone droneObject = dronePrefab != null ? Instantiate(dronePrefab) : null;
+        if (droneObject != null)
+            droneObject.SetFollowTarget(cinematicCamera.transform);
+
         yield return FlyPath();
 
-        if (!countdownStarted)
-            yield return new WaitUntil(() => countdownStarted);
-
-        yield return FlyAway();
+        yield return FlyToHeroPosition();
 
         EndSequence();
+
+        if (droneObject != null)
+            droneObject.FlyAway(target.forward);
     }
 
     private IEnumerator FlyPath()
@@ -122,8 +122,6 @@ public class PreMatchCameraController : MonoBehaviour
 
             Vector3 from = target.position + waypointOffsets[currentWaypoint];
             Vector3 to = target.position + waypointOffsets[nextWaypoint];
-
-            // Catmull-Rom control points
             Vector3 prev = target.position + waypointOffsets[(currentWaypoint - 1 + waypointCount) % waypointCount];
             Vector3 after = target.position + waypointOffsets[(nextWaypoint + 1) % waypointCount];
 
@@ -136,9 +134,7 @@ public class PreMatchCameraController : MonoBehaviour
                 elapsed += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsed / duration);
 
-                Vector3 splinePos = CatmullRom(prev, from, to, after, t);
-                cinematicCamera.transform.position = splinePos;
-
+                cinematicCamera.transform.position = CatmullRom(prev, from, to, after, t);
                 ApplyDroneFeel();
 
                 yield return null;
@@ -148,27 +144,34 @@ public class PreMatchCameraController : MonoBehaviour
         }
     }
 
-    private IEnumerator FlyAway()
+    private IEnumerator FlyToHeroPosition()
     {
-        // Bank upward and away from the player
-        Vector3 flyDirection = (cinematicCamera.transform.position - target.position).normalized + Vector3.up * 0.6f;
-        flyDirection.Normalize();
+        // Hero position is in front of and slightly above the player, facing them
+        Vector3 heroWorldPos = target.position + target.forward * heroOffset.z + Vector3.up * heroOffset.y;
 
-        float elapsed = 0f;
-
-        while (elapsed < flyAwayDuration)
+        while (Vector3.Distance(cinematicCamera.transform.position, heroWorldPos) > 0.1f)
         {
-            elapsed += Time.deltaTime;
+            cinematicCamera.transform.position = Vector3.MoveTowards(
+                cinematicCamera.transform.position,
+                heroWorldPos,
+                heroApproachSpeed * Time.deltaTime
+            );
 
-            cinematicCamera.transform.position += flyDirection * flyAwaySpeed * Time.deltaTime;
-
-            // Drift look target away from player as it flies off
-            float t = elapsed / flyAwayDuration;
-            Vector3 lookTarget = Vector3.Lerp(target.position + Vector3.up * 1.2f, cinematicCamera.transform.position + cinematicCamera.transform.forward * 10f, t);
-            Quaternion desiredLook = Quaternion.LookRotation(lookTarget - cinematicCamera.transform.position);
-            smoothLookRotation = Quaternion.Slerp(smoothLookRotation, desiredLook, Time.deltaTime * 3f);
+            // Look back at the player during approach
+            Quaternion desiredLook = Quaternion.LookRotation(target.position + Vector3.up * 1.2f - cinematicCamera.transform.position);
+            smoothLookRotation = Quaternion.Slerp(smoothLookRotation, desiredLook, Time.deltaTime * lookSmoothing);
             cinematicCamera.transform.rotation = smoothLookRotation;
 
+            ApplyDroneFeel();
+            yield return null;
+        }
+
+        // Hover briefly so the player sees the drone facing them
+        float elapsed = 0f;
+        while (elapsed < heroHoverDuration)
+        {
+            elapsed += Time.deltaTime;
+            ApplyDroneFeel();
             yield return null;
         }
     }
