@@ -173,9 +173,12 @@ namespace Resonance.PlayerController
             // Immediately return if player is dead (flag-based check)
             if (IsPlayerDead)
                 return;
-            
+
             // Don't process movement if player is dead
             if (_playerState.IsDead())
+                return;
+            
+            if (_playerState.IsMatchFrozen())
                 return;
             
             if (_playerState.IsInShop())

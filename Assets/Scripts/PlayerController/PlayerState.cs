@@ -51,6 +51,11 @@ namespace Resonance.PlayerController
             return CurrentPlayerMovementState == PlayerMovementState.Ziplining;
         }
 
+        public bool IsMatchFrozen()
+        {
+            return CurrentPlayerMovementState == PlayerMovementState.MatchFrozen;
+        }
+
         public event Action<WeaponClass> OnWeaponClassChanged;
 
         public void SetWeaponClass(WeaponClass weaponClass)
@@ -72,6 +77,7 @@ namespace Resonance.PlayerController
         Sliding = 6,
         Dead = 7,
         InShop = 8,
-        Ziplining = 9
+        Ziplining = 9,
+        MatchFrozen = 10,
     }
 }
