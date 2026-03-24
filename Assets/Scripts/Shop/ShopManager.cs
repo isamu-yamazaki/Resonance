@@ -639,6 +639,9 @@ namespace Resonance.Shop
         {
             PlayerState playerState = FindObjectOfType<PlayerState>();
 
+            if (!shopMenu.activeSelf && playerState != null && playerState.IsMatchFrozen())
+                return;
+
             if (shopMenu.activeSelf)
             {
                 shopMenu.SetActive(false);

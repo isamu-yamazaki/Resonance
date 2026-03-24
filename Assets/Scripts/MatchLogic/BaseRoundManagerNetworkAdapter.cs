@@ -20,6 +20,7 @@ namespace Resonance.Match
         public BaseMatchState MatchState { get; private set; }
 
         public bool IsMatchActive => MatchState == BaseMatchState.MatchActive;
+        public bool IsMatchCountdown => MatchState == BaseMatchState.Countdown;
         public bool IsMatchEnded  => MatchState == BaseMatchState.MatchEnded;
         #endregion
 
