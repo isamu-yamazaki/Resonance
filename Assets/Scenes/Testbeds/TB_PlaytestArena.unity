@@ -2688,7 +2688,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &75143195
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3598,7 +3597,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &103600432
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8938,7 +8936,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &290945801
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21431,7 +21428,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &514244477
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24094,7 +24090,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &646137441
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -46614,7 +46609,7 @@ Transform:
   m_GameObject: {fileID: 973045987}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: 40.4, y: 8.13, z: 22.29}
+  m_LocalPosition: {x: 40.4, y: 6.75, z: 22.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -48979,7 +48974,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1061036175
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -50376,7 +50370,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1111308592
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -54308,7 +54301,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1225290918
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -56592,7 +56584,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1265563637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -65951,7 +65942,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1561995115
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -78264,7 +78254,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1848838242
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -80012,7 +80001,7 @@ Transform:
   m_GameObject: {fileID: 1875933382}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 3, z: 10.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -80904,7 +80893,7 @@ Transform:
   m_GameObject: {fileID: 1896297283}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 100}
+  m_LocalPosition: {x: -0, y: 3, z: 91.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -84948,7 +84937,6 @@ MonoBehaviour:
   debugLog: 0
   serverToClientPropagationIntervalSeconds: 0.2
   clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &2023304433
 BoxCollider:
   m_ObjectHideFlags: 0
