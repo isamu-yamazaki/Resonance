@@ -5,9 +5,9 @@ namespace Resonance.BuildTools
 {
     public class LobbySceneConfigurator : MonoBehaviour
     {
-        public static BuildConfig Current { get; private set; }
+        public static ClientBuildConfig Current { get; private set; }
 
-        [SerializeField] BuildConfig config;
+        [SerializeField] ClientBuildConfig config;
         [SerializeField] LobbyManager lobbyManager;
         [SerializeField] GameObject steamProvider;
         [SerializeField] GameObject dummyProvider;

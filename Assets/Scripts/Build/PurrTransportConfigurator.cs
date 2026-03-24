@@ -4,9 +4,9 @@ namespace Resonance.BuildTools
 {
     public class PurrTransportConfigurator : MonoBehaviour
     {
-        public static BuildConfig Current { get; private set; }
+        public static ClientBuildConfig Current { get; private set; }
 
-        [SerializeField] BuildConfig config;
+        [SerializeField] ClientBuildConfig config;
         [SerializeField] GameObject remoteTransport;
         [SerializeField] GameObject localTransport;
 

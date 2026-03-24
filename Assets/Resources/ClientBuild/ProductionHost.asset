@@ -10,7 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f938caf3da1e74c0b8000cd3921ddf42, type: 3}
-  m_Name: Dev
+  m_Name: ProductionHost
   m_EditorClassIdentifier: Assembly-CSharp::AppConfig
-  enableSteamLobby: 0
+  enableSteamLobby: 1
   useProductionRelay: 1
+  useRemoteOrchestrator: 0
+  useClientServerMode: 0
+  isProduction: 1
