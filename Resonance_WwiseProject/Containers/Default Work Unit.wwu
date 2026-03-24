@@ -960,6 +960,128 @@
 								</Sound>
 							</ChildrenList>
 						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Grass" ID="{58824188-F221-40DA-A7ED-D8058D495CBE}" ShortID="1071407686">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="sfx_foley_footstep_grass_run_01" ID="{F2050EAF-21DD-45CB-B745-3FC8EDD3537D}" ShortID="597357802">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_foley_footstep_grass_run_01" ID="{793F2A3A-A85D-4FF4-A7B1-3853922A3A87}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_foley_footstep_grass_run_01.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="300811234"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_foley_footstep_grass_run_01" ID="{793F2A3A-A85D-4FF4-A7B1-3853922A3A87}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_foley_footstep_grass_run_02" ID="{ECD48687-4F77-4BFF-B920-2974FE130D8C}" ShortID="477622146">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_foley_footstep_grass_run_02" ID="{841EA9DF-EA10-40A8-863F-7F18FD53F6CF}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_foley_footstep_grass_run_02.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="868064397"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_foley_footstep_grass_run_02" ID="{841EA9DF-EA10-40A8-863F-7F18FD53F6CF}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_foley_footstep_grass_run_03" ID="{588BBD55-7B40-4640-A6E6-2AB8EB644498}" ShortID="936598969">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_foley_footstep_grass_run_03" ID="{A6FEA18F-12E9-44BB-8F3D-C24EE7BE85E8}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_foley_footstep_grass_run_03.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="789201271"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_foley_footstep_grass_run_03" ID="{A6FEA18F-12E9-44BB-8F3D-C24EE7BE85E8}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_foley_footstep_grass_run_04" ID="{FE963C7B-1EC9-4CEA-AB46-14557802BC3C}" ShortID="648100127">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_foley_footstep_grass_run_04" ID="{19AB71EC-4514-43EC-9621-0198C5428D38}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_foley_footstep_grass_run_04.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="567098917"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_foley_footstep_grass_run_04" ID="{19AB71EC-4514-43EC-9621-0198C5428D38}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_foley_footstep_grass_run_05" ID="{8517C1BB-184E-4EBE-8906-3C027D5792D9}" ShortID="278212887">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_foley_footstep_grass_run_05" ID="{8FD393BD-1188-4FD1-B566-61A4EC1A927D}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_foley_footstep_grass_run_05.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="805598518"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_foley_footstep_grass_run_05" ID="{8FD393BD-1188-4FD1-B566-61A4EC1A927D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
 					</ChildrenList>
 					<ObjectLists>
 						<ObjectList Name="RTPC">
@@ -1092,6 +1214,9 @@
 								<ItemRef Name="Metal" ID="{5DDA6A5F-014A-4BC0-946C-0BF88C5458C7}"/>
 							</GroupingBehavior>
 							<GroupingBehavior>
+								<ItemRef Name="Grass" ID="{58824188-F221-40DA-A7ED-D8058D495CBE}"/>
+							</GroupingBehavior>
+							<GroupingBehavior>
 								<ItemRef Name="Concrete" ID="{1906688A-DD43-4419-B759-1A93531766DA}"/>
 							</GroupingBehavior>
 							<GroupingBehavior>
@@ -1109,6 +1234,12 @@
 								<SwitchRef Name="Metal" ID="{03214074-974A-4AC1-AA95-ABF83F648055}"/>
 								<ItemList>
 									<ItemRef Name="Metal" ID="{5DDA6A5F-014A-4BC0-946C-0BF88C5458C7}"/>
+								</ItemList>
+							</Grouping>
+							<Grouping>
+								<SwitchRef Name="Grass" ID="{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"/>
+								<ItemList>
+									<ItemRef Name="Grass" ID="{58824188-F221-40DA-A7ED-D8058D495CBE}"/>
 								</ItemList>
 							</Grouping>
 							<Grouping>
@@ -1471,6 +1602,76 @@
 								</Sound>
 							</ChildrenList>
 						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Grass" ID="{09E3C295-6D3A-4118-B72F-88D44A2DE7B0}" ShortID="837071526">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="sfx_foley_footstep_grass_land_01" ID="{86B3A294-20A0-4268-B9A8-B1DBCDBD806F}" ShortID="355249779">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_foley_footstep_grass_land_01" ID="{B95A5CE2-537D-4081-9A44-D446C7BC4B7A}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_foley_footstep_grass_land_01.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="956380320"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_foley_footstep_grass_land_01" ID="{B95A5CE2-537D-4081-9A44-D446C7BC4B7A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_foley_footstep_grass_land_02" ID="{68755EEB-D0E3-49DE-A5E5-4548B7CB9EC6}" ShortID="1011671774">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_foley_footstep_grass_land_02" ID="{EB6C868D-9032-4434-934D-BE3CD73AA38E}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_foley_footstep_grass_land_02.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="231029965"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_foley_footstep_grass_land_02" ID="{EB6C868D-9032-4434-934D-BE3CD73AA38E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
 					</ChildrenList>
 					<ObjectLists>
 						<ObjectList Name="RTPC">
@@ -1603,6 +1804,9 @@
 								<ItemRef Name="Metal" ID="{7B827546-22EF-4447-B898-402A21FB4204}"/>
 							</GroupingBehavior>
 							<GroupingBehavior>
+								<ItemRef Name="Grass" ID="{09E3C295-6D3A-4118-B72F-88D44A2DE7B0}"/>
+							</GroupingBehavior>
+							<GroupingBehavior>
 								<ItemRef Name="Gravel" ID="{EDA7D3C3-D568-47EB-AD2F-4D2E4A5D3F0D}"/>
 							</GroupingBehavior>
 							<GroupingBehavior>
@@ -1620,6 +1824,12 @@
 								<SwitchRef Name="Metal" ID="{03214074-974A-4AC1-AA95-ABF83F648055}"/>
 								<ItemList>
 									<ItemRef Name="Metal" ID="{7B827546-22EF-4447-B898-402A21FB4204}"/>
+								</ItemList>
+							</Grouping>
+							<Grouping>
+								<SwitchRef Name="Grass" ID="{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"/>
+								<ItemList>
+									<ItemRef Name="Grass" ID="{09E3C295-6D3A-4118-B72F-88D44A2DE7B0}"/>
 								</ItemList>
 							</Grouping>
 							<Grouping>
@@ -2354,7 +2564,7 @@
 						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
-								<Value>-5</Value>
+								<Value>-10</Value>
 							</ValueList>
 						</Property>
 					</PropertyList>
@@ -2421,7 +2631,7 @@
 						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
-								<Value>-6</Value>
+								<Value>-10</Value>
 							</ValueList>
 						</Property>
 					</PropertyList>
@@ -2582,10 +2792,11 @@
 				<Sound Name="sfx_world_audioreactive_loop" ID="{3787C5C7-BC67-4831-B00B-F326BA9E3934}" ShortID="590833032">
 					<PropertyList>
 						<Property Name="3DSpatialization" Type="int16" Value="1"/>
+						<Property Name="AttenuationDistanceScaling" Type="Real32" Value="0.5"/>
 						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
-								<Value>-10</Value>
+								<Value>-25</Value>
 							</ValueList>
 						</Property>
 					</PropertyList>
@@ -2861,153 +3072,296 @@
 						<ActiveSource Name="sfx_world_audioreactive_loop" ID="{45798635-82F9-4398-AB83-68AF979BC947}" Platform="Linked"/>
 					</ActiveSourceList>
 				</Sound>
-				<Folder Name="UI" ID="{1A8F4F95-6D4E-4294-AFB7-B35C192E83EE}" ShortID="334650911">
+				<Sound Name="sfx_props_train_moving" ID="{BEF944C7-9CDF-4825-8C25-D2D13E9D4BF2}" ShortID="1008702340">
+					<PropertyList>
+						<Property Name="3DSpatialization" Type="int16" Value="1"/>
+						<Property Name="AttenuationDistanceScaling" Type="Real32" Value="0.5"/>
+						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-8</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Attenuation">
+							<Custom>
+								<Attenuation Name="Attenuation (Custom)" ID="{F9739433-55C1-44D1-BDD5-9E0392D1AE55}" ShortID="825658650">
+									<CurveUsageInfoList>
+										<VolumeDryUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+												<Curve Name="VolumeDry" ID="{6146C17E-A76D-4DAA-BB40-CB5BB9922A61}">
+													<PropertyList>
+														<Property Name="Flags" Type="int32" Value="3"/>
+													</PropertyList>
+													<PointList>
+														<Point>
+															<XPos>0</XPos>
+															<YPos>0</YPos>
+															<Flags>5</Flags>
+														</Point>
+														<Point>
+															<XPos>100</XPos>
+															<YPos>-200</YPos>
+															<Flags>37</Flags>
+														</Point>
+													</PointList>
+												</Curve>
+											</CurveUsageInfo>
+										</VolumeDryUsage>
+										<VolumeWetGameUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+										</VolumeWetGameUsage>
+										<VolumeWetUserUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+										</VolumeWetUserUsage>
+										<LowPassFilterUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</LowPassFilterUsage>
+										<HighPassFilterUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</HighPassFilterUsage>
+										<DualShelfUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</DualShelfUsage>
+										<SpreadUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</SpreadUsage>
+										<FocusUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</FocusUsage>
+										<ObstructionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionVolumeUsage>
+										<ObstructionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionLPFUsage>
+										<ObstructionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionHPFUsage>
+										<ObstructionDSFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionDSFUsage>
+										<OcclusionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionVolumeUsage>
+										<OcclusionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionLPFUsage>
+										<OcclusionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionHPFUsage>
+										<OcclusionDSFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionDSFUsage>
+										<DiffractionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionVolumeUsage>
+										<DiffractionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionLPFUsage>
+										<DiffractionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionHPFUsage>
+										<DiffractionDSFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionDSFUsage>
+										<TransmissionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionVolumeUsage>
+										<TransmissionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionLPFUsage>
+										<TransmissionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionHPFUsage>
+										<TransmissionDSFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionDSFUsage>
+									</CurveUsageInfoList>
+								</Attenuation>
+							</Custom>
+						</Reference>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="SFX_NonReactive" ID="{861F9B84-3627-4559-B84F-737913CD1B35}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+						</Reference>
+					</ReferenceList>
 					<ChildrenList>
-						<Folder Name="Shop" ID="{A657B5F3-CC77-4DFC-8E06-99D9E7DF8504}" ShortID="354587418">
-							<ChildrenList>
-								<Sound Name="sfx_UI_shop_close" ID="{872D0297-95FC-495B-87FC-C67AF6E81173}" ShortID="97960454">
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="sfx_UI_shop_close" ID="{D45F3B5D-FEC3-47D5-BDD1-3D8A187CB736}">
-											<Language>SFX</Language>
-											<AudioFile>sfx_UI_shop_close.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="359440859"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="sfx_UI_shop_close" ID="{D45F3B5D-FEC3-47D5-BDD1-3D8A187CB736}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-								<Sound Name="sfx_UI_shop_item_buy" ID="{D62C38C2-0ED0-470A-A514-DD91340A5877}" ShortID="1015225">
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="sfx_UI_shop_item_buy" ID="{3BCEC2DE-ED4E-4098-857D-BD396D448870}">
-											<Language>SFX</Language>
-											<AudioFile>sfx_UI_shop_item_buy.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="320214379"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="sfx_UI_shop_item_buy" ID="{3BCEC2DE-ED4E-4098-857D-BD396D448870}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-								<Sound Name="sfx_UI_shop_open" ID="{5DF5CC7D-86E3-45BE-A168-3A8E643CCD5F}" ShortID="567980454">
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="sfx_UI_shop_open" ID="{0100EA7A-E2A9-4D72-90B7-292F670B5B39}">
-											<Language>SFX</Language>
-											<AudioFile>sfx_UI_shop_open.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="615216494"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="sfx_UI_shop_open" ID="{0100EA7A-E2A9-4D72-90B7-292F670B5B39}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-								<Sound Name="sfx_UI_shop_page_switch" ID="{7856B81E-D9F8-4AFF-9FDE-9B06ECBD6AC1}" ShortID="506885501">
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="sfx_UI_shop_page_switch" ID="{3CF568CA-02DD-40CD-82FC-2B79EE57AAE9}">
-											<Language>SFX</Language>
-											<AudioFile>sfx_UI_shop_page_switch.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="926086438"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="sfx_UI_shop_page_switch" ID="{3CF568CA-02DD-40CD-82FC-2B79EE57AAE9}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-							</ChildrenList>
-						</Folder>
-						<Sound Name="sfx_UI_button_click" ID="{18238E32-F9DD-4951-B040-02716A2B91DC}" ShortID="344625645">
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="sfx_UI_button_click" ID="{A4C7AAF7-CC81-4B4A-B89C-BF88F7C8A628}">
-									<Language>SFX</Language>
-									<AudioFile>sfx_UI_button_click.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="223167884"/>
-									</MediaIDList>
-								</AudioFileSource>
-							</ChildrenList>
-							<ActiveSourceList>
-								<ActiveSource Name="sfx_UI_button_click" ID="{A4C7AAF7-CC81-4B4A-B89C-BF88F7C8A628}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
-						<Sound Name="sfx_UI_button_hover" ID="{66AD8BFF-2940-414D-8A20-1474160F3756}" ShortID="297954176">
+						<AudioFileSource Name="sfx_props_train_moving" ID="{BDC91E08-9CC2-4003-8548-2081E02F73E6}">
 							<PropertyList>
-								<Property Name="Volume" Type="Real64">
-									<ValueList>
-										<Value>-16</Value>
-									</ValueList>
-								</Property>
+								<Property Name="FadeInDuration" Type="Real64" Value="0.23021582733813"/>
+								<Property Name="FadeOutDuration" Type="Real64" Value="0.506474820143882"/>
+								<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+								<Property Name="TrimBegin" Type="Real64" Value="0.78273381294964"/>
+								<Property Name="TrimEnd" Type="Real64" Value="31.4474820143885"/>
 							</PropertyList>
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="sfx_UI_button_hover" ID="{C7562952-A646-4BF4-BCBF-A1C6CF7389DB}">
-									<Language>SFX</Language>
-									<AudioFile>sfx_UI_button_hover.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="152698026"/>
-									</MediaIDList>
-								</AudioFileSource>
-							</ChildrenList>
-							<ActiveSourceList>
-								<ActiveSource Name="sfx_UI_button_hover" ID="{C7562952-A646-4BF4-BCBF-A1C6CF7389DB}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
+							<Language>SFX</Language>
+							<AudioFile>sfx_props_train_moving.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="106684015"/>
+							</MediaIDList>
+						</AudioFileSource>
 					</ChildrenList>
-				</Folder>
+					<ObjectLists>
+						<ObjectList Name="RTPC">
+							<RTPC Name="" ID="{E579455E-B16B-47D5-8BDF-24F24989DC3B}" ShortID="994924337">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="Occlusion" ID="{DAAB43F5-A1A7-46AA-9E41-1AB0ABCD0152}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{4AB57FD2-3799-45D9-9823-F2B947B99DFB}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="65537"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>0</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>0.57219</XPos>
+														<YPos>49</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>0.71028</XPos>
+														<YPos>60</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>1</XPos>
+														<YPos>90</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+							<RTPC Name="" ID="{35F848CA-70B3-40E9-BDD4-DC6E1B8C6C6B}" ShortID="354043189">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="Volume"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="WallThickness" ID="{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{38F46FFE-D6A0-40EE-B345-954994CD368F}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="3"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>0</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>9.76283</XPos>
+														<YPos>-26.56588</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>9.87264</XPos>
+														<YPos>-29.57916</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>10</XPos>
+														<YPos>-30</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+							<RTPC Name="" ID="{B11FED3E-7009-42B5-96BF-9906C9DBB9ED}" ShortID="502035921">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="UserAuxSendVolume0"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="Diffraction" ID="{3AD53E5D-776D-45D4-B11B-3D1F723DD2F1}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{3DA07F2A-1D27-421A-9A5E-240DC0E0B1C8}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="3"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>-96</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>0.5</XPos>
+														<YPos>-18</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>1</XPos>
+														<YPos>-6</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+							<RTPC Name="" ID="{E037B35B-8291-4C61-894B-A881BFAA8B24}" ShortID="612844915">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="Volume"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="Train_Speed" ID="{EE3D5125-14FF-49A4-A653-DE395AFE97A7}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{B733762C-4F50-420E-96D1-2D91E950C743}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="3"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>-200</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>1</XPos>
+														<YPos>0</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+						</ObjectList>
+					</ObjectLists>
+					<ActiveSourceList>
+						<ActiveSource Name="sfx_props_train_moving" ID="{BDC91E08-9CC2-4003-8548-2081E02F73E6}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
 			</ChildrenList>
 		</WorkUnit>
 	</Containers>

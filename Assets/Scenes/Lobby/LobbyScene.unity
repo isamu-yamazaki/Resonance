@@ -1083,7 +1083,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197424294}
   m_Layer: 0
-  m_Name: ------SKIN PREVIEW------
+  m_Name: '------SKIN PREVIEW------'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2503,7 +2503,7 @@ GameObject:
   m_Component:
   - component: {fileID: 461439340}
   m_Layer: 0
-  m_Name: ------DATA PROVIDERS------
+  m_Name: '------DATA PROVIDERS------'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5423,7 +5423,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 843194953}
   m_HandleRect: {fileID: 843194952}
   m_Direction: 2
-  m_Value: 0.9999964
+  m_Value: 1
   m_Size: 0.9724757
   m_NumberOfSteps: 0
   m_OnValueChanged:

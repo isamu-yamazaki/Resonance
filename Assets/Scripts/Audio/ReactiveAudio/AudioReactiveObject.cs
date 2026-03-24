@@ -34,6 +34,7 @@ namespace Resonance.Audio
         private Material materialInstance;
         private float currentIntensity = 0f;
         private float targetIntensity = 0f;
+        private float externalIntensity = 0f;
         private float peakIntensity = 0f;
         private float sustainTimer = 0f;
         private bool inSustain = false;
@@ -128,6 +129,12 @@ namespace Resonance.Audio
             clientReportedSource = source;
         }
 
+        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
+        public void SetExternalIntensity(float intensity)
+        {
+            externalIntensity = Mathf.Clamp01(intensity);
+        }
+
         private void CalculateAudioState()
         {
             if (clientReportedSource != null)
@@ -146,6 +153,8 @@ namespace Resonance.Audio
 
             if (targetIntensity < threshold)
                 targetIntensity = 0f;
+
+            targetIntensity = Mathf.Max(targetIntensity, externalIntensity);
 
             // ADSR Envelope
             if (targetIntensity > currentIntensity)

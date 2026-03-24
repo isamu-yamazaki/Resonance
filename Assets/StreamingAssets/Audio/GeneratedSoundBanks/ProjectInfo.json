@@ -3,7 +3,7 @@
   "Project": {
    "Name": "Resonance_WwiseProject",
    "GUID": "{30ABFBDE-C174-4F03-B5D8-2A3BCFF1423A}",
-   "Generator": "2025.1.3.9037"
+   "Generator": "2025.1.3.9039"
   },
   "CacheRoot": "../../../../Resonance_WwiseProject/.cache",
   "Platforms": [
@@ -38,6 +38,6 @@
     "UseAsStandIn": "true"
    }
   ],
-  "FileHash": "{E913AA66-7BB3-2793-EA93-2F23D4682AFD}"
+  "FileHash": "{23C6D581-48AE-8E39-081E-1733A4A058AF}"
  }
 }
