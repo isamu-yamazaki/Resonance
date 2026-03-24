@@ -3,6 +3,7 @@ using UnityEngine;
 using Resonance;
 using Resonance.PlayerController;
 using Resonance.Match;
+using Resonance.Assemblies.SharedGameLogic;
 
 public class PreMatchCameraController : MonoBehaviour
 {
@@ -13,23 +14,34 @@ public class PreMatchCameraController : MonoBehaviour
 
     private Transform target;
     private Camera playerCamera;
-    private bool countdownStarted = false;
+    private bool countdownOrMatchStarted = false;
 
     private void OnEnable()
     {
         if (ArenaRoundManagerBridge.Instance != null)
+        {
             ArenaRoundManagerBridge.Instance.OnMatchCountdownStart += HandleCountdownStart;
+            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed += HandleMatchTimerElapsed;
+        }
     }
 
     private void OnDisable()
     {
         if (ArenaRoundManagerBridge.Instance != null)
+        {
             ArenaRoundManagerBridge.Instance.OnMatchCountdownStart -= HandleCountdownStart;
+            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed -= HandleMatchTimerElapsed;
+        }
     }
 
-    private void HandleCountdownStart(float seconds)
+    private void HandleCountdownStart(float seconds = 0)
     {
-        countdownStarted = true;
+        countdownOrMatchStarted = true;
+    }
+
+    private void HandleMatchTimerElapsed(double timeRemaining)
+    {
+        countdownOrMatchStarted = true;
     }
 
     private IEnumerator Start()
@@ -55,7 +67,7 @@ public class PreMatchCameraController : MonoBehaviour
         PositionCamera();
 
         // Orbit while waiting for countdown to start
-        while (!countdownStarted)
+        while (!countdownOrMatchStarted)
         {
             cinematicCamera.transform.RotateAround(target.position, Vector3.up, rotationSpeed * Time.deltaTime);
             cinematicCamera.transform.LookAt(target);

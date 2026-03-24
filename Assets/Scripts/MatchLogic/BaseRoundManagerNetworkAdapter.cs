@@ -17,10 +17,10 @@ namespace Resonance.Match
         protected MatchStatNetworkAdapter matchStatNetworkAdapter;
 
         #region Cached Client-Side State
-        protected BaseMatchState cachedMatchState;
+        public BaseMatchState MatchState { get; private set; }
 
-        public bool IsMatchActive => cachedMatchState == BaseMatchState.MatchActive;
-        public bool IsMatchEnded  => cachedMatchState == BaseMatchState.MatchEnded;
+        public bool IsMatchActive => MatchState == BaseMatchState.MatchActive;
+        public bool IsMatchEnded  => MatchState == BaseMatchState.MatchEnded;
         #endregion
 
         #region Events
@@ -94,7 +94,7 @@ namespace Resonance.Match
         protected void FireMatchStateChangeObservers(int oldState, int newState)
         {
             Debug.Log($"[{GetType().Name}] Match state changed from {oldState} to {newState}");
-            cachedMatchState = (BaseMatchState)newState;
+            MatchState = (BaseMatchState)newState;
             OnMatchStateChange?.Invoke((BaseMatchState)oldState, (BaseMatchState)newState);
         }
 
