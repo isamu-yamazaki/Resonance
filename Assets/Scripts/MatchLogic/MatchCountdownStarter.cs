@@ -1,4 +1,3 @@
-using System;
 using PurrNet;
 using Resonance.LobbySystem;
 using UnityEngine;
@@ -23,10 +22,7 @@ namespace Resonance.Match
             base.OnSpawned(asServer);
 
             lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-            if (!lobbyDataHolder)
-            {
-                Debug.LogError($"[MatchStarter] Unable to find {nameof(LobbyDataHolder)} component; will not start match.");
-            }
+            // lobbyDataHolder is an optional dependency
 
             if (asServer && autoStartAfterPlayersLoadedIn)
             {
@@ -46,13 +42,19 @@ namespace Resonance.Match
 
         private void OnPlayerLoadedScene(PlayerID player, SceneID scene, bool asServer)
         {
-            StartMatchCountdownIfAllPlayersLoadedScene();
+            if (lobbyDataHolder != null)
+            {
+                StartMatchCountdownIfAllPlayersLoadedScene();
+            } else
+            {
+                QueueMatchCountdown();
+            }
         }
 
         private void StartMatchCountdownIfAllPlayersLoadedScene()
         {
-            var targetSceneName = lobbyDataHolder.CurrentLobby.SceneName;
-            var targetScene = SceneManager.GetSceneByName(targetSceneName);
+            if (lobbyDataHolder == null) return;
+            var targetScene = SceneManager.GetActiveScene();
 
             if (networkManager.sceneModule.TryGetSceneID(targetScene, out var sceneId))
             {
@@ -74,7 +76,7 @@ namespace Resonance.Match
 
         private void StartMatchCountdown()
         {
-            var activeRoundManager = MatchLogicNetworkAdapter.Instance.ActiveRoundManager;
+            var activeRoundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
             if (activeRoundManager != null)
             {
                 activeRoundManager.StartMatchCountdown();
