@@ -495,7 +495,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 09bffe8f7e24d42e08d4f68f63072690, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -35.13858
+      value: -31.06
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 09bffe8f7e24d42e08d4f68f63072690, type: 3}
       propertyPath: m_LocalPosition.y
@@ -503,7 +503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 09bffe8f7e24d42e08d4f68f63072690, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 112.167076
+      value: 123.64
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 09bffe8f7e24d42e08d4f68f63072690, type: 3}
       propertyPath: m_LocalRotation.w
@@ -533,6 +533,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 09bffe8f7e24d42e08d4f68f63072690, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 755ae7a2553d944a2a5b4dad8a191f54, type: 2}
     - target: {fileID: 919132149155446097, guid: 09bffe8f7e24d42e08d4f68f63072690, type: 3}
       propertyPath: m_Name
       value: Flower
