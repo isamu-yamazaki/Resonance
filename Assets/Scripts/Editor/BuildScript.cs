@@ -132,10 +132,10 @@ namespace Resonance.BuildTools
             string appPassword = System.Environment.GetEnvironmentVariable("APPLE_APP_PASSWORD");
             string teamId = System.Environment.GetEnvironmentVariable("APPLE_TEAM_ID");
             string entitlements = Path.GetFullPath(
-                Path.Combine(Application.dataPath, "../Mac.entitlements"));
+                Path.Combine(Application.dataPath, "../entitlements.plist"));
 
             Debug.Log("[BuildScript] Codesigning...");
-            RunShell($"codesign --deep --force --sign \"{identity}\" " +
+            RunShell($"codesign --options runtime --timestamp --deep --force --sign \"{identity}\" " +
                      $"--entitlements \"{entitlements}\" \"{appPath}\"");
 
             bool canNotarize = identity != "-"
