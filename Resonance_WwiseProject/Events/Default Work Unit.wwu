@@ -105,72 +105,33 @@
 						</Action>
 					</ChildrenList>
 				</Event>
-				<Event Name="Play_UI_Button_Hover" ID="{FCF609DB-9020-4B93-8189-62929FCEF7D5}">
+				<Event Name="Play_Train_Moving" ID="{3C5E15D5-9DF8-4C03-9A2A-C8C585369995}">
 					<ChildrenList>
-						<Action Name="" ID="{8F06561E-8E46-4945-B6CC-913B76278D0B}" ShortID="653619431">
+						<Action Name="" ID="{03EE6C6E-6962-4302-97B2-1C6446D3326C}" ShortID="926886055">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="sfx_UI_button_hover" ID="{66AD8BFF-2940-414D-8A20-1474160F3756}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+									<ObjectRef Name="sfx_props_train_moving" ID="{BEF944C7-9CDF-4825-8C25-D2D13E9D4BF2}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
 					</ChildrenList>
 				</Event>
-				<Event Name="Play_UI_Button_Click" ID="{74BD7C0B-CBBB-4C86-9626-AE41A525D599}">
+				<Event Name="Stop_Train_Moving" ID="{5C6A69E7-5734-4A59-9855-DB5FEB581542}">
 					<ChildrenList>
-						<Action Name="" ID="{2A3D6A11-49D9-48BE-896B-60EC1FD36041}" ShortID="125544728">
+						<Action Name="" ID="{02F9BD3D-A1DD-4D00-B6AA-695FED302430}" ShortID="378576479">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="sfx_UI_button_click" ID="{18238E32-F9DD-4951-B040-02716A2B91DC}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+									<ObjectRef Name="sfx_props_train_moving" ID="{BEF944C7-9CDF-4825-8C25-D2D13E9D4BF2}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
 					</ChildrenList>
 				</Event>
-				<Event Name="Play_UI_Shop_Open" ID="{8FB1BAAD-75C8-4499-9733-DC885D7485A1}">
-					<ChildrenList>
-						<Action Name="" ID="{817BD170-2740-4AE9-8719-E4759E8309F4}" ShortID="643107374">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="sfx_UI_shop_open" ID="{5DF5CC7D-86E3-45BE-A168-3A8E643CCD5F}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
-				<Event Name="Play_UI_Shop_Close" ID="{828D026E-71D8-418D-B682-6905E6250772}">
-					<ChildrenList>
-						<Action Name="" ID="{5B89736E-82A9-44E8-8AEB-C930AB7238CB}" ShortID="1046500680">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="sfx_UI_shop_close" ID="{872D0297-95FC-495B-87FC-C67AF6E81173}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
-				<Event Name="Play_UI_Shop_Page_Switch" ID="{610B3A42-FE55-46BF-85B8-9C1368BA1498}">
-					<ChildrenList>
-						<Action Name="" ID="{F068DC8E-1B2A-47B1-B4D9-796683DE63E0}" ShortID="69663095">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="sfx_UI_shop_page_switch" ID="{7856B81E-D9F8-4AFF-9FDE-9B06ECBD6AC1}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
-				<Event Name="Play_UI_Shop_Item_Buy" ID="{7A8F900D-FAE3-49E9-B72E-8E7885A4821A}">
-					<ChildrenList>
-						<Action Name="" ID="{161D6216-A58F-427F-8EEA-EEABA385F2CC}" ShortID="380262632">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="sfx_UI_shop_item_buy" ID="{D62C38C2-0ED0-470A-A514-DD91340A5877}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
+				<Event Name="Play_Train_Disembark" ID="{51C94B9D-0D94-43C7-AA59-DB3CD379EA80}"/>
+				<Event Name="Play_Train_Arrival" ID="{68D90232-C33C-4CBC-9B40-F9164D7350AF}"/>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
