@@ -53,7 +53,8 @@ namespace Resonance.PlayerController
 
         public bool IsMatchFrozen()
         {
-            return CurrentPlayerMovementState == PlayerMovementState.MatchFrozen;
+            return CurrentPlayerMovementState == PlayerMovementState.PreMatchFrozen || 
+                   CurrentPlayerMovementState == PlayerMovementState.MatchEndedFrozen;
         }
 
         public event Action<WeaponClass> OnWeaponClassChanged;
@@ -78,6 +79,7 @@ namespace Resonance.PlayerController
         Dead = 7,
         InShop = 8,
         Ziplining = 9,
-        MatchFrozen = 10,
+        PreMatchFrozen = 10,
+        MatchEndedFrozen = 11,
     }
 }

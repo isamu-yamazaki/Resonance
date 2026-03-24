@@ -1,3 +1,4 @@
+using Resonance.Assemblies.SharedGameLogic;
 using Resonance.Match;
 using UnityEngine;
 
@@ -15,9 +16,12 @@ namespace Resonance.PlayerController
 
         private void Update()
         {
-            if (!roundManager.IsMatchActive)
+            if (roundManager.IsMatchEnded)
             {
-                playerState.SetPlayerMovementState(PlayerMovementState.MatchFrozen);
+                playerState.SetPlayerMovementState(PlayerMovementState.MatchEndedFrozen);
+            } else if (!roundManager.IsMatchActive)
+            {
+                playerState.SetPlayerMovementState(PlayerMovementState.PreMatchFrozen);
             } else if (playerState.IsMatchFrozen())
             {
                 playerState.SetPlayerMovementState(PlayerMovementState.Idling);
