@@ -37342,8 +37342,8 @@ MonoBehaviour:
   waitingForHostText: {fileID: 18556961}
   playAgainButton: {fileID: 0}
   returnToLobbyButton: {fileID: 1070253236}
-  despawnerSceneLoader: {fileID: 0}
-  shopGameObject: {fileID: 0}
+  despawnerSceneLoader: {fileID: 463464439}
+  shopGameObject: {fileID: 787411391}
   playerObject: {fileID: 0}
   showKillStreak: 1
 --- !u!4 &800125031
