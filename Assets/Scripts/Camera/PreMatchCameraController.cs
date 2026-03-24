@@ -17,7 +17,7 @@ public class PreMatchCameraController : MonoBehaviour
     public float lookSmoothing = 4.5f;
 
     [Header("Hero Position")]
-    public Vector3 heroOffset = new Vector3(0f, 1.4f, 3.5f);
+    public Vector3 heroOffset = new Vector3(0f, 1.4f, 5f);
     public float heroApproachSpeed = 3.5f;
     public float heroHoverDuration = 0.6f;
 

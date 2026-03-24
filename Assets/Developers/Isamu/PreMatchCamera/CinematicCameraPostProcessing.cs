@@ -17,8 +17,8 @@ namespace Resonance
 
         [Header("Vignette")]
         public Color vignetteColor = Color.black;
-        public float vignetteIntensity = 0.45f;
-        public float vignetteSmoothness = 0.75f;
+        public float vignetteIntensity = 0.25f;
+        public float vignetteSmoothness = 0.5f;
 
         [Header("Film Grain")]
         public float filmGrainIntensity = 0.45f;

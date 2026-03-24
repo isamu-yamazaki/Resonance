@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1842f494758b91d4f85397aa26e004b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.CinematicCameraPostProcessing
-  _profile: {fileID: 0}
+  _profile: {fileID: 11400000, guid: 97f4af1012dafe54b914a49aca1ea381, type: 2}
   lensDistortionIntensity: 0.2
   chromaticAberrationIntensity: 0.2
   vignetteColor: {r: 0, g: 0, b: 0, a: 1}
