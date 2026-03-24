@@ -92,6 +92,7 @@ public class PreMatchCameraController : MonoBehaviour
         cinematicCamera.gameObject.SetActive(true);
         cinematicCamera.depth = 100;
         cinematicCamera.fieldOfView = baseFov;
+        cinematicCamera.gameObject.AddComponent<DroneOverlay>();
 
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(false);
