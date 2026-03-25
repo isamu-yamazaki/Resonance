@@ -10,20 +10,29 @@ namespace Resonance.BuildTools
         void Awake()
         {
             var receiver = FindFirstObjectByType<ClientBuildConfigReceiver>();
+            var shouldUseProductionRelay = false;
             if (receiver == null)
             {
-                Debug.LogError("[PurrTransportConfigurator] No ClientBuildConfigReceiver found in scene.");
-                return;
+                var serverReceiver = FindFirstObjectByType<ServerBuildConfigReceiver>();
+                if (serverReceiver == null)
+                {
+                    Debug.LogError("[PurrTransportConfigurator] No ClientBuildConfigReceiver or ServerBuildConfigReceiver found in scene.");
+                    return;
+                }
+
+                shouldUseProductionRelay = serverReceiver.Config.useProductionRelay;
+            } else
+            {
+                shouldUseProductionRelay = receiver.Config.useProductionRelay;
             }
 
-            var config = receiver.Config;
             if (localTransport != null)
             {
-                localTransport.SetActive(!config.useProductionRelay);
+                localTransport.SetActive(!shouldUseProductionRelay);
             }
             if (remoteTransport != null)
             {
-                remoteTransport.SetActive(config.useProductionRelay);
+                remoteTransport.SetActive(shouldUseProductionRelay);
             }
         }
     }
