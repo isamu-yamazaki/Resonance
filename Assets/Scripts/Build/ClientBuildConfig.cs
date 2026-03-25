@@ -18,14 +18,12 @@ namespace Resonance.BuildTools
         public bool useProductionRelay;
 
         /// <summary>
-        /// When true, uses the remote orchestrator to spin up dedicated game instances.
-        /// When false, uses a local/mock orchestrator - requires this to be running on your machine.
-        /// Note that if set to true, the game version under the remote orchestrator must match
+        /// Note that the game version under the remote orchestrator must match
         /// exactly with the client.
         /// 
         /// Does nothing if not using client-server mode.
         /// </summary>
-        public bool useRemoteOrchestrator;
+        public string orchestratorUrl;
 
         /// <summary>
         /// When true, the client connects to a separate dedicated server.
