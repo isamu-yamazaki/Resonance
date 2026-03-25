@@ -6,84 +6,87 @@ using Resonance.LobbySystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Runs on the dedicated server. Reads the room code from the -lobbyCode CLI argument
-/// and the orchestrator URL from the -orchestratorUrl CLI argument. Fetches the lobby
-/// data from the orchestrator, stores it in <see cref="LobbyDataHolder"/>, then loads
-/// the game scene so <see cref="ConnectionBootstrapper"/> can start the network.
-/// </summary>
-public class ServerLobbyCodeReader : MonoBehaviour
+namespace Resonance.Server
 {
-    [SerializeField] private string gameSceneName = "GameBootstrapScene";
-    [SerializeField] private string editorRoomCode = "";
-    [SerializeField] private string editorOrchestratorUrl = "http://localhost:9000";
-
-    private LobbyDataHolder lobbyDataHolder;
-
-    private void Awake()
+    /// <summary>
+    /// Runs on the dedicated server. Reads the room code from the -lobbyCode CLI argument
+    /// and the orchestrator URL from the -orchestratorUrl CLI argument. Fetches the lobby
+    /// data from the orchestrator, stores it in <see cref="LobbyDataHolder"/>, then loads
+    /// the game scene so <see cref="ConnectionBootstrapper"/> can start the network.
+    /// </summary>
+    public class ServerLobbyCodeReader : MonoBehaviour
     {
-        lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-        if (lobbyDataHolder == null)
-        {
-            Debug.LogError("[ServerLobbyCodeReader] Unable to find LobbyDataHolder in scene.");
-            Destroy(this);
-            return;
-        }
+        [SerializeField] private string gameSceneName = "GameBootstrapScene";
+        [SerializeField] private string editorRoomCode = "";
+        [SerializeField] private string editorOrchestratorUrl = "http://localhost:9000";
 
-        string lobbyCode = null;
-        string orchestratorUrl = null;
-        string[] args = Environment.GetCommandLineArgs();
-        for (int i = 0; i < args.Length - 1; i++)
-        {
-            if (args[i] == "-lobbyCode") lobbyCode = args[i + 1];
-            if (args[i] == "-orchestratorUrl") orchestratorUrl = args[i + 1];
-        }
+        private LobbyDataHolder lobbyDataHolder;
 
-        if (lobbyCode != null && orchestratorUrl != null)
+        private void Awake()
         {
-            _ = LoadLobbyAndStartGameAsync(lobbyCode, orchestratorUrl);
-        }
-        else
-        {
-            Debug.LogWarning("[ServerLobbyCodeReader] Missing -lobbyCode or -orchestratorUrl. Use the inspector button to load manually.");
-        }
-    }
-
-    private async Task LoadLobbyAndStartGameAsync(string lobbyCode, string orchestratorUrl)
-    {
-        try
-        {
-            using var client = new HttpClient();
-            var response = await client.GetAsync($"{orchestratorUrl}/lobbies/{lobbyCode}");
-
-            if (!response.IsSuccessStatusCode)
+            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
+            if (lobbyDataHolder == null)
             {
-                Debug.LogError($"[ServerLobbyCodeReader] Failed to fetch lobby {lobbyCode}: {response.StatusCode}");
+                Debug.LogError("[ServerLobbyCodeReader] Unable to find LobbyDataHolder in scene.");
+                Destroy(this);
                 return;
             }
 
-            string json = await response.Content.ReadAsStringAsync();
-            Lobby lobby = Lobby.FromJson(json);
-            lobbyDataHolder.SetCurrentLobby(lobby);
+            string lobbyCode = null;
+            string orchestratorUrl = null;
+            string[] args = System.Environment.GetCommandLineArgs();
+            for (int i = 0; i < args.Length - 1; i++)
+            {
+                if (args[i] == "-lobbyCode") lobbyCode = args[i + 1];
+                if (args[i] == "-orchestratorUrl") orchestratorUrl = args[i + 1];
+            }
 
-            Debug.Log($"[ServerLobbyCodeReader] Lobby data set. Loading scene: {gameSceneName}");
-            SceneManager.LoadScene(gameSceneName);
+            if (lobbyCode != null && orchestratorUrl != null)
+            {
+                _ = LoadLobbyAndStartGameAsync(lobbyCode, orchestratorUrl);
+            }
+            else
+            {
+                Debug.LogWarning("[ServerLobbyCodeReader] Missing -lobbyCode or -orchestratorUrl. Use the inspector button to load manually.");
+            }
         }
-        catch (Exception ex)
+
+        private async Task LoadLobbyAndStartGameAsync(string lobbyCode, string orchestratorUrl)
         {
-            Debug.LogError($"[ServerLobbyCodeReader] Error fetching lobby: {ex.Message}");
+            try
+            {
+                using var client = new HttpClient();
+                var response = await client.GetAsync($"{orchestratorUrl}/lobbies/{lobbyCode}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.LogError($"[ServerLobbyCodeReader] Failed to fetch lobby {lobbyCode}: {response.StatusCode}");
+                    return;
+                }
+
+                string json = await response.Content.ReadAsStringAsync();
+                Lobby lobby = Lobby.FromJson(json);
+                lobbyDataHolder.SetCurrentLobby(lobby);
+
+                Debug.Log($"[ServerLobbyCodeReader] Lobby data set. Loading scene: {gameSceneName}");
+                SceneManager.LoadScene(gameSceneName);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[ServerLobbyCodeReader] Error fetching lobby: {ex.Message}");
+            }
         }
-    }
 
 #if UNITY_EDITOR
-    [ContextMenu("Load Scene With Editor Room Code")]
-    private void LoadWithEditorRoomCode()
-    {
-        if (lobbyDataHolder == null)
+        [ContextMenu("Load Scene With Editor Room Code")]
+        private void LoadWithEditorRoomCode()
         {
-            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
+            if (lobbyDataHolder == null)
+            {
+                lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
+            }
+            _ = LoadLobbyAndStartGameAsync(editorRoomCode, editorOrchestratorUrl);
         }
-        _ = LoadLobbyAndStartGameAsync(editorRoomCode, editorOrchestratorUrl);
-    }
 #endif
+    }
 }
