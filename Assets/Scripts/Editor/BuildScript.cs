@@ -113,6 +113,9 @@ namespace Resonance.BuildTools
 
         static void BuildServer(ServerBuildConfig config, BuildTarget target)
         {
+            InjectConfigIntoScene<ServerBuildConfigReceiver, ServerBuildConfig>(
+                "Assets/Scenes/Transitions/ServerStartScene.unity", config);
+
             bool isDev = !config.useProductionRelay;
             string targetFolder = target == BuildTarget.StandaloneLinux64 ? "Linux" : "Windows";
 
@@ -133,10 +136,8 @@ namespace Resonance.BuildTools
 
         static void Build(ClientBuildConfig config, BuildTarget target)
         {
-            InjectConfigIntoScene<LobbySceneConfigurator>(
-                "Assets/Scenes/Lobby/LobbyScene.unity", config);
-            InjectConfigIntoScene<PurrTransportConfigurator>(
-                "Assets/Scenes/Transitions/GameBootstrapScene.unity", config);
+            InjectConfigIntoScene<ClientBuildConfigReceiver, ClientBuildConfig>(
+                "Assets/Scenes/Transitions/LobbyScene.unity", config);
 
             bool isDev = !config.enableSteamLobby && !config.useProductionRelay;
             string ext = target == BuildTarget.StandaloneWindows64 ? ".exe" : ".app";
@@ -261,7 +262,9 @@ namespace Resonance.BuildTools
         }
 #endif
 
-        static void InjectConfigIntoScene<T>(string scenePath, ClientBuildConfig config) where T : MonoBehaviour
+        static void InjectConfigIntoScene<TConfigurator, TConfig>(string scenePath, TConfig config)
+            where TConfigurator : MonoBehaviour
+            where TConfig : ScriptableObject
         {
             bool wasAlreadyLoaded = false;
             for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
@@ -277,10 +280,10 @@ namespace Resonance.BuildTools
                 ? EditorSceneManager.GetSceneByPath(scenePath)
                 : EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
-            var configurator = Object.FindFirstObjectByType<T>();
+            var configurator = Object.FindFirstObjectByType<TConfigurator>();
             if (configurator == null)
             {
-                Debug.LogWarning($"[BuildScript] {typeof(T).Name} not found in {scenePath}. Config not injected.");
+                Debug.LogWarning($"[BuildScript] {typeof(TConfigurator).Name} not found in {scenePath}. Config not injected.");
                 if (!wasAlreadyLoaded)
                     EditorSceneManager.CloseScene(scene, true);
                 return;

@@ -5,16 +5,20 @@ namespace Resonance.BuildTools
 {
     public class LobbySceneConfigurator : MonoBehaviour
     {
-        public static ClientBuildConfig Current { get; private set; }
-
-        [SerializeField] ClientBuildConfig config;
         [SerializeField] LobbyManager lobbyManager;
         [SerializeField] GameObject steamProvider;
         [SerializeField] GameObject dummyProvider;
 
         void Awake()
         {
-            Current = config;
+            var receiver = FindFirstObjectByType<ClientBuildConfigReceiver>();
+            if (receiver == null)
+            {
+                Debug.LogError("[LobbySceneConfigurator] No ClientBuildConfigReceiver found in scene.");
+                return;
+            }
+
+            var config = receiver.Config;
             if (steamProvider != null)
             {
                 steamProvider.SetActive(config.enableSteamLobby);
@@ -27,11 +31,13 @@ namespace Resonance.BuildTools
 
         void Start()
         {
-            if (lobbyManager == null)
+            var receiver = FindFirstObjectByType<ClientBuildConfigReceiver>();
+            if (receiver == null || lobbyManager == null)
             {
                 return;
             }
 
+            var config = receiver.Config;
             var provider = config.enableSteamLobby
                 ? steamProvider.GetComponent<ILobbyProvider>()
                 : dummyProvider.GetComponent<ILobbyProvider>();

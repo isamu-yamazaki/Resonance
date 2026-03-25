@@ -443,7 +443,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 43.7
+  m_fontSize: 45.8
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1083,7 +1083,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197424294}
   m_Layer: 0
-  m_Name: '------SKIN PREVIEW------'
+  m_Name: ------SKIN PREVIEW------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1954,7 +1954,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 738067767}
   m_HandleRect: {fileID: 738067766}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2503,7 +2503,7 @@ GameObject:
   m_Component:
   - component: {fileID: 461439340}
   m_Layer: 0
-  m_Name: '------DATA PROVIDERS------'
+  m_Name: ------DATA PROVIDERS------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3604,7 +3604,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34
+  m_fontSize: 32.25
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5215,7 +5215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f6f5c5df29b4aeda1c5336541c2851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneConfigurator
-  config: {fileID: 11400000, guid: a77065c5640e0414690255b15709e104, type: 2}
   lobbyManager: {fileID: 1097043115}
   steamProvider: {fileID: 71460452}
   dummyProvider: {fileID: 1542312763}
@@ -5423,7 +5422,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 843194953}
   m_HandleRect: {fileID: 843194952}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0.9999964
   m_Size: 0.9724757
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5926,7 +5925,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.8
+  m_fontSize: 40.8
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7134,6 +7133,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1767495982}
   m_CullTransparentMesh: 1
+--- !u!1 &1829748893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1829748894}
+  m_Layer: 0
+  m_Name: ------BUILD CONFIG------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1829748894
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829748893}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.84683, y: 0, z: -10.31035}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1842782558
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1842782559}
+  - component: {fileID: 1842782560}
+  m_Layer: 0
+  m_Name: ClientBuildConfigReceiver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1842782559
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842782558}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 913.14136, y: 374.5474, z: 380.09644}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1842782560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842782558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 282c5d30f173b4996a031ccab931f1d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.BuildTools.ClientBuildConfigReceiver
+  config: {fileID: 11400000, guid: 0661f40d9ff554fa4b1bbdf3d3da0f69, type: 2}
 --- !u!1 &1919189505
 GameObject:
   m_ObjectHideFlags: 0
@@ -8220,5 +8295,7 @@ SceneRoots:
   - {fileID: 197424294}
   - {fileID: 2136755044}
   - {fileID: 688981006}
-  - {fileID: 1163111806}
   - {fileID: 938520291}
+  - {fileID: 1829748894}
+  - {fileID: 1163111806}
+  - {fileID: 1842782559}

@@ -4,15 +4,19 @@ namespace Resonance.BuildTools
 {
     public class PurrTransportConfigurator : MonoBehaviour
     {
-        public static ClientBuildConfig Current { get; private set; }
-
-        [SerializeField] ClientBuildConfig config;
         [SerializeField] GameObject remoteTransport;
         [SerializeField] GameObject localTransport;
 
         void Awake()
         {
-            Current = config;
+            var receiver = FindFirstObjectByType<ClientBuildConfigReceiver>();
+            if (receiver == null)
+            {
+                Debug.LogError("[PurrTransportConfigurator] No ClientBuildConfigReceiver found in scene.");
+                return;
+            }
+
+            var config = receiver.Config;
             if (localTransport != null)
             {
                 localTransport.SetActive(!config.useProductionRelay);
@@ -23,5 +27,4 @@ namespace Resonance.BuildTools
             }
         }
     }
-
 }
