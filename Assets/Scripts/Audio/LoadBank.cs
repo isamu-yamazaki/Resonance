@@ -1,3 +1,4 @@
+#if !UNITY_SERVER
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,3 +12,4 @@ public class LoadBank : MonoBehaviour
         soundBank.Load();
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if !UNITY_SERVER
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -14,7 +15,7 @@ public class ThirdPersonListener : AkGameObj
         }
 
         AkGameObj playerAkGameObj = player.GetComponent<AkGameObj>();
-        
+
         if (playerAkGameObj == null)
         {
             Debug.LogWarning("ThirdPersonListener: Player missing AkGameObj component!");
@@ -24,3 +25,4 @@ public class ThirdPersonListener : AkGameObj
         return playerAkGameObj.GetPosition();
     }
 }
+#endif

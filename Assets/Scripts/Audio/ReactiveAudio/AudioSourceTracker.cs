@@ -37,9 +37,13 @@ namespace Resonance.Audio
             if (duration < 0f)
                 duration = defaultDuration;
 
+#if !UNITY_SERVER
             float intensity = AudioBusMonitor.Instance != null
                 ? AudioBusMonitor.Instance.GetMaxBusIntensity()
                 : 0f;
+#else
+            float intensity = 0f;
+#endif
 
             activeSources.Add(new AudioSourceData(position, duration, intensity));
         }
