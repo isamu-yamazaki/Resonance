@@ -1,12 +1,12 @@
 using System.Collections;
-using PurrNet;
 using UnityEngine;
 using Resonance.Player;
 using Resonance.Entities;
+using Resonance.PlayerController;
 
 namespace Resonance.VFX
 {
-    public class DeathEffect : NetworkBehaviour
+    public class DeathEffect : MonoBehaviour
     {
         [SerializeField] private Material deathGlitchMaterial;
         [SerializeField] private float effectDuration = 0.5f;
@@ -15,13 +15,36 @@ namespace Resonance.VFX
 
         private PlayerStats _playerStats;
         private TargetDummy _targetDummy;
+        private PlayerSkinRenderer _skinRenderer;
         private SkinnedMeshRenderer[] _meshRenderers;
 
         private void Awake()
         {
-            _playerStats   = GetComponentInParent<PlayerStats>();
-            _targetDummy   = GetComponentInParent<TargetDummy>();
-            _meshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+            _playerStats  = GetComponentInParent<PlayerStats>();
+            _targetDummy  = GetComponentInParent<TargetDummy>();
+            _skinRenderer = GetComponentInParent<PlayerSkinRenderer>();
+        }
+
+        private void Start()
+        {
+            if (_skinRenderer != null)
+            {
+                Debug.Log("[DeathEffect] Found PlayerSkinRenderer, subscribing to OnNewSkinSpawned.");
+                _skinRenderer.OnNewSkinSpawned += OnSkinSpawned;
+
+                // In case the skin already spawned before we subscribed
+                if (_skinRenderer.CurrentMeshInstance != null)
+                {
+                    Debug.Log("[DeathEffect] Skin already spawned, grabbing renderers now.");
+                    OnSkinSpawned(_skinRenderer.CurrentMeshInstance);
+                }
+            }
+            else
+            {
+                Debug.Log("[DeathEffect] No PlayerSkinRenderer found, using GetComponentsInChildren.");
+                _meshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+                Debug.Log($"[DeathEffect] Found {_meshRenderers.Length} renderers.");
+            }
         }
 
         private void OnEnable()
@@ -54,27 +77,47 @@ namespace Resonance.VFX
             }
         }
 
-        private void PlayDeathEffect()
+        private void OnDestroy()
         {
-            RpcPlayDeathEffect();
+            if (_skinRenderer != null)
+            {
+                _skinRenderer.OnNewSkinSpawned -= OnSkinSpawned;
+            }
         }
 
-        [ObserversRpc]
-        private void RpcPlayDeathEffect()
+        private void OnSkinSpawned(GameObject skinRoot)
         {
+            _meshRenderers = skinRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
+            Debug.Log($"[DeathEffect] OnSkinSpawned - found {_meshRenderers.Length} renderers on {skinRoot.name}");
+        }
+
+        private void PlayDeathEffect()
+        {
+            Debug.Log($"[DeathEffect] PlayDeathEffect called - meshRenderers: {(_meshRenderers == null ? "null" : _meshRenderers.Length.ToString())}");
             StartCoroutine(GlitchSequence());
         }
 
         private void ResetEffect()
         {
+            if (_meshRenderers == null) return;
+
             foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
             {
-                meshRenderer.enabled = true;
+                if (meshRenderer != null)
+                {
+                    meshRenderer.enabled = true;
+                }
             }
         }
 
         private IEnumerator GlitchSequence()
         {
+            if (_meshRenderers == null || _meshRenderers.Length == 0)
+            {
+                Debug.LogWarning("[DeathEffect] No mesh renderers found, skipping effect.");
+                yield break;
+            }
+
             foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
             {
                 meshRenderer.enabled = false;
