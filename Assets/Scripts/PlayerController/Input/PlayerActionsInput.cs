@@ -1,36 +1,49 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Resonance.Shop;
+using PurrNet;
 
 namespace Resonance.PlayerController
 {
-    public class PlayerActionsInput : MonoBehaviour, PlayerControls.IPlayerActionMapActions
+    public class PlayerActionsInput : NetworkBehaviour, PlayerControls.IPlayerActionMapActions
     {
         #region Class Variables
-        public bool AttackPressed  { get; private set; }
+        public bool AttackPressed { get; private set; }
         public bool AttackHeld { get; private set; }
         public bool ReloadPressed { get; private set; }
         public bool InteractPressed { get; private set; }
-        public bool SwapSlotOnePressed  { get; private set; }
-        public bool SwapSlotTwoPressed  { get; private set; }
-        public bool SwapWeaponPressed  { get; private set; }
-        public bool HealPressed  { get; private set; }
-        
+        public bool SwapSlotOnePressed { get; private set; }
+        public bool SwapSlotTwoPressed { get; private set; }
+        public bool SwapWeaponPressed { get; private set; }
+        public bool HealPressed { get; private set; }
+
         public bool ShowStatsHeld { get; private set; }
-        
-        public bool ToggleShopPressed  { get; private set; }
-        
+
+        public bool ToggleShopPressed { get; private set; }
+
         private PlayerLocomotionInput _playerLocomotionInput;
         private OverdriveAbility _overdriveAbility;
         private PlayerState _playerState;
         #endregion
-        
+
         #region Startup
         private void Awake()
         {
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
-            _overdriveAbility =  GetComponent<OverdriveAbility>();
+            _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerState = GetComponent<PlayerState>();
+        }
+
+        protected override void OnSpawned()
+        {
+            base.OnSpawned();
+            enabled = isOwner;
+
+            if (isOwner)
+            {
+                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
+                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
+            }
         }
 
         private void OnEnable()
@@ -40,11 +53,8 @@ namespace Resonance.PlayerController
                 Debug.LogError("Player controls is not initialized - cannot enable");
                 return;
             }
-            
-            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
-            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
         }
-        
+
         private void OnDisable()
         {
             if (PlayerInputManager.Instance?.PlayerControls == null)
@@ -52,12 +62,15 @@ namespace Resonance.PlayerController
                 Debug.LogError("Player controls is not initialized - cannot disable");
                 return;
             }
-            
-            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
-            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(this);
+
+            if (isOwner)
+            {
+                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
+                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(this);
+            }
         }
         #endregion
-        
+
         #region Update
 
         private void Update()
@@ -79,7 +92,7 @@ namespace Resonance.PlayerController
         {
             ReloadPressed = false;
         }
-        
+
         public void SetInteractPressedFalse()
         {
             InteractPressed = false;
@@ -88,12 +101,12 @@ namespace Resonance.PlayerController
         {
             SwapSlotOnePressed = false;
         }
-        
+
         public void SetSlotTwoPressedFalse()
         {
             SwapSlotTwoPressed = false;
         }
-        
+
         public void SetSwapWeaponPressedFalse()
         {
             SwapWeaponPressed = false;
@@ -105,11 +118,11 @@ namespace Resonance.PlayerController
         }
 
         #endregion
-        
+
         #region Input Callbacks
         public void OnAttack(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsInShop())
+            if (_playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
             if (context.started)
@@ -130,15 +143,15 @@ namespace Resonance.PlayerController
 
         public void OnReload(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
             ReloadPressed = true;
         }
-        
+
         public void OnInteract(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             InteractPressed = true;
@@ -146,7 +159,7 @@ namespace Resonance.PlayerController
 
         public void OnOverdrive(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
             if (_overdriveAbility != null)
@@ -157,7 +170,7 @@ namespace Resonance.PlayerController
 
         public void OnSwapSlotOne(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
             SwapSlotOnePressed = true;
@@ -165,7 +178,7 @@ namespace Resonance.PlayerController
 
         public void OnSwapSlotTwo(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
             SwapSlotTwoPressed = true;
@@ -173,7 +186,7 @@ namespace Resonance.PlayerController
 
         public void OnSwapWeapon(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsInShop())
+            if (_playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
             Vector2 scroll = context.ReadValue<Vector2>();
@@ -185,9 +198,9 @@ namespace Resonance.PlayerController
 
         public void OnStim(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
-    
+
             HealPressed = true;
         }
 
@@ -209,7 +222,7 @@ namespace Resonance.PlayerController
                 Cursor.visible = false;
             }
         }
-        
+
         public void OnShowMatchStats(InputAction.CallbackContext context)
         {
             if (_playerState != null && _playerState.IsDead())
@@ -245,7 +258,7 @@ namespace Resonance.PlayerController
         #endregion
         public void RequestReload()
         {
-            if (_playerState.IsDead() || _playerState.IsInShop())
+            if (_playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
             ReloadPressed = true;

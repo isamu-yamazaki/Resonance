@@ -16,6 +16,7 @@ using Steamworks;
 using UnityEngine;
 using UnityEngine.Events;
 using WebSocketSharp;
+using Resonance.Assemblies.LobbySystem;
 
 namespace Resonance.LobbySystem.Providers
 {
@@ -115,7 +116,6 @@ namespace Resonance.LobbySystem.Providers
                 lobbyName,
                 lobbyId.m_SteamID.ToString(),
                 maxPlayers,
-                true,
                 GetLobbyUsers(lobbyId),
                 lobbyProperties
             );
@@ -254,7 +254,6 @@ namespace Resonance.LobbySystem.Providers
                 Steamworks.SteamMatchmaking.GetLobbyData(_currentLobby, "Name"),
                 lobbyId,
                 Steamworks.SteamMatchmaking.GetLobbyMemberLimit(_currentLobby),
-                false,
                 GetLobbyUsers(cLobbyId),
                 GetLobbyProperties(_currentLobby)
             );
@@ -412,17 +411,18 @@ namespace Resonance.LobbySystem.Providers
         {
             var users = new List<LobbyUser>();
             int memberCount = Steamworks.SteamMatchmaking.GetNumLobbyMembers(lobbyId);
+            var ownerId = Steamworks.SteamMatchmaking.GetLobbyOwner(lobbyId);
 
             for (int i = 0; i < memberCount; i++)
             {
                 var steamId = Steamworks.SteamMatchmaking.GetLobbyMemberByIndex(lobbyId, i);
-                users.Add(CreateLobbyUser(steamId, lobbyId));
+                users.Add(CreateLobbyUser(steamId, lobbyId, ownerId));
             }
 
             return users;
         }
 
-        private LobbyUser CreateLobbyUser(Steamworks.CSteamID steamId, Steamworks.CSteamID lobbyId)
+        private LobbyUser CreateLobbyUser(Steamworks.CSteamID steamId, Steamworks.CSteamID lobbyId, Steamworks.CSteamID ownerId = default)
         {
             _avatarImageLoadedCallback ??= Steamworks.Callback<Steamworks.AvatarImageLoaded_t>.Create(OnAvatarImageLoaded);
 
@@ -431,17 +431,17 @@ namespace Resonance.LobbySystem.Providers
             var isReady = !string.IsNullOrEmpty(isReadyString) && isReadyString == "True";
 
             var avatarHandle = Steamworks.SteamFriends.GetLargeFriendAvatar(steamId);
-            Texture2D avatar = null;
+            // Texture2D avatar = null;
 
             if (avatarHandle != -1 && Steamworks.SteamUtils.GetImageSize(avatarHandle, out uint width, out uint height))
             {
                 byte[] imageBuffer = new byte[width * height * 4];
                 if (Steamworks.SteamUtils.GetImageRGBA(avatarHandle, imageBuffer, imageBuffer.Length))
                 {
-                    avatar = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
-                    avatar.LoadRawTextureData(imageBuffer);
-                    FlipTextureVertically(avatar);
-                    avatar.Apply();
+                    // avatar = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
+                    // avatar.LoadRawTextureData(imageBuffer);
+                    // FlipTextureVertically(avatar);
+                    // avatar.Apply();
                 }
             }
 
@@ -450,7 +450,8 @@ namespace Resonance.LobbySystem.Providers
                 Id = steamId.m_SteamID.ToString(),
                 DisplayName = displayName,
                 IsReady = isReady,
-                Avatar = avatar,
+                IsOwner = steamId == ownerId,
+                // Avatar = avatar,
             };
         }
 
@@ -539,7 +540,7 @@ namespace Resonance.LobbySystem.Providers
                 if (updatedMembers[i].Id == steamId.m_SteamID.ToString())
                 {
                     var updatedUser = updatedMembers[i];
-                    updatedUser.Avatar = avatar;
+                    // updatedUser.Avatar = avatar;
                     updatedMembers[i] = updatedUser;
                     break;
                 }
@@ -564,17 +565,12 @@ namespace Resonance.LobbySystem.Providers
             if (_currentLobby.m_SteamID != callback.m_ulSteamIDLobby)
                 return;
 
-            var ownerId = Steamworks.SteamMatchmaking.GetLobbyOwner(_currentLobby).m_SteamID.ToString();
-            var localId = Steamworks.SteamUser.GetSteamID().m_SteamID.ToString();
-            var isOwner = localId == ownerId;
-
             var updatedLobbyUsers = GetLobbyUsers(_currentLobby);
 
             var updatedLobby = LobbyFactory.Create(
                 Steamworks.SteamMatchmaking.GetLobbyData(_currentLobby, "Name"),
                 _currentLobby.m_SteamID.ToString(),
                 Steamworks.SteamMatchmaking.GetLobbyMemberLimit(_currentLobby),
-                isOwner,
                 updatedLobbyUsers,
                 GetLobbyProperties(_currentLobby)
             );
@@ -643,8 +639,7 @@ namespace Resonance.LobbySystem.Providers
             var updatedLobby = LobbyFactory.Create(
                 data,
                 _currentLobby.m_SteamID.ToString(),
-                Steamworks.SteamMatchmaking.GetLobbyMemberLimit(_currentLobby),
-                isOwner,
+                maxPlayers: Steamworks.SteamMatchmaking.GetLobbyMemberLimit(_currentLobby),
                 updatedLobbyUsers,
                 properties
             );

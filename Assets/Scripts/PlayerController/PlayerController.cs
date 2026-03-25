@@ -127,12 +127,6 @@ namespace Resonance.PlayerController
 
             enabled = isOwner;
             _virtualCamera.gameObject.SetActive(isOwner);
-
-            if (isOwner && _playerLocomotionInput != null)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.SetCallbacks(_playerLocomotionInput);
-            }
         }
 
         private void Awake()
@@ -179,9 +173,12 @@ namespace Resonance.PlayerController
             // Immediately return if player is dead (flag-based check)
             if (IsPlayerDead)
                 return;
-            
+
             // Don't process movement if player is dead
             if (_playerState.IsDead())
+                return;
+            
+            if (_playerState.IsMatchFrozen())
                 return;
             
             if (_playerState.IsInShop())

@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Resonance.Assemblies.LobbySystem;
 
 namespace Resonance.LobbySystem
 {
@@ -17,38 +18,14 @@ namespace Resonance.LobbySystem
     /// </summary>
     public class DummyLobbyServer
     {
-        [Serializable]
-        public struct Lobby
-        {
-            public string Name;
-            public bool IsValid;
-            public string LobbyId;
-            public string LobbyCode;
-            public int MaxPlayers;
-            public string OwnerId;
-            public Dictionary<string, string> Properties;
-        }
-
-        [Serializable]
-        public struct User
-        {
-            public string DisplayName;
-            public string Id;
-            public string LobbyId;
-            public bool IsReady;
-        }
-
         private List<Lobby> lobbies;
-        private List<User> users;
         private int nextLobbyId = 1;
-        private int nextUserId = 1;
 
         private HttpListener httpListener;
 
         public void AttemptStart(string portNumber)
         {
             lobbies = new List<Lobby>();
-            users = new List<User>();
 
             httpListener = new HttpListener();
             httpListener.Prefixes.Add($"http://localhost:{portNumber}/api/");
@@ -152,29 +129,28 @@ namespace Resonance.LobbySystem
             try
             {
                 var lobbyIndex = lobbies.FindIndex(l => l.LobbyId == lobbyId.ToString());
-                
+
                 if (lobbyIndex == -1)
                 {
                     await WriteErrorResponse(response, HttpStatusCode.NotFound, "Lobby not found");
                     return;
                 }
-                
+
                 string requestBody = await ReadRequestBody(request);
                 var lobbyData = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBody);
-                
+
                 if (lobbyData != null)
                 {
-                    // Update custom properties
-                    if (lobbyData.ContainsKey("Properties"))
+                    if (lobbyData.ContainsKey("UnderlyingProviderProperties"))
                     {
-                        var lobbyPropertiesData = JsonConvert.DeserializeObject<Dictionary<string, string>>(lobbyData["Properties"].ToString());
+                        var lobbyPropertiesData = JsonConvert.DeserializeObject<Dictionary<string, string>>(lobbyData["UnderlyingProviderProperties"].ToString());
                         foreach (var prop in lobbyPropertiesData)
                         {
-                            lobbies[lobbyIndex].Properties[prop.Key] = prop.Value?.ToString();
+                            lobbies[lobbyIndex].UnderlyingProviderProperties[prop.Key] = prop.Value?.ToString();
                         }
                     }
                 }
-                
+
                 await WriteJsonResponse(response, lobbies[lobbyIndex]);
             }
             catch (Exception ex)
@@ -276,9 +252,9 @@ namespace Resonance.LobbySystem
                     Name = lobbyName,
                     MaxPlayers = maxPlayers,
                     IsValid = true,
-                    OwnerId = null,
                     LobbyCode = Guid.NewGuid().ToString().Substring(0, 6),
-                    Properties = new Dictionary<string, string>()
+                    UnderlyingProviderProperties = new Dictionary<string, string>(),
+                    Members = new List<LobbyUser>()
                 };
 
                 lobbies.Add(newLobby);
@@ -330,7 +306,7 @@ namespace Resonance.LobbySystem
             {
                 var lobbyIndex = lobbies.FindIndex(l => l.LobbyId == lobbyId.ToString());
 
-                if (lobbies[lobbyIndex].LobbyId == null)
+                if (lobbyIndex == -1)
                 {
                     await WriteErrorResponse(response, HttpStatusCode.NotFound, "Lobby not found");
                     return;
@@ -339,46 +315,28 @@ namespace Resonance.LobbySystem
                 string requestBody = await ReadRequestBody(request);
                 var userData = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBody);
 
-
                 string userId = userData != null && userData.ContainsKey("UserId")
                     ? userData["UserId"].ToString()
-                    : nextUserId.ToString();
+                    : "User" + lobbies[lobbyIndex].Members.Count;
 
                 string displayName = userData != null && userData.ContainsKey("DisplayName")
                     ? userData["DisplayName"].ToString()
                     : "User " + userId;
 
-                if (lobbies[lobbyIndex].OwnerId == null)
+                var existingMemberIndex = lobbies[lobbyIndex].Members.FindIndex(m => m.Id == userId);
+                if (existingMemberIndex == -1)
                 {
-                    var lobbyToUpdate = lobbies[lobbyIndex];
-                    lobbyToUpdate.OwnerId = userId;
-                    lobbies[lobbyIndex] = lobbyToUpdate;
-                }
-
-                // Check if user already exists
-                var existingUser = users.Find(u => u.Id == userId);
-                User user;
-
-                if (existingUser.Id != null)
-                {
-                    // Update existing user
-                    user = existingUser;
-                    user.LobbyId = lobbyId.ToString();
-                }
-                else
-                {
-                    // Create new user
-                    user = new User
+                    bool isFirstMember = lobbies[lobbyIndex].Members.Count == 0;
+                    lobbies[lobbyIndex].Members.Add(new LobbyUser
                     {
                         Id = userId,
                         DisplayName = displayName,
-                        LobbyId = lobbyId.ToString()
-                    };
-                    users.Add(user);
-                    nextUserId++;
+                        IsReady = false,
+                        IsOwner = isFirstMember
+                    });
                 }
 
-                await WriteJsonResponse(response, user);
+                await WriteJsonResponse(response, lobbies[lobbyIndex]);
             }
             catch (Exception ex)
             {
@@ -390,8 +348,13 @@ namespace Resonance.LobbySystem
         {
             try
             {
-                var members = users.FindAll(u => u.LobbyId == lobbyId.ToString());
-                await WriteJsonResponse(response, members);
+                var lobbyIndex = lobbies.FindIndex(l => l.LobbyId == lobbyId.ToString());
+                if (lobbyIndex == -1)
+                {
+                    await WriteErrorResponse(response, HttpStatusCode.NotFound, "Lobby not found");
+                    return;
+                }
+                await WriteJsonResponse(response, lobbies[lobbyIndex].Members);
             }
             catch (Exception ex)
             {
@@ -403,33 +366,33 @@ namespace Resonance.LobbySystem
         {
             try
             {
-                var lobby = lobbies.Find(l => l.LobbyId == lobbyId.ToString());
-                
-                if (lobby.LobbyId == null)
+                var lobbyIndex = lobbies.FindIndex(l => l.LobbyId == lobbyId.ToString());
+
+                if (lobbyIndex == -1)
                 {
                     await WriteErrorResponse(response, HttpStatusCode.NotFound, "Lobby not found");
                     return;
                 }
-                
+
                 string requestBody = await ReadRequestBody(request);
                 var updateData = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBody);
-                
-                var userIndex = users.FindIndex(u => u.Id == userId.ToString() && u.LobbyId == lobbyId.ToString());
-                
-                if (userIndex == -1)
+
+                var memberIndex = lobbies[lobbyIndex].Members.FindIndex(m => m.Id == userId.ToString());
+
+                if (memberIndex == -1)
                 {
                     await WriteErrorResponse(response, HttpStatusCode.NotFound, "User not found in lobby");
                     return;
                 }
-                
+
                 if (updateData.ContainsKey("IsReady"))
                 {
-                    var user = users[userIndex];
-                    user.IsReady = Convert.ToBoolean(updateData["IsReady"]);
-                    users[userIndex] = user;
+                    var member = lobbies[lobbyIndex].Members[memberIndex];
+                    member.IsReady = Convert.ToBoolean(updateData["IsReady"]);
+                    lobbies[lobbyIndex].Members[memberIndex] = member;
                 }
 
-                await WriteJsonResponse(response, users[userIndex]);
+                await WriteJsonResponse(response, lobbies[lobbyIndex].Members[memberIndex]);
             }
             catch (Exception ex)
             {
@@ -441,15 +404,22 @@ namespace Resonance.LobbySystem
         {
             try
             {
-                var userIndex = users.FindIndex(u => u.Id == userId && u.LobbyId == lobbyId.ToString());
+                var lobbyIndex = lobbies.FindIndex(l => l.LobbyId == lobbyId.ToString());
+                if (lobbyIndex == -1)
+                {
+                    await WriteErrorResponse(response, HttpStatusCode.NotFound, "Lobby not found");
+                    return;
+                }
 
-                if (userIndex == -1)
+                var memberIndex = lobbies[lobbyIndex].Members.FindIndex(m => m.Id == userId);
+
+                if (memberIndex == -1)
                 {
                     await WriteErrorResponse(response, HttpStatusCode.NotFound, "User not found in lobby");
                     return;
                 }
 
-                users.RemoveAt(userIndex);
+                lobbies[lobbyIndex].Members.RemoveAt(memberIndex);
 
                 await WriteJsonResponse(response, new { success = true, message = "User left lobby successfully" });
             }

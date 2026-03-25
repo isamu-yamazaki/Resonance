@@ -106,6 +106,12 @@ MonoBehaviour:
     groupIdInternal: 0
     groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 34e918b5320f2394486160c7307a58ef, type: 2}
+  grassSurface:
+    idInternal: 0
+    valueGuidInternal: 
+    groupIdInternal: 0
+    groupGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: d48893ac1a8654d0e95d9b7e8d503412, type: 2}
 --- !u!114 &8375709091427389756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,6 +329,7 @@ GameObject:
   - component: {fileID: -4167557731683194747}
   - component: {fileID: 6963169189660805957}
   - component: {fileID: -6030594833308951699}
+  - component: {fileID: 4690382465625623557}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -420,6 +427,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9baf2753d051ed5429094497e7e104e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLocomotionInput
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   holdToSprint: 1
 --- !u!143 &3494420511587806199
 CharacterController:
@@ -509,6 +525,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9013b3fa3d70ab04c93dacdd173ebf4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerActionsInput
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
 --- !u!114 &7288220896636920470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,6 +1108,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae81c8d7f5408c444acb6669e9e5cd6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerPostProcessing
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _playerVolume: {fileID: 1311654643413597327}
   overdriveBloomIntensity: 1.4
   baseBloomIntensity: 0.75
@@ -1170,3 +1204,15 @@ MonoBehaviour:
   lightRange: 25
   lightSpotAngle: 35
   lightSmoothSpeed: 5
+--- !u!114 &4690382465625623557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852536295ce38437fa9654726308ca8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.MatchMovementLock

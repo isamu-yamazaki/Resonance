@@ -53,7 +53,7 @@ namespace Resonance.LobbySystem
             
 #if UTP_LOBBYRELAY
             else if(_networkManager.transport is UTPTransport) {
-                if(_lobbyDataHolder.CurrentLobby.IsOwner) {
+                if(_lobbyDataHolder.CurrentLobby.IsOwner(_lobbyDataHolder.LocalUserId)) {
                     (_networkManager.transport as UTPTransport).InitializeRelayServer((Allocation)_lobbyDataHolder.CurrentLobby.ServerObject);
                 }
                 (_networkManager.transport as UTPTransport).InitializeRelayClient(_lobbyDataHolder.CurrentLobby.Properties["JoinCode"]);
@@ -62,7 +62,7 @@ namespace Resonance.LobbySystem
                 //P2P Connection, receive IP/Port from server
 #endif
 
-            if(_lobbyDataHolder.CurrentLobby.IsOwner)
+            if(_lobbyDataHolder.CurrentLobby.IsOwner(_lobbyDataHolder.LocalUserId))
                 _networkManager.StartServer();
             StartCoroutine(StartClient());
         }
