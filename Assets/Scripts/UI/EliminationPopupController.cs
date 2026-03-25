@@ -1,15 +1,23 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class EliminationPopupController : MonoBehaviour
 {
     [SerializeField] private GameObject popupRoot;
     [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private TMP_Text eliminationText;
     [SerializeField] private float fadeDuration = 0.15f;
-    [SerializeField] private float displayTime = 0.25f;
+    [SerializeField] private float displayTime = 1f;
 
     private PlayerViewModel viewModel;
-    
+
+    private void Awake()
+    {
+        popupRoot.SetActive(true);
+        canvasGroup.alpha = 0f;
+    }
+
     private void Start()
     {
         StartCoroutine(WaitForViewModel());
@@ -25,18 +33,6 @@ public class EliminationPopupController : MonoBehaviour
 
         viewModel.GotKill.ChangeEvent += OnGotKill;
     }
-    
-    private void Awake()
-    {
-        popupRoot.SetActive(true);
-        canvasGroup.alpha = 0f;
-    }
-
-    private void OnEnable()
-    {
-        if (viewModel != null)
-            viewModel.GotKill.ChangeEvent += OnGotKill;
-    }
 
     private void OnDisable()
     {
@@ -46,7 +42,10 @@ public class EliminationPopupController : MonoBehaviour
 
     private void OnGotKill(bool value)
     {
-        if (value) ShowPopup();
+        if (!value) return;
+
+        eliminationText.text = $"Eliminated {viewModel.LastVictimName.Value}";
+        ShowPopup();
     }
 
     private void ShowPopup()
