@@ -154,7 +154,7 @@ namespace Resonance.BuildTools
             var options = new BuildPlayerOptions
             {
                 scenes = scenes,
-                locationPathName = $"Builds/{config.name}/{targetFolder}/ResonanceServer",
+                locationPathName = $"Builds/{config.name}/{targetFolder}/ResonanceServer.x86_64",
                 target = target,
                 subtarget = (int)StandaloneBuildSubtarget.Server,
                 options = isDev ? BuildOptions.Development : BuildOptions.None,
