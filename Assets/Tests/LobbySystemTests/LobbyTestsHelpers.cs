@@ -8,7 +8,6 @@ public static class LobbyTestsHelpers
         return LobbyFactory.Create(
             name: "Test Lobby",
             lobbyId: "123",
-            lobbyCode: "ABC",
             maxPlayers: 4,
             members: members ?? new List<LobbyUser>(),
             properties: properties ?? new Dictionary<string, string>()

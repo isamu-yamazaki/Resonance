@@ -17,7 +17,7 @@ namespace Resonance.Server
     public class MockLobbyCreator : MonoBehaviour
     {
         [SerializeField] private string orchestratorUrl = "http://localhost:9000";
-        [SerializeField] private string lobbyCode = "ABCD";
+        [SerializeField] private string lobbyId = "ABCD";
         [SerializeField] private string lobbyName = "Test Lobby";
         [SerializeField] private int maxPlayers = 4;
         [SerializeField] private GameMode gameMode = GameMode.Arena;
@@ -39,7 +39,7 @@ namespace Resonance.Server
             { LobbyMetadataKeys.SceneName, sceneName },
         };
 
-            Lobby lobby = LobbyFactory.Create(lobbyName, lobbyCode, lobbyCode, maxPlayers,
+            Lobby lobby = LobbyFactory.Create(lobbyName, lobbyId, maxPlayers,
                                               new List<LobbyUser>(), properties);
             string json = lobby.ToJson();
 
@@ -47,11 +47,11 @@ namespace Resonance.Server
             {
                 using var client = new HttpClient();
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{orchestratorUrl}/lobbies/{lobbyCode}", content);
+                var response = await client.PostAsync($"{orchestratorUrl}/lobbies/{lobbyId}", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Debug.Log($"[MockLobbyCreator] Lobby '{lobbyCode}' sent successfully.");
+                    Debug.Log($"[MockLobbyCreator] Lobby '{lobbyId}' sent successfully.");
                 }
                 else
                 {
