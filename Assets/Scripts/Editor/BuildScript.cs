@@ -1,6 +1,9 @@
 #if UNITY_EDITOR
 using System.IO;
+using System.Linq;
 using UnityEditor;
+using UnityEditor.Build.Profile;
+using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -89,26 +92,52 @@ namespace Resonance.BuildTools
         #endregion
 
         #region Internal
-        static ClientBuildConfig LoadConfig(string assetName)
+
+        const string ClientBuildConfigPath = "Assets/Resources/ClientBuild/";
+        const string ServerBuildConfigPath = "Assets/Resources/ServerBuild/";
+        const string LinuxServerProfilePath = "Assets/Settings/Build Profiles/Linux Server.asset";
+
+        static string[] SharedScenes =>
+            System.Array.ConvertAll(EditorBuildSettings.scenes, s => s.path);
+
+        static string[] ServerScenes
         {
-            string path = $"Assets/Resources/ClientBuild/{assetName}.asset";
-            var config = AssetDatabase.LoadAssetAtPath<ClientBuildConfig>(path);
-            if (config == null)
+            get
             {
-                throw new System.Exception($"Could not load ClientBuildConfig at '{path}'. Check the asset name.");
+                var profile = LoadAsset<BuildProfile>(LinuxServerProfilePath);
+                return profile.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
             }
-            return config;
         }
 
-        static ServerBuildConfig LoadServerConfig(string assetName)
+        static T LoadAsset<T>(string path) where T : ScriptableObject
         {
-            string path = $"Assets/Resources/ServerBuild/{assetName}.asset";
-            var config = AssetDatabase.LoadAssetAtPath<ServerBuildConfig>(path);
-            if (config == null)
+            var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (asset == null)
             {
-                throw new System.Exception($"Could not load ServerBuildConfig at '{path}'. Check the asset name.");
+                throw new System.Exception($"Could not load {typeof(T).Name} at '{path}'.");
             }
-            return config;
+            return asset;
+        }
+
+        static ClientBuildConfig LoadConfig(string name) =>
+            LoadAsset<ClientBuildConfig>($"{ClientBuildConfigPath}{name}.asset");
+
+        static ServerBuildConfig LoadServerConfig(string name) =>
+            LoadAsset<ServerBuildConfig>($"{ServerBuildConfigPath}{name}.asset");
+
+        static void LogScenes(string[] scenes)
+        {
+            Debug.Log($"[BuildScript] Building with {scenes.Length} scene(s):\n" +
+                      string.Join("\n", scenes.Select((s, i) => $"  [{i}] {s}")));
+        }
+
+        static void VerifyBuild(BuildReport report)
+        {
+            if (report.summary.result != BuildResult.Succeeded)
+            {
+                throw new System.Exception(
+                    $"Build failed for '{report.summary.outputPath}' (result: {report.summary.result})");
+            }
         }
 
         static void BuildServer(ServerBuildConfig config, BuildTarget target)
@@ -119,19 +148,19 @@ namespace Resonance.BuildTools
             bool isDev = !config.useProductionRelay;
             string targetFolder = target == BuildTarget.StandaloneLinux64 ? "Linux" : "Windows";
 
+            string[] scenes = ServerScenes;
+            LogScenes(scenes);
+
             var options = new BuildPlayerOptions
             {
-                scenes = System.Array.ConvertAll(EditorBuildSettings.scenes, s => s.path),
+                scenes = scenes,
                 locationPathName = $"Builds/{config.name}/{targetFolder}/ResonanceServer",
                 target = target,
+                subtarget = (int)StandaloneBuildSubtarget.Server,
                 options = isDev ? BuildOptions.Development : BuildOptions.None,
             };
 
-            var report = BuildPipeline.BuildPlayer(options);
-            if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
-            {
-                throw new System.Exception($"Server build failed for config '{config.name}' target '{target}'");
-            }
+            VerifyBuild(BuildPipeline.BuildPlayer(options));
         }
 
         static void Build(ClientBuildConfig config, BuildTarget target)
@@ -143,23 +172,22 @@ namespace Resonance.BuildTools
             string ext = target == BuildTarget.StandaloneWindows64 ? ".exe" : ".app";
             string targetFolder = target == BuildTarget.StandaloneWindows64 ? "Windows" : "Mac";
 
+            string[] scenes = SharedScenes;
+            LogScenes(scenes);
+
             var options = new BuildPlayerOptions
             {
-                scenes = System.Array.ConvertAll(EditorBuildSettings.scenes, s => s.path),
+                scenes = scenes,
                 locationPathName = $"Builds/{config.name}/{targetFolder}/Resonance{ext}",
                 target = target,
                 options = isDev ? BuildOptions.Development : BuildOptions.None,
             };
 
-            var report = BuildPipeline.BuildPlayer(options);
-            if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
-            {
-                throw new System.Exception($"Build failed for config '{config.name}' target '{target}'");
-            }
+            VerifyBuild(BuildPipeline.BuildPlayer(options));
 
             if (config.isProduction)
             {
-                PostBuild(report.summary.outputPath, target);
+                PostBuild(options.locationPathName, target);
             }
         }
 
@@ -235,7 +263,7 @@ namespace Resonance.BuildTools
             RunShell($"xcrun stapler staple \"{appPath}\"");
             Debug.Log("[BuildScript] Notarization complete.");
 #else
-        Debug.LogWarning("[BuildScript] Mac signing requires a macOS editor/CI — skipped.");
+            Debug.LogWarning("[BuildScript] Mac signing requires a macOS editor/CI — skipped.");
 #endif
         }
 
