@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ClientBuildConfig
   enableSteamLobby: 0
   useProductionRelay: 1
-  useClientServerMode: 0
+  useRemoteOrchestrator: 0
+  useClientServerMode: 1
   isProduction: 0
