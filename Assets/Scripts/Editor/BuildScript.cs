@@ -137,7 +137,7 @@ namespace Resonance.BuildTools
         static void Build(ClientBuildConfig config, BuildTarget target)
         {
             InjectConfigIntoScene<ClientBuildConfigReceiver, ClientBuildConfig>(
-                "Assets/Scenes/Transitions/LobbyScene.unity", config);
+                "Assets/Scenes/Lobby/LobbyScene.unity", config);
 
             bool isDev = !config.enableSteamLobby && !config.useProductionRelay;
             string ext = target == BuildTarget.StandaloneWindows64 ? ".exe" : ".app";
