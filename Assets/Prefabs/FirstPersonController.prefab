@@ -330,7 +330,6 @@ GameObject:
   - component: {fileID: 6963169189660805957}
   - component: {fileID: -6030594833308951699}
   - component: {fileID: 4690382465625623557}
-  - component: {fileID: -7662463879519447023}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -1211,18 +1210,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852536295ce38437fa9654726308ca8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.MatchMovementLock
---- !u!114 &-7662463879519447023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5b205aa370467643aa8f45fdacf4c89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.DamageIndicatorUI
-  arcPrefab: {fileID: 1504836082971307400, guid: 9eb50e37cfdb5be499f09493adebcb1c, type: 3}
-  maxArcs: 3
-  mergeAngleThreshold: 30
