@@ -6,12 +6,15 @@ namespace Resonance.Abilities.SonarDisc
 {
     /// <summary>
     /// Added to a detected player on the owner's client only.
-    /// Bakes the player's skin mesh and spawns a shell with the SonarReveal shader,
-    /// visible through walls for highlightDuration seconds.
+    /// Fires a configurable number of sequential scan snapshots, each baking the
+    /// player's current pose and displaying a shell with the SonarReveal shader.
+    /// Each snapshot replaces the previous one.
     /// </summary>
     public class ScannedHighlight : MonoBehaviour
     {
-        [SerializeField] private float highlightDuration = 3f;
+        [SerializeField] private float snapshotDuration = 1f;
+        [SerializeField] private float snapshotInterval = 1f;
+        [SerializeField] private int snapshotCount = 3;
 
         private static readonly int RevealTimeID = Shader.PropertyToID("_RevealTime");
 
@@ -57,7 +60,7 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            // Populate renderers if Start hasn't run yet (e.g. component was just added)
+            // Populate renderers if Start hasn't run yet
             if (_meshRenderers == null || _meshRenderers.Length == 0)
             {
                 if (_skinRenderer != null && _skinRenderer.CurrentMeshInstance != null)
@@ -72,51 +75,58 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            StartCoroutine(RevealSequence(revealMaterial));
+            StartCoroutine(SnapshotSequence(revealMaterial));
         }
 
-        private IEnumerator RevealSequence(Material sonarRevealMaterial)
+        private IEnumerator SnapshotSequence(Material revealMaterial)
         {
-            // Bake shell meshes at moment of reveal
-            GameObject[] shells = new GameObject[_meshRenderers.Length];
-            Material[] materials = new Material[_meshRenderers.Length];
-
-            for (int i = 0; i < _meshRenderers.Length; i++)
+            for (int i = 0; i < snapshotCount; i++)
             {
-                Mesh bakedMesh = new Mesh();
-                _meshRenderers[i].BakeMesh(bakedMesh);
+                // Bake current pose
+                GameObject[] shells = new GameObject[_meshRenderers.Length];
+                Material[] materials = new Material[_meshRenderers.Length];
 
-                GameObject shell = new GameObject("SonarRevealShell");
-                shell.transform.SetPositionAndRotation(_meshRenderers[i].transform.position, _meshRenderers[i].transform.rotation);
-                shell.transform.localScale = _meshRenderers[i].transform.lossyScale;
+                for (int j = 0; j < _meshRenderers.Length; j++)
+                {
+                    Mesh bakedMesh = new Mesh();
+                    _meshRenderers[j].BakeMesh(bakedMesh);
 
-                shell.AddComponent<MeshFilter>().mesh = bakedMesh;
-                Material mat = new Material(sonarRevealMaterial);
-                shell.AddComponent<MeshRenderer>().material = mat;
+                    GameObject shell = new GameObject("SonarRevealShell");
+                    shell.transform.SetPositionAndRotation(_meshRenderers[j].transform.position, _meshRenderers[j].transform.rotation);
+                    shell.transform.localScale = _meshRenderers[j].transform.lossyScale;
 
-                shells[i] = shell;
-                materials[i] = mat;
-            }
+                    shell.AddComponent<MeshFilter>().mesh = bakedMesh;
+                    Material mat = new Material(revealMaterial);
+                    shell.AddComponent<MeshRenderer>().material = mat;
 
-            // Drive _RevealTime 0 → 1 over highlightDuration
-            float elapsed = 0f;
-            while (elapsed < highlightDuration)
-            {
-                elapsed += Time.deltaTime;
-                float normalizedTime = Mathf.Clamp01(elapsed / highlightDuration);
+                    shells[j] = shell;
+                    materials[j] = mat;
+                }
 
-                foreach (Material mat in materials)
-                    mat.SetFloat(RevealTimeID, normalizedTime);
+                // Drive _RevealTime 0 → 1 over snapshotDuration
+                float elapsed = 0f;
+                while (elapsed < snapshotDuration)
+                {
+                    elapsed += Time.deltaTime;
+                    float normalizedTime = Mathf.Clamp01(elapsed / snapshotDuration);
 
-                yield return null;
-            }
+                    foreach (Material mat in materials)
+                        mat.SetFloat(RevealTimeID, normalizedTime);
 
-            // Cleanup
-            for (int i = 0; i < shells.Length; i++)
-            {
-                Destroy(materials[i]);
-                Destroy(shells[i].GetComponent<MeshFilter>().mesh);
-                Destroy(shells[i]);
+                    yield return null;
+                }
+
+                // Destroy this snapshot's shells
+                for (int j = 0; j < shells.Length; j++)
+                {
+                    Destroy(materials[j]);
+                    Destroy(shells[j].GetComponent<MeshFilter>().mesh);
+                    Destroy(shells[j]);
+                }
+
+                // Wait before next snapshot (skip wait after last one)
+                if (i < snapshotCount - 1)
+                    yield return new WaitForSeconds(snapshotInterval);
             }
 
             Destroy(this);
