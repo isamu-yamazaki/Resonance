@@ -100,7 +100,7 @@ namespace Resonance.PlayerController
 
         public void OnLook(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.CurrentPlayerMovementState == PlayerMovementState.MatchEndedFrozen)
+            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
             {
                 LookInput = Vector2.zero;
                 return;

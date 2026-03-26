@@ -9,9 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 316747827782623770}
-  - component: {fileID: 6247499278280093554}
   - component: {fileID: 2174288190483935931}
   - component: {fileID: 3169801335666442487}
+  - component: {fileID: 6247499278280093554}
+  - component: {fileID: -5778283450321974640}
+  - component: {fileID: -407153534576035995}
   m_Layer: 0
   m_Name: PreMatchCameraRig
   m_TagString: Untagged
@@ -34,22 +36,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6247499278280093554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4507774654211501853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f4350b87cf019948b04907b48a83f93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PreMatchCameraController
-  cinematicCamera: {fileID: 2174288190483935931}
-  orbitDistance: 10
-  orbitHeight: 5
-  rotationSpeed: 25
 --- !u!20 &2174288190483935931
 Camera:
   m_ObjectHideFlags: 0
@@ -121,10 +107,10 @@ MonoBehaviour:
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -145,3 +131,76 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &6247499278280093554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4507774654211501853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f4350b87cf019948b04907b48a83f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PreMatchCameraController
+  cinematicCamera: {fileID: 2174288190483935931}
+  hudCanvas: {fileID: 0}
+  dronePrefab: {fileID: 4839061556287524663, guid: a899872793abf4690a7775239f4165dd, type: 3}
+  flightSpeed: 2.5
+  lookSmoothing: 4.5
+  heroOffset: {x: 0, y: 1.4, z: 5}
+  heroApproachSpeed: 3.5
+  heroHoverDuration: 0.6
+  positionalDriftStrength: 0.18
+  positionalDriftSpeed: 0.6
+  aimLagStrength: 0.06
+  aimLagSpeed: 2.8
+  altitudeBobStrength: 0.35
+  altitudeBobSpeed: 0.45
+  fovBreathStrength: 1.2
+  fovBreathSpeed: 0.25
+  baseFov: 72
+  waypointOffsets: []
+--- !u!114 &-5778283450321974640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4507774654211501853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1842f494758b91d4f85397aa26e004b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.CinematicCameraPostProcessing
+  _profile: {fileID: 11400000, guid: 97f4af1012dafe54b914a49aca1ea381, type: 2}
+  lensDistortionIntensity: 0.2
+  chromaticAberrationIntensity: 0.2
+  vignetteColor: {r: 0, g: 0, b: 0, a: 1}
+  vignetteIntensity: 0.3
+  vignetteSmoothness: 0.5
+  filmGrainIntensity: 0.4
+  postExposure: -0.05
+  saturation: 6
+  colorFilter: {r: 1, g: 0.97, b: 0.9, a: 1}
+--- !u!114 &-407153534576035995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4507774654211501853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b2c9a9da79c40ab9a0202c35756de4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.DroneOverlay
+  bracketSize: 40
+  bracketThickness: 2
+  bracketInset: 24
+  dotRadius: 7
+  blinkInterval: 0.6
+  dotPosition: {x: 48, y: 48}
+  bracketColor: {r: 1, g: 1, b: 1, a: 0.6}
+  recordColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
+  labelColor: {r: 1, g: 1, b: 1, a: 0.5}
