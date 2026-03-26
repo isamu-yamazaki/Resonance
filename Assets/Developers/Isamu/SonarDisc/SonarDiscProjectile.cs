@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using PurrNet;
 using Resonance.Helper;
 using UnityEngine;
@@ -31,8 +32,8 @@ namespace Resonance.Abilities.SonarDisc
         [Header("Pulse")]
         [SerializeField] private float pulseDelay = 1f;
         [SerializeField] private float pulseRadius = 30f;
+        [SerializeField] private float pulseExpandDuration = 0.6f;
         [SerializeField] private LayerMask playerLayerMask;
-
 
         private Rigidbody _rigidbody;
         private bool _isAttached;
@@ -57,8 +58,6 @@ namespace Resonance.Abilities.SonarDisc
         protected override void OnSpawned()
         {
             base.OnSpawned();
-
-            // Only server runs physics and hit detection
             _rigidbody.isKinematic = !isServer;
         }
 
@@ -197,8 +196,6 @@ namespace Resonance.Abilities.SonarDisc
 
         #region Pulse
 
-        [SerializeField] private float pulseExpandDuration = 0.5f;
-
         private IEnumerator WallPulseSequence()
         {
             yield return new WaitForSeconds(pulseDelay);
@@ -206,7 +203,14 @@ namespace Resonance.Abilities.SonarDisc
             if (_isDestroyed)
                 yield break;
 
-            // Expand pulse radius visually before firing detection
+            // TODO: play pulse activation Wwise event here
+
+            // Fire VFX and rolling scan simultaneously so detection matches the visual ring
+            NotifyPulseVFXObserversRpc();
+
+            Collider[] candidates = Physics.OverlapSphere(transform.position, pulseRadius, playerLayerMask);
+            HashSet<Collider> detected = new HashSet<Collider>();
+
             _isPulsing = true;
             _currentPulseRadius = 0f;
             float elapsed = 0f;
@@ -215,34 +219,30 @@ namespace Resonance.Abilities.SonarDisc
             {
                 elapsed += Time.deltaTime;
                 _currentPulseRadius = Mathf.Lerp(0f, pulseRadius, elapsed / pulseExpandDuration);
+
+                foreach (Collider candidate in candidates)
+                {
+                    if (detected.Contains(candidate))
+                        continue;
+
+                    if (_owner != null && candidate.transform.IsChildOf(_owner.transform))
+                        continue;
+
+                    float distanceToCandidate = Vector3.Distance(transform.position, candidate.transform.position);
+                    if (distanceToCandidate > _currentPulseRadius)
+                        continue;
+
+                    detected.Add(candidate);
+                    Debug.Log($"[SonarDisc] Pulse detected player: {candidate.transform.root.name}");
+                    // TODO: LOS raycast check (phase 2)
+                    // TODO: reveal detected player to owner (phase 2)
+                }
+
                 yield return null;
             }
 
             _currentPulseRadius = pulseRadius;
             _isPulsing = false;
-
-            FirePulse();
-        }
-
-        private void FirePulse()
-        {
-            // TODO: play pulse activation Wwise event here
-
-            NotifyPulseVFXObserversRpc();
-            Debug.Log($"[SonarDisc] FirePulse called at {transform.position}");
-
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, pulseRadius, playerLayerMask);
-            Debug.Log($"[SonarDisc] OverlapSphere found {hitColliders.Length} colliders");
-
-            foreach (Collider hitCollider in hitColliders)
-            {
-                if (_owner != null && hitCollider.transform.IsChildOf(_owner.transform))
-                    continue;
-
-                Debug.Log($"[SonarDisc] Pulse detected player: {hitCollider.transform.root.name}");
-                // TODO: LOS raycast check (phase 2)
-                // TODO: reveal detected player to owner (phase 2)
-            }
 
             DestroyDisc();
         }
