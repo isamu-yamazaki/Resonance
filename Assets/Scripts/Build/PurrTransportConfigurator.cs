@@ -4,24 +4,36 @@ namespace Resonance.BuildTools
 {
     public class PurrTransportConfigurator : MonoBehaviour
     {
-        public static BuildConfig Current { get; private set; }
-
-        [SerializeField] BuildConfig config;
         [SerializeField] GameObject remoteTransport;
         [SerializeField] GameObject localTransport;
 
         void Awake()
         {
-            Current = config;
+            var receiver = FindFirstObjectByType<ClientBuildConfigReceiver>();
+            var shouldUseProductionRelay = false;
+            if (receiver == null)
+            {
+                var serverReceiver = FindFirstObjectByType<ServerBuildConfigReceiver>();
+                if (serverReceiver == null)
+                {
+                    Debug.LogError("[PurrTransportConfigurator] No ClientBuildConfigReceiver or ServerBuildConfigReceiver found in scene.");
+                    return;
+                }
+
+                shouldUseProductionRelay = serverReceiver.Config.useProductionRelay;
+            } else
+            {
+                shouldUseProductionRelay = receiver.Config.useProductionRelay;
+            }
+
             if (localTransport != null)
             {
-                localTransport.SetActive(!config.useProductionRelay);
+                localTransport.SetActive(!shouldUseProductionRelay);
             }
             if (remoteTransport != null)
             {
-                remoteTransport.SetActive(config.useProductionRelay);
+                remoteTransport.SetActive(shouldUseProductionRelay);
             }
         }
     }
-
 }

@@ -2,18 +2,38 @@
 
 ## Building the game
 
-Build configs are assets located at `Assets/Resources/Build/`. Three configs exist: `DevLocal`, `Dev`, and `Production`.
+Client build configs are assets in `Assets/Resources/ClientBuild/`. Server build configs are in `Assets/Resources/ServerBuild/`.
 
 Output is written to `Builds/<ConfigName>/<Platform>/` from the project root.
 
 ### From the Unity Editor
 
-Use the **Build** menu to choose a platform and one of the options:
+Use the **Build** menu. Client builds are under **Build > Client > Windows** or **Build > Client > Mac**, server builds under **Build > Server**.
 
-- **DevLocal** — local relay, dev build, dummy lobby
-    - Requires [PurrLay](https://github.com/brendan-ch/PurrLay) to be running on your computer, see instructions in repo
-- **Dev** — remote relay, dev build, dummy lobby
-- **Production** — remote relay + Steam lobby, release build; runs codesign & notarization for Mac
+#### Client configs
+
+| Config | Steam lobby | Relay | Orchestrator | Mode |
+|---|---|---|---|---|
+| DevClient | No | Remote | Local (localhost:9000) | Client-server |
+| DevClientLocalRelay | No | Local (PurrLay) | Local (localhost:9000) | Client-server |
+| DevClientRemoteOrchestratorTesting | No | Remote | Remote | Client-server |
+| DevHost | No | Remote | — | Host |
+| DevHostLocalRelay | No | Local (PurrLay) | — | Host |
+| ProductionClient | Yes | Remote | Remote | Client-server |
+| ProductionHost | Yes | Remote | — | Host |
+
+- **Local relay** configs require [PurrLay](https://github.com/brendan-ch/PurrLay) running locally — see repo for instructions.
+- **DevClientRemoteOrchestratorTesting** — CLI-only (not available in the Editor Build menu); connects to the production orchestrator without Steam.
+- **ProductionClient / ProductionHost** — Steam lobby, release build; Mac builds run codesign & notarization.
+
+#### Server configs
+
+| Config | Relay |
+|---|---|
+| LocalRelay | Local (PurrLay) |
+| Production | Remote |
+
+Server builds target Linux64 and output to `Builds/<ConfigName>/Linux/ResonanceServer`.
 
 ### From the command line
 
@@ -22,6 +42,7 @@ Use the **Build** menu to choose a platform and one of the options:
   -batchmode -quit \
   -projectPath /path/to/Resonance \
   -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
+  -buildMode <mode> \
   -buildConfig <config> \
   -buildTarget <platform>
 ```
@@ -30,8 +51,9 @@ Use the **Build** menu to choose a platform and one of the options:
 
 | Argument | Required | Values |
 |---|---|---|
-| `-buildConfig` | Yes | `DevLocal`, `Dev`, `Production` |
-| `-buildTarget` | No (default: `Windows64`) | `Windows64`, `OSX` |
+| `-buildMode` | No (default: `Client`) | `Client`, `Server` |
+| `-buildConfig` | Yes | Client: `DevClient`, `DevClientLocalRelay`, `DevClientRemoteOrchestratorTesting`, `DevHost`, `DevHostLocalRelay`, `ProductionClient`, `ProductionHost` / Server: `LocalRelay`, `Production` |
+| `-buildTarget` | No (default: `Windows64`) | `Windows64`, `OSX`, `Linux64` |
 
 ### Production Mac builds (codesign & notarization)
 

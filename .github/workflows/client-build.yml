@@ -1,12 +1,12 @@
-name: Build
+name: Client Build
 
 on:
   workflow_dispatch:
     inputs:
       config:
-        description: BuildConfig asset name (Dev, DevLocal, or Production)
+        description: "Client config asset name (DevClient, DevClientLocalRelay, DevHost, DevHostLocalRelay, ProductionClient, ProductionHost)"
         required: true
-        default: Dev
+        default: DevClient
       target:
         description: Build target (Windows64 or OSX)
         required: true
@@ -54,8 +54,9 @@ jobs:
           $UNITY_PATH -batchmode -quit \
             -projectPath . \
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
-            -buildConfig ${{ github.event.inputs.config || 'Dev' }} \
-            -buildTarget ${{ github.event.inputs.target || 'Windows64' }} \
+            -buildMode Client \
+            -buildConfig ${{ github.event.inputs.config || 'DevClient' }} \
+            -buildTarget ${{ github.event.inputs.target || 'Windows64' }}
         env:
           UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
           SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
@@ -65,7 +66,7 @@ jobs:
 
       - name: Zip
         run: |
-          CONFIG=${{ github.event.inputs.config || 'Dev' }}
+          CONFIG=${{ github.event.inputs.config || 'DevClient' }}
           if [ "${{ github.event.inputs.target || 'Windows64' }}" = "OSX" ]; then
             ditto -c -k --keepParent "Builds/$CONFIG/Mac/Resonance.app" "Resonance_mac.zip"
             echo "ARTIFACT=Resonance_mac.zip" >> $GITHUB_ENV
@@ -78,7 +79,7 @@ jobs:
         run: |
           TAG="build-$(date +%Y%m%d-%H%M%S)"
           gh release create "$TAG" "$ARTIFACT" \
-            --title "Build $TAG (${{ github.event.inputs.config || 'Dev' }} / ${{ github.event.inputs.target || 'Windows64' }})" \
-            --notes "Automated build via GitHub Actions"
+            --title "Client Build $TAG (${{ github.event.inputs.config || 'DevClient' }} / ${{ github.event.inputs.target || 'Windows64' }})" \
+            --notes "Automated client build via GitHub Actions"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

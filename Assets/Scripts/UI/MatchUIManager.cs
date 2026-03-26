@@ -199,22 +199,7 @@ namespace Resonance.UI
 
             if (waitingForHostText != null)
             {
-                if (isServer)
-                {
-                    waitingForHostText.text = "";
-                }
-                else
-                {
-                    waitingForHostText.text = "Waiting for host...";
-                }
-            }
-
-            if (returnToLobbyButton != null)
-            {
-                if (!isServer)
-                {
-                    returnToLobbyButton.gameObject.SetActive(false);
-                }
+                waitingForHostText.text = "";
             }
 
             if (shopGameObject != null)

@@ -252,7 +252,6 @@ namespace Resonance.LobbySystem
                     Name = lobbyName,
                     MaxPlayers = maxPlayers,
                     IsValid = true,
-                    LobbyCode = Guid.NewGuid().ToString().Substring(0, 6),
                     UnderlyingProviderProperties = new Dictionary<string, string>(),
                     Members = new List<LobbyUser>()
                 };
