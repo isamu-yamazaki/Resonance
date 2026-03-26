@@ -1,3 +1,4 @@
+#if !UNITY_SERVER
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -134,3 +135,4 @@ namespace Resonance.Audio
         #endregion
     }
 }
+#endif

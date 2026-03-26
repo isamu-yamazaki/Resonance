@@ -1,3 +1,4 @@
+#if !UNITY_SERVER
 using UnityEngine;
 
 public class WwiseDirectionalAmbience : MonoBehaviour
@@ -260,3 +261,4 @@ public class WwiseDirectionalAmbience : MonoBehaviour
         }
     }
 }
+#endif

@@ -9,7 +9,6 @@ public class LobbyJsonTests
         var lobby = LobbyFactory.Create(
             "Test Lobby",
             lobbyId: "12345",
-            lobbyCode: "12345",
             maxPlayers: 5,
             members: new(),
             properties: new()

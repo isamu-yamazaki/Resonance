@@ -200,22 +200,28 @@ namespace Resonance.Audio
             else if (!shouldPlay && isFeedbackPlaying)
                 StopAudioFeedback();
 
+#if !UNITY_SERVER
             if (isFeedbackPlaying)
             {
                 float volumeValue = Mathf.Clamp01(intensity) * 100f;
                 AkUnitySoundEngine.SetRTPCValue("Reactive_Feedback_Volume", volumeValue, gameObject);
             }
+#endif
         }
 
         private void StartAudioFeedback()
         {
+#if !UNITY_SERVER
             AkUnitySoundEngine.PostEvent("Play_Reactive_Feedback", gameObject);
+#endif
             isFeedbackPlaying = true;
         }
 
         private void StopAudioFeedback()
         {
+#if !UNITY_SERVER
             AkUnitySoundEngine.PostEvent("Stop_Reactive_Feedback", gameObject);
+#endif
             isFeedbackPlaying = false;
         }
 

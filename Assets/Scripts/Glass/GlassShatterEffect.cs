@@ -89,9 +89,13 @@ namespace Resonance.Environment
             
             if (Audio.AudioSourceTracker.Instance != null)
             {
-                float intensity = Audio.AudioBusMonitor.Instance != null 
-                    ? Audio.AudioBusMonitor.Instance.GetMaxBusIntensity() 
+#if !UNITY_SERVER
+                float intensity = Audio.AudioBusMonitor.Instance != null
+                    ? Audio.AudioBusMonitor.Instance.GetMaxBusIntensity()
                     : 0f;
+#else
+                float intensity = 0f;
+#endif
                 
                 Debug.Log($"[GlassShatter] Registering at {position}, Bus Intensity: {intensity:F3}");
                 Audio.AudioSourceTracker.Instance.RegisterSound(position, 1.5f);

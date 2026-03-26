@@ -1,6 +1,9 @@
 #if UNITY_EDITOR
 using System.IO;
+using System.Linq;
 using UnityEditor;
+using UnityEditor.Build.Profile;
+using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -11,89 +14,180 @@ namespace Resonance.BuildTools
 
         #region Editor menu items
 
-        [MenuItem("Build/Windows/DevLocal")]
-        public static void BuildDevLocalWindows() => Build(LoadConfig("DevLocal"), BuildTarget.StandaloneWindows64);
+        [MenuItem("Build/Client/Windows/DevClient")]
+        public static void BuildDevClientWindows() => Build(LoadConfig("DevClient"), BuildTarget.StandaloneWindows64);
 
-        [MenuItem("Build/Windows/Dev")]
-        public static void BuildDevWindows() => Build(LoadConfig("Dev"), BuildTarget.StandaloneWindows64);
+        [MenuItem("Build/Client/Windows/DevClientLocalRelay")]
+        public static void BuildDevClientLocalRelayWindows() => Build(LoadConfig("DevClientLocalRelay"), BuildTarget.StandaloneWindows64);
 
-        [MenuItem("Build/Windows/Production")]
-        public static void BuildProductionWindows() => Build(LoadConfig("Production"), BuildTarget.StandaloneWindows64);
+        [MenuItem("Build/Client/Windows/DevHost")]
+        public static void BuildDevHostWindows() => Build(LoadConfig("DevHost"), BuildTarget.StandaloneWindows64);
 
-        [MenuItem("Build/Mac/DevLocal")]
-        public static void BuildDevLocalMac() => Build(LoadConfig("DevLocal"), BuildTarget.StandaloneOSX);
+        [MenuItem("Build/Client/Windows/DevHostLocalRelay")]
+        public static void BuildDevHostLocalRelayWindows() => Build(LoadConfig("DevHostLocalRelay"), BuildTarget.StandaloneWindows64);
 
-        [MenuItem("Build/Mac/Dev")]
-        public static void BuildDevMac() => Build(LoadConfig("Dev"), BuildTarget.StandaloneOSX);
+        [MenuItem("Build/Client/Windows/ProductionClient")]
+        public static void BuildProductionClientWindows() => Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneWindows64);
 
-        [MenuItem("Build/Mac/Production")]
-        public static void BuildProductionMac() => Build(LoadConfig("Production"), BuildTarget.StandaloneOSX);
+        [MenuItem("Build/Client/Windows/ProductionHost")]
+        public static void BuildProductionHostWindows() => Build(LoadConfig("ProductionHost"), BuildTarget.StandaloneWindows64);
+
+        [MenuItem("Build/Client/Mac/DevClient")]
+        public static void BuildDevClientMac() => Build(LoadConfig("DevClient"), BuildTarget.StandaloneOSX);
+
+        [MenuItem("Build/Client/Mac/DevClientLocalRelay")]
+        public static void BuildDevClientLocalRelayMac() => Build(LoadConfig("DevClientLocalRelay"), BuildTarget.StandaloneOSX);
+
+        [MenuItem("Build/Client/Mac/DevHost")]
+        public static void BuildDevHostMac() => Build(LoadConfig("DevHost"), BuildTarget.StandaloneOSX);
+
+        [MenuItem("Build/Client/Mac/DevHostLocalRelay")]
+        public static void BuildDevHostLocalRelayMac() => Build(LoadConfig("DevHostLocalRelay"), BuildTarget.StandaloneOSX);
+
+        [MenuItem("Build/Client/Mac/ProductionClient")]
+        public static void BuildProductionClientMac() => Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneOSX);
+
+        [MenuItem("Build/Client/Mac/ProductionHost")]
+        public static void BuildProductionHostMac() => Build(LoadConfig("ProductionHost"), BuildTarget.StandaloneOSX);
+
+        [MenuItem("Build/Server/Linux/LocalRelay")]
+        public static void BuildServerLocalRelayLinux() => BuildServer(LoadServerConfig("LocalRelay"), BuildTarget.StandaloneLinux64);
+
+        [MenuItem("Build/Server/Linux/Production")]
+        public static void BuildServerProductionLinux() => BuildServer(LoadServerConfig("Production"), BuildTarget.StandaloneLinux64);
 
         #endregion
 
 
         #region CLI entry point
         /// <summary>
-        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildConfig AppConfig_Staging -buildTarget Windows64
-        /// Supported -buildTarget values: Windows64, OSX
+        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildTarget Windows64|OSX|Linux64
+        /// Supported -buildMode values: Client (default), Server
+        /// Supported -buildTarget values: Windows64 (default), OSX, Linux64
         /// </summary>
         public static void BuildCLI()
         {
             string configName = ReadArg("-buildConfig")
                 ?? throw new System.Exception("Missing -buildConfig argument. Usage: -buildConfig <AssetName>");
 
+            string modeName = ReadArg("-buildMode") ?? "Client";
             string targetName = ReadArg("-buildTarget") ?? "Windows64";
             BuildTarget target = targetName switch
             {
                 "Windows64" => BuildTarget.StandaloneWindows64,
                 "OSX" => BuildTarget.StandaloneOSX,
-                _ => throw new System.Exception($"Unknown -buildTarget '{targetName}'. Supported: Windows64, OSX"),
+                "Linux64" => BuildTarget.StandaloneLinux64,
+                _ => throw new System.Exception($"Unknown -buildTarget '{targetName}'. Supported: Windows64, OSX, Linux64"),
             };
 
-            Build(LoadConfig(configName), target);
+            if (modeName == "Server")
+            {
+                BuildServer(LoadServerConfig(configName), target);
+            }
+            else
+            {
+                Build(LoadConfig(configName), target);
+            }
         }
         #endregion
 
         #region Internal
-        static BuildConfig LoadConfig(string assetName)
+
+        const string ClientBuildConfigPath = "Assets/Resources/ClientBuild/";
+        const string ServerBuildConfigPath = "Assets/Resources/ServerBuild/";
+        const string LinuxServerProfilePath = "Assets/Settings/Build Profiles/Linux Server.asset";
+
+        static string[] SharedScenes =>
+            System.Array.ConvertAll(EditorBuildSettings.scenes, s => s.path);
+
+        static string[] ServerScenes
         {
-            string path = $"Assets/Resources/Build/{assetName}.asset";
-            var config = AssetDatabase.LoadAssetAtPath<BuildConfig>(path);
-            if (config == null)
+            get
             {
-                throw new System.Exception($"Could not load AppConfig at '{path}'. Check the asset name.");
+                var profile = LoadAsset<BuildProfile>(LinuxServerProfilePath);
+                return profile.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
             }
-            return config;
         }
 
-        static void Build(BuildConfig config, BuildTarget target)
+        static T LoadAsset<T>(string path) where T : ScriptableObject
         {
-            InjectConfigIntoScene<LobbySceneConfigurator>(
+            var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (asset == null)
+            {
+                throw new System.Exception($"Could not load {typeof(T).Name} at '{path}'.");
+            }
+            return asset;
+        }
+
+        static ClientBuildConfig LoadConfig(string name) =>
+            LoadAsset<ClientBuildConfig>($"{ClientBuildConfigPath}{name}.asset");
+
+        static ServerBuildConfig LoadServerConfig(string name) =>
+            LoadAsset<ServerBuildConfig>($"{ServerBuildConfigPath}{name}.asset");
+
+        static void LogScenes(string[] scenes)
+        {
+            Debug.Log($"[BuildScript] Building with {scenes.Length} scene(s):\n" +
+                      string.Join("\n", scenes.Select((s, i) => $"  [{i}] {s}")));
+        }
+
+        static void VerifyBuild(BuildReport report)
+        {
+            if (report.summary.result != BuildResult.Succeeded)
+            {
+                throw new System.Exception(
+                    $"Build failed for '{report.summary.outputPath}' (result: {report.summary.result})");
+            }
+        }
+
+        static void BuildServer(ServerBuildConfig config, BuildTarget target)
+        {
+            InjectConfigIntoScene<ServerBuildConfigReceiver, ServerBuildConfig>(
+                "Assets/Scenes/Transitions/ServerStartScene.unity", config);
+
+            bool isDev = !config.useProductionRelay;
+            string targetFolder = target == BuildTarget.StandaloneLinux64 ? "Linux" : "Windows";
+
+            string[] scenes = ServerScenes;
+            LogScenes(scenes);
+
+            var options = new BuildPlayerOptions
+            {
+                scenes = scenes,
+                locationPathName = $"Builds/{config.name}/{targetFolder}/ResonanceServer.x86_64",
+                target = target,
+                subtarget = (int)StandaloneBuildSubtarget.Server,
+                options = isDev ? BuildOptions.Development : BuildOptions.None,
+            };
+
+            VerifyBuild(BuildPipeline.BuildPlayer(options));
+        }
+
+        static void Build(ClientBuildConfig config, BuildTarget target)
+        {
+            InjectConfigIntoScene<ClientBuildConfigReceiver, ClientBuildConfig>(
                 "Assets/Scenes/Lobby/LobbyScene.unity", config);
-            InjectConfigIntoScene<PurrTransportConfigurator>(
-                "Assets/Scenes/Transitions/GameBootstrapScene.unity", config);
 
             bool isDev = !config.enableSteamLobby && !config.useProductionRelay;
             string ext = target == BuildTarget.StandaloneWindows64 ? ".exe" : ".app";
             string targetFolder = target == BuildTarget.StandaloneWindows64 ? "Windows" : "Mac";
 
+            string[] scenes = SharedScenes;
+            LogScenes(scenes);
+
             var options = new BuildPlayerOptions
             {
-                scenes = System.Array.ConvertAll(EditorBuildSettings.scenes, s => s.path),
+                scenes = scenes,
                 locationPathName = $"Builds/{config.name}/{targetFolder}/Resonance{ext}",
                 target = target,
                 options = isDev ? BuildOptions.Development : BuildOptions.None,
             };
 
-            var report = BuildPipeline.BuildPlayer(options);
-            if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
-            {
-                throw new System.Exception($"Build failed for config '{config.name}' target '{target}'");
-            }
+            VerifyBuild(BuildPipeline.BuildPlayer(options));
 
             if (config.isProduction)
             {
-                PostBuild(report.summary.outputPath, target);
+                PostBuild(options.locationPathName, target);
             }
         }
 
@@ -169,7 +263,7 @@ namespace Resonance.BuildTools
             RunShell($"xcrun stapler staple \"{appPath}\"");
             Debug.Log("[BuildScript] Notarization complete.");
 #else
-        Debug.LogWarning("[BuildScript] Mac signing requires a macOS editor/CI — skipped.");
+            Debug.LogWarning("[BuildScript] Mac signing requires a macOS editor/CI — skipped.");
 #endif
         }
 
@@ -196,7 +290,9 @@ namespace Resonance.BuildTools
         }
 #endif
 
-        static void InjectConfigIntoScene<T>(string scenePath, BuildConfig config) where T : MonoBehaviour
+        static void InjectConfigIntoScene<TConfigurator, TConfig>(string scenePath, TConfig config)
+            where TConfigurator : MonoBehaviour
+            where TConfig : ScriptableObject
         {
             bool wasAlreadyLoaded = false;
             for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
@@ -212,10 +308,10 @@ namespace Resonance.BuildTools
                 ? EditorSceneManager.GetSceneByPath(scenePath)
                 : EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
-            var configurator = Object.FindFirstObjectByType<T>();
+            var configurator = Object.FindFirstObjectByType<TConfigurator>();
             if (configurator == null)
             {
-                Debug.LogWarning($"[BuildScript] {typeof(T).Name} not found in {scenePath}. Config not injected.");
+                Debug.LogWarning($"[BuildScript] {typeof(TConfigurator).Name} not found in {scenePath}. Config not injected.");
                 if (!wasAlreadyLoaded)
                     EditorSceneManager.CloseScene(scene, true);
                 return;
