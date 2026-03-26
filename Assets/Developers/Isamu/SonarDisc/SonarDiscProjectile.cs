@@ -41,6 +41,8 @@ namespace Resonance.Abilities.SonarDisc
         private Vector3 _lastPosition;
         private Vector3 _lastVelocity;
         private GameObject _owner;
+        private float _currentPulseRadius;
+        private bool _isPulsing;
 
         private void Awake()
         {
@@ -166,6 +168,14 @@ namespace Resonance.Abilities.SonarDisc
             StartCoroutine(WallPulseSequence());
         }
 
+        [ObserversRpc(runLocally: true)]
+        private void NotifyPulseVFXObserversRpc()
+        {
+            SonarPulseEffect pulseEffect = GetComponent<SonarPulseEffect>();
+            if (pulseEffect != null)
+                pulseEffect.Play();
+        }
+
         [ObserversRpc(runLocally: false)]
         private void NotifyAttachedToPlayerObserversRpc(GameObject playerObject, Vector3 hitPoint, Quaternion rotation)
         {
@@ -187,12 +197,29 @@ namespace Resonance.Abilities.SonarDisc
 
         #region Pulse
 
+        [SerializeField] private float pulseExpandDuration = 0.5f;
+
         private IEnumerator WallPulseSequence()
         {
             yield return new WaitForSeconds(pulseDelay);
 
             if (_isDestroyed)
                 yield break;
+
+            // Expand pulse radius visually before firing detection
+            _isPulsing = true;
+            _currentPulseRadius = 0f;
+            float elapsed = 0f;
+
+            while (elapsed < pulseExpandDuration)
+            {
+                elapsed += Time.deltaTime;
+                _currentPulseRadius = Mathf.Lerp(0f, pulseRadius, elapsed / pulseExpandDuration);
+                yield return null;
+            }
+
+            _currentPulseRadius = pulseRadius;
+            _isPulsing = false;
 
             FirePulse();
         }
@@ -201,6 +228,7 @@ namespace Resonance.Abilities.SonarDisc
         {
             // TODO: play pulse activation Wwise event here
 
+            NotifyPulseVFXObserversRpc();
             Debug.Log($"[SonarDisc] FirePulse called at {transform.position}");
 
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, pulseRadius, playerLayerMask);
@@ -227,10 +255,11 @@ namespace Resonance.Abilities.SonarDisc
         {
             if (!_isAttached) return;
 
+            float radius = _isPulsing ? _currentPulseRadius : 0f;
             Gizmos.color = new Color(0f, 1f, 1f, 0.2f);
-            Gizmos.DrawSphere(transform.position, pulseRadius);
+            Gizmos.DrawSphere(transform.position, radius);
             Gizmos.color = new Color(0f, 1f, 1f, 1f);
-            Gizmos.DrawWireSphere(transform.position, pulseRadius);
+            Gizmos.DrawWireSphere(transform.position, radius);
         }
 
         #endregion

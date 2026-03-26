@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5539253832040957869}
   - component: {fileID: 6953957788033517236}
   - component: {fileID: 697816106320107227}
+  - component: {fileID: 1513038871202352520}
   m_Layer: 0
   m_Name: SonarDisc
   m_TagString: Untagged
@@ -116,6 +117,7 @@ MonoBehaviour:
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  pulseExpandDuration: 0.5
 --- !u!114 &697816106320107227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,6 +149,21 @@ MonoBehaviour:
   _characterControllerPatch: 0
   _ownerAuth: 1
   _interpolationTiming: 0
+--- !u!114 &1513038871202352520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5617757003934067384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1766bd255b3c8461db7f5b81c13e387b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarPulseEffect
+  sonarPulseMaterial: {fileID: 2100000, guid: c992c87cc9dbc4f0a948952bcab75987, type: 2}
+  expandDuration: 0.6
+  maxRadius: 50
 --- !u!1 &8460905007329822367
 GameObject:
   m_ObjectHideFlags: 0
