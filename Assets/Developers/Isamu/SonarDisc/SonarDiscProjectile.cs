@@ -24,6 +24,7 @@ namespace Resonance.Abilities.SonarDisc
         [Header("VFX")]
         [SerializeField] private Material deathGlitchMaterial;
         [SerializeField] private float glitchEffectDuration = 0.5f;
+        [SerializeField] private Material sonarRevealMaterial;
 
         [Header("Combat")]
         [SerializeField] private float discDamage = 5f;
@@ -33,6 +34,7 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float pulseDelay = 1f;
         [SerializeField] private float pulseRadius = 30f;
         [SerializeField] private float pulseExpandDuration = 0.6f;
+        [SerializeField] private float revealStaggerDelay = 0.5f;
         [SerializeField] private LayerMask playerLayerMask;
 
         private Rigidbody _rigidbody;
@@ -42,6 +44,7 @@ namespace Resonance.Abilities.SonarDisc
         private Vector3 _lastPosition;
         private Vector3 _lastVelocity;
         private GameObject _owner;
+        private PlayerID _ownerPlayerID;
         private float _currentPulseRadius;
         private bool _isPulsing;
 
@@ -63,9 +66,10 @@ namespace Resonance.Abilities.SonarDisc
 
         #endregion
 
-        public void Launch(Vector3 direction, GameObject owner)
+        public void Launch(Vector3 direction, GameObject owner, PlayerID ownerPlayerID)
         {
             _owner = owner;
+            _ownerPlayerID = ownerPlayerID;
             _lastPosition = transform.position;
             _rigidbody.linearVelocity = direction.normalized * travelSpeed;
             transform.rotation = Quaternion.LookRotation(direction.normalized);
@@ -175,6 +179,26 @@ namespace Resonance.Abilities.SonarDisc
                 pulseEffect.Play();
         }
 
+        [TargetRpc]
+        private void NotifyPlayerDetectedOwnerRpc(PlayerID target, GameObject detectedPlayer, float delay)
+        {
+            if (detectedPlayer == null)
+                return;
+
+            StartCoroutine(StaggeredReveal(detectedPlayer, delay));
+        }
+
+        private IEnumerator StaggeredReveal(GameObject detectedPlayer, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            ScannedHighlight highlight = detectedPlayer.GetComponent<ScannedHighlight>();
+            if (highlight == null)
+                highlight = detectedPlayer.AddComponent<ScannedHighlight>();
+
+            highlight.Play(sonarRevealMaterial);
+        }
+
         [ObserversRpc(runLocally: false)]
         private void NotifyAttachedToPlayerObserversRpc(GameObject playerObject, Vector3 hitPoint, Quaternion rotation)
         {
@@ -233,9 +257,10 @@ namespace Resonance.Abilities.SonarDisc
                         continue;
 
                     detected.Add(candidate);
-                    Debug.Log($"[SonarDisc] Pulse detected player: {candidate.transform.root.name}");
                     // TODO: LOS raycast check (phase 2)
-                    // TODO: reveal detected player to owner (phase 2)
+                    int detectedCount = detected.Count;
+                    float staggerDelay = (detectedCount - 1) * revealStaggerDelay;
+                    NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject, staggerDelay);
                 }
 
                 yield return null;

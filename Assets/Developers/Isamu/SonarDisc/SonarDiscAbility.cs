@@ -90,7 +90,7 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            disc.Launch(direction, gameObject);
+            disc.Launch(direction, gameObject, NetworkManager.main.localPlayer);
         }
     }
 }

@@ -993,6 +993,7 @@ GameObject:
   - component: {fileID: 908468328846122792}
   - component: {fileID: 196866611307186390}
   - component: {fileID: 8999506435019847406}
+  - component: {fileID: -2561670147325046866}
   m_Layer: 0
   m_Name: TargetDummy
   m_TagString: Untagged
@@ -1103,8 +1104,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d4bb70d5cf544cac9778323e8d7b4a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ElectrocuteEffect
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   electrocuteMaterial: {fileID: 2100000, guid: 4d1579aafdebb46108eb90f694a55de4, type: 2}
   effectDuration: 1
+--- !u!114 &-2561670147325046866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2867794313032137791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8809aee6a74a8492994e6ab7778f5858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ScannedHighlight
+  sonarRevealMaterial: {fileID: 2100000, guid: 58159700c0f274927953c5a5c1721402, type: 2}
+  highlightDuration: 3
 --- !u!1 &2959489552978150184
 GameObject:
   m_ObjectHideFlags: 0

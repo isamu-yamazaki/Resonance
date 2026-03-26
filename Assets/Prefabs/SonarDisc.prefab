@@ -110,14 +110,16 @@ MonoBehaviour:
   maxRange: 40
   deathGlitchMaterial: {fileID: 2100000, guid: b9a1d38ab4565463ab4661a1743f1780, type: 2}
   glitchEffectDuration: 0.5
+  sonarRevealMaterial: {fileID: 2100000, guid: 58159700c0f274927953c5a5c1721402, type: 2}
   discDamage: 5
   damageNumberPrefab: {fileID: 2474898762247100464, guid: 325d2b673ea625b4d984c4618506fb81, type: 3}
   pulseDelay: 1
   pulseRadius: 40
+  pulseExpandDuration: 1
+  revealStaggerDelay: 0.5
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  pulseExpandDuration: 1
 --- !u!114 &697816106320107227
 MonoBehaviour:
   m_ObjectHideFlags: 0

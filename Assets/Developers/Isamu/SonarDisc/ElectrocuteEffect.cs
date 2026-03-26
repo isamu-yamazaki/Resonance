@@ -43,7 +43,7 @@ namespace Resonance.Abilities.SonarDisc
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             if (_skinRenderer != null)
                 _skinRenderer.OnNewSkinSpawned -= OnSkinSpawned;

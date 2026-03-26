@@ -332,6 +332,7 @@ GameObject:
   - component: {fileID: 4690382465625623557}
   - component: {fileID: 3902318088920976036}
   - component: {fileID: -3244453310725485557}
+  - component: {fileID: -6037485656678035583}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -1224,6 +1225,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f101be1c3ebfe47c797c61afb81cd5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarDiscAbility
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   augmentProperties: {fileID: 11400000, guid: 7ccee1832ce824258abe079e5d607225, type: 2}
   sonarDiscPrefab: {fileID: 5617757003934067384, guid: ae6d8f4a902ef43b1820c02a8c4e6d36, type: 3}
   playerCamera: {fileID: 0}
@@ -1240,5 +1250,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d4bb70d5cf544cac9778323e8d7b4a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ElectrocuteEffect
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   electrocuteMaterial: {fileID: 2100000, guid: 4d1579aafdebb46108eb90f694a55de4, type: 2}
   effectDuration: 1
+--- !u!114 &-6037485656678035583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8809aee6a74a8492994e6ab7778f5858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ScannedHighlight
+  sonarRevealMaterial: {fileID: 2100000, guid: 58159700c0f274927953c5a5c1721402, type: 2}
+  highlightDuration: 3
