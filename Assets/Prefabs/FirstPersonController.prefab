@@ -1225,4 +1225,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarDiscAbility
   sonarDiscPrefab: {fileID: 5617757003934067384, guid: ae6d8f4a902ef43b1820c02a8c4e6d36, type: 3}
   playerCamera: {fileID: 0}
-  cooldown: 12
+  cooldown: 5

@@ -122,8 +122,13 @@ namespace Resonance.Abilities.SonarDisc
 
         private void OnAttachedToPlayer(Collider playerCollider)
         {
+            ElectrocuteEffect electrocuteEffect = playerCollider.transform.root.GetComponentInChildren<ElectrocuteEffect>();
+            if (electrocuteEffect != null)
+                electrocuteEffect.Play();
+
             // TODO: start disorient coroutine on playerCollider's owner (phase 2)
             Debug.Log($"[SonarDisc] Attached to player: {playerCollider.transform.root.name}");
+            DestroyDisc();
         }
 
         private void OnAttachedToWall()
