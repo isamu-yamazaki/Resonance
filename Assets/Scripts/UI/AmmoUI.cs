@@ -13,11 +13,11 @@ public class AmmoUI : MonoBehaviour
     [SerializeField] private Color criticalColor = Color.red;
 
     [Header("Thresholds")]
-    [Tooltip("Ammo at or below this count (or % for large mags) shows orange")]
-    [SerializeField] private float lowPercent = 0.5f;       // 50% -> orange
-    [SerializeField] private float criticalPercent = 0.25f; // 25% -> red
+    [SerializeField] private float lowPercent = 0.5f;
+    [SerializeField] private float criticalPercent = 0.25f;
     [SerializeField] private int criticalMinBullets = 1;
 
+    private int reloadStartAmmo;
     private Coroutine flashRoutine;
 
     private void Start()
@@ -34,9 +34,11 @@ public class AmmoUI : MonoBehaviour
         }
 
         viewModel.CurrentAmmo.ChangeEvent += OnAmmoChanged;
-        viewModel.MagazineSize.ChangeEvent += OnAmmoChanged;
+        viewModel.MagazineSize.ChangeEvent += OnMagazineSizeChanged;
         viewModel.IsReloading.ChangeEvent += OnReloadStateChanged;
         viewModel.ReloadProgress.ChangeEvent += OnReloadProgressChanged;
+
+        RefreshAmmo();
     }
 
     private void OnDisable()
@@ -44,13 +46,18 @@ public class AmmoUI : MonoBehaviour
         if (viewModel == null) return;
 
         viewModel.CurrentAmmo.ChangeEvent -= OnAmmoChanged;
-        viewModel.MagazineSize.ChangeEvent -= OnAmmoChanged;
+        viewModel.MagazineSize.ChangeEvent -= OnMagazineSizeChanged;
         viewModel.IsReloading.ChangeEvent -= OnReloadStateChanged;
         viewModel.ReloadProgress.ChangeEvent -= OnReloadProgressChanged;
     }
 
-    void OnAmmoChanged(int _)
+    private void OnAmmoChanged(int _) => RefreshAmmo();
+    private void OnMagazineSizeChanged(int _) => RefreshAmmo();
+
+    private void RefreshAmmo()
     {
+        if (viewModel.IsReloading.Value) return;
+
         int current = viewModel.CurrentAmmo.Value;
         int max = viewModel.MagazineSize.Value;
 
@@ -58,20 +65,17 @@ public class AmmoUI : MonoBehaviour
 
         if (max == 0) return;
 
-        AmmoState state = GetAmmoState(current, max);
-        ApplyAmmoState(state, current);
+        ApplyAmmoState(GetAmmoState(current, max));
     }
 
-    AmmoState GetAmmoState(int current, int max)
+    private AmmoState GetAmmoState(int current, int max)
     {
         if (current == 0)
             return AmmoState.Empty;
 
         float percent = (float)current / max;
 
-        bool isCritical = percent <= criticalPercent && current <= criticalMinBullets;
-
-        if (isCritical)
+        if (percent <= criticalPercent || current <= criticalMinBullets)
             return AmmoState.Critical;
 
         if (percent <= lowPercent)
@@ -80,14 +84,10 @@ public class AmmoUI : MonoBehaviour
         return AmmoState.Normal;
     }
 
-    void ApplyAmmoState(AmmoState state, int current)
+    private void ApplyAmmoState(AmmoState state)
     {
-        if (flashRoutine != null && state != AmmoState.Critical)
-        {
-            StopCoroutine(flashRoutine);
-            flashRoutine = null;
-            ammoText.enabled = true;
-        }
+        if (state != AmmoState.Critical)
+            StopFlash();
 
         switch (state)
         {
@@ -106,45 +106,49 @@ public class AmmoUI : MonoBehaviour
                 break;
 
             case AmmoState.Empty:
-                if (flashRoutine != null)
-                {
-                    StopCoroutine(flashRoutine);
-                    flashRoutine = null;
-                    ammoText.enabled = true;
-                }
+                StopFlash();
                 ammoText.color = criticalColor;
                 break;
         }
     }
 
-    void OnReloadStateChanged(bool isReloading)
+    private void OnReloadStateChanged(bool isReloading)
     {
-        if (!isReloading)
-            OnAmmoChanged(0);
+        if (isReloading)
+        {
+            reloadStartAmmo = viewModel.CurrentAmmo.Value;
+            StopFlash();
+        }
+        else
+        {
+            RefreshAmmo();
+        }
     }
 
-    void OnReloadProgressChanged(float progress)
+    private void OnReloadProgressChanged(float progress)
     {
         if (!viewModel.IsReloading.Value) return;
 
         int max = viewModel.MagazineSize.Value;
-        int startAmmo = viewModel.CurrentAmmo.Value;
+        int displayedAmmo = Mathf.RoundToInt(Mathf.Lerp(reloadStartAmmo, max, progress));
 
-        int displayedAmmo = Mathf.RoundToInt(Mathf.Lerp(startAmmo, max, progress));
         ammoText.text = $"{displayedAmmo}/{max}";
         ammoText.color = Color.grey;
     }
 
-    System.Collections.IEnumerator FlashText()
+    private void StopFlash()
     {
-        while (true)
+        if (flashRoutine == null) return;
+
+        StopCoroutine(flashRoutine);
+        flashRoutine = null;
+        ammoText.enabled = true;
+    }
+
+    private System.Collections.IEnumerator FlashText()
+    {
+        while (GetAmmoState(viewModel.CurrentAmmo.Value, viewModel.MagazineSize.Value) == AmmoState.Critical)
         {
-            int current = viewModel.CurrentAmmo.Value;
-            int max = viewModel.MagazineSize.Value;
-
-            if (GetAmmoState(current, max) != AmmoState.Critical)
-                break;
-
             ammoText.enabled = !ammoText.enabled;
             yield return new WaitForSeconds(0.2f);
         }
@@ -153,5 +157,5 @@ public class AmmoUI : MonoBehaviour
         flashRoutine = null;
     }
 
-    enum AmmoState { Normal, Low, Critical, Empty }
+    private enum AmmoState { Normal, Low, Critical, Empty }
 }
