@@ -4593,7 +4593,7 @@ GameObject:
   m_Component:
   - component: {fileID: 153354443}
   m_Layer: 0
-  m_Name: UI_Handlers
+  m_Name: HUD_Handlers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88017,8 +88017,8 @@ SceneRoots:
   - {fileID: 25868479}
   - {fileID: 783107248}
   - {fileID: 1857485535}
-  - {fileID: 860036172}
   - {fileID: 153354443}
+  - {fileID: 860036172}
   - {fileID: 154591318}
   - {fileID: 210017003}
   - {fileID: 1027802803}
