@@ -22,6 +22,10 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private Material deathGlitchMaterial;
         [SerializeField] private float glitchEffectDuration = 0.5f;
 
+        [Header("Combat")]
+        [SerializeField] private float discDamage = 5f;
+        [SerializeField] private DamageNumber damageNumberPrefab;
+
         [Header("Pulse")]
         [SerializeField] private float pulseDelay = 1f;
         [SerializeField] private float pulseRadius = 50f;
@@ -125,6 +129,23 @@ namespace Resonance.Abilities.SonarDisc
             ElectrocuteEffect electrocuteEffect = playerCollider.transform.root.GetComponentInChildren<ElectrocuteEffect>();
             if (electrocuteEffect != null)
                 electrocuteEffect.Play();
+
+            IDamageable damageable = playerCollider.GetComponent<IDamageable>() ?? playerCollider.GetComponentInParent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(discDamage, _owner);
+                Debug.Log($"[SonarDisc] Dealt {discDamage} damage to {playerCollider.transform.root.name}");
+
+                if (damageNumberPrefab != null && playerCollider.GetComponent<IDamageNumberTarget>() != null)
+                {
+                    DamageNumber number = Instantiate(damageNumberPrefab, playerCollider.transform.position, Quaternion.identity);
+                    number.Initialize(discDamage);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[SonarDisc] No IDamageable found on {playerCollider.transform.root.name}");
+            }
 
             // TODO: start disorient coroutine on playerCollider's owner (phase 2)
             Debug.Log($"[SonarDisc] Attached to player: {playerCollider.transform.root.name}");
