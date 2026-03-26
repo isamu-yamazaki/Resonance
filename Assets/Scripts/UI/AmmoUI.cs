@@ -15,6 +15,7 @@ public class AmmoUI : MonoBehaviour
     [Header("Thresholds")]
     [SerializeField] private float lowPercent = 0.5f;
     [SerializeField] private float criticalPercent = 0.25f;
+    [SerializeField] private int criticalMinBullets = 1;
 
     private int reloadStartAmmo;
     private Coroutine flashRoutine;
@@ -74,7 +75,7 @@ public class AmmoUI : MonoBehaviour
 
         float percent = (float)current / max;
 
-        if (percent <= criticalPercent)
+        if (percent <= criticalPercent || current <= criticalMinBullets)
             return AmmoState.Critical;
 
         if (percent <= lowPercent)
