@@ -1,3 +1,4 @@
+using PurrNet;
 using Resonance.Combat.Augments;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,15 +8,15 @@ namespace Resonance.Abilities.SonarDisc
     /// <summary>
     /// Ability script for the Sonar Disc.
     /// Instantiates and fires the disc projectile from the player camera.
-    /// TODO: Remove Update() T keybind — ActivateAbility() should be called externally.
+    /// TODO: Implement IAbility interface once provided.
+    /// TODO: Remove Update() T keybind and call ActivateAbility() from input system instead.
     /// TODO: Replace camera reference with muzzle point transform on the player's left arm.
     /// </summary>
-    public class SonarDiscAbility : MonoBehaviour, IAugmentAbility
+    public class SonarDiscAbility : NetworkBehaviour, IAugmentAbility
     {
         [Header("References")]
         [SerializeField] private AugmentProperties augmentProperties;
         [SerializeField] private GameObject sonarDiscPrefab;
-
         [SerializeField] private Camera playerCamera;
 
         [Header("Cooldown")]
@@ -27,14 +28,20 @@ namespace Resonance.Abilities.SonarDisc
 
         public string Name => AbilityKey;
         public string Description => augmentProperties != null ? augmentProperties.Description : string.Empty;
-
         public bool IsOnCooldown => _cooldownTimeRemaining > 0f;
 
-        private void Awake()
+        #region Network
+
+        protected override void OnSpawned()
         {
-            if (playerCamera == null)
+            base.OnSpawned();
+            enabled = isOwner;
+
+            if (isOwner && playerCamera == null)
                 playerCamera = Camera.main;
         }
+
+        #endregion
 
         private void Update()
         {
@@ -51,12 +58,6 @@ namespace Resonance.Abilities.SonarDisc
             if (IsOnCooldown)
                 return;
 
-            FireDisc();
-            _cooldownTimeRemaining = cooldown;
-        }
-
-        private void FireDisc()
-        {
             if (sonarDiscPrefab == null)
             {
                 Debug.LogWarning("[SonarDiscAbility] sonarDiscPrefab is not assigned.");
@@ -69,18 +70,27 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
+            _cooldownTimeRemaining = cooldown;
+
             // TODO: Replace cameraTransform.position/forward with muzzlePoint.position/forward
             Transform cameraTransform = playerCamera.transform;
-            GameObject discInstance = Instantiate(sonarDiscPrefab, cameraTransform.position, cameraTransform.rotation);
-            SonarDiscProjectile disc = discInstance.GetComponent<SonarDiscProjectile>();
+            RequestFireDiscServerRpc(cameraTransform.position, cameraTransform.forward);
+        }
 
+        [ServerRpc]
+        private void RequestFireDiscServerRpc(Vector3 spawnPosition, Vector3 direction)
+        {
+            GameObject discInstance = Instantiate(sonarDiscPrefab, spawnPosition, Quaternion.LookRotation(direction));
+            NetworkManager.main.Spawn(discInstance);
+
+            SonarDiscProjectile disc = discInstance.GetComponent<SonarDiscProjectile>();
             if (disc == null)
             {
                 Debug.LogError("[SonarDiscAbility] sonarDiscPrefab is missing a SonarDiscProjectile component.");
                 return;
             }
 
-            disc.Launch(cameraTransform.forward, Resonance.PlayerController.PlayerController.LocalPlayer.gameObject);
+            disc.Launch(direction, gameObject);
         }
     }
 }

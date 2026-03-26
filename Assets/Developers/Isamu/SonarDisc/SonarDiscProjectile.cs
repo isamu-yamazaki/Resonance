@@ -1,4 +1,5 @@
 using System.Collections;
+using PurrNet;
 using Resonance.Helper;
 using UnityEngine;
 
@@ -9,10 +10,11 @@ namespace Resonance.Abilities.SonarDisc
     /// Travels in a straight line, sticks to the first surface or player it hits,
     /// and fires a sonar pulse if attached to a wall. Implements IDamageable so
     /// enemies can destroy it mid-air or before the pulse fires.
+    /// Physics and hit detection run on server only. Visual effects broadcast to all clients.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereCollider))]
-    public class SonarDiscProjectile : MonoBehaviour, IDamageable
+    public class SonarDiscProjectile : NetworkBehaviour, IDamageable
     {
         [Header("Travel")]
         [SerializeField] private float travelSpeed = 28f;
@@ -36,6 +38,7 @@ namespace Resonance.Abilities.SonarDisc
         private bool _isDestroyed;
         private float _distanceTravelled;
         private Vector3 _lastPosition;
+        private Vector3 _lastVelocity;
         private GameObject _owner;
 
         private void Awake()
@@ -45,6 +48,18 @@ namespace Resonance.Abilities.SonarDisc
             _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         }
+
+        #region Network
+
+        protected override void OnSpawned()
+        {
+            base.OnSpawned();
+
+            // Only server runs physics and hit detection
+            _rigidbody.isKinematic = !isServer;
+        }
+
+        #endregion
 
         public void Launch(Vector3 direction, GameObject owner)
         {
@@ -56,9 +71,10 @@ namespace Resonance.Abilities.SonarDisc
 
         private void FixedUpdate()
         {
-            if (_isAttached)
-                return;
+            if (!isServer) return;
+            if (_isAttached) return;
 
+            _lastVelocity = _rigidbody.linearVelocity;
             _distanceTravelled += Vector3.Distance(transform.position, _lastPosition);
             _lastPosition = transform.position;
 
@@ -70,6 +86,7 @@ namespace Resonance.Abilities.SonarDisc
 
         public void TakeDamage(float damage, GameObject shooter)
         {
+            if (!isServer) return;
             DestroyDisc();
         }
 
@@ -79,8 +96,8 @@ namespace Resonance.Abilities.SonarDisc
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (_isAttached)
-                return;
+            if (!isServer) return;
+            if (_isAttached) return;
 
             if (_owner != null && collision.collider.transform.IsChildOf(_owner.transform))
                 return;
@@ -105,11 +122,13 @@ namespace Resonance.Abilities.SonarDisc
             {
                 transform.SetParent(hitCollider.transform, worldPositionStays: true);
                 transform.SetPositionAndRotation(hitPoint, surfaceAlignment);
+                NotifyAttachedToPlayerObserversRpc(hitCollider.gameObject, hitPoint, surfaceAlignment);
                 OnAttachedToPlayer(hitCollider);
             }
             else
             {
                 transform.SetPositionAndRotation(hitPoint, surfaceAlignment);
+                NotifyAttachedToWallObserversRpc(hitPoint, surfaceAlignment);
                 OnAttachedToWall();
             }
         }
@@ -144,6 +163,23 @@ namespace Resonance.Abilities.SonarDisc
         {
             // TODO: play wall impact Wwise event here
             StartCoroutine(WallPulseSequence());
+        }
+
+        [ObserversRpc(runLocally: false)]
+        private void NotifyAttachedToPlayerObserversRpc(GameObject playerObject, Vector3 hitPoint, Quaternion rotation)
+        {
+            transform.SetParent(playerObject.transform, worldPositionStays: true);
+            transform.SetPositionAndRotation(hitPoint, rotation);
+
+            ElectrocuteEffect electrocuteEffect = playerObject.transform.root.GetComponentInChildren<ElectrocuteEffect>();
+            if (electrocuteEffect != null)
+                electrocuteEffect.Play();
+        }
+
+        [ObserversRpc(runLocally: false)]
+        private void NotifyAttachedToWallObserversRpc(Vector3 hitPoint, Quaternion rotation)
+        {
+            transform.SetPositionAndRotation(hitPoint, rotation);
         }
 
         #endregion
@@ -183,10 +219,14 @@ namespace Resonance.Abilities.SonarDisc
 
         private void DestroyDisc()
         {
-            if (_isDestroyed)
-                return;
-
+            if (_isDestroyed) return;
             _isDestroyed = true;
+            NotifyDestroyObserversRpc();
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void NotifyDestroyObserversRpc()
+        {
             StartCoroutine(GlitchAndDestroy());
         }
 
@@ -207,7 +247,8 @@ namespace Resonance.Abilities.SonarDisc
                 }
             }
 
-            Destroy(gameObject);
+            if (isServer)
+                Destroy(gameObject);
         }
 
         #endregion
