@@ -97,7 +97,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarDiscProjectile
   travelSpeed: 28
   maxRange: 40
-  attachRotationSmoothing: 12
+  deathGlitchMaterial: {fileID: 2100000, guid: b9a1d38ab4565463ab4661a1743f1780, type: 2}
+  glitchEffectDuration: 0.5
+  pulseDelay: 1
+  pulseRadius: 50
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &8460905007329822367
 GameObject:
   m_ObjectHideFlags: 0

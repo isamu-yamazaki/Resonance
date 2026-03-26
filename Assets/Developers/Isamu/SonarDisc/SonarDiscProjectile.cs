@@ -1,25 +1,35 @@
-using Resonance.PlayerController;
+using System.Collections;
+using Resonance.Helper;
 using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
 {
     /// <summary>
     /// Projectile component for the Sonar Disc ability.
-    /// Travels in a straight line and sticks to the first surface or player it hits.
+    /// Travels in a straight line, sticks to the first surface or player it hits,
+    /// and fires a sonar pulse if attached to a wall. Implements IDamageable so
+    /// enemies can destroy it mid-air or before the pulse fires.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereCollider))]
-    public class SonarDiscProjectile : MonoBehaviour
+    public class SonarDiscProjectile : MonoBehaviour, IDamageable
     {
         [Header("Travel")]
         [SerializeField] private float travelSpeed = 28f;
         [SerializeField] private float maxRange = 40f;
 
-        [Header("Attachment")]
-        [SerializeField] private float attachRotationSmoothing = 12f;
+        [Header("VFX")]
+        [SerializeField] private Material deathGlitchMaterial;
+        [SerializeField] private float glitchEffectDuration = 0.5f;
+
+        [Header("Pulse")]
+        [SerializeField] private float pulseDelay = 1f;
+        [SerializeField] private float pulseRadius = 50f;
+        [SerializeField] private LayerMask playerLayerMask;
 
         private Rigidbody _rigidbody;
         private bool _isAttached;
+        private bool _isDestroyed;
         private float _distanceTravelled;
         private Vector3 _lastPosition;
         private GameObject _owner;
@@ -51,8 +61,20 @@ namespace Resonance.Abilities.SonarDisc
             _lastPosition = transform.position;
 
             if (_distanceTravelled >= maxRange)
-                Destroy(gameObject);
+                DestroyDisc();
         }
+
+        #region IDamageable
+
+        public void TakeDamage(float damage, GameObject shooter)
+        {
+            // 1 hit destroys the disc — cancels pulse if it hasn't fired yet
+            DestroyDisc();
+        }
+
+        #endregion
+
+        #region Collision
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -75,8 +97,8 @@ namespace Resonance.Abilities.SonarDisc
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.isKinematic = true;
 
-            // Align disc flat against the surface it hit — disc forward axis points away from the wall
-            Quaternion surfaceAlignment = Quaternion.LookRotation(-hitNormal, Vector3.up);
+            // Align disc flat against the surface it hit
+            Quaternion surfaceAlignment = Quaternion.LookRotation(-hitNormal);
 
             bool hitPlayer = hitCollider.CompareTag("Player");
 
@@ -89,22 +111,94 @@ namespace Resonance.Abilities.SonarDisc
             }
             else
             {
-                // Stick to world geometry — no parent needed
                 transform.SetPositionAndRotation(hitPoint, surfaceAlignment);
                 OnAttachedToWall();
             }
         }
 
+        #endregion
+
+        #region Attachment Handlers
+
         private void OnAttachedToPlayer(Collider playerCollider)
         {
-            // TODO: trigger disorient effect on playerCollider's owner (phase 2)
+            // TODO: start disorient coroutine on playerCollider's owner (phase 2)
             Debug.Log($"[SonarDisc] Attached to player: {playerCollider.transform.root.name}");
         }
 
         private void OnAttachedToWall()
         {
-            // TODO: begin sonar pulse scan (phase 2)
-            Debug.Log("[SonarDisc] Attached to wall.");
+            // TODO: play wall impact Wwise event here
+            StartCoroutine(WallPulseSequence());
         }
+
+        #endregion
+
+        #region Pulse
+
+        private IEnumerator WallPulseSequence()
+        {
+            yield return new WaitForSeconds(pulseDelay);
+
+            // Bail if disc was destroyed during the delay
+            if (_isDestroyed)
+                yield break;
+
+            FirePulse();
+        }
+
+        private void FirePulse()
+        {
+            // TODO: play pulse activation Wwise event here
+
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, pulseRadius, playerLayerMask);
+
+            foreach (Collider hitCollider in hitColliders)
+            {
+                // Ignore the owner
+                if (_owner != null && hitCollider.transform.IsChildOf(_owner.transform))
+                    continue;
+
+                // TODO: reveal detected player to owner (phase 2)
+                Debug.Log($"[SonarDisc] Pulse detected player: {hitCollider.transform.root.name}");
+            }
+
+            DestroyDisc();
+        }
+
+        #endregion
+
+        #region Destruction
+
+        private void DestroyDisc()
+        {
+            if (_isDestroyed)
+                return;
+
+            _isDestroyed = true;
+            StartCoroutine(GlitchAndDestroy());
+        }
+
+        private IEnumerator GlitchAndDestroy()
+        {
+            MeshRenderer meshRenderer = GetComponentInChildren<MeshRenderer>();
+
+            if (deathGlitchMaterial != null && meshRenderer != null)
+            {
+                meshRenderer.material = deathGlitchMaterial;
+
+                float elapsed = 0f;
+                while (elapsed < glitchEffectDuration)
+                {
+                    elapsed += Time.deltaTime;
+                    meshRenderer.material.SetFloat(Shader.PropertyToID("_GlitchTime"), elapsed / glitchEffectDuration);
+                    yield return null;
+                }
+            }
+
+            Destroy(gameObject);
+        }
+
+        #endregion
     }
 }
