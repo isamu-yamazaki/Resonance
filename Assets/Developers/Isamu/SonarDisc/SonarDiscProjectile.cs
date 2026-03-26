@@ -51,8 +51,6 @@ namespace Resonance.Abilities.SonarDisc
             _owner = owner;
             _lastPosition = transform.position;
             _rigidbody.linearVelocity = direction.normalized * travelSpeed;
-
-            // Orient disc face-forward along travel direction
             transform.rotation = Quaternion.LookRotation(direction.normalized);
         }
 
@@ -72,7 +70,6 @@ namespace Resonance.Abilities.SonarDisc
 
         public void TakeDamage(float damage, GameObject shooter)
         {
-            // 1 hit destroys the disc — cancels pulse if it hasn't fired yet
             DestroyDisc();
         }
 
@@ -85,7 +82,6 @@ namespace Resonance.Abilities.SonarDisc
             if (_isAttached)
                 return;
 
-            // Ignore collision with the player who fired this disc
             if (_owner != null && collision.collider.transform.IsChildOf(_owner.transform))
                 return;
 
@@ -101,14 +97,12 @@ namespace Resonance.Abilities.SonarDisc
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.isKinematic = true;
 
-            // Align disc flat against the surface it hit
             Quaternion surfaceAlignment = Quaternion.LookRotation(-hitNormal);
 
             bool hitPlayer = hitCollider.CompareTag("Player");
 
             if (hitPlayer)
             {
-                // Parent to player so disc rides with them
                 transform.SetParent(hitCollider.transform, worldPositionStays: true);
                 transform.SetPositionAndRotation(hitPoint, surfaceAlignment);
                 OnAttachedToPlayer(hitCollider);
@@ -134,7 +128,6 @@ namespace Resonance.Abilities.SonarDisc
             if (damageable != null)
             {
                 damageable.TakeDamage(discDamage, _owner);
-                Debug.Log($"[SonarDisc] Dealt {discDamage} damage to {playerCollider.transform.root.name}");
 
                 if (damageNumberPrefab != null && playerCollider.GetComponent<IDamageNumberTarget>() != null)
                 {
@@ -142,13 +135,8 @@ namespace Resonance.Abilities.SonarDisc
                     number.Initialize(discDamage);
                 }
             }
-            else
-            {
-                Debug.LogWarning($"[SonarDisc] No IDamageable found on {playerCollider.transform.root.name}");
-            }
 
             // TODO: start disorient coroutine on playerCollider's owner (phase 2)
-            Debug.Log($"[SonarDisc] Attached to player: {playerCollider.transform.root.name}");
             DestroyDisc();
         }
 
@@ -166,7 +154,6 @@ namespace Resonance.Abilities.SonarDisc
         {
             yield return new WaitForSeconds(pulseDelay);
 
-            // Bail if disc was destroyed during the delay
             if (_isDestroyed)
                 yield break;
 
@@ -181,12 +168,10 @@ namespace Resonance.Abilities.SonarDisc
 
             foreach (Collider hitCollider in hitColliders)
             {
-                // Ignore the owner
                 if (_owner != null && hitCollider.transform.IsChildOf(_owner.transform))
                     continue;
 
                 // TODO: reveal detected player to owner (phase 2)
-                Debug.Log($"[SonarDisc] Pulse detected player: {hitCollider.transform.root.name}");
             }
 
             DestroyDisc();

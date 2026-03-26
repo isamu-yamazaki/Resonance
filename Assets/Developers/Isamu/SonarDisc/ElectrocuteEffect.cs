@@ -77,7 +77,6 @@ namespace Resonance.Abilities.SonarDisc
         {
             _isPlaying = true;
 
-            // Bake each skinned mesh and spawn a static shell ghost slightly outside the surface
             List<(GameObject shell, Material material)> shells = new List<(GameObject, Material)>();
 
             foreach (SkinnedMeshRenderer skinnedMeshRenderer in _meshRenderers)
@@ -96,7 +95,6 @@ namespace Resonance.Abilities.SonarDisc
                 shells.Add((shell, shellMaterial));
             }
 
-            // Drive _ElectrocuteTime 0 → 1 over effectDuration
             float elapsed = 0f;
             while (elapsed < effectDuration)
             {
@@ -109,7 +107,6 @@ namespace Resonance.Abilities.SonarDisc
                 yield return null;
             }
 
-            // Clean up shells and instanced materials
             foreach ((GameObject shell, Material material) in shells)
             {
                 Destroy(material);
