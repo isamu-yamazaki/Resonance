@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using PurrNet;
+using PurrNet.Transports;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -39,15 +40,24 @@ namespace Resonance.GameBootstrap
                 Debug.Log("[DisconnectHandler] Network manager offline");
             }
 
-            networkManager.onNetworkShutdownSimple += OnNetworkShutdown;
+            networkManager.onClientConnectionState += OnClientConnectionState;
         }
+
 
         private void OnDestroy()
         {
-            networkManager.onNetworkShutdownSimple -= OnNetworkShutdown;
+            networkManager.onClientConnectionState -= OnClientConnectionState;
+        }
+        
+        private async void OnClientConnectionState(ConnectionState state)
+        {
+            if (state == ConnectionState.Disconnected)
+            {
+                await TryDisconnect();
+            }
         }
 
-        private async void OnNetworkShutdown(NetworkManager manager)
+        private async Task TryDisconnect()
         {
             if (!noDisconnectScenes.Contains(SceneManager.GetActiveScene().name))
             {
