@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 104676488}
   - component: {fileID: 104676491}
   - component: {fileID: 104676492}
+  - component: {fileID: 104676493}
   m_Layer: 0
   m_Name: RemoteNetworkManager
   m_TagString: Untagged
@@ -208,6 +209,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5c476fd9733ed148b4631bd99c76108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.ConnectionStarter
+--- !u!114 &104676493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104676486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466d914f713084be999e0fe4dc1c6a14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.GameBootstrap.DisconnectHandler
+  disconnectedScene: DisconnectedScene
+  noDisconnectScenes:
+  - NetworkDespawnerScene
+  - LobbyScene
 --- !u!1 &120315305
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,6 +594,7 @@ GameObject:
   - component: {fileID: 216480738}
   - component: {fileID: 216480737}
   - component: {fileID: 216480736}
+  - component: {fileID: 216480740}
   m_Layer: 0
   m_Name: LocalNetworkManager
   m_TagString: Untagged
@@ -654,6 +672,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &216480740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216480735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466d914f713084be999e0fe4dc1c6a14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.GameBootstrap.DisconnectHandler
+  disconnectedScene: DisconnectedScene
+  noDisconnectScenes:
+  - NetworkDespawnerScene
+  - LobbyScene
 --- !u!1 &273798950
 GameObject:
   m_ObjectHideFlags: 0
@@ -1193,7 +1227,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 124f0ac1050b841549577cb94e8ee9f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.BuildTools.PurrTransportConfigurator
-  config: {fileID: 11400000, guid: a77065c5640e0414690255b15709e104, type: 2}
   remoteTransport: {fileID: 104676486}
   localTransport: {fileID: 216480735}
 --- !u!1 &1294828573

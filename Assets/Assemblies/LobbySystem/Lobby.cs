@@ -9,7 +9,7 @@ namespace Resonance.Assemblies.LobbySystem
         public string Name;
         public bool IsValid;
         public string LobbyId;
-        public string LobbyCode;
+        public string LobbyCode => LobbyId;
         public int MaxPlayers;
         public List<LobbyUser> Members;
 
@@ -123,20 +123,6 @@ namespace Resonance.Assemblies.LobbySystem
                 Name = name,
                 IsValid = true,
                 LobbyId = lobbyId,
-                MaxPlayers = maxPlayers,
-                UnderlyingProviderProperties = properties ?? new Dictionary<string, string>(),
-                Members = members,
-            };
-        }
-
-        public static Lobby Create(string name, string lobbyId, string lobbyCode, int maxPlayers, List<LobbyUser> members, Dictionary<string, string> properties)
-        {
-            return new Lobby
-            {
-                Name = name,
-                IsValid = true,
-                LobbyId = lobbyId,
-                LobbyCode = lobbyCode,
                 MaxPlayers = maxPlayers,
                 UnderlyingProviderProperties = properties ?? new Dictionary<string, string>(),
                 Members = members,

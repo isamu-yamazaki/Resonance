@@ -1,25 +1,39 @@
 using System.Threading.Tasks;
 using PurrNet;
+using Resonance.BuildTools;
 using Resonance.Match;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Resonance.NetworkDespawner
 {
-    public class NetworkDespawner : NetworkBehaviour
+    public class NetworkDespawner : MonoBehaviour
     {
-        protected override void OnSpawned()
+        private NetworkManager networkManager;
+
+        private void Awake()
         {
-            base.OnSpawned();
+            networkManager = FindFirstObjectByType<NetworkManager>();
 
             Debug.Log("[NetworkDespawner] Despawning network objects");
 
-            // TODO: set this to the "disconnected" scene within the game (bootstrap)
             networkManager.ResetOriginalScene(SceneManager.GetActiveScene());
 
             DestroyMatchLogic();
             DestroyNetworkManager();
         }
+
+        // protected override void OnSpawned()
+        // {
+        //     base.OnSpawned();
+
+        //     Debug.Log("[NetworkDespawner] Despawning network objects");
+
+        //     networkManager.ResetOriginalScene(SceneManager.GetActiveScene());
+
+        //     DestroyMatchLogic();
+        //     DestroyNetworkManager();
+        // }
 
         private void DestroyMatchLogic()
         {
@@ -34,31 +48,57 @@ namespace Resonance.NetworkDespawner
             }
         }
 
+        private bool HasServerConfig => ServerBuildConfigReceiver.Instance != null;
+
         private async void DestroyNetworkManager()
         {
-            if (networkManager.isClientOnly)
+            if (!networkManager.isOffline)
             {
-                await Task.Delay(1000);
-                networkManager.StopClient();
-                Destroy(networkManager.gameObject);
-                LoadLobbyScene();
-            }
-            else
-            {
-                while (networkManager.playerCount >= 2)
+                if (networkManager.isClientOnly)
                 {
                     await Task.Delay(1000);
+                    networkManager.StopClient();
+                    Destroy(networkManager.gameObject);
+                    LoadLobbyScene();
+                    return;
                 }
-
-                networkManager.StopServer();
-                Destroy(networkManager.gameObject);
-                LoadLobbyScene();
+                else if (HasServerConfig)
+                {
+                    while (networkManager.playerCount >= 1)
+                    {
+                        await Task.Delay(1000);
+                    }
+                }
+                else
+                {
+                    while (networkManager.playerCount >= 2)
+                    {
+                        await Task.Delay(1000);
+                    }
+                }
             }
+
+            networkManager.StopServer();
+            Destroy(networkManager.gameObject);
+
+            if (HasServerConfig)
+                QuitApplication();
+            else
+                LoadLobbyScene();
         }
 
         private void LoadLobbyScene()
         {
             SceneManager.LoadScene("LobbyScene");
+        }
+
+        private void QuitApplication()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
     }
 }

@@ -1,3 +1,4 @@
+#if !UNITY_SERVER
 using UnityEngine;
 
 /// <summary>
@@ -157,3 +158,4 @@ public class WwiseSmartReverb : MonoBehaviour
         }
     }
 }
+#endif

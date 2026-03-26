@@ -1,3 +1,4 @@
+#if !UNITY_SERVER
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,3 +12,4 @@ namespace Resonance.Shop
         }
     }
 }
+#endif

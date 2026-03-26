@@ -180,8 +180,10 @@ namespace Resonance.Environment
             rb.isKinematic = false;
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
+#if !UNITY_SERVER
             go.AddComponent<AkGameObj>();
             go.AddComponent<WwiseSmartOcclusion>();
+#endif
 
             return go;
         }
