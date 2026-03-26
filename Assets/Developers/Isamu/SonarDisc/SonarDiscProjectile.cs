@@ -30,7 +30,7 @@ namespace Resonance.Abilities.SonarDisc
 
         [Header("Pulse")]
         [SerializeField] private float pulseDelay = 1f;
-        [SerializeField] private float pulseRadius = 50f;
+        [SerializeField] private float pulseRadius = 30f;
         [SerializeField] private LayerMask playerLayerMask;
 
 

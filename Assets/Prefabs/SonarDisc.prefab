@@ -113,11 +113,11 @@ MonoBehaviour:
   discDamage: 5
   damageNumberPrefab: {fileID: 2474898762247100464, guid: 325d2b673ea625b4d984c4618506fb81, type: 3}
   pulseDelay: 1
-  pulseRadius: 50
+  pulseRadius: 40
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  pulseExpandDuration: 0.5
+  pulseExpandDuration: 1
 --- !u!114 &697816106320107227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,8 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarPulseEffect
   sonarPulseMaterial: {fileID: 2100000, guid: c992c87cc9dbc4f0a948952bcab75987, type: 2}
-  expandDuration: 0.6
-  maxRadius: 50
+  expandDuration: 1
+  maxRadius: 40
 --- !u!1 &8460905007329822367
 GameObject:
   m_ObjectHideFlags: 0

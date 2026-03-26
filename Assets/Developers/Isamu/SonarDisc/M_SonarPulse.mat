@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_SonarPulse
-  m_Shader: {fileID: 4800000, guid: 8e13172a5ab074a07a490159e8e24914, type: 3}
+  m_Shader: {fileID: 4800000, guid: d0fb5dd5ea47b4bc181fb4224f9121ba, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -25,11 +25,13 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _FadeEdge: 3
+    - _CurrentRadius: 0
     - _PulseTime: 0
     - _RingEmission: 4
-    - _RingWidth: 0.04
+    - _RingWidth: 1
     m_Colors:
+    - _DiscForward: {r: 0, g: 0, b: 1, a: 0}
+    - _DiscOrigin: {r: 0, g: 0, b: 0, a: 0}
     - _RingColor: {r: 0.39999998, g: 0.8, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
