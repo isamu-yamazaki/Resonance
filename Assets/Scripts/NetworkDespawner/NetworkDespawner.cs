@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using PurrNet;
+using Resonance.BuildTools;
 using Resonance.Match;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,6 +35,8 @@ namespace Resonance.NetworkDespawner
             }
         }
 
+        private bool HasServerConfig => ServerBuildConfigReceiver.Instance != null;
+
         private async void DestroyNetworkManager()
         {
             if (networkManager.isClientOnly)
@@ -42,6 +45,14 @@ namespace Resonance.NetworkDespawner
                 networkManager.StopClient();
                 Destroy(networkManager.gameObject);
                 LoadLobbyScene();
+                return;
+            }
+            else if (HasServerConfig)
+            {
+                while (networkManager.playerCount >= 1)
+                {
+                    await Task.Delay(1000);
+                }
             }
             else
             {
@@ -49,16 +60,29 @@ namespace Resonance.NetworkDespawner
                 {
                     await Task.Delay(1000);
                 }
-
-                networkManager.StopServer();
-                Destroy(networkManager.gameObject);
-                LoadLobbyScene();
             }
+
+            networkManager.StopServer();
+            Destroy(networkManager.gameObject);
+
+            if (HasServerConfig)
+                QuitApplication();
+            else
+                LoadLobbyScene();
         }
 
         private void LoadLobbyScene()
         {
             SceneManager.LoadScene("LobbyScene");
+        }
+
+        private void QuitApplication()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
     }
 }
