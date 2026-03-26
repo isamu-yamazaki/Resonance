@@ -2,7 +2,6 @@ using System.Collections;
 using PurrNet;
 using PurrNet.Logging;
 using PurrNet.Transports;
-using PurrNet.Utils;
 using Resonance.BuildTools;
 using UnityEngine;
 
@@ -94,15 +93,12 @@ namespace Resonance.LobbySystem
 
         #region Outcome Predicates
 
-        private bool ShouldStartAsServer =>
-            HasServerConfig ||
-            (IsClientServerMode && ApplicationContext.isMainEditor);
+        private bool ShouldStartAsServer => HasServerConfig;
 
-        private bool ShouldStartAsHost =>
-            IsHostMode && IsLobbyOwner;
+        private bool ShouldStartAsHost => IsHostMode && IsLobbyOwner;
 
         private bool ShouldStartAsClient =>
-            (IsClientServerMode && !ApplicationContext.isMainEditor) ||
+            IsClientServerMode ||
             (IsHostMode && !IsLobbyOwner);
 
         #endregion
