@@ -34,7 +34,6 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float pulseDelay = 1f;
         [SerializeField] private float pulseRadius = 30f;
         [SerializeField] private float pulseExpandDuration = 0.6f;
-        [SerializeField] private float revealStaggerDelay = 0.5f;
         [SerializeField] private LayerMask playerLayerMask;
 
         private Rigidbody _rigidbody;
@@ -180,17 +179,10 @@ namespace Resonance.Abilities.SonarDisc
         }
 
         [TargetRpc]
-        private void NotifyPlayerDetectedOwnerRpc(PlayerID target, GameObject detectedPlayer, float delay)
+        private void NotifyPlayerDetectedOwnerRpc(PlayerID target, GameObject detectedPlayer)
         {
             if (detectedPlayer == null)
                 return;
-
-            StartCoroutine(StaggeredReveal(detectedPlayer, delay));
-        }
-
-        private IEnumerator StaggeredReveal(GameObject detectedPlayer, float delay)
-        {
-            yield return new WaitForSeconds(delay);
 
             ScannedHighlight highlight = detectedPlayer.GetComponent<ScannedHighlight>();
             if (highlight == null)
@@ -258,9 +250,7 @@ namespace Resonance.Abilities.SonarDisc
 
                     detected.Add(candidate);
                     // TODO: LOS raycast check (phase 2)
-                    int detectedCount = detected.Count;
-                    float staggerDelay = (detectedCount - 1) * revealStaggerDelay;
-                    NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject, staggerDelay);
+                    NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject);
                 }
 
                 yield return null;
