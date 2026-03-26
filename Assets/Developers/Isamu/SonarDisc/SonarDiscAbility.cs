@@ -1,3 +1,4 @@
+using Resonance.Combat.Augments;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,15 +7,15 @@ namespace Resonance.Abilities.SonarDisc
     /// <summary>
     /// Ability script for the Sonar Disc.
     /// Instantiates and fires the disc projectile from the player camera.
-    /// TODO: Implement IAbility interface once provided.
-    /// TODO: Remove Update() T keybind and call Use() from IAbility.Use() instead.
+    /// TODO: Remove Update() T keybind — ActivateAbility() should be called externally.
+    /// TODO: Replace camera reference with muzzle point transform on the player's left arm.
     /// </summary>
-    public class SonarDiscAbility : MonoBehaviour
+    public class SonarDiscAbility : MonoBehaviour, IAugmentAbility
     {
         [Header("References")]
+        [SerializeField] private AugmentProperties augmentProperties;
         [SerializeField] private GameObject sonarDiscPrefab;
 
-        // TODO: Replace camera reference with muzzle point transform on the player's left arm
         [SerializeField] private Camera playerCamera;
 
         [Header("Cooldown")]
@@ -22,14 +23,18 @@ namespace Resonance.Abilities.SonarDisc
 
         private float _cooldownTimeRemaining;
 
+        public const string AbilityKey = "augment_upper_sonarDisc";
+
+        public string Name => AbilityKey;
+        public string Description => augmentProperties != null ? augmentProperties.Description : string.Empty;
+
+        public bool IsOnCooldown => _cooldownTimeRemaining > 0f;
+
         private void Awake()
         {
             if (playerCamera == null)
                 playerCamera = Camera.main;
         }
-
-        // TODO: Replace with IAbility implementation
-        public bool IsOnCooldown => _cooldownTimeRemaining > 0f;
 
         private void Update()
         {
@@ -38,11 +43,10 @@ namespace Resonance.Abilities.SonarDisc
 
             // TODO: Remove this keybind — temporary test input only
             if (Keyboard.current.tKey.wasPressedThisFrame)
-                Use();
+                ActivateAbility();
         }
 
-        // TODO: Call this from IAbility.Use() once interface is provided
-        public void Use()
+        public void ActivateAbility()
         {
             if (IsOnCooldown)
                 return;
