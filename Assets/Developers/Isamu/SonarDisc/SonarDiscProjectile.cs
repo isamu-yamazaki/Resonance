@@ -33,6 +33,7 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float pulseRadius = 50f;
         [SerializeField] private LayerMask playerLayerMask;
 
+
         private Rigidbody _rigidbody;
         private bool _isAttached;
         private bool _isDestroyed;
@@ -200,17 +201,36 @@ namespace Resonance.Abilities.SonarDisc
         {
             // TODO: play pulse activation Wwise event here
 
+            Debug.Log($"[SonarDisc] FirePulse called at {transform.position}");
+
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, pulseRadius, playerLayerMask);
+            Debug.Log($"[SonarDisc] OverlapSphere found {hitColliders.Length} colliders");
 
             foreach (Collider hitCollider in hitColliders)
             {
                 if (_owner != null && hitCollider.transform.IsChildOf(_owner.transform))
                     continue;
 
+                Debug.Log($"[SonarDisc] Pulse detected player: {hitCollider.transform.root.name}");
+                // TODO: LOS raycast check (phase 2)
                 // TODO: reveal detected player to owner (phase 2)
             }
 
             DestroyDisc();
+        }
+
+        #endregion
+
+        #region Debug
+
+        private void OnDrawGizmos()
+        {
+            if (!_isAttached) return;
+
+            Gizmos.color = new Color(0f, 1f, 1f, 0.2f);
+            Gizmos.DrawSphere(transform.position, pulseRadius);
+            Gizmos.color = new Color(0f, 1f, 1f, 1f);
+            Gizmos.DrawWireSphere(transform.position, pulseRadius);
         }
 
         #endregion

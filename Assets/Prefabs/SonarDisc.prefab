@@ -115,7 +115,7 @@ MonoBehaviour:
   pulseRadius: 50
   playerLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!114 &697816106320107227
 MonoBehaviour:
   m_ObjectHideFlags: 0
