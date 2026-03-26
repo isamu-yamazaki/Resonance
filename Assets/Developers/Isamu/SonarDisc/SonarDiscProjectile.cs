@@ -41,11 +41,8 @@ namespace Resonance.Abilities.SonarDisc
         private bool _isDestroyed;
         private float _distanceTravelled;
         private Vector3 _lastPosition;
-        private Vector3 _lastVelocity;
         private GameObject _owner;
         private PlayerID _ownerPlayerID;
-        private float _currentPulseRadius;
-        private bool _isPulsing;
 
         private void Awake()
         {
@@ -79,7 +76,6 @@ namespace Resonance.Abilities.SonarDisc
             if (!isServer) return;
             if (_isAttached) return;
 
-            _lastVelocity = _rigidbody.linearVelocity;
             _distanceTravelled += Vector3.Distance(transform.position, _lastPosition);
             _lastPosition = transform.position;
 
@@ -221,20 +217,16 @@ namespace Resonance.Abilities.SonarDisc
 
             // TODO: play pulse activation Wwise event here
 
-            // Fire VFX and rolling scan simultaneously so detection matches the visual ring
             NotifyPulseVFXObserversRpc();
 
             Collider[] candidates = Physics.OverlapSphere(transform.position, pulseRadius, playerLayerMask);
             HashSet<Collider> detected = new HashSet<Collider>();
 
-            _isPulsing = true;
-            _currentPulseRadius = 0f;
             float elapsed = 0f;
-
             while (elapsed < pulseExpandDuration)
             {
                 elapsed += Time.deltaTime;
-                _currentPulseRadius = Mathf.Lerp(0f, pulseRadius, elapsed / pulseExpandDuration);
+                float currentRadius = Mathf.Lerp(0f, pulseRadius, elapsed / pulseExpandDuration);
 
                 foreach (Collider candidate in candidates)
                 {
@@ -244,8 +236,7 @@ namespace Resonance.Abilities.SonarDisc
                     if (_owner != null && candidate.transform.IsChildOf(_owner.transform))
                         continue;
 
-                    float distanceToCandidate = Vector3.Distance(transform.position, candidate.transform.position);
-                    if (distanceToCandidate > _currentPulseRadius)
+                    if (Vector3.Distance(transform.position, candidate.transform.position) > currentRadius)
                         continue;
 
                     detected.Add(candidate);
@@ -256,25 +247,7 @@ namespace Resonance.Abilities.SonarDisc
                 yield return null;
             }
 
-            _currentPulseRadius = pulseRadius;
-            _isPulsing = false;
-
             DestroyDisc();
-        }
-
-        #endregion
-
-        #region Debug
-
-        private void OnDrawGizmos()
-        {
-            if (!_isAttached) return;
-
-            float radius = _isPulsing ? _currentPulseRadius : 0f;
-            Gizmos.color = new Color(0f, 1f, 1f, 0.2f);
-            Gizmos.DrawSphere(transform.position, radius);
-            Gizmos.color = new Color(0f, 1f, 1f, 1f);
-            Gizmos.DrawWireSphere(transform.position, radius);
         }
 
         #endregion
