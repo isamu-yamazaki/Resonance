@@ -2335,8 +2335,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AmmoUI
   ammoText: {fileID: 656648442}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  halfColor: {r: 1, g: 0.6, b: 0, a: 1}
-  lowColor: {r: 1, g: 0, b: 0, a: 1}
+  lowColor: {r: 1, g: 0.6, b: 0, a: 1}
+  criticalColor: {r: 1, g: 0, b: 0, a: 1}
+  lowPercent: 0.5
+  criticalPercent: 0.25
+  criticalMinBullets: 1
 --- !u!1 &275779647
 GameObject:
   m_ObjectHideFlags: 0
@@ -8247,6 +8250,26 @@ MonoBehaviour:
   modItemSpawn: {fileID: 1344085713}
   shopItemPrefab: {fileID: 4640606343781412128, guid: ae83a8f6f711c1b44beba717b8be134e, type: 3}
   weaponStatsDisplay: {fileID: 1948992930}
+  shopOpenEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  shopCloseEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  shopPageSwitchEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  shopItemBuyEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  buttonClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!1 &1042253852
 GameObject:
   m_ObjectHideFlags: 0

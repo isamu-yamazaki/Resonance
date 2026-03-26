@@ -9,8 +9,14 @@ public class AmmoUI : MonoBehaviour
 
     [Header("Colors")]
     [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color halfColor = new Color(1f, 0.6f, 0f);
-    [SerializeField] private Color lowColor = Color.red;
+    [SerializeField] private Color lowColor = new Color(1f, 0.6f, 0f);
+    [SerializeField] private Color criticalColor = Color.red;
+
+    [Header("Thresholds")]
+    [Tooltip("Ammo at or below this count (or % for large mags) shows orange")]
+    [SerializeField] private float lowPercent = 0.5f;       // 50% -> orange
+    [SerializeField] private float criticalPercent = 0.25f; // 25% -> red
+    [SerializeField] private int criticalMinBullets = 1;
 
     private Coroutine flashRoutine;
 
@@ -52,32 +58,69 @@ public class AmmoUI : MonoBehaviour
 
         if (max == 0) return;
 
+        AmmoState state = GetAmmoState(current, max);
+        ApplyAmmoState(state, current);
+    }
+
+    AmmoState GetAmmoState(int current, int max)
+    {
+        if (current == 0)
+            return AmmoState.Empty;
+
         float percent = (float)current / max;
 
-        if (percent <= 0.1f)
-        {
-            ammoText.color = lowColor;
+        bool isCritical = percent <= criticalPercent && current <= criticalMinBullets;
 
-            if (flashRoutine == null)
-                flashRoutine = StartCoroutine(FlashText());
+        if (isCritical)
+            return AmmoState.Critical;
+
+        if (percent <= lowPercent)
+            return AmmoState.Low;
+
+        return AmmoState.Normal;
+    }
+
+    void ApplyAmmoState(AmmoState state, int current)
+    {
+        if (flashRoutine != null && state != AmmoState.Critical)
+        {
+            StopCoroutine(flashRoutine);
+            flashRoutine = null;
+            ammoText.enabled = true;
         }
-        else
-        {
-            if (flashRoutine != null)
-            {
-                StopCoroutine(flashRoutine);
-                flashRoutine = null;
-                ammoText.enabled = true;
-            }
 
-            ammoText.color = percent <= 0.5f ? halfColor : normalColor;
+        switch (state)
+        {
+            case AmmoState.Normal:
+                ammoText.color = normalColor;
+                break;
+
+            case AmmoState.Low:
+                ammoText.color = lowColor;
+                break;
+
+            case AmmoState.Critical:
+                ammoText.color = criticalColor;
+                if (flashRoutine == null)
+                    flashRoutine = StartCoroutine(FlashText());
+                break;
+
+            case AmmoState.Empty:
+                if (flashRoutine != null)
+                {
+                    StopCoroutine(flashRoutine);
+                    flashRoutine = null;
+                    ammoText.enabled = true;
+                }
+                ammoText.color = criticalColor;
+                break;
         }
     }
 
     void OnReloadStateChanged(bool isReloading)
     {
         if (!isReloading)
-            ammoText.color = normalColor;
+            OnAmmoChanged(0);
     }
 
     void OnReloadProgressChanged(float progress)
@@ -94,9 +137,14 @@ public class AmmoUI : MonoBehaviour
 
     System.Collections.IEnumerator FlashText()
     {
-        while (viewModel.CurrentAmmo.Value > 0 &&
-               (float)viewModel.CurrentAmmo.Value / viewModel.MagazineSize.Value <= 0.1f)
+        while (true)
         {
+            int current = viewModel.CurrentAmmo.Value;
+            int max = viewModel.MagazineSize.Value;
+
+            if (GetAmmoState(current, max) != AmmoState.Critical)
+                break;
+
             ammoText.enabled = !ammoText.enabled;
             yield return new WaitForSeconds(0.2f);
         }
@@ -104,4 +152,6 @@ public class AmmoUI : MonoBehaviour
         ammoText.enabled = true;
         flashRoutine = null;
     }
+
+    enum AmmoState { Normal, Low, Critical, Empty }
 }

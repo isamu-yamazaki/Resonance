@@ -4233,8 +4233,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AmmoUI
   ammoText: {fileID: 1664535810}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  halfColor: {r: 1, g: 0.6, b: 0, a: 1}
-  lowColor: {r: 1, g: 0, b: 0, a: 1}
+  lowColor: {r: 1, g: 0.6, b: 0, a: 1}
+  criticalColor: {r: 1, g: 0, b: 0, a: 1}
+  lowPercent: 0.5
+  criticalPercent: 0.25
+  criticalMinBullets: 1
 --- !u!1 &132538923
 GameObject:
   m_ObjectHideFlags: 0
