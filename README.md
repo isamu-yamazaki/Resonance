@@ -8,20 +8,22 @@ Output is written to `Builds/<ConfigName>/<Platform>/` from the project root.
 
 ### From the Unity Editor
 
-Use the **Build** menu. Client builds are under **Build > Client**, server builds under **Build > Server**.
+Use the **Build** menu. Client builds are under **Build > Client > Windows** or **Build > Client > Mac**, server builds under **Build > Server**.
 
 #### Client configs
 
-| Config | Steam lobby | Relay | Mode |
-|---|---|---|---|
-| DevClient | No | Remote | Standalone |
-| DevClientLocalRelay | No | Local (PurrLay) | Client-server |
-| DevHost | No | Remote | Host |
-| DevHostLocalRelay | No | Local (PurrLay) | Host |
-| ProductionClient | Yes | Remote | Client-server |
-| ProductionHost | Yes | Remote | Host |
+| Config | Steam lobby | Relay | Orchestrator | Mode |
+|---|---|---|---|---|
+| DevClient | No | Remote | Local (localhost:9000) | Client-server |
+| DevClientLocalRelay | No | Local (PurrLay) | Local (localhost:9000) | Client-server |
+| DevClientRemoteOrchestratorTesting | No | Remote | Remote | Client-server |
+| DevHost | No | Remote | — | Host |
+| DevHostLocalRelay | No | Local (PurrLay) | — | Host |
+| ProductionClient | Yes | Remote | Remote | Client-server |
+| ProductionHost | Yes | Remote | — | Host |
 
 - **Local relay** configs require [PurrLay](https://github.com/brendan-ch/PurrLay) running locally — see repo for instructions.
+- **DevClientRemoteOrchestratorTesting** — CLI-only (not available in the Editor Build menu); connects to the production orchestrator without Steam.
 - **ProductionClient / ProductionHost** — Steam lobby, release build; Mac builds run codesign & notarization.
 
 #### Server configs
@@ -50,7 +52,7 @@ Server builds target Linux64 and output to `Builds/<ConfigName>/Linux/ResonanceS
 | Argument | Required | Values |
 |---|---|---|
 | `-buildMode` | No (default: `Client`) | `Client`, `Server` |
-| `-buildConfig` | Yes | Client: `DevClient`, `DevClientLocalRelay`, `DevHost`, `DevHostLocalRelay`, `ProductionClient`, `ProductionHost` / Server: `LocalRelay`, `Production` |
+| `-buildConfig` | Yes | Client: `DevClient`, `DevClientLocalRelay`, `DevClientRemoteOrchestratorTesting`, `DevHost`, `DevHostLocalRelay`, `ProductionClient`, `ProductionHost` / Server: `LocalRelay`, `Production` |
 | `-buildTarget` | No (default: `Windows64`) | `Windows64`, `OSX`, `Linux64` |
 
 ### Production Mac builds (codesign & notarization)
