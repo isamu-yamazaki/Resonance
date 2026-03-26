@@ -652,14 +652,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ca360bb62ba71c4883fbc6104d1191d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.VFX.PlayerDeathEffect
-  highlightDuration: 1
-  fragmentationDuration: 1
-  deathShardMaterial: {fileID: 2100000, guid: 8c18848641698f949a07ef904e5b3d70, type: 2}
-  shardColor: {r: 0.5518868, g: 0.9654463, b: 1, a: 1}
-  emissionColor: {r: 0, g: 1, b: 1, a: 1}
-  emissionIntensity: 5
-  noiseScale: 1
-  shardDensity: 0.1
+  deathGlitchMaterial: {fileID: 2100000, guid: b9a1d38ab4565463ab4661a1743f1780, type: 2}
+  effectDuration: 0.5
 --- !u!114 &442510756705436988
 MonoBehaviour:
   m_ObjectHideFlags: 0
