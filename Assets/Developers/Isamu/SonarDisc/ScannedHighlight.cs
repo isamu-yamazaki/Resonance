@@ -1,17 +1,19 @@
 using System.Collections;
+using PurrNet;
 using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
 {
     /// <summary>
-    /// Added to a detected player on the owner's client only.
-    /// Fires a configurable number of sequential scan snapshots, each baking the
-    /// player's current pose and displaying a shell with the SonarReveal shader.
-    /// Each snapshot replaces the previous one.
+    /// Attached to the player prefab. Triggered by the disc server-side,
+    /// broadcasts scan snapshots to all clients — filtering to owner only
+    /// is handled via TargetRpc on the disc.
     /// </summary>
-    public class ScannedHighlight : MonoBehaviour
+    public class ScannedHighlight : NetworkBehaviour
     {
+        [Header("Settings")]
+        [SerializeField] private Material sonarRevealMaterial;
         [SerializeField] private float snapshotDuration = 1f;
         [SerializeField] private float snapshotInterval = 1f;
         [SerializeField] private int snapshotCount = 3;
@@ -41,7 +43,7 @@ namespace Resonance.Abilities.SonarDisc
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             if (_skinRenderer != null)
                 _skinRenderer.OnNewSkinSpawned -= OnSkinSpawned;
@@ -52,15 +54,15 @@ namespace Resonance.Abilities.SonarDisc
             _meshRenderers = skinRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
         }
 
-        public void Play(Material revealMaterial)
+        [ObserversRpc(runLocally: true)]
+        public void Play()
         {
-            if (revealMaterial == null)
+            if (sonarRevealMaterial == null)
             {
-                Debug.LogWarning("[ScannedHighlight] revealMaterial is not assigned.");
+                Debug.LogWarning("[ScannedHighlight] sonarRevealMaterial is not assigned.");
                 return;
             }
 
-            // Populate renderers if Start hasn't run yet
             if (_meshRenderers == null || _meshRenderers.Length == 0)
             {
                 if (_skinRenderer != null && _skinRenderer.CurrentMeshInstance != null)
@@ -75,14 +77,13 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            StartCoroutine(SnapshotSequence(revealMaterial));
+            StartCoroutine(SnapshotSequence());
         }
 
-        private IEnumerator SnapshotSequence(Material revealMaterial)
+        private IEnumerator SnapshotSequence()
         {
             for (int i = 0; i < snapshotCount; i++)
             {
-                // Bake current pose
                 GameObject[] shells = new GameObject[_meshRenderers.Length];
                 Material[] materials = new Material[_meshRenderers.Length];
 
@@ -96,14 +97,13 @@ namespace Resonance.Abilities.SonarDisc
                     shell.transform.localScale = _meshRenderers[j].transform.lossyScale;
 
                     shell.AddComponent<MeshFilter>().mesh = bakedMesh;
-                    Material mat = new Material(revealMaterial);
+                    Material mat = new Material(sonarRevealMaterial);
                     shell.AddComponent<MeshRenderer>().material = mat;
 
                     shells[j] = shell;
                     materials[j] = mat;
                 }
 
-                // Drive _RevealTime 0 → 1 over snapshotDuration
                 float elapsed = 0f;
                 while (elapsed < snapshotDuration)
                 {
@@ -116,7 +116,6 @@ namespace Resonance.Abilities.SonarDisc
                     yield return null;
                 }
 
-                // Destroy this snapshot's shells
                 for (int j = 0; j < shells.Length; j++)
                 {
                     Destroy(materials[j]);
@@ -124,12 +123,9 @@ namespace Resonance.Abilities.SonarDisc
                     Destroy(shells[j]);
                 }
 
-                // Wait before next snapshot (skip wait after last one)
                 if (i < snapshotCount - 1)
                     yield return new WaitForSeconds(snapshotInterval);
             }
-
-            Destroy(this);
         }
     }
 }

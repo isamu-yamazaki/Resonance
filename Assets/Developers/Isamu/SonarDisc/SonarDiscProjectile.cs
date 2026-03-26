@@ -24,8 +24,6 @@ namespace Resonance.Abilities.SonarDisc
         [Header("VFX")]
         [SerializeField] private Material deathGlitchMaterial;
         [SerializeField] private float glitchEffectDuration = 0.5f;
-        [SerializeField] private Material sonarRevealMaterial;
-
         [Header("Combat")]
         [SerializeField] private float discDamage = 5f;
         [SerializeField] private DamageNumber damageNumberPrefab;
@@ -174,17 +172,14 @@ namespace Resonance.Abilities.SonarDisc
                 pulseEffect.Play();
         }
 
-        [TargetRpc]
-        private void NotifyPlayerDetectedOwnerRpc(PlayerID target, GameObject detectedPlayer)
+        private void NotifyPlayerDetected(GameObject detectedPlayer)
         {
             if (detectedPlayer == null)
                 return;
 
-            ScannedHighlight highlight = detectedPlayer.GetComponent<ScannedHighlight>();
-            if (highlight == null)
-                highlight = detectedPlayer.AddComponent<ScannedHighlight>();
-
-            highlight.Play(sonarRevealMaterial);
+            ScannedHighlight highlight = detectedPlayer.GetComponentInChildren<ScannedHighlight>();
+            if (highlight != null)
+                highlight.Play();
         }
 
         [ObserversRpc(runLocally: false)]
@@ -241,7 +236,7 @@ namespace Resonance.Abilities.SonarDisc
 
                     detected.Add(candidate);
                     // TODO: LOS raycast check (phase 2)
-                    NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject);
+                    NotifyPlayerDetected(candidate.gameObject);
                 }
 
                 yield return null;
