@@ -7,20 +7,33 @@ using UnityEngine.SceneManagement;
 
 namespace Resonance.NetworkDespawner
 {
-    public class NetworkDespawner : NetworkBehaviour
+    public class NetworkDespawner : MonoBehaviour
     {
-        protected override void OnSpawned()
+        private NetworkManager networkManager;
+
+        private void Awake()
         {
-            base.OnSpawned();
+            networkManager = FindFirstObjectByType<NetworkManager>();
 
             Debug.Log("[NetworkDespawner] Despawning network objects");
 
-            // TODO: set this to the "disconnected" scene within the game (bootstrap)
             networkManager.ResetOriginalScene(SceneManager.GetActiveScene());
 
             DestroyMatchLogic();
             DestroyNetworkManager();
         }
+
+        // protected override void OnSpawned()
+        // {
+        //     base.OnSpawned();
+
+        //     Debug.Log("[NetworkDespawner] Despawning network objects");
+
+        //     networkManager.ResetOriginalScene(SceneManager.GetActiveScene());
+
+        //     DestroyMatchLogic();
+        //     DestroyNetworkManager();
+        // }
 
         private void DestroyMatchLogic()
         {
@@ -39,26 +52,29 @@ namespace Resonance.NetworkDespawner
 
         private async void DestroyNetworkManager()
         {
-            if (networkManager.isClientOnly)
+            if (!networkManager.isOffline)
             {
-                await Task.Delay(1000);
-                networkManager.StopClient();
-                Destroy(networkManager.gameObject);
-                LoadLobbyScene();
-                return;
-            }
-            else if (HasServerConfig)
-            {
-                while (networkManager.playerCount >= 1)
+                if (networkManager.isClientOnly)
                 {
                     await Task.Delay(1000);
+                    networkManager.StopClient();
+                    Destroy(networkManager.gameObject);
+                    LoadLobbyScene();
+                    return;
                 }
-            }
-            else
-            {
-                while (networkManager.playerCount >= 2)
+                else if (HasServerConfig)
                 {
-                    await Task.Delay(1000);
+                    while (networkManager.playerCount >= 1)
+                    {
+                        await Task.Delay(1000);
+                    }
+                }
+                else
+                {
+                    while (networkManager.playerCount >= 2)
+                    {
+                        await Task.Delay(1000);
+                    }
                 }
             }
 
