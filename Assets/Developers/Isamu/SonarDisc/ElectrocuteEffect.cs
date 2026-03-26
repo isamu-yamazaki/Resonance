@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using PurrNet;
 using Resonance.PlayerController;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace Resonance.Abilities.SonarDisc
     /// shader on it, creating a lightning aura effect without affecting the player's
     /// own materials.
     /// </summary>
-    public class ElectrocuteEffect : MonoBehaviour
+    public class ElectrocuteEffect : NetworkBehaviour
     {
         [Header("Settings")]
         [SerializeField] private Material electrocuteMaterial;
@@ -53,6 +54,7 @@ namespace Resonance.Abilities.SonarDisc
             _meshRenderers = skinRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
         }
 
+        [ObserversRpc(runLocally: true)]
         public void Play()
         {
             if (_isPlaying)
