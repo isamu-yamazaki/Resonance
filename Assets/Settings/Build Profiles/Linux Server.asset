@@ -25,13 +25,19 @@ MonoBehaviour:
   - m_enabled: 1
     m_path: Assets/Scenes/Transitions/GameBootstrapScene.unity
   - m_enabled: 1
-    m_path: Assets/Scenes/Testbeds/TB_PlaytestArena.unity
+    m_path: Assets/Scenes/Testbeds/TB_ArenaDemo.unity
   - m_enabled: 1
-    m_path: Assets/Scenes/Transitions/NetworkDespawnerScene.unity
+    m_path: Assets/Scenes/Testbeds/TB_PlaytestArena.unity
   - m_enabled: 1
     m_path: Assets/Developers/Mari/leveldesign.unity
   - m_enabled: 1
-    m_path: Assets/Scenes/Testbeds/TB_ArenaDemo.unity
+    m_path: Assets/Scenes/Transitions/NetworkDespawnerScene.unity
+  - m_enabled: 1
+    m_path: Assets/Developers/Isamu/Train/TB_Train.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Testbeds/TB_Locomotion.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Testbeds/TB_AudioReactivity.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings: []
