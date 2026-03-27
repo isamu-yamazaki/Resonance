@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.DefaultSceneNameSetter
   lobbyManager: {fileID: 1097043115}
-  sceneName: TB_ArenaDemo
+  sceneName: TB_PlaytestArena
 --- !u!1 &32129099
 GameObject:
   m_ObjectHideFlags: 0
