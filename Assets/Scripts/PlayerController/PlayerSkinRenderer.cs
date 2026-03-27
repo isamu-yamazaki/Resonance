@@ -88,6 +88,7 @@ namespace Resonance.PlayerController
 
             if (CurrentMeshInstance != null)
             {
+                CurrentMeshInstance.transform.SetParent(null);
                 Destroy(CurrentMeshInstance);
             }
 
