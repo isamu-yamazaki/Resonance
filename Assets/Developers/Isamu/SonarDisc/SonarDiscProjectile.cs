@@ -34,6 +34,7 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float pulseRadius = 30f;
         [SerializeField] private float pulseExpandDuration = 0.6f;
         [SerializeField] private LayerMask playerLayerMask;
+        [SerializeField] private LayerMask occlusionLayerMask;
 
         private Rigidbody _rigidbody;
         private bool _isAttached;
@@ -237,7 +238,18 @@ namespace Resonance.Abilities.SonarDisc
                         continue;
 
                     detected.Add(candidate);
-                    // TODO: LOS raycast check (phase 2)
+
+                    // Raycast from candidate toward disc to avoid self-intersection with the wall the disc is attached to
+                    Vector3 directionToDisc = transform.position - candidate.transform.position;
+                    float distanceToDisc = directionToDisc.magnitude;
+                    Debug.DrawRay(candidate.transform.position, directionToDisc.normalized * distanceToDisc, Color.red, 3f);
+                    if (Physics.Raycast(candidate.transform.position, directionToDisc.normalized, out RaycastHit occlusionHit, distanceToDisc, occlusionLayerMask, QueryTriggerInteraction.Ignore))
+                    {
+                        Debug.Log($"[SonarDisc] LOS blocked by: {occlusionHit.collider.name} on layer {LayerMask.LayerToName(occlusionHit.collider.gameObject.layer)}");
+                        Debug.DrawRay(candidate.transform.position, directionToDisc.normalized * occlusionHit.distance, Color.yellow, 3f);
+                        continue;
+                    }
+
                     NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject);
                 }
 
