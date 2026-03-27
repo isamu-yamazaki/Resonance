@@ -1,10 +1,11 @@
 #if !UNITY_SERVER
 using UnityEngine;
 using Resonance.PlayerController;
+using PurrNet;
 
 namespace Resonance.Audio
 {
-    public class FootstepController : MonoBehaviour
+    public class FootstepController : NetworkBehaviour
     {
         [Header("Wwise Events")]
         public AK.Wwise.Event footstepEvent;
@@ -30,6 +31,12 @@ namespace Resonance.Audio
         private PlayerState playerState;
         private string currentSurface = "Concrete"; // concrete is default
         private bool wasInAir = false;
+
+        protected override void OnSpawned()
+        {
+            base.OnSpawned();
+            enabled = isOwner;
+        }
 
         void Awake()
         {
@@ -60,6 +67,7 @@ namespace Resonance.Audio
             wasInAir = isInAir;
         }
 
+        [ObserversRpc(runLocally: true)]
         public void PlayFootstep()
         {
             DetectSurface();
@@ -76,6 +84,7 @@ namespace Resonance.Audio
             }
         }
 
+        [ObserversRpc(runLocally: true)]
         public void PlayLanding()
         {
             DetectSurface();
