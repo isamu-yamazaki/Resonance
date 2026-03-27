@@ -28,14 +28,18 @@ namespace Resonance.Helper
         void Update()
         {
             bool muted = EditorUtility.audioMasterMute;
+#if !UNITY_SERVER
             AkUnitySoundEngine.SetOutputVolume(0, muted ? 0f : 1f);
+#endif
         }
         #endregion
 
         #region Cleanup
         void OnDestroy()
         {
+#if !UNITY_SERVER
             AkUnitySoundEngine.SetOutputVolume(0, 1f);
+#endif
         }
         #endregion
     }
