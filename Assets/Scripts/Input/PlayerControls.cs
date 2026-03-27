@@ -432,6 +432,24 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AbilityUpper"",
+                    ""type"": ""Button"",
+                    ""id"": ""6912d6e3-4ffe-4e62-8749-6867d3ed0000"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AbilityLower"",
+                    ""type"": ""Button"",
+                    ""id"": ""c1b10b75-6484-4ab4-a113-99911fed1a79"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -555,6 +573,28 @@ namespace Resonance.PlayerController
                     ""action"": ""Stim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1c19e0dd-3c4c-406d-a64c-97e6eca99934"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AbilityUpper"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f6de6a43-a67d-4901-82db-f440976a78cb"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AbilityLower"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -581,6 +621,8 @@ namespace Resonance.PlayerController
             m_PlayerActionMap_ShowMatchStats = m_PlayerActionMap.FindAction("ShowMatchStats", throwIfNotFound: true);
             m_PlayerActionMap_ToggleShop = m_PlayerActionMap.FindAction("ToggleShop", throwIfNotFound: true);
             m_PlayerActionMap_Stim = m_PlayerActionMap.FindAction("Stim", throwIfNotFound: true);
+            m_PlayerActionMap_AbilityUpper = m_PlayerActionMap.FindAction("AbilityUpper", throwIfNotFound: true);
+            m_PlayerActionMap_AbilityLower = m_PlayerActionMap.FindAction("AbilityLower", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -813,6 +855,8 @@ namespace Resonance.PlayerController
         private readonly InputAction m_PlayerActionMap_ShowMatchStats;
         private readonly InputAction m_PlayerActionMap_ToggleShop;
         private readonly InputAction m_PlayerActionMap_Stim;
+        private readonly InputAction m_PlayerActionMap_AbilityUpper;
+        private readonly InputAction m_PlayerActionMap_AbilityLower;
         /// <summary>
         /// Provides access to input actions defined in input action map "PlayerActionMap".
         /// </summary>
@@ -868,6 +912,14 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerActionMap/Stim".
             /// </summary>
             public InputAction @Stim => m_Wrapper.m_PlayerActionMap_Stim;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerActionMap/AbilityUpper".
+            /// </summary>
+            public InputAction @AbilityUpper => m_Wrapper.m_PlayerActionMap_AbilityUpper;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerActionMap/AbilityLower".
+            /// </summary>
+            public InputAction @AbilityLower => m_Wrapper.m_PlayerActionMap_AbilityLower;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -927,6 +979,12 @@ namespace Resonance.PlayerController
                 @Stim.started += instance.OnStim;
                 @Stim.performed += instance.OnStim;
                 @Stim.canceled += instance.OnStim;
+                @AbilityUpper.started += instance.OnAbilityUpper;
+                @AbilityUpper.performed += instance.OnAbilityUpper;
+                @AbilityUpper.canceled += instance.OnAbilityUpper;
+                @AbilityLower.started += instance.OnAbilityLower;
+                @AbilityLower.performed += instance.OnAbilityLower;
+                @AbilityLower.canceled += instance.OnAbilityLower;
             }
 
             /// <summary>
@@ -971,6 +1029,12 @@ namespace Resonance.PlayerController
                 @Stim.started -= instance.OnStim;
                 @Stim.performed -= instance.OnStim;
                 @Stim.canceled -= instance.OnStim;
+                @AbilityUpper.started -= instance.OnAbilityUpper;
+                @AbilityUpper.performed -= instance.OnAbilityUpper;
+                @AbilityUpper.canceled -= instance.OnAbilityUpper;
+                @AbilityLower.started -= instance.OnAbilityLower;
+                @AbilityLower.performed -= instance.OnAbilityLower;
+                @AbilityLower.canceled -= instance.OnAbilityLower;
             }
 
             /// <summary>
@@ -1131,6 +1195,20 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnStim(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "AbilityUpper" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnAbilityUpper(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "AbilityLower" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnAbilityLower(InputAction.CallbackContext context);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Resonance.Combat.Augments
         public WeaponModProperties ModProperties => modProperties;
         
         [Header("Augment Ability")]
-        [SerializeField] private string abilityKey;
-        public string AbilityKey => abilityKey;
+        [SerializeField] private AugmentAbility ability;
+        public AugmentAbility Ability => ability;
     }
 }
