@@ -1,7 +1,8 @@
 using System;
 using PurrNet;
+using Resonance.Assemblies.SharedGameLogic;
+using Resonance.Match;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Resonance.PlayerController
 {
@@ -18,6 +19,40 @@ namespace Resonance.PlayerController
 
         public GameObject CurrentMeshInstance { get; private set; }
         public SkinData CurrentlyLoadedSkinData { get; private set; }
+
+        private BaseRoundManagerNetworkAdapter roundManager;
+
+        public bool ShouldRenderArmsOnly
+        {
+            get
+            {
+                if (roundManager != null && roundManager.IsMatchActive)
+                {
+                    return isOwner;
+                }
+                else if (roundManager == null)
+                {
+                    return isOwner;
+                }
+                return false;
+            }
+        }
+
+        private void Awake()
+        {
+            roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
+            roundManager.OnMatchStateChange += HandleOnMatchStateChange;
+        }
+
+        protected override void OnDestroy()
+        {
+            roundManager.OnMatchStateChange -= HandleOnMatchStateChange;
+        }
+
+        private void HandleOnMatchStateChange(BaseMatchState first, BaseMatchState second)
+        {
+            ApplySkin(skinIndex.value);
+        }
 
         protected override void OnSpawned()
         {
@@ -58,13 +93,13 @@ namespace Resonance.PlayerController
 
             CurrentlyLoadedSkinData = skinData;
 
-            if (!isOwner)
+            if (ShouldRenderArmsOnly)
             {
-                ApplyMeshPrefabAndAvatar(skinData.bodyMeshPrefab, skinData.bodyAvatar);
+                ApplyMeshPrefabAndAvatar(skinData.armsMeshPrefab, skinData.armsAvatar);
             }
             else
             {
-                ApplyMeshPrefabAndAvatar(skinData.armsMeshPrefab, skinData.armsAvatar);
+                ApplyMeshPrefabAndAvatar(skinData.bodyMeshPrefab, skinData.bodyAvatar);
             }
 
             animator.Rebind();
