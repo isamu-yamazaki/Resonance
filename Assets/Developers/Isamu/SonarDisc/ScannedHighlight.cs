@@ -18,10 +18,15 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float snapshotInterval = 1f;
         [SerializeField] private int snapshotCount = 3;
 
+        [Header("Wwise Events")]
+        // TODO: Assign scanned snapshot event in inspector
+        [SerializeField] private AK.Wwise.Event snapshotEvent;
+
         private static readonly int RevealTimeID = Shader.PropertyToID("_RevealTime");
 
         private PlayerSkinRenderer _skinRenderer;
         private SkinnedMeshRenderer[] _meshRenderers;
+
         private void Awake()
         {
             _skinRenderer = GetComponentInParent<PlayerSkinRenderer>();
@@ -101,6 +106,11 @@ namespace Resonance.Abilities.SonarDisc
                     shells[j] = shell;
                     materials[j] = mat;
                 }
+
+#if !UNITY_SERVER
+                if (snapshotEvent != null && snapshotEvent.IsValid())
+                    snapshotEvent.Post(gameObject);
+#endif
 
                 float elapsed = 0f;
                 while (elapsed < snapshotDuration)

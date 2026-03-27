@@ -123,6 +123,9 @@ MonoBehaviour:
   occlusionLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  discCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   shootEvent:
     idInternal: 0
     valueGuidInternal: 
@@ -135,7 +138,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 134c35300a1b649e68d10a1ddf0baf86, type: 2}
-  scannedEvent:
+  hitPlayerEvent:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 9ee5018f3bf1f42c88a43c7cd4aeab02, type: 2}
@@ -143,9 +146,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: cefad1e1f9c484e0e9e9590d30fa1560, type: 2}
-  discCollisionMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &697816106320107227
 MonoBehaviour:
   m_ObjectHideFlags: 0

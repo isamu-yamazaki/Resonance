@@ -37,16 +37,19 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private LayerMask playerLayerMask;
         [SerializeField] private LayerMask occlusionLayerMask;
 
+        [Header("Collision")]
+        [SerializeField] private LayerMask discCollisionMask;
+
         [Header("Wwise Events")]
-        // TODO: Assign shoot event in inspector
+        // TODO: Assign shoot event (Play_SD_Shoot) in inspector
         [SerializeField] private AK.Wwise.Event shootEvent;
-        // TODO: Assign wall impact event in inspector
+        // TODO: Assign wall impact event (Play_SD_WallImpact) in inspector
         [SerializeField] private AK.Wwise.Event wallImpactEvent;
-        // TODO: Assign pulse activation event in inspector
+        // TODO: Assign pulse activation event (Play_SD_PulseActivate) in inspector
         [SerializeField] private AK.Wwise.Event pulseActivationEvent;
-        // TODO: Assign scanned event (plays for the player who was scanned) in inspector
-        [SerializeField] private AK.Wwise.Event scannedEvent;
-        // TODO: Assign scan confirmed event (plays for the disc owner on successful scan) in inspector
+        // Plays spatially on the hit player for all clients (Play_SD_Distortion)
+        [SerializeField] private AK.Wwise.Event hitPlayerEvent;
+        // Plays only for the disc owner on a successful scan (Play_SD_Ping)
         [SerializeField] private AK.Wwise.Event scanConfirmedEvent;
 
         private Rigidbody _rigidbody;
@@ -83,9 +86,6 @@ namespace Resonance.Abilities.SonarDisc
             _rigidbody.linearVelocity = direction.normalized * travelSpeed;
             transform.rotation = Quaternion.LookRotation(direction.normalized);
         }
-
-        [Header("Collision")]
-        [SerializeField] private LayerMask discCollisionMask;
 
         private void Update()
         {
@@ -193,6 +193,9 @@ namespace Resonance.Abilities.SonarDisc
                 }
             }
 
+            // Broadcast distortion sound spatially from hit player's position to all clients
+            BroadcastHitPlayerSoundObserversRpc(playerCollider.gameObject);
+
             // TODO: start disorient coroutine on playerCollider's owner (phase 2)
             DestroyDisc();
         }
@@ -202,6 +205,10 @@ namespace Resonance.Abilities.SonarDisc
             BroadcastWallImpactObserversRpc();
             StartCoroutine(WallPulseSequence());
         }
+
+        #endregion
+
+        #region Audio RPCs
 
         [ObserversRpc(runLocally: true)]
         public void BroadcastShootSoundObserversRpc()
@@ -220,6 +227,28 @@ namespace Resonance.Abilities.SonarDisc
                 wallImpactEvent.Post(gameObject);
 #endif
         }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastHitPlayerSoundObserversRpc(GameObject hitPlayer)
+        {
+#if !UNITY_SERVER
+            if (hitPlayerEvent != null && hitPlayerEvent.IsValid())
+                hitPlayerEvent.Post(hitPlayer);
+#endif
+        }
+
+        [TargetRpc]
+        private void NotifyScanConfirmedOwnerRpc(PlayerID target)
+        {
+#if !UNITY_SERVER
+            if (scanConfirmedEvent != null && scanConfirmedEvent.IsValid())
+                scanConfirmedEvent.Post(gameObject);
+#endif
+        }
+
+        #endregion
+
+        #region VFX RPCs
 
         [ObserversRpc(runLocally: true)]
         private void NotifyPulseVFXObserversRpc()
@@ -245,24 +274,6 @@ namespace Resonance.Abilities.SonarDisc
                 highlight.Play();
         }
 
-        [TargetRpc]
-        private void NotifyScannedAudioTargetRpc(PlayerID target)
-        {
-#if !UNITY_SERVER
-            if (scannedEvent != null && scannedEvent.IsValid())
-                scannedEvent.Post(gameObject);
-#endif
-        }
-
-        [TargetRpc]
-        private void NotifyScanConfirmedOwnerRpc(PlayerID target)
-        {
-#if !UNITY_SERVER
-            if (scanConfirmedEvent != null && scanConfirmedEvent.IsValid())
-                scanConfirmedEvent.Post(gameObject);
-#endif
-        }
-
         [ObserversRpc(runLocally: false)]
         private void NotifyAttachedToPlayerObserversRpc(GameObject playerObject, Vector3 hitPoint, Quaternion rotation)
         {
@@ -278,6 +289,12 @@ namespace Resonance.Abilities.SonarDisc
         private void NotifyAttachedToWallObserversRpc(Vector3 hitPoint, Quaternion rotation)
         {
             transform.SetPositionAndRotation(hitPoint, rotation);
+        }
+
+        [TargetRpc]
+        private void NotifyScannedFlashTargetRpc(PlayerID target, GameObject scannedPlayer)
+        {
+            ScannedScreenFlash.Instance?.Flash();
         }
 
         #endregion
@@ -333,18 +350,9 @@ namespace Resonance.Abilities.SonarDisc
                         PlayerID scannedPlayerID = scannedHighlight.owner.Value;
 
                         if (isHost && scannedPlayerID == NetworkManager.main.localPlayer)
-                        {
                             ScannedScreenFlash.Instance?.Flash();
-#if !UNITY_SERVER
-                            if (scannedEvent != null && scannedEvent.IsValid())
-                                scannedEvent.Post(gameObject);
-#endif
-                        }
                         else
-                        {
                             NotifyScannedFlashTargetRpc(scannedPlayerID, candidate.gameObject);
-                            NotifyScannedAudioTargetRpc(scannedPlayerID);
-                        }
 
                         NotifyScanConfirmedOwnerRpc(_ownerPlayerID);
                     }
@@ -357,12 +365,6 @@ namespace Resonance.Abilities.SonarDisc
         }
 
         #endregion
-
-        [TargetRpc]
-        private void NotifyScannedFlashTargetRpc(PlayerID target, GameObject scannedPlayer)
-        {
-            ScannedScreenFlash.Instance?.Flash();
-        }
 
         #region Destruction
 
