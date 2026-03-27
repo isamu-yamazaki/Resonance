@@ -6,6 +6,10 @@ namespace Resonance.Combat.Augments
     {
         public string Name { get; }
         public string Description { get; }
+
+        public float Cooldown { get; set; }
+        
+        
     
         public void ActivateAbility();
     }
