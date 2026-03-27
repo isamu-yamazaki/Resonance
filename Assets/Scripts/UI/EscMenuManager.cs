@@ -15,6 +15,11 @@ namespace Resonance.UI
         [SerializeField] private Button leaveGameButton;
         [SerializeField] private Button quitGameButton;
 
+        [Header("Quit Confirmation")]
+        [SerializeField] private GameObject quitConfirmationPanel;
+        [SerializeField] private Button quitYesButton;
+        [SerializeField] private Button quitNoButton;
+
         [Header("Dependencies")]
         [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
 
@@ -26,6 +31,7 @@ namespace Resonance.UI
         private void Start()
         {
             escMenuPanel.SetActive(false);
+            quitConfirmationPanel.SetActive(false);
 
             if (resumeButton != null)
                 resumeButton.onClick.AddListener(Toggle);
@@ -35,6 +41,12 @@ namespace Resonance.UI
 
             if (quitGameButton != null)
                 quitGameButton.onClick.AddListener(OnQuitGameClicked);
+
+            if (quitYesButton != null)
+                quitYesButton.onClick.AddListener(OnQuitConfirmed);
+
+            if (quitNoButton != null)
+                quitNoButton.onClick.AddListener(OnQuitCancelled);
         }
 
         public void Toggle()
@@ -43,6 +55,9 @@ namespace Resonance.UI
 
             if (!escMenuPanel.activeSelf && playerState != null && playerState.IsMatchFrozen())
                 return;
+
+            // Close confirmation panel too if it was open
+            quitConfirmationPanel.SetActive(false);
 
             if (escMenuPanel.activeSelf)
             {
@@ -67,10 +82,20 @@ namespace Resonance.UI
 
         private void OnQuitGameClicked()
         {
+            quitConfirmationPanel.SetActive(true);
+        }
+
+        private void OnQuitConfirmed()
+        {
             Application.Quit();
             #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
             #endif
+        }
+
+        private void OnQuitCancelled()
+        {
+            quitConfirmationPanel.SetActive(false);
         }
     }
 }
