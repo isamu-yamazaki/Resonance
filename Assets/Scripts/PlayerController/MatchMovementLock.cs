@@ -16,6 +16,8 @@ namespace Resonance.PlayerController
 
         private void Update()
         {
+            if (roundManager == null) return;
+
             if (roundManager.IsMatchEnded)
             {
                 playerState.SetPlayerMovementState(PlayerMovementState.MatchEndedFrozen);
