@@ -144,7 +144,7 @@ namespace Resonance.Audio
                 float waveMaxDistance = AudioSourceTracker.Instance.BaseWaveDistance * clientReportedSource.PeakIntensity;
                 float distanceAttenuation = 1f - Mathf.Clamp01(distance / waveMaxDistance);
 
-                targetIntensity = sourceIntensity * distanceAttenuation;
+                targetIntensity = Mathf.Clamp01(sourceIntensity * distanceAttenuation);
             }
             else
             {

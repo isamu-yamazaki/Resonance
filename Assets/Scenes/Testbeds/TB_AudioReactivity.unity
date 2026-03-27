@@ -244,36 +244,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  listenRadius: 20
-  falloffDistance: 10
-  falloffSmoothness: 1
-  targetMaterial: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  targetRenderer: {fileID: 0}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
-  propagationSpeed: 100
-  enablePropagationDelay: 1
-  enableLOD: 1
-  lodNearDistance: 15
-  lodMediumDistance: 40
-  lodFarDistance: 80
-  enableSmoothing: 0
-  smoothSpeed: 10
   enableAudioFeedback: 1
-  feedbackStartEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  feedbackStopEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  feedbackVolumeRTPC:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  minVolumeThreshold: 0.01
-  maxFeedbackVolume: 100
-  drawDebugRadius: 0
+  attackSpeed: 30
+  sustainTime: 1
+  releaseSpeed: 0.5
+  threshold: 0.05
+  debugLog: 0
+  serverToClientPropagationIntervalSeconds: 0.2
+  clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!114 &57360072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,36 +277,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  listenRadius: 40
-  falloffDistance: 10
-  falloffSmoothness: 2
-  targetMaterial: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  targetRenderer: {fileID: 0}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
-  propagationSpeed: 75
-  enablePropagationDelay: 1
-  enableLOD: 1
-  lodNearDistance: 15
-  lodMediumDistance: 40
-  lodFarDistance: 80
-  enableSmoothing: 1
-  smoothSpeed: 10
   enableAudioFeedback: 1
-  feedbackStartEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: f15e3407ad8986b419045614ef118274, type: 2}
-  feedbackStopEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 9eb23c51bbda5d24a84f6f5eecf4288e, type: 2}
-  feedbackVolumeRTPC:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 004174a110224a149ad8b6cb5d816964, type: 2}
-  minVolumeThreshold: 0.01
-  maxFeedbackVolume: 50
-  drawDebugRadius: 0
+  attackSpeed: 30
+  sustainTime: 1
+  releaseSpeed: 0.5
+  threshold: 0.05
+  debugLog: 0
+  serverToClientPropagationIntervalSeconds: 0.2
+  clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!1 &131877402
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,6 +384,8 @@ GameObject:
   - component: {fileID: 138659592}
   - component: {fileID: 138659590}
   - component: {fileID: 138659589}
+  - component: {fileID: 138659595}
+  - component: {fileID: 138659594}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: Untagged
@@ -551,6 +535,90 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &138659594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138659588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e325349b27c78b84c8ac5656b66ad2a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkAudioListener
+  isDefaultListener: 1
+  bOverrideScalingFactor: 0
+  scalingFactor: -1
+  listenerId: 0
+--- !u!114 &138659595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138659588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02372b49c7f35af4caecfab755da37c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkGameObj
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 0
+  isStaticObject: 0
+  usePositionOffsetData: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  scalingFactor: 1
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
+--- !u!1 &153312828
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 153312829}
+  - component: {fileID: 153312830}
+  m_Layer: 0
+  m_Name: WwiseMuteHelper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &153312829
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153312828}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 850, y: 462.50012, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &153312830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153312828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4162e407f63e048ae883815acad9bddf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Helper.WwiseMuteHelper
 --- !u!1 &276917463
 GameObject:
   m_ObjectHideFlags: 0
@@ -1059,6 +1127,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 366d413629cf5254785a853493ba40fe, type: 2}
+  updateInterval: 0.05
 --- !u!1 &742751512
 GameObject:
   m_ObjectHideFlags: 0
@@ -1980,36 +2049,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  listenRadius: 40
-  falloffDistance: 10
-  falloffSmoothness: 2
-  targetMaterial: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  targetRenderer: {fileID: 0}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
-  propagationSpeed: 75
-  enablePropagationDelay: 1
-  enableLOD: 1
-  lodNearDistance: 15
-  lodMediumDistance: 40
-  lodFarDistance: 80
-  enableSmoothing: 1
-  smoothSpeed: 10
   enableAudioFeedback: 1
-  feedbackStartEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: f15e3407ad8986b419045614ef118274, type: 2}
-  feedbackStopEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 9eb23c51bbda5d24a84f6f5eecf4288e, type: 2}
-  feedbackVolumeRTPC:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 004174a110224a149ad8b6cb5d816964, type: 2}
-  minVolumeThreshold: 0.01
-  maxFeedbackVolume: 50
-  drawDebugRadius: 1
+  attackSpeed: 30
+  sustainTime: 1
+  releaseSpeed: 0.5
+  threshold: 0.05
+  debugLog: 0
+  serverToClientPropagationIntervalSeconds: 0.2
+  clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!1 &1736729762
 GameObject:
   m_ObjectHideFlags: 0
@@ -2165,36 +2225,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  listenRadius: 40
-  falloffDistance: 10
-  falloffSmoothness: 2
-  targetMaterial: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  targetRenderer: {fileID: 0}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
-  propagationSpeed: 75
-  enablePropagationDelay: 1
-  enableLOD: 1
-  lodNearDistance: 15
-  lodMediumDistance: 40
-  lodFarDistance: 80
-  enableSmoothing: 1
-  smoothSpeed: 10
   enableAudioFeedback: 1
-  feedbackStartEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: f15e3407ad8986b419045614ef118274, type: 2}
-  feedbackStopEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 9eb23c51bbda5d24a84f6f5eecf4288e, type: 2}
-  feedbackVolumeRTPC:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 004174a110224a149ad8b6cb5d816964, type: 2}
-  minVolumeThreshold: 0.01
-  maxFeedbackVolume: 50
-  drawDebugRadius: 0
+  attackSpeed: 30
+  sustainTime: 1
+  releaseSpeed: 0.5
+  threshold: 0.05
+  debugLog: 0
+  serverToClientPropagationIntervalSeconds: 0.2
+  clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!1 &1818242583
 GameObject:
   m_ObjectHideFlags: 0
@@ -2719,36 +2770,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  listenRadius: 40
-  falloffDistance: 10
-  falloffSmoothness: 2
-  targetMaterial: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  targetRenderer: {fileID: 0}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
-  propagationSpeed: 75
-  enablePropagationDelay: 1
-  enableLOD: 1
-  lodNearDistance: 15
-  lodMediumDistance: 40
-  lodFarDistance: 80
-  enableSmoothing: 1
-  smoothSpeed: 10
   enableAudioFeedback: 1
-  feedbackStartEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: f15e3407ad8986b419045614ef118274, type: 2}
-  feedbackStopEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 9eb23c51bbda5d24a84f6f5eecf4288e, type: 2}
-  feedbackVolumeRTPC:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 004174a110224a149ad8b6cb5d816964, type: 2}
-  minVolumeThreshold: 0.01
-  maxFeedbackVolume: 50
-  drawDebugRadius: 0
+  attackSpeed: 30
+  sustainTime: 1
+  releaseSpeed: 0.5
+  threshold: 0.05
+  debugLog: 0
+  serverToClientPropagationIntervalSeconds: 0.2
+  clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!1 &1985560573
 GameObject:
   m_ObjectHideFlags: 0
@@ -2779,6 +2821,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioSourceTracker
   defaultDuration: 1
+  propagationSpeed: 50
+  baseWaveDistance: 150
 --- !u!4 &1985560575
 Transform:
   m_ObjectHideFlags: 0
@@ -2877,14 +2921,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b5be48014306304aa7bfad073f8e105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBar
-  healthSlider: {fileID: 2057750630}
-  fillImage: {fileID: 276917465}
-  highHealthColor: {r: 0, g: 1, b: 0, a: 1}
-  mediumHealthColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
-  mediumHealthThreshold: 0.6
-  lowHealthThreshold: 0.3
-  lerpSpeed: 5
+  healthFill: {fileID: 0}
+  damageFill: {fileID: 0}
+  healthText: {fileID: 0}
+  damageLerpSpeed: 2
+  numberTickSpeed: 5
+  damageFlashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.2
 --- !u!114 &2057750630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3171,36 +3214,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  listenRadius: 40
-  falloffDistance: 10
-  falloffSmoothness: 2
-  targetMaterial: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  targetRenderer: {fileID: 0}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
-  propagationSpeed: 75
-  enablePropagationDelay: 1
-  enableLOD: 1
-  lodNearDistance: 15
-  lodMediumDistance: 40
-  lodFarDistance: 80
-  enableSmoothing: 1
-  smoothSpeed: 10
   enableAudioFeedback: 1
-  feedbackStartEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: f15e3407ad8986b419045614ef118274, type: 2}
-  feedbackStopEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 9eb23c51bbda5d24a84f6f5eecf4288e, type: 2}
-  feedbackVolumeRTPC:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 004174a110224a149ad8b6cb5d816964, type: 2}
-  minVolumeThreshold: 0.01
-  maxFeedbackVolume: 50
-  drawDebugRadius: 0
+  attackSpeed: 30
+  sustainTime: 1
+  releaseSpeed: 0.5
+  threshold: 0.05
+  debugLog: 0
+  serverToClientPropagationIntervalSeconds: 0.2
+  clientToServerNullSourceReportingIntervalSeconds: 1
+  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3221,3 +3255,4 @@ SceneRoots:
   - {fileID: 661005726}
   - {fileID: 1985560575}
   - {fileID: 637334523}
+  - {fileID: 153312829}

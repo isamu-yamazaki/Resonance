@@ -1,11 +1,12 @@
-#if !UNITY_SERVER
 using UnityEngine;
 using Resonance.PlayerController;
+using PurrNet;
 
 namespace Resonance.Audio
 {
-    public class FootstepController : MonoBehaviour
+    public class FootstepController : NetworkBehaviour
     {
+#if !UNITY_SERVER
         [Header("Wwise Events")]
         public AK.Wwise.Event footstepEvent;
 
@@ -25,11 +26,18 @@ namespace Resonance.Audio
         public AK.Wwise.Switch woodSurface;
         public AK.Wwise.Switch gravelSurface;
         public AK.Wwise.Switch grassSurface;
+#endif
 
         private CharacterController characterController;
         private PlayerState playerState;
         private string currentSurface = "Concrete"; // concrete is default
         private bool wasInAir = false;
+
+        protected override void OnSpawned()
+        {
+            base.OnSpawned();
+            enabled = isOwner;
+        }
 
         void Awake()
         {
@@ -60,8 +68,10 @@ namespace Resonance.Audio
             wasInAir = isInAir;
         }
 
+        [ObserversRpc(runLocally: true)]
         public void PlayFootstep()
         {
+#if !UNITY_SERVER
             DetectSurface();
             SetSurfaceSwitch();
 
@@ -74,10 +84,13 @@ namespace Resonance.Audio
                     AudioSourceTracker.Instance.RegisterSound(transform.position, 0.3f);
                 }
             }
+#endif
         }
 
+        [ObserversRpc(runLocally: true)]
         public void PlayLanding()
         {
+#if !UNITY_SERVER
             DetectSurface();
             SetSurfaceSwitch();
 
@@ -91,8 +104,10 @@ namespace Resonance.Audio
                     Invoke(nameof(RegisterLanding), 0.05f); // 50ms delay
                 }
             }
+#endif
         }
 
+#if !UNITY_SERVER
         private void RegisterLanding()
         {
             if (AudioSourceTracker.Instance != null)
@@ -157,6 +172,6 @@ namespace Resonance.Audio
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(origin, origin + Vector3.down * distance);
         }
+#endif
     }
 }
-#endif
