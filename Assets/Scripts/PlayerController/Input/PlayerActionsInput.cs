@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Resonance.Shop;
 using PurrNet;
+using Resonance.UI;
 
 namespace Resonance.PlayerController
 {
@@ -239,16 +240,10 @@ namespace Resonance.PlayerController
             if (!context.performed)
                 return;
 
-            if (Cursor.lockState == CursorLockMode.Locked)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
+            if (EscMenuManager.Instance == null)
+                return;
+
+            EscMenuManager.Instance.Toggle();
         }
 
         public void OnShowMatchStats(InputAction.CallbackContext context)
