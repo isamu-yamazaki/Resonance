@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{106D18BE-67B0-F216-0196-EFF57EA8FD76}",
+    "Hash": "{4B44E965-75C8-FB5C-D77C-0202890731D4}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -751,6 +751,7 @@
       "Name": "Play_SD_Distortion",
       "ObjectPath": "\\Events\\Default Work Unit\\SonarDisc\\Play_SD_Distortion",
       "GUID": "{CA254BB4-30E7-4D33-94F7-745C22F42519}",
+      "MaxAttenuation": "30.000002",
       "DurationType": "OneShot",
       "DurationMin": "0.432",
       "DurationMax": "0.432",
@@ -779,7 +780,7 @@
       "Name": "Play_SD_PulseActivate",
       "ObjectPath": "\\Events\\Default Work Unit\\SonarDisc\\Play_SD_PulseActivate",
       "GUID": "{BA656AA4-42E7-42B4-B54E-A4E939C157BA}",
-      "MaxAttenuation": "100",
+      "MaxAttenuation": "50",
       "DurationType": "OneShot",
       "DurationMin": "0.77435416",
       "DurationMax": "0.77435416",
@@ -954,6 +955,6 @@
     ]
    }
   ],
-  "FileHash": "{2279EB7C-97B0-535A-A1C9-88FD06199630}"
+  "FileHash": "{845FDD29-BEA1-ED42-1E73-7CC17E3C195D}"
  }
 }
