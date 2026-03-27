@@ -6,24 +6,38 @@ namespace Resonance.Helper
 #if UNITY_EDITOR
     public class WwiseMuteHelper : MonoBehaviour
     {
-        AkAudioListener _akAudioListener;
+        #region Singleton
+        public static WwiseMuteHelper Instance { get; private set; }
+        #endregion
 
+        #region Startup
         void Awake()
         {
-            _akAudioListener = FindFirstObjectByType<AkAudioListener>();
-        }
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
 
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        #endregion
+
+        #region Update
         void Update()
         {
             bool muted = EditorUtility.audioMasterMute;
-            _akAudioListener.enabled = !muted;
             AkUnitySoundEngine.SetOutputVolume(0, muted ? 0f : 1f);
         }
+        #endregion
 
+        #region Cleanup
         void OnDestroy()
         {
             AkUnitySoundEngine.SetOutputVolume(0, 1f);
         }
+        #endregion
     }
 #endif
 }
