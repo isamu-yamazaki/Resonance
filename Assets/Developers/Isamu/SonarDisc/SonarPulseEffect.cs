@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
@@ -15,11 +14,6 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float expandDuration = 0.6f;
         [SerializeField] private float maxRadius = 30f;
 
-        private static readonly int PulseTimeID     = Shader.PropertyToID("_PulseTime");
-        private static readonly int DiscOriginID    = Shader.PropertyToID("_DiscOrigin");
-        private static readonly int DiscForwardID   = Shader.PropertyToID("_DiscForward");
-        private static readonly int CurrentRadiusID = Shader.PropertyToID("_CurrentRadius");
-
         public void Play()
         {
             if (sonarPulseMaterial == null)
@@ -28,7 +22,6 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            // Spawn a self-contained runner so the coroutine survives disc destruction
             GameObject runner = new GameObject("SonarPulseRunner");
             SonarPulseRunner pulseRunner = runner.AddComponent<SonarPulseRunner>();
             pulseRunner.Initialize(transform.position, -transform.forward, sonarPulseMaterial, maxRadius, expandDuration);

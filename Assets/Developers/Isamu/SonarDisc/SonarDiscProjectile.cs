@@ -24,6 +24,7 @@ namespace Resonance.Abilities.SonarDisc
         [Header("VFX")]
         [SerializeField] private Material deathGlitchMaterial;
         [SerializeField] private float glitchEffectDuration = 0.5f;
+
         [Header("Combat")]
         [SerializeField] private float discDamage = 5f;
         [SerializeField] private DamageNumber damageNumberPrefab;
@@ -175,14 +176,10 @@ namespace Resonance.Abilities.SonarDisc
         [TargetRpc]
         private void NotifyPlayerDetectedOwnerRpc(PlayerID target, GameObject detectedPlayer)
         {
-            Debug.Log($"[SonarDisc] NotifyPlayerDetectedOwnerRpc received. target: {target}, detectedPlayer: {detectedPlayer?.name}");
-
             if (detectedPlayer == null)
                 return;
 
-            // We're already on the owner's client — call Play() directly, no RPC needed
             ScannedHighlight highlight = detectedPlayer.GetComponentInChildren<ScannedHighlight>();
-            Debug.Log($"[SonarDisc] ScannedHighlight found: {highlight != null}");
             if (highlight != null)
                 highlight.Play();
         }
