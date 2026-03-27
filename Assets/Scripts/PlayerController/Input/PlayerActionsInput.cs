@@ -16,6 +16,10 @@ namespace Resonance.PlayerController
         public bool SwapSlotTwoPressed { get; private set; }
         public bool SwapWeaponPressed { get; private set; }
         public bool HealPressed { get; private set; }
+        
+        public bool AbilityUpperPressed { get; private set; }
+        
+        public bool AbilityLowerPressed { get; private set; }
 
         public bool ShowStatsHeld { get; private set; }
 
@@ -117,6 +121,16 @@ namespace Resonance.PlayerController
             HealPressed = false;
         }
 
+        public void SetAbilityUpperPressedFalse()
+        {
+            AbilityUpperPressed = false;
+        }
+
+        public void SetAbilityLowerPressedFalse()
+        {
+            AbilityLowerPressed = false;
+        }
+
         #endregion
 
         #region Input Callbacks
@@ -203,8 +217,22 @@ namespace Resonance.PlayerController
 
             HealPressed = true;
         }
+        
+        public void OnAbilityUpper(InputAction.CallbackContext context)
+        {
+            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+                return;
 
+            AbilityUpperPressed = true;
+        }
 
+        public void OnAbilityLower(InputAction.CallbackContext context)
+        {
+            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+                return;
+
+            AbilityLowerPressed = true;
+        }
 
         public void OnEscape(InputAction.CallbackContext context)
         {
