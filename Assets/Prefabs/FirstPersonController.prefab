@@ -333,7 +333,6 @@ GameObject:
   - component: {fileID: 3902318088920976036}
   - component: {fileID: -3244453310725485557}
   - component: {fileID: -6037485656678035583}
-  - component: {fileID: 4230497826238217580}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -1287,20 +1286,3 @@ MonoBehaviour:
   snapshotDuration: 1
   snapshotInterval: 1
   snapshotCount: 3
---- !u!114 &4230497826238217580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2403bcfdd411e48208dda0e6fcc512ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.ScannedScreenFlash
-  _postProcessVolume: {fileID: 1311654643413597327}
-  flashColor: {r: 1, g: 0, b: 0.8, a: 1}
-  flashIntensity: 0.6
-  flashDuration: 0.2
-  flashTransitionSpeed: 20

@@ -282,7 +282,12 @@ namespace Resonance.Abilities.SonarDisc
 
                     ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
                     if (scannedHighlight != null && scannedHighlight.owner.HasValue)
-                        NotifyScannedFlashTargetRpc(scannedHighlight.owner.Value, candidate.gameObject);
+                    {
+                        if (isHost && scannedHighlight.owner.Value == NetworkManager.main.localPlayer)
+                            ScannedScreenFlash.Instance?.Flash();
+                        else
+                            NotifyScannedFlashTargetRpc(scannedHighlight.owner.Value, candidate.gameObject);
+                    }
                 }
 
                 yield return null;
@@ -296,9 +301,7 @@ namespace Resonance.Abilities.SonarDisc
         [TargetRpc]
         private void NotifyScannedFlashTargetRpc(PlayerID target, GameObject scannedPlayer)
         {
-            ScannedScreenFlash screenFlash = scannedPlayer.GetComponentInChildren<ScannedScreenFlash>();
-            if (screenFlash != null)
-                screenFlash.Flash();
+            ScannedScreenFlash.Instance?.Flash();
         }
 
         #region Destruction

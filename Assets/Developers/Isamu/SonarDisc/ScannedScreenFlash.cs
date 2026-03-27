@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -5,13 +6,13 @@ using UnityEngine.Rendering.Universal;
 namespace Resonance.PlayerController
 {
     /// <summary>
-    /// Plain MonoBehaviour — modeled after OverdriveScreenTint.
-    /// Flash() is called directly on the correct client by SonarDiscProjectile.
+    /// Singleton MonoBehaviour modeled after DamageIndicatorUI.
+    /// Waits for the local player to spawn then grabs their post-process volume.
+    /// Flash() is called via Instance from SonarDiscProjectile.
     /// </summary>
     public class ScannedScreenFlash : MonoBehaviour
     {
-        [Header("Post Processing")]
-        [SerializeField] private Volume _postProcessVolume;
+        public static ScannedScreenFlash Instance { get; private set; }
 
         [Header("Flash Settings")]
         [SerializeField] private Color flashColor = new Color(1f, 0f, 0.8f, 1f);
@@ -23,18 +24,38 @@ namespace Resonance.PlayerController
 
         private void Awake()
         {
-            if (_postProcessVolume != null && _postProcessVolume.profile != null)
-                _postProcessVolume.profile.TryGet(out _vignette);
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
         }
 
-        private void Start()
+        private void OnDestroy()
         {
-            if (_vignette != null)
+            if (Instance == this)
+                Instance = null;
+        }
+
+        private IEnumerator Start()
+        {
+            while (PlayerController.LocalPlayer == null)
+                yield return null;
+
+            Volume volume = PlayerController.LocalPlayer.GetComponent<Volume>();
+            if (volume != null && volume.profile != null)
             {
-                _vignette.intensity.overrideState = true;
-                _vignette.color.overrideState = true;
-                _vignette.color.value = flashColor;
-                _vignette.intensity.value = 0f;
+                volume.profile.TryGet(out _vignette);
+
+                if (_vignette != null)
+                {
+                    _vignette.intensity.overrideState = true;
+                    _vignette.color.overrideState = true;
+                    _vignette.color.value = flashColor;
+                    _vignette.intensity.value = 0f;
+                }
             }
         }
 
