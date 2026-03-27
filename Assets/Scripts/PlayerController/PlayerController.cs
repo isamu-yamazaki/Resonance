@@ -317,7 +317,7 @@ namespace Resonance.PlayerController
 
             if (_playerState.IsStateGroundedState(_lastMovementState) && !isGrounded)
             {
-                _verticalVelocity += _antiBump;
+                _verticalVelocity += Mathf.Min(_antiBump, baseSprintSpeed);
             }
 
             if (Mathf.Abs(_verticalVelocity) > Mathf.Abs(terminalVelocity))
