@@ -132,6 +132,43 @@
 				</Event>
 				<Event Name="Play_Train_Disembark" ID="{51C94B9D-0D94-43C7-AA59-DB3CD379EA80}"/>
 				<Event Name="Play_Train_Arrival" ID="{68D90232-C33C-4CBC-9B40-F9164D7350AF}"/>
+				<Folder Name="SonarDisc" ID="{F6840478-DAE4-4C8A-8AB0-1F1188AF5F39}" ShortID="958339498">
+					<ChildrenList>
+						<Event Name="Play_SD_PulseActivate" ID="{BA656AA4-42E7-42B4-B54E-A4E939C157BA}">
+							<ChildrenList>
+								<Action Name="" ID="{9205FC79-B29D-4619-8D19-BDEE1F75A9D6}" ShortID="814506212">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_sonardisc_pulse" ID="{B226CB90-6E55-42FA-823E-0E6C6DCF73BA}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_SD_Distortion" ID="{CA254BB4-30E7-4D33-94F7-745C22F42519}">
+							<ChildrenList>
+								<Action Name="" ID="{34A582B5-8E5F-4167-BF45-75E1D4BCFDF2}" ShortID="842416537">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_sonardisc_distortion" ID="{071F4154-F8B0-40E6-BF86-D5E52375E0B1}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_SD_Ping" ID="{760F0763-1573-41FF-B3EE-17EEB5CB049B}">
+							<ChildrenList>
+								<Action Name="" ID="{FDA8576F-429C-4BB2-802E-316822DD056C}" ShortID="160815326">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_sonardisc_ping" ID="{1FB0B8F7-C838-465D-8A1E-C1D2AFA88EBB}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

@@ -20,6 +20,9 @@ namespace AK
         static const AkUniqueID PLAY_LANDING = 2323405115U;
         static const AkUniqueID PLAY_OUTDOORAMBIENCE = 3267244670U;
         static const AkUniqueID PLAY_REACTIVE_FEEDBACK = 3062989335U;
+        static const AkUniqueID PLAY_SD_DISTORTION = 2277071487U;
+        static const AkUniqueID PLAY_SD_PING = 3350049094U;
+        static const AkUniqueID PLAY_SD_PULSEACTIVATE = 3246891746U;
         static const AkUniqueID PLAY_TEST_SOUND = 3211564518U;
         static const AkUniqueID PLAY_TRAIN_ARRIVAL = 2305398106U;
         static const AkUniqueID PLAY_TRAIN_DISEMBARK = 3903810609U;
