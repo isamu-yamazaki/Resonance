@@ -99,6 +99,7 @@ namespace Resonance.Abilities.SonarDisc
             }
 
             disc.Launch(direction, gameObject, firingPlayerID);
+            disc.BroadcastShootSoundObserversRpc();
         }
     }
 }

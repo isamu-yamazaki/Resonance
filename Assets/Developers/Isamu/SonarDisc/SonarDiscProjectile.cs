@@ -37,6 +37,18 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private LayerMask playerLayerMask;
         [SerializeField] private LayerMask occlusionLayerMask;
 
+        [Header("Wwise Events")]
+        // TODO: Assign shoot event in inspector
+        [SerializeField] private AK.Wwise.Event shootEvent;
+        // TODO: Assign wall impact event in inspector
+        [SerializeField] private AK.Wwise.Event wallImpactEvent;
+        // TODO: Assign pulse activation event in inspector
+        [SerializeField] private AK.Wwise.Event pulseActivationEvent;
+        // TODO: Assign scanned event (plays for the player who was scanned) in inspector
+        [SerializeField] private AK.Wwise.Event scannedEvent;
+        // TODO: Assign scan confirmed event (plays for the disc owner on successful scan) in inspector
+        [SerializeField] private AK.Wwise.Event scanConfirmedEvent;
+
         private Rigidbody _rigidbody;
         private bool _isAttached;
         private bool _isDestroyed;
@@ -80,7 +92,6 @@ namespace Resonance.Abilities.SonarDisc
             if (!isServer) return;
             if (_isAttached) return;
 
-            // Cache position before physics moves the rigidbody
             _lastPosition = transform.position;
         }
 
@@ -89,7 +100,6 @@ namespace Resonance.Abilities.SonarDisc
             if (!isServer) return;
             if (_isAttached) return;
 
-            // Linecast from pre-physics position to post-physics position
             if (Physics.Linecast(_lastPosition, transform.position, out RaycastHit hit, discCollisionMask, QueryTriggerInteraction.Ignore))
             {
                 AttachToTarget(hit.collider, hit.point, hit.normal);
@@ -136,7 +146,6 @@ namespace Resonance.Abilities.SonarDisc
             _rigidbody.isKinematic = true;
 
             Quaternion surfaceAlignment = Quaternion.LookRotation(-hitNormal);
-
             Vector3 attachPoint = hitPoint + hitNormal * 0.01f;
 
             bool hitPlayer = hitCollider.CompareTag("Player");
@@ -190,8 +199,26 @@ namespace Resonance.Abilities.SonarDisc
 
         private void OnAttachedToWall()
         {
-            // TODO: play wall impact Wwise event here
+            BroadcastWallImpactObserversRpc();
             StartCoroutine(WallPulseSequence());
+        }
+
+        [ObserversRpc(runLocally: true)]
+        public void BroadcastShootSoundObserversRpc()
+        {
+#if !UNITY_SERVER
+            if (shootEvent != null && shootEvent.IsValid())
+                shootEvent.Post(gameObject);
+#endif
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastWallImpactObserversRpc()
+        {
+#if !UNITY_SERVER
+            if (wallImpactEvent != null && wallImpactEvent.IsValid())
+                wallImpactEvent.Post(gameObject);
+#endif
         }
 
         [ObserversRpc(runLocally: true)]
@@ -200,6 +227,11 @@ namespace Resonance.Abilities.SonarDisc
             SonarPulseEffect pulseEffect = GetComponent<SonarPulseEffect>();
             if (pulseEffect != null)
                 pulseEffect.Play();
+
+#if !UNITY_SERVER
+            if (pulseActivationEvent != null && pulseActivationEvent.IsValid())
+                pulseActivationEvent.Post(gameObject);
+#endif
         }
 
         [TargetRpc]
@@ -211,6 +243,24 @@ namespace Resonance.Abilities.SonarDisc
             ScannedHighlight highlight = detectedPlayer.GetComponentInChildren<ScannedHighlight>();
             if (highlight != null)
                 highlight.Play();
+        }
+
+        [TargetRpc]
+        private void NotifyScannedAudioTargetRpc(PlayerID target)
+        {
+#if !UNITY_SERVER
+            if (scannedEvent != null && scannedEvent.IsValid())
+                scannedEvent.Post(gameObject);
+#endif
+        }
+
+        [TargetRpc]
+        private void NotifyScanConfirmedOwnerRpc(PlayerID target)
+        {
+#if !UNITY_SERVER
+            if (scanConfirmedEvent != null && scanConfirmedEvent.IsValid())
+                scanConfirmedEvent.Post(gameObject);
+#endif
         }
 
         [ObserversRpc(runLocally: false)]
@@ -241,8 +291,6 @@ namespace Resonance.Abilities.SonarDisc
             if (_isDestroyed)
                 yield break;
 
-            // TODO: play pulse activation Wwise event here
-
             NotifyPulseVFXObserversRpc();
 
             Collider[] candidates = Physics.OverlapSphere(transform.position, pulseRadius, playerLayerMask);
@@ -267,7 +315,6 @@ namespace Resonance.Abilities.SonarDisc
 
                     detected.Add(candidate);
 
-                    // Raycast from candidate toward disc to avoid self-intersection with the wall the disc is attached to
                     Vector3 directionToDisc = transform.position - candidate.transform.position;
                     float distanceToDisc = directionToDisc.magnitude;
                     Debug.DrawRay(candidate.transform.position, directionToDisc.normalized * distanceToDisc, Color.red, 3f);
@@ -283,10 +330,23 @@ namespace Resonance.Abilities.SonarDisc
                     ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
                     if (scannedHighlight != null && scannedHighlight.owner.HasValue)
                     {
-                        if (isHost && scannedHighlight.owner.Value == NetworkManager.main.localPlayer)
+                        PlayerID scannedPlayerID = scannedHighlight.owner.Value;
+
+                        if (isHost && scannedPlayerID == NetworkManager.main.localPlayer)
+                        {
                             ScannedScreenFlash.Instance?.Flash();
+#if !UNITY_SERVER
+                            if (scannedEvent != null && scannedEvent.IsValid())
+                                scannedEvent.Post(gameObject);
+#endif
+                        }
                         else
-                            NotifyScannedFlashTargetRpc(scannedHighlight.owner.Value, candidate.gameObject);
+                        {
+                            NotifyScannedFlashTargetRpc(scannedPlayerID, candidate.gameObject);
+                            NotifyScannedAudioTargetRpc(scannedPlayerID);
+                        }
+
+                        NotifyScanConfirmedOwnerRpc(_ownerPlayerID);
                     }
                 }
 
