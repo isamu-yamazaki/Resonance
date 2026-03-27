@@ -1,5 +1,6 @@
 using PurrNet;
 using Resonance.Combat.Augments;
+using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
@@ -18,6 +19,9 @@ namespace Resonance.Abilities.SonarDisc
 
         [Header("Cooldown")]
         [SerializeField] private float cooldown = 12f;
+        private float _cooldownTimeRemaining;
+
+        private PlayerActionsInput _playerActionsInput;
 
         public const string AbilityKey = "augment_upper_sonarDisc";
 
@@ -39,12 +43,27 @@ namespace Resonance.Abilities.SonarDisc
 
             if (isOwner && playerCamera == null)
                 playerCamera = Camera.main;
+
+            if (isOwner)
+                _playerActionsInput = GetComponent<PlayerActionsInput>();
         }
 
         #endregion
 
+        private void Update()
+        {
+            if (_cooldownTimeRemaining > 0f)
+                _cooldownTimeRemaining -= Time.deltaTime;
+
+            if (_playerActionsInput != null && _playerActionsInput.AbilityUpperPressed)
+                ActivateAbility();
+        }
+
         public void ActivateAbility()
         {
+            if (_cooldownTimeRemaining > 0f)
+                return;
+
             if (sonarDiscPrefab == null)
             {
                 Debug.LogWarning("[SonarDiscAbility] sonarDiscPrefab is not assigned.");
@@ -58,6 +77,7 @@ namespace Resonance.Abilities.SonarDisc
             }
 
             // TODO: Replace cameraTransform.position/forward with muzzlePoint.position/forward
+            _cooldownTimeRemaining = cooldown;
             Transform cameraTransform = playerCamera.transform;
             RequestFireDiscServerRpc(cameraTransform.position, cameraTransform.forward, NetworkManager.main.localPlayer);
         }
