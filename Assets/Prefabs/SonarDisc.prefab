@@ -121,6 +121,9 @@ MonoBehaviour:
   occlusionLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  discCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &697816106320107227
 MonoBehaviour:
   m_ObjectHideFlags: 0

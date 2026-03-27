@@ -71,13 +71,31 @@ namespace Resonance.Abilities.SonarDisc
             transform.rotation = Quaternion.LookRotation(direction.normalized);
         }
 
+        [Header("Collision")]
+        [SerializeField] private LayerMask discCollisionMask;
+
+        private void Update()
+        {
+            if (!isServer) return;
+            if (_isAttached) return;
+
+            // Cache position before physics moves the rigidbody
+            _lastPosition = transform.position;
+        }
+
         private void FixedUpdate()
         {
             if (!isServer) return;
             if (_isAttached) return;
 
+            // Linecast from pre-physics position to post-physics position
+            if (Physics.Linecast(_lastPosition, transform.position, out RaycastHit hit, discCollisionMask, QueryTriggerInteraction.Ignore))
+            {
+                AttachToTarget(hit.collider, hit.point, hit.normal);
+                return;
+            }
+
             _distanceTravelled += Vector3.Distance(transform.position, _lastPosition);
-            _lastPosition = transform.position;
 
             if (_distanceTravelled >= maxRange)
                 DestroyDisc();
@@ -113,25 +131,34 @@ namespace Resonance.Abilities.SonarDisc
 
             _rigidbody.linearVelocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
+            GetComponent<SphereCollider>().enabled = false;
             _rigidbody.isKinematic = true;
 
             Quaternion surfaceAlignment = Quaternion.LookRotation(-hitNormal);
+
+            Vector3 attachPoint = hitPoint + hitNormal * 0.01f;
 
             bool hitPlayer = hitCollider.CompareTag("Player");
 
             if (hitPlayer)
             {
                 transform.SetParent(hitCollider.transform, worldPositionStays: true);
-                transform.SetPositionAndRotation(hitPoint, surfaceAlignment);
-                NotifyAttachedToPlayerObserversRpc(hitCollider.gameObject, hitPoint, surfaceAlignment);
+                transform.SetPositionAndRotation(attachPoint, surfaceAlignment);
+                NotifyAttachedToPlayerObserversRpc(hitCollider.gameObject, attachPoint, surfaceAlignment);
                 OnAttachedToPlayer(hitCollider);
             }
             else
             {
-                transform.SetPositionAndRotation(hitPoint, surfaceAlignment);
-                NotifyAttachedToWallObserversRpc(hitPoint, surfaceAlignment);
+                StartCoroutine(RepositionAfterPhysics(attachPoint, surfaceAlignment));
+                NotifyAttachedToWallObserversRpc(attachPoint, surfaceAlignment);
                 OnAttachedToWall();
             }
+        }
+
+        private IEnumerator RepositionAfterPhysics(Vector3 position, Quaternion rotation)
+        {
+            yield return new WaitForFixedUpdate();
+            transform.SetPositionAndRotation(position, rotation);
         }
 
         #endregion
