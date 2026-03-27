@@ -1,6 +1,5 @@
 using Resonance.Combat.Mods;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Resonance.Combat.Augments
 {
@@ -41,7 +40,7 @@ namespace Resonance.Combat.Augments
         public WeaponModProperties ModProperties => modProperties;
         
         [Header("Augment Ability")]
-        [SerializeField] private AugmentAbility ability;
-        public AugmentAbility Ability => ability;
+        [SerializeField] private string abilityKey;
+        public string AbilityKey => abilityKey;
     }
 }
