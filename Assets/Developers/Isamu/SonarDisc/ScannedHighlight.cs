@@ -9,6 +9,7 @@ namespace Resonance.Abilities.SonarDisc
     /// Attached to the player prefab. Triggered by the disc server-side,
     /// broadcasts scan snapshots to all clients — filtering to owner only
     /// is handled via TargetRpc on the disc.
+    /// isScanned SyncVar is set by the server to notify the scanned player's client.
     /// </summary>
     public class ScannedHighlight : NetworkBehaviour
     {
@@ -17,6 +18,8 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float snapshotDuration = 1f;
         [SerializeField] private float snapshotInterval = 1f;
         [SerializeField] private int snapshotCount = 3;
+
+        public SyncVar<bool> isScanned = new SyncVar<bool>(false);
 
         private static readonly int RevealTimeID = Shader.PropertyToID("_RevealTime");
 

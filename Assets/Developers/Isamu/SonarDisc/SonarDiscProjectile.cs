@@ -277,6 +277,10 @@ namespace Resonance.Abilities.SonarDisc
                         continue;
                     }
 
+                    ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
+                    if (scannedHighlight != null)
+                        StartCoroutine(PulseScannedFlag(scannedHighlight));
+
                     NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject);
                 }
 
@@ -287,6 +291,13 @@ namespace Resonance.Abilities.SonarDisc
         }
 
         #endregion
+
+        private IEnumerator PulseScannedFlag(ScannedHighlight highlight)
+        {
+            highlight.isScanned.value = true;
+            yield return new WaitForSeconds(0.1f);
+            highlight.isScanned.value = false;
+        }
 
         #region Destruction
 

@@ -1,6 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using Resonance.Abilities.SonarDisc;
 using Resonance.Player;
 using PurrNet;
 
@@ -33,7 +35,10 @@ namespace Resonance.PlayerController
         [Header("Overdrive — Transition")]
         public float overdriveTransitionSpeed = 6f;
 
-
+        [Header("Scanned Flash")]
+        public Color scannedFlashColor = new Color(1f, 0f, 0.8f, 1f);
+        public float scannedFlashIntensity = 0.6f;
+        public float scannedFlashDuration = 0.2f;
 
         #endregion
 
@@ -41,18 +46,22 @@ namespace Resonance.PlayerController
 
         private OverdriveAbility _overdriveAbility;
         private PlayerStats _playerStats;
+        private ScannedHighlight _scannedHighlight;
 
         private Bloom _bloom;
         private ChromaticAberration _chromaticAberration;
         private LensDistortion _lensDistortion;
         private ColorAdjustments _colorAdjustments;
+        private Vignette _vignette;
 
         private float _currentTintWeight = 0f;
         private bool _isDead = false;
+        private bool _wasScanned = false;
 
         #endregion
 
         #region Startup
+
         protected override void OnSpawned()
         {
             base.OnSpawned();
@@ -63,6 +72,7 @@ namespace Resonance.PlayerController
         {
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerStats = GetComponent<PlayerStats>();
+            _scannedHighlight = GetComponent<ScannedHighlight>();
 
             if (_playerVolume == null)
                 _playerVolume = GetComponent<Volume>();
@@ -105,6 +115,7 @@ namespace Resonance.PlayerController
             _playerVolume.profile.TryGet(out _chromaticAberration);
             _playerVolume.profile.TryGet(out _lensDistortion);
             _playerVolume.profile.TryGet(out _colorAdjustments);
+            _playerVolume.profile.TryGet(out _vignette);
         }
 
         private void EnableOverrideStates()
@@ -120,6 +131,12 @@ namespace Resonance.PlayerController
 
             if (_colorAdjustments != null)
                 _colorAdjustments.colorFilter.overrideState = true;
+
+            if (_vignette != null)
+            {
+                _vignette.intensity.overrideState = true;
+                _vignette.color.overrideState = true;
+            }
         }
 
         private void SetBaseValues()
@@ -135,6 +152,9 @@ namespace Resonance.PlayerController
 
             if (_colorAdjustments != null)
                 _colorAdjustments.colorFilter.value = Color.white;
+
+            if (_vignette != null)
+                _vignette.intensity.value = 0f;
         }
 
         #endregion
@@ -151,6 +171,7 @@ namespace Resonance.PlayerController
             UpdateChromaticAberration(isOverdriveActive);
             UpdateLensDistortion(isOverdriveActive);
             UpdateScreenTint(isOverdriveActive);
+            UpdateScannedFlash();
         }
 
         private void UpdateBloom(bool isOverdriveActive)
@@ -189,6 +210,55 @@ namespace Resonance.PlayerController
             _currentTintWeight = Mathf.Lerp(_currentTintWeight, targetWeight, overdriveTransitionSpeed * Time.deltaTime);
 
             _colorAdjustments.colorFilter.value = Color.Lerp(Color.white, overdriveTintColor, _currentTintWeight);
+        }
+
+        private void UpdateScannedFlash()
+        {
+            if (_scannedHighlight == null || _vignette == null)
+            {
+                Debug.Log($"[PPP] UpdateScannedFlash skipped — highlight: {_scannedHighlight != null}, vignette: {_vignette != null}");
+                return;
+            }
+
+            bool isScannedNow = _scannedHighlight.isScanned.value;
+            if (isScannedNow && !_wasScanned)
+            {
+                Debug.Log("[PPP] Triggering ScannedFlashSequence");
+                StartCoroutine(ScannedFlashSequence());
+            }
+
+            _wasScanned = isScannedNow;
+        }
+
+        #endregion
+
+        #region Scanned Flash
+
+        private IEnumerator ScannedFlashSequence()
+        {
+            Debug.Log($"[PPP] ScannedFlashSequence started, vignette intensity before: {_vignette.intensity.value}");
+            _vignette.color.value = scannedFlashColor;
+
+            float elapsed = 0f;
+            float halfDuration = scannedFlashDuration * 0.5f;
+
+            while (elapsed < halfDuration)
+            {
+                elapsed += Time.deltaTime;
+                _vignette.intensity.value = Mathf.Lerp(0f, scannedFlashIntensity, elapsed / halfDuration);
+                yield return null;
+            }
+
+            elapsed = 0f;
+            while (elapsed < halfDuration)
+            {
+                elapsed += Time.deltaTime;
+                _vignette.intensity.value = Mathf.Lerp(scannedFlashIntensity, 0f, elapsed / halfDuration);
+                yield return null;
+            }
+
+            _vignette.intensity.value = 0f;
+            Debug.Log("[PPP] ScannedFlashSequence complete");
         }
 
         #endregion
