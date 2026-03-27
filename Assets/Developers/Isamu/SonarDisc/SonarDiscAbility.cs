@@ -74,11 +74,11 @@ namespace Resonance.Abilities.SonarDisc
 
             // TODO: Replace cameraTransform.position/forward with muzzlePoint.position/forward
             Transform cameraTransform = playerCamera.transform;
-            RequestFireDiscServerRpc(cameraTransform.position, cameraTransform.forward);
+            RequestFireDiscServerRpc(cameraTransform.position, cameraTransform.forward, NetworkManager.main.localPlayer);
         }
 
         [ServerRpc]
-        private void RequestFireDiscServerRpc(Vector3 spawnPosition, Vector3 direction)
+        private void RequestFireDiscServerRpc(Vector3 spawnPosition, Vector3 direction, PlayerID firingPlayerID)
         {
             GameObject discInstance = Instantiate(sonarDiscPrefab, spawnPosition, Quaternion.LookRotation(direction));
             NetworkManager.main.Spawn(discInstance);
@@ -90,7 +90,7 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            disc.Launch(direction, gameObject, NetworkManager.main.localPlayer);
+            disc.Launch(direction, gameObject, firingPlayerID);
         }
     }
 }

@@ -54,7 +54,6 @@ namespace Resonance.Abilities.SonarDisc
             _meshRenderers = skinRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
         }
 
-        [ObserversRpc(runLocally: true)]
         public void Play()
         {
             if (sonarRevealMaterial == null)

@@ -172,12 +172,17 @@ namespace Resonance.Abilities.SonarDisc
                 pulseEffect.Play();
         }
 
-        private void NotifyPlayerDetected(GameObject detectedPlayer)
+        [TargetRpc]
+        private void NotifyPlayerDetectedOwnerRpc(PlayerID target, GameObject detectedPlayer)
         {
+            Debug.Log($"[SonarDisc] NotifyPlayerDetectedOwnerRpc received. target: {target}, detectedPlayer: {detectedPlayer?.name}");
+
             if (detectedPlayer == null)
                 return;
 
+            // We're already on the owner's client — call Play() directly, no RPC needed
             ScannedHighlight highlight = detectedPlayer.GetComponentInChildren<ScannedHighlight>();
+            Debug.Log($"[SonarDisc] ScannedHighlight found: {highlight != null}");
             if (highlight != null)
                 highlight.Play();
         }
@@ -236,7 +241,7 @@ namespace Resonance.Abilities.SonarDisc
 
                     detected.Add(candidate);
                     // TODO: LOS raycast check (phase 2)
-                    NotifyPlayerDetected(candidate.gameObject);
+                    NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject);
                 }
 
                 yield return null;
