@@ -1009,7 +1009,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6809321870534573542}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68a77fd7960d9e24c979f00677b85441, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e563d196eb249d44b9c3aabda3ba9ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerAugmentManager
 --- !u!114 &1243582744159536647
