@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using PurrNet;
 using Resonance.Helper;
+using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
@@ -277,11 +278,11 @@ namespace Resonance.Abilities.SonarDisc
                         continue;
                     }
 
-                    ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
-                    if (scannedHighlight != null)
-                        StartCoroutine(PulseScannedFlag(scannedHighlight));
-
                     NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject);
+
+                    ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
+                    if (scannedHighlight != null && scannedHighlight.owner.HasValue)
+                        NotifyScannedFlashTargetRpc(scannedHighlight.owner.Value, candidate.gameObject);
                 }
 
                 yield return null;
@@ -292,11 +293,12 @@ namespace Resonance.Abilities.SonarDisc
 
         #endregion
 
-        private IEnumerator PulseScannedFlag(ScannedHighlight highlight)
+        [TargetRpc]
+        private void NotifyScannedFlashTargetRpc(PlayerID target, GameObject scannedPlayer)
         {
-            highlight.isScanned.value = true;
-            yield return new WaitForSeconds(0.1f);
-            highlight.isScanned.value = false;
+            ScannedScreenFlash screenFlash = scannedPlayer.GetComponentInChildren<ScannedScreenFlash>();
+            if (screenFlash != null)
+                screenFlash.Flash();
         }
 
         #region Destruction
