@@ -56,7 +56,10 @@ namespace Resonance.Abilities.SonarDisc
                 _cooldownTimeRemaining -= Time.deltaTime;
 
             if (_playerActionsInput != null && _playerActionsInput.AbilityUpperPressed)
+            {
+                _playerActionsInput.SetAbilityUpperPressedFalse();
                 ActivateAbility();
+            }
         }
 
         public void ActivateAbility()
