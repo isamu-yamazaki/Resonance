@@ -1,15 +1,12 @@
 using PurrNet;
 using Resonance.Combat.Augments;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Resonance.Abilities.SonarDisc
 {
     /// <summary>
     /// Ability script for the Sonar Disc.
     /// Instantiates and fires the disc projectile from the player camera.
-    /// TODO: Implement IAbility interface once provided.
-    /// TODO: Remove Update() T keybind and call ActivateAbility() from input system instead.
     /// TODO: Replace camera reference with muzzle point transform on the player's left arm.
     /// </summary>
     public class SonarDiscAbility : NetworkBehaviour, IAugmentAbility
@@ -22,13 +19,16 @@ namespace Resonance.Abilities.SonarDisc
         [Header("Cooldown")]
         [SerializeField] private float cooldown = 12f;
 
-        private float _cooldownTimeRemaining;
-
         public const string AbilityKey = "augment_upper_sonarDisc";
 
         public string Name => AbilityKey;
         public string Description => augmentProperties != null ? augmentProperties.Description : string.Empty;
-        public bool IsOnCooldown => _cooldownTimeRemaining > 0f;
+
+        public float Cooldown
+        {
+            get => cooldown;
+            set => cooldown = value;
+        }
 
         #region Network
 
@@ -43,21 +43,8 @@ namespace Resonance.Abilities.SonarDisc
 
         #endregion
 
-        private void Update()
-        {
-            if (_cooldownTimeRemaining > 0f)
-                _cooldownTimeRemaining -= Time.deltaTime;
-
-            // TODO: Remove this keybind — temporary test input only
-            if (Keyboard.current.tKey.wasPressedThisFrame)
-                ActivateAbility();
-        }
-
         public void ActivateAbility()
         {
-            if (IsOnCooldown)
-                return;
-
             if (sonarDiscPrefab == null)
             {
                 Debug.LogWarning("[SonarDiscAbility] sonarDiscPrefab is not assigned.");
@@ -69,8 +56,6 @@ namespace Resonance.Abilities.SonarDisc
                 Debug.LogWarning("[SonarDiscAbility] playerCamera is not assigned.");
                 return;
             }
-
-            _cooldownTimeRemaining = cooldown;
 
             // TODO: Replace cameraTransform.position/forward with muzzlePoint.position/forward
             Transform cameraTransform = playerCamera.transform;
