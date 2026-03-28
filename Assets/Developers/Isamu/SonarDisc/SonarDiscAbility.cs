@@ -23,23 +23,24 @@ namespace Resonance.Abilities.SonarDisc
 
         private PlayerActionsInput _playerActionsInput;
 
-        public const string AbilityKey = "augment_upper_sonarDisc";
+        public const string AbilityKeyConst = "augment_upper_sonarDisc";
 
-        public string Name => AbilityKey;
+        public string AbilityKey => AbilityKeyConst;
+        public string Name => "Sonar Disc";
         public string Description => augmentProperties != null ? augmentProperties.Description : string.Empty;
-
-        public float Cooldown
+        public float MaxCooldown => cooldown;
+        public float CurrentCooldown
         {
-            get => cooldown;
-            set => cooldown = value;
+            get => _cooldownTimeRemaining;
+            set => _cooldownTimeRemaining = Mathf.Clamp(value, 0f, cooldown);
         }
+        public bool AbilityReady => _cooldownTimeRemaining <= 0f;
 
         #region Network
 
         protected override void OnSpawned()
         {
             base.OnSpawned();
-            enabled = isOwner;
 
             if (isOwner && playerCamera == null)
                 playerCamera = Camera.main;
@@ -52,6 +53,8 @@ namespace Resonance.Abilities.SonarDisc
 
         private void Update()
         {
+            if (!isOwner) return;
+
             if (_cooldownTimeRemaining > 0f)
                 _cooldownTimeRemaining -= Time.deltaTime;
 

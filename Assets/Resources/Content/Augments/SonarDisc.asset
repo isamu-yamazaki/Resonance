@@ -21,4 +21,4 @@ MonoBehaviour:
   regen: 0
   damageReduction: 0
   modProperties: {fileID: 0}
-  abilityKey: 
+  abilityKey: augment_upper_sonarDisc
