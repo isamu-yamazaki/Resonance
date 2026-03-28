@@ -28,6 +28,7 @@ public class Zipline : MonoBehaviour, IInteractable
     private GameObject currentPlayer;
     private CharacterController playerController;
     private PlayerLocomotionInput playerLocomotionInput;
+    private PlayerActionsInput playerActionsInput;
     private PlayerState playerState;
     private Transform playerCameraTransform;
 
@@ -74,9 +75,16 @@ public class Zipline : MonoBehaviour, IInteractable
         if (playerLocomotionInput.JumpPressed || Keyboard.current.spaceKey.wasPressedThisFrame)
             jumpLatch = true;
 
+        if (playerActionsInput != null && playerActionsInput.InteractPressed)
+        {
+            playerActionsInput.SetInteractPressedFalse();
+            Dismount(applyJump: false);
+            return;
+        }
+
         if (jumpLatch)
         {
-            Dismount();
+            Dismount(applyJump: true);
             return;
         }
 
@@ -130,6 +138,7 @@ public class Zipline : MonoBehaviour, IInteractable
 
         playerState = state;
         playerLocomotionInput = locomotionInput;
+        playerActionsInput = interactor.GetComponent<PlayerActionsInput>();
         playerController = characterController;
         currentPlayer = interactor;
         playerHeight = playerController.height;
@@ -199,7 +208,7 @@ public class Zipline : MonoBehaviour, IInteractable
         }
 
         if (cableProgress >= 1f || cableProgress <= 0f)
-            Dismount();
+            Dismount(applyJump: false);
     }
 
     private void HandleVerticalMovement()
@@ -230,7 +239,7 @@ public class Zipline : MonoBehaviour, IInteractable
         }
 
         if (Vector3.Distance(currentCablePosition, targetCablePosition) < 0.05f)
-            Dismount();
+            Dismount(applyJump: false);
     }
 
     private float GetMoveInput()
@@ -254,14 +263,17 @@ public class Zipline : MonoBehaviour, IInteractable
         return Vector3.Dot(desiredDirection, cableDirection);
     }
 
-    private void Dismount()
+    private void Dismount(bool applyJump = true)
     {
         if (currentPlayer != null)
         {
             playerState.SetPlayerMovementState(PlayerMovementState.Falling);
 
-            Resonance.PlayerController.PlayerController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerController>();
-            pc?.ApplyJumpVelocity(dismountJumpForce);
+            if (applyJump)
+            {
+                Resonance.PlayerController.PlayerController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerController>();
+                pc?.ApplyJumpVelocity(dismountJumpForce);
+            }
 
             // Re-show prompt if player is still within interact range
             if (interactCollider != null && interactCollider.bounds.Contains(currentPlayer.transform.position))
@@ -296,6 +308,7 @@ public class Zipline : MonoBehaviour, IInteractable
         currentPlayer = null;
         playerController = null;
         playerLocomotionInput = null;
+        playerActionsInput = null;
         playerState = null;
         playerCameraTransform = null;
         isRiding = false;

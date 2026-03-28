@@ -8,17 +8,23 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private GameObject player;
     private IInteractable _currentInteractable;
     private PlayerActionsInput _playerActionsInput;
+    private PlayerState _playerState;
 
     private void Awake()
     {
         player = gameObject;
         _playerActionsInput = GetComponent<PlayerActionsInput>();
+        _playerState = GetComponent<PlayerState>();
     }
 
     private void Update()
     {
         if (_playerActionsInput.InteractPressed)
         {
+            // Let Zipline.Update() consume the press while ziplining
+            if (_playerState != null && _playerState.IsZiplining())
+                return;
+
             _playerActionsInput.SetInteractPressedFalse();
             if (_currentInteractable != null)
                 _currentInteractable.Interact(player);
