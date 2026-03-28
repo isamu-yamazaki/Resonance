@@ -5,11 +5,7 @@ using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
 {
-    /// <summary>
-    /// Attached to the player prefab. Triggered by the disc server-side,
-    /// broadcasts scan snapshots to all clients — filtering to owner only
-    /// is handled via TargetRpc on the disc.
-    /// </summary>
+    // Plays scan snapshot VFX on the scanned player. Called via TargetRpc from SonarDiscProjectile.
     public class ScannedHighlight : NetworkBehaviour
     {
         [Header("Settings")]

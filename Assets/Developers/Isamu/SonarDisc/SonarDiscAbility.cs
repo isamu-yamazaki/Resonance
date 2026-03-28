@@ -5,11 +5,7 @@ using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
 {
-    /// <summary>
-    /// Ability script for the Sonar Disc.
-    /// Instantiates and fires the disc projectile from the player camera.
-    /// TODO: Replace camera reference with muzzle point transform on the player's left arm.
-    /// </summary>
+    // Fires the Sonar Disc projectile. TODO: Replace camera reference with muzzle point on the player's left arm.
     public class SonarDiscAbility : NetworkBehaviour, IAugmentAbility
     {
         [Header("References")]
@@ -76,7 +72,6 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            // TODO: Replace cameraTransform.position/forward with muzzlePoint.position/forward
             _cooldownTimeRemaining = cooldown;
             Transform cameraTransform = playerCamera.transform;
             RequestFireDiscServerRpc(cameraTransform.position, cameraTransform.forward, NetworkManager.main.localPlayer);

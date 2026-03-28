@@ -6,13 +6,7 @@ using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
 {
-    /// <summary>
-    /// Projectile component for the Sonar Disc ability.
-    /// Travels in a straight line, sticks to the first surface or player it hits,
-    /// and fires a sonar pulse if attached to a wall. Implements IDamageable so
-    /// enemies can destroy it mid-air or before the pulse fires.
-    /// Physics and hit detection run on server only. Visual effects broadcast to all clients.
-    /// </summary>
+    // Disc projectile — travels, sticks to surfaces/players, fires a sonar pulse on wall attach. Physics server-only, VFX broadcast to all clients.
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereCollider))]
     public class SonarDiscProjectile : NetworkBehaviour, IDamageable
@@ -193,7 +187,6 @@ namespace Resonance.Abilities.SonarDisc
                 }
             }
 
-            // Broadcast distortion sound spatially from hit player's position to all clients
             BroadcastHitPlayerSoundObserversRpc(playerCollider.gameObject);
 
             // TODO: start disorient coroutine on playerCollider's owner (phase 2)
@@ -329,13 +322,8 @@ namespace Resonance.Abilities.SonarDisc
 
                     Vector3 directionToDisc = transform.position - candidate.transform.position;
                     float distanceToDisc = directionToDisc.magnitude;
-                    Debug.DrawRay(candidate.transform.position, directionToDisc.normalized * distanceToDisc, Color.red, 3f);
                     if (Physics.Raycast(candidate.transform.position, directionToDisc.normalized, out RaycastHit occlusionHit, distanceToDisc, occlusionLayerMask, QueryTriggerInteraction.Ignore))
-                    {
-                        Debug.Log($"[SonarDisc] LOS blocked by: {occlusionHit.collider.name} on layer {LayerMask.LayerToName(occlusionHit.collider.gameObject.layer)}");
-                        Debug.DrawRay(candidate.transform.position, directionToDisc.normalized * occlusionHit.distance, Color.yellow, 3f);
                         continue;
-                    }
 
                     NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject);
 
