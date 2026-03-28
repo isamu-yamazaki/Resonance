@@ -25,8 +25,6 @@ namespace Resonance.Combat.Weapons
                 Build();
         }
 
-        // ─── Public API ───────────────────────────────────────────────────────────
-
         public void Play()
         {
             if (!_built) return;
@@ -83,7 +81,6 @@ namespace Resonance.Combat.Weapons
             var emission = _coreFlash.emission;
             emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 8) });
 
-            // Radial burst — particles fire outward in all directions from the muzzle
             var shape = _coreFlash.shape;
             shape.enabled = true;
             shape.shapeType = ParticleSystemShapeType.Sphere;
@@ -93,6 +90,8 @@ namespace Resonance.Combat.Weapons
             renderer.renderMode = ParticleSystemRenderMode.Stretch;
             renderer.lengthScale = 6f;
             renderer.material = CreateAdditiveMaterial(settings.flashColor);
+
+            _coreFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
         private void BuildSparks()
@@ -135,6 +134,8 @@ namespace Resonance.Combat.Weapons
             renderer.lengthScale = 4f;
             renderer.material = CreateAdditiveMaterial(new Color(1f, 0.85f, 0.4f));
             renderer.trailMaterial = CreateAdditiveMaterial(new Color(1f, 0.7f, 0.2f));
+
+            _sparks.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
         private void BuildSmoke()
@@ -180,6 +181,8 @@ namespace Resonance.Combat.Weapons
 
             var renderer = _smoke.GetComponent<ParticleSystemRenderer>();
             renderer.material = CreateAlphaMaterial();
+
+            _smoke.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
         // ─── Refresh (settings hot-swap) ──────────────────────────────────────────
