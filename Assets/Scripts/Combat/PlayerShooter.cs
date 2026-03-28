@@ -214,6 +214,8 @@ namespace Resonance.Combat
                 Vector3 projectileDirection = GetProjectileAimDirection(view.Muzzle);
                 FireProjectile(weapon, view, payload, projectileDirection, count);
             }
+
+            view.PlayMuzzleFlash();
         }
 
         private WeaponPayload BuildBasePayload(WeaponProperties weapon)
@@ -345,7 +347,7 @@ namespace Resonance.Combat
         {
             Debug.Log($"Spawn decal at {hitInfo.point}");
         }
-        
+
         [ServerRpc]
         private void NotifyMissOnServer()
         {
