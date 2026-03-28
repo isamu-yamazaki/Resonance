@@ -19,11 +19,7 @@ namespace Resonance.Combat
 
         public void AddAugmentMod(WeaponModProperties mod)
         {
-            if (mod == null)
-            {
-                return;
-            }
-
+            if (mod == null) return;
             augmentMods.Add(mod);
         }
 
@@ -39,10 +35,7 @@ namespace Resonance.Combat
 
         public float GetStat(WeaponStat stat)
         {
-            if (managedWeapon == null)
-            {
-                return 0f;
-            }
+            if (managedWeapon == null) return 0f;
 
             float baseStat = GetBaseValue(stat);
             float additiveSum = 0f;
@@ -54,19 +47,12 @@ namespace Resonance.Combat
             {
                 foreach (StatModifier modifier in mod.Modifiers)
                 {
-                    if (modifier.stat != stat)
-                    {
-                        continue;
-                    }
+                    if (modifier.stat != stat) continue;
 
                     if (modifier.type == ModifierType.Additive)
-                    {
                         additiveSum += modifier.value;
-                    }
                     else
-                    {
                         multiplicativeProduct *= modifier.value;
-                    }
                 }
             }
 
@@ -75,22 +61,32 @@ namespace Resonance.Combat
 
         public BulletProperties GetBulletProperties()
         {
-            if (managedWeapon == null)
-            {
-                return null;
-            }
+            if (managedWeapon == null) return null;
 
             IEnumerable<WeaponModProperties> allMods = managedWeapon.ModList.Concat(augmentMods).Where(mod => mod != null);
 
             foreach (WeaponModProperties mod in allMods)
             {
                 if (mod.BulletPropertiesOverride != null)
-                {
                     return mod.BulletPropertiesOverride;
-                }
             }
 
             return managedWeapon.BulletProperties;
+        }
+        
+        public MuzzleFlashSettings GetMuzzleFlashSettings()
+        {
+            if (managedWeapon == null) return null;
+
+            IEnumerable<WeaponModProperties> allMods = managedWeapon.ModList.Concat(augmentMods).Where(mod => mod != null);
+
+            foreach (WeaponModProperties mod in allMods)
+            {
+                if (mod.Slot == ModSlot.Barrel && mod.MuzzleFlashOverride != null)
+                    return mod.MuzzleFlashOverride;
+            }
+
+            return null;
         }
 
         private float GetBaseValue(WeaponStat stat) => stat switch
