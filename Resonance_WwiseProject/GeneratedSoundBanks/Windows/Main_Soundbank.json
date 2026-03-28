@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{42BA759D-5AA2-EC0F-C2EF-FCC8CBE66B80}",
+    "Hash": "{4B44E965-75C8-FB5C-D77C-0202890731D4}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -248,6 +248,14 @@
       "CachePath": "D7/{D7654DA1-E972-E3C0-DBFB-321BE5879310}.wem"
      },
      {
+      "Id": "709312571",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_sonardisc_ping.wav",
+      "CachePath": "5D/{5D340140-8EDB-8A86-B57E-5EBAD145FB33}.wem"
+     },
+     {
       "Id": "748536120",
       "Language": "SFX",
       "Streaming": "false",
@@ -384,12 +392,28 @@
       "CachePath": "80/{8072AEB0-0AC3-B580-A73F-22AAEF1B109B}.wem"
      },
      {
+      "Id": "986281526",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_sonardisc_pulse.wav",
+      "CachePath": "3E/{3EA334D5-963F-A09A-9E5E-F510AE7D7E90}.wem"
+     },
+     {
       "Id": "1054996423",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_wood_land_01.wav",
       "CachePath": "B6/{B67BF7DB-A0F5-0B2A-1D23-0A037D49C59C}.wem"
+     },
+     {
+      "Id": "1062683758",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_sonardisc_distortion.wav",
+      "CachePath": "13/{13B7E8AB-4751-91C9-EA0D-36333D391352}.wem"
      }
     ],
     "Plugins": {
@@ -723,6 +747,50 @@
       ]
      },
      {
+      "Id": "2277071487",
+      "Name": "Play_SD_Distortion",
+      "ObjectPath": "\\Events\\Default Work Unit\\SonarDisc\\Play_SD_Distortion",
+      "GUID": "{CA254BB4-30E7-4D33-94F7-745C22F42519}",
+      "MaxAttenuation": "30.000002",
+      "DurationType": "OneShot",
+      "DurationMin": "0.432",
+      "DurationMax": "0.432",
+      "MediaRefs": [
+       {
+        "Id": "1062683758"
+       }
+      ]
+     },
+     {
+      "Id": "3350049094",
+      "Name": "Play_SD_Ping",
+      "ObjectPath": "\\Events\\Default Work Unit\\SonarDisc\\Play_SD_Ping",
+      "GUID": "{760F0763-1573-41FF-B3EE-17EEB5CB049B}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.6346667",
+      "DurationMax": "0.6346667",
+      "MediaRefs": [
+       {
+        "Id": "709312571"
+       }
+      ]
+     },
+     {
+      "Id": "3246891746",
+      "Name": "Play_SD_PulseActivate",
+      "ObjectPath": "\\Events\\Default Work Unit\\SonarDisc\\Play_SD_PulseActivate",
+      "GUID": "{BA656AA4-42E7-42B4-B54E-A4E939C157BA}",
+      "MaxAttenuation": "50",
+      "DurationType": "OneShot",
+      "DurationMin": "0.77435416",
+      "DurationMax": "0.77435416",
+      "MediaRefs": [
+       {
+        "Id": "986281526"
+       }
+      ]
+     },
+     {
       "Id": "3211564518",
       "Name": "Play_Test_Sound",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Test_Sound",
@@ -887,6 +955,6 @@
     ]
    }
   ],
-  "FileHash": "{AADF9F79-A7FE-4F96-E583-BB2E5E80B767}"
+  "FileHash": "{ACB908C7-8F20-CDF0-30FC-73E94BD30A0F}"
  }
 }
