@@ -15,7 +15,7 @@ namespace Resonance.UI
 
         [Header("Settings")]
         [SerializeField] private TMP_FontAsset fontAsset;
-        [SerializeField] private Vector2 anchoredPosition = new Vector2(0f, 80f);
+        [SerializeField] private Vector2 anchoredPosition = new Vector2(0f, -40f);
 
         // Style
         private const float KeyBoxSize = 48f;
@@ -102,11 +102,11 @@ namespace Resonance.UI
             panelGO.transform.SetParent(transform, false);
 
             RectTransform panelRect = panelGO.AddComponent<RectTransform>();
-            panelRect.anchorMin = new Vector2(0.5f, 0f);
-            panelRect.anchorMax = new Vector2(0.5f, 0f);
-            panelRect.pivot = new Vector2(0.5f, 0f);
+            panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+            panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+            panelRect.pivot = new Vector2(0.5f, 1f);
             panelRect.anchoredPosition = anchoredPosition;
-            panelRect.sizeDelta = new Vector2(300f, 80f);
+            panelRect.sizeDelta = Vector2.zero;
 
             Image panelImage = panelGO.AddComponent<Image>();
             panelImage.color = ColorBackground;
@@ -117,6 +117,8 @@ namespace Resonance.UI
             layout.padding = new RectOffset((int)PaddingH, (int)PaddingH, (int)PaddingV, (int)PaddingV);
             layout.childForceExpandWidth = false;
             layout.childForceExpandHeight = false;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
 
             ContentSizeFitter fitter = panelGO.AddComponent<ContentSizeFitter>();
             fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
