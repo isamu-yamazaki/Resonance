@@ -319,7 +319,6 @@ GameObject:
   - component: {fileID: -3222689995555833044}
   - component: {fileID: -6562338477815478662}
   - component: {fileID: -2009204506129055193}
-  - component: {fileID: 3679427490564648025}
   - component: {fileID: 1243582744159536647}
   - component: {fileID: 8627360394267033834}
   - component: {fileID: 5575042648507424026}
@@ -330,9 +329,8 @@ GameObject:
   - component: {fileID: 6963169189660805957}
   - component: {fileID: -6030594833308951699}
   - component: {fileID: 4690382465625623557}
-  - component: {fileID: 3902318088920976036}
-  - component: {fileID: -3244453310725485557}
-  - component: {fileID: -6037485656678035583}
+  - component: {fileID: 3679427490564648025}
+  - component: {fileID: 5294477622813519415}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -1003,18 +1001,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 207bfba71cd18c142bf9699a76867ff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerAugmentEquipper
---- !u!114 &3679427490564648025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e563d196eb249d44b9c3aabda3ba9ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerAugmentManager
 --- !u!114 &1243582744159536647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1213,7 +1199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852536295ce38437fa9654726308ca8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.MatchMovementLock
---- !u!114 &3902318088920976036
+--- !u!114 &3679427490564648025
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1222,23 +1208,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6809321870534573542}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f101be1c3ebfe47c797c61afb81cd5d5, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e563d196eb249d44b9c3aabda3ba9ff, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarDiscAbility
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  augmentProperties: {fileID: 11400000, guid: 7ccee1832ce824258abe079e5d607225, type: 2}
-  sonarDiscPrefab: {fileID: 5617757003934067384, guid: ae6d8f4a902ef43b1820c02a8c4e6d36, type: 3}
-  playerCamera: {fileID: 0}
-  cooldown: 5
---- !u!114 &-3244453310725485557
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerAugmentManager
+--- !u!114 &5294477622813519415
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1247,42 +1220,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6809321870534573542}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d4bb70d5cf544cac9778323e8d7b4a3, type: 3}
+  m_Script: {fileID: 11500000, guid: 1791d882e5a61fb4b943aef66559ae98, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ElectrocuteEffect
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  electrocuteMaterial: {fileID: 2100000, guid: 4d1579aafdebb46108eb90f694a55de4, type: 2}
-  effectDuration: 1
---- !u!114 &-6037485656678035583
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8809aee6a74a8492994e6ab7778f5858, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ScannedHighlight
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  sonarRevealMaterial: {fileID: 2100000, guid: 58159700c0f274927953c5a5c1721402, type: 2}
-  snapshotDuration: 1
-  snapshotInterval: 1
-  snapshotCount: 3
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilitySprintBurst
+  maxBurstSpeed: 2
+  minBurstSpeed: 1.2
+  maxMeter: 5
+  meterRecoverySpeed: 1
+  timeUntilRecovery: 0.5

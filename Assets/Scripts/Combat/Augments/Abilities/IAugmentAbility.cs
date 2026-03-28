@@ -4,13 +4,13 @@ namespace Resonance.Combat.Augments
 {
     public interface IAugmentAbility
     {
-        public string Name { get; }
-        public string Description { get; }
+        string AbilityKey { get; }
+        string Name { get; }
+        string Description { get; }
+        float MaxCooldown { get; }
+        float CurrentCooldown { get; set; }
+        bool AbilityReady { get; }
 
-        public float Cooldown { get; set; }
-        
-        
-    
-        public void ActivateAbility();
+        void ActivateAbility();
     }
 }

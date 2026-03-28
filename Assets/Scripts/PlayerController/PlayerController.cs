@@ -147,6 +147,11 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Public Methods
+        public void ApplyJumpVelocity(float velocity)
+        {
+            _verticalVelocity = velocity;
+        }
+
         public void ResetState()
         {
             _verticalVelocity = 0f;
@@ -317,7 +322,7 @@ namespace Resonance.PlayerController
 
             if (_playerState.IsStateGroundedState(_lastMovementState) && !isGrounded)
             {
-                _verticalVelocity += _antiBump;
+                _verticalVelocity += Mathf.Min(_antiBump, baseSprintSpeed);
             }
 
             if (Mathf.Abs(_verticalVelocity) > Mathf.Abs(terminalVelocity))
