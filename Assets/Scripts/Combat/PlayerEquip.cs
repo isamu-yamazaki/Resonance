@@ -82,7 +82,6 @@ namespace Resonance.Combat
             }
         }
 
-
         private void Update()
         {
             if (playerActionsInput == null || playerInventory == null)
@@ -112,12 +111,12 @@ namespace Resonance.Combat
         private void UpdateEquipSlotFromSkin(GameObject skinInstance)
         {
             var slots = skinInstance.GetComponentsInChildren<WeaponEquipSlot>();
-            
+
             var match = slots.FirstOrDefault(s => s.weaponClass == playerState.CurrentWeaponClass);
-            
+
             if (match == null)
                 match = slots.FirstOrDefault(s => s.weaponClass == WeaponClass.Rifle);
-            
+
             if (match == null)
             {
                 Debug.LogError($"[PlayerEquip] No WeaponEquipSlot found on skin.", skinInstance);
@@ -247,14 +246,19 @@ namespace Resonance.Combat
 
             // Cancel out inherited parent scale so weapon renders at world scale (1,1,1)
             Vector3 ls = equipSlot.lossyScale;
-            currentWeaponInstance.transform.localScale = new Vector3(1f / ls.x, 1f /
-            ls.y, 1f / ls.z);
+            currentWeaponInstance.transform.localScale = new Vector3(1f / ls.x, 1f / ls.y, 1f / ls.z);
 
             currentWeaponView = currentWeaponInstance.GetComponent<WeaponView>();
             if (currentWeaponView == null)
             {
                 Debug.LogError("WeaponPrefab is missing WeaponView component.", currentWeaponInstance);
+                return;
             }
+
+            // Apply barrel mod flash override if one exists, otherwise WeaponView uses its default.
+            MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
+            if (flashSettings != null)
+                currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
         }
 
         public void RemoveWeapon(WeaponSlot slot)
