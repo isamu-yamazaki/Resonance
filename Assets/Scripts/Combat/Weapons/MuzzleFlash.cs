@@ -74,19 +74,24 @@ namespace Resonance.Combat.Weapons
             main.playOnAwake = false;
             main.duration = settings.flashDuration;
             main.startLifetime = settings.flashDuration;
-            main.startSpeed = 0f;
-            main.startSize = settings.flashScale;
+            main.startSpeed = new ParticleSystem.MinMaxCurve(2f, 4f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.003f, 0.006f);
             main.startColor = settings.flashColor;
-            main.maxParticles = 1;
+            main.gravityModifier = 0f;
+            main.maxParticles = 8;
 
             var emission = _coreFlash.emission;
-            emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 1) });
+            emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 8) });
 
+            // Radial burst — particles fire outward in all directions from the muzzle
             var shape = _coreFlash.shape;
-            shape.enabled = false;
+            shape.enabled = true;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.radius = 0.001f;
 
             var renderer = _coreFlash.GetComponent<ParticleSystemRenderer>();
-            renderer.renderMode = ParticleSystemRenderMode.Billboard;
+            renderer.renderMode = ParticleSystemRenderMode.Stretch;
+            renderer.lengthScale = 6f;
             renderer.material = CreateAdditiveMaterial(settings.flashColor);
         }
 
@@ -102,7 +107,7 @@ namespace Resonance.Combat.Weapons
             main.duration = 0.05f;
             main.startLifetime = settings.sparkLifetime;
             main.startSpeed = new ParticleSystem.MinMaxCurve(settings.sparkSpeed * 0.5f, settings.sparkSpeed);
-            main.startSize = new ParticleSystem.MinMaxCurve(0.01f, 0.03f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.003f, 0.008f);
             main.startColor = new Color(1f, 0.9f, 0.5f);
             main.gravityModifier = 0.3f;
             main.maxParticles = settings.sparkCount;
@@ -127,7 +132,7 @@ namespace Resonance.Combat.Weapons
 
             var renderer = _sparks.GetComponent<ParticleSystemRenderer>();
             renderer.renderMode = ParticleSystemRenderMode.Stretch;
-            renderer.lengthScale = 2f;
+            renderer.lengthScale = 4f;
             renderer.material = CreateAdditiveMaterial(new Color(1f, 0.85f, 0.4f));
             renderer.trailMaterial = CreateAdditiveMaterial(new Color(1f, 0.7f, 0.2f));
         }
@@ -184,7 +189,7 @@ namespace Resonance.Combat.Weapons
             if (_coreFlash != null)
             {
                 var main = _coreFlash.main;
-                main.startSize = settings.flashScale;
+                main.startSize = new ParticleSystem.MinMaxCurve(0.003f, 0.006f);
                 main.startLifetime = settings.flashDuration;
                 main.startColor = settings.flashColor;
             }
@@ -224,24 +229,29 @@ namespace Resonance.Combat.Weapons
 
         private static Material CreateAdditiveMaterial(Color color)
         {
-            var mat = new Material(Shader.Find("Particles/Standard Unlit")) { color = color };
-            mat.SetFloat("_Mode", 4f);
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit"))
+            {
+                color = color
+            };
+            mat.SetFloat("_Surface", 1f);
+            mat.SetFloat("_BlendMode", 3f);
             mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.One);
             mat.SetInt("_ZWrite", 0);
-            mat.EnableKeyword("_ALPHABLEND_ON");
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             mat.renderQueue = 3000;
             return mat;
         }
 
         private static Material CreateAlphaMaterial()
         {
-            var mat = new Material(Shader.Find("Particles/Standard Unlit"));
-            mat.SetFloat("_Mode", 2f);
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit"));
+            mat.SetFloat("_Surface", 1f);
+            mat.SetFloat("_BlendMode", 0f);
             mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             mat.SetInt("_ZWrite", 0);
-            mat.EnableKeyword("_ALPHABLEND_ON");
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             mat.renderQueue = 3000;
             return mat;
         }
