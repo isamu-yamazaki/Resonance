@@ -57,14 +57,13 @@ public class PlayerInteract : MonoBehaviour
 
     private string GetInteractBindingLabel()
     {
-        if (Resonance.PlayerController.PlayerInputManager.Instance?.PlayerControls == null)
-            return "E";
+        var controls = Resonance.PlayerController.PlayerInputManager.Instance?.PlayerControls;
+        if (controls == null) return "E";
 
-        InputAction interactAction = Resonance.PlayerController.PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Interact;
+        InputAction interactAction = controls.PlayerActionMap.Interact;
         if (interactAction == null || interactAction.bindings.Count == 0)
             return "E";
 
-        // Get the display string for the first binding and strip any path brackets
         string displayString = interactAction.GetBindingDisplayString(0);
         return string.IsNullOrEmpty(displayString) ? "E" : displayString;
     }

@@ -256,9 +256,35 @@ public class Zipline : MonoBehaviour, IInteractable
     private void Dismount()
     {
         if (currentPlayer != null)
+        {
             playerState.SetPlayerMovementState(PlayerMovementState.Falling);
 
+            // Re-show prompt if player is still within interact range
+            if (interactCollider != null && interactCollider.bounds.Contains(currentPlayer.transform.position))
+            {
+                string keyLabel = GetInteractBindingLabel(currentPlayer);
+                InteractPromptUI.Instance?.Show(keyLabel, "RIDE");
+            }
+        }
+
         ForceCleanup();
+    }
+
+    private string GetInteractBindingLabel(GameObject player)
+    {
+        PlayerActionsInput actionsInput = player.GetComponent<PlayerActionsInput>();
+        if (actionsInput == null) return "E";
+
+        var controls = Resonance.PlayerController.PlayerInputManager.Instance?.PlayerControls;
+        if (controls == null) return "E";
+
+        UnityEngine.InputSystem.InputAction interactAction = controls.PlayerActionMap.Interact;
+
+        if (interactAction == null || interactAction.bindings.Count == 0)
+            return "E";
+
+        string displayString = interactAction.GetBindingDisplayString(0);
+        return string.IsNullOrEmpty(displayString) ? "E" : displayString;
     }
 
     private void ForceCleanup()
