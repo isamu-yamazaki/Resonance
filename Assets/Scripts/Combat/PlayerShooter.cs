@@ -215,6 +215,10 @@ namespace Resonance.Combat
                 FireProjectile(weapon, view, payload, projectileDirection, count);
             }
 
+            MuzzleFlashSettings flashSettings = weaponStatManager.GetMuzzleFlashSettings();
+            if (flashSettings != null)
+                view.ApplyMuzzleFlashSettings(flashSettings);
+
             view.PlayMuzzleFlash();
         }
 
@@ -640,3 +644,4 @@ namespace Resonance.Combat
         #endregion
     }
 }
+
