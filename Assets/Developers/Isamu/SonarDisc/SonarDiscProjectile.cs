@@ -158,8 +158,9 @@ namespace Resonance.Abilities.SonarDisc
             }
             else
             {
+                transform.SetParent(hitCollider.transform, worldPositionStays: true);
                 StartCoroutine(RepositionAfterPhysics(attachPoint, surfaceAlignment));
-                NotifyAttachedToWallObserversRpc(attachPoint, surfaceAlignment);
+                NotifyAttachedToWallObserversRpc(hitCollider.gameObject, attachPoint, surfaceAlignment);
                 OnAttachedToWall();
             }
         }
@@ -285,8 +286,9 @@ namespace Resonance.Abilities.SonarDisc
         }
 
         [ObserversRpc(runLocally: false)]
-        private void NotifyAttachedToWallObserversRpc(Vector3 hitPoint, Quaternion rotation)
+        private void NotifyAttachedToWallObserversRpc(GameObject hitObject, Vector3 hitPoint, Quaternion rotation)
         {
+            transform.SetParent(hitObject.transform, worldPositionStays: true);
             transform.SetPositionAndRotation(hitPoint, rotation);
         }
 
