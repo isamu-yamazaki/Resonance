@@ -3,6 +3,7 @@ Event	ID	Name			Wwise Object Path	Notes
 	278146749	Play_GlassShardLand			\Default Work Unit\Play_GlassShardLand	
 	1529325343	Play_IndoorAmbience			\Default Work Unit\Play_IndoorAmbience	
 	1602358412	Play_Footstep			\Default Work Unit\Play_Footstep	
+	2277071487	Play_SD_Distortion			\Default Work Unit\SonarDisc\Play_SD_Distortion	
 	2305398106	Play_Train_Arrival			\Default Work Unit\Play_Train_Arrival	
 	2317729681	Play_Train_Moving			\Default Work Unit\Play_Train_Moving	
 	2323405115	Play_Landing			\Default Work Unit\Play_Landing	
@@ -10,7 +11,9 @@ Event	ID	Name			Wwise Object Path	Notes
 	3062989335	Play_Reactive_Feedback			\Default Work Unit\Play_Reactive_Feedback	
 	3211564518	Play_Test_Sound			\Default Work Unit\Play_Test_Sound	
 	3211783545	Stop_Reactive_Feedback			\Default Work Unit\Stop_Reactive_Feedback	
+	3246891746	Play_SD_PulseActivate			\Default Work Unit\SonarDisc\Play_SD_PulseActivate	
 	3267244670	Play_OutdoorAmbience			\Default Work Unit\Play_OutdoorAmbience	
+	3350049094	Play_SD_Ping			\Default Work Unit\SonarDisc\Play_SD_Ping	
 	3903810609	Play_Train_Disembark			\Default Work Unit\Play_Train_Disembark	
 
 Switch Group	ID	Name			Wwise Object Path	Notes
@@ -65,6 +68,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	695342955	sfx_props_glass_land_04	.cache\4F\{4F63AB35-73B8-CCC8-086C-FFE66447BCA7}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_04		72096
 	697658533	sfx_foley_footstep_wood_run_05	.cache\D4\{D4648B31-944B-965E-DDE1-9DADF08C731E}.wem		\Containers\Default Work Unit\Footsteps\Wood\sfx_foley_footstep_wood_run_05		37216
 	698658536	sfx_foley_footstep_gravel_run_01	.cache\D7\{D7654DA1-E972-E3C0-DBFB-321BE5879310}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_01		67680
+	709312571	sfx_combat_sonardisc_ping	.cache\5D\{5D340140-8EDB-8A86-B57E-5EBAD145FB33}.wem		\Containers\Default Work Unit\SonarDisc\sfx_combat_sonardisc_ping		121952
 	748536120	sfx_props_glass_land_02	.cache\FA\{FAEFFF3B-E9EB-0748-713A-3AF40D293470}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_02		60096
 	749473954	sfx_props_glass_shatter_01	.cache\F7\{F7367A4B-14BE-2DF5-F87E-8DC9F8966AF6}.wem		\Containers\Default Work Unit\Glass_Shatter\sfx_props_glass_shatter_01		167028
 	776817998	sfx_foley_footstep_gravel_run_04	.cache\BA\{BA9DE769-F482-8E5A-9D81-D8725EAF1C1C}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_04		65856
@@ -82,5 +86,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	909837310	sfx_foley_footstep_metal_run_01	.cache\52\{52A1F936-1F9A-9F66-629C-32080999EE94}.wem		\Containers\Default Work Unit\Footsteps\Metal\sfx_foley_footstep_metal_run_01		50020
 	941471142	sfx_world_audioreactive_loop	.cache\CA\{CAA224DB-658F-08EA-552A-D9F55F9B8843}.wem		\Containers\Default Work Unit\sfx_world_audioreactive_loop		1027924
 	956380320	sfx_foley_footstep_grass_land_01	.cache\80\{8072AEB0-0AC3-B580-A73F-22AAEF1B109B}.wem		\Containers\Default Work Unit\Landing\Grass\sfx_foley_footstep_grass_land_01		83296
+	986281526	sfx_combat_sonardisc_pulse	.cache\3E\{3EA334D5-963F-A09A-9E5E-F510AE7D7E90}.wem		\Containers\Default Work Unit\SonarDisc\sfx_combat_sonardisc_pulse		148772
 	1054996423	sfx_foley_footstep_wood_land_01	.cache\B6\{B67BF7DB-A0F5-0B2A-1D23-0A037D49C59C}.wem		\Containers\Default Work Unit\Landing\Wood\sfx_foley_footstep_wood_land_01		93280
+	1062683758	sfx_combat_sonardisc_distortion	.cache\13\{13B7E8AB-4751-91C9-EA0D-36333D391352}.wem		\Containers\Default Work Unit\SonarDisc\sfx_combat_sonardisc_distortion		83040
 
