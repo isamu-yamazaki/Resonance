@@ -137,6 +137,21 @@ namespace Resonance.DebugTools
                 GUILayout.Space(5);
                 GUILayout.Label($"Base Speed: {_playerStats.BaseSpeed:F2}");
                 GUILayout.Label($"Effective Speed Multiplier: {_playerStats.PlayerSpeed:F2}");
+                var verticalVelocity = typeof(PlayerController.PlayerController)
+                    .GetField("_verticalVelocity", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    ?.GetValue(_playerController);
+
+                var antiBump = typeof(PlayerController.PlayerController)
+                    .GetField("_antiBump", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    ?.GetValue(_playerController);
+
+                var lastAppliedAntiBump = typeof(PlayerController.PlayerController)
+                    .GetField("_lastAppliedAntiBump", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    ?.GetValue(_playerController);
+
+                GUILayout.Label($"Vertical Velocity: {verticalVelocity:F3}");
+                GUILayout.Label($"AntiBump: {antiBump:F3}");
+                GUILayout.Label($"Last Applied AntiBump: {lastAppliedAntiBump:F3}");
             }
 
             if (_playerInput != null)

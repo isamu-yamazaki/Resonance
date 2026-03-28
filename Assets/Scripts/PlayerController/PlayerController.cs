@@ -219,7 +219,7 @@ namespace Resonance.PlayerController
             
             drag = baseDrag * speedMult;
             
-            _antiBump = sprintSpeed * speedMult;
+            _antiBump = sprintSpeed;
         }
         
         private void UpdateMovementState()
@@ -322,7 +322,7 @@ namespace Resonance.PlayerController
 
             if (_playerState.IsStateGroundedState(_lastMovementState) && !isGrounded)
             {
-                _verticalVelocity += Mathf.Min(_antiBump, baseSprintSpeed);
+                _verticalVelocity += _antiBump;
             }
 
             if (Mathf.Abs(_verticalVelocity) > Mathf.Abs(terminalVelocity))
