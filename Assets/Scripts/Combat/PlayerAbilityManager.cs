@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Resonance.Combat.Augments;
 using Resonance.Inventory;
 using Resonance.PlayerController;
@@ -11,6 +12,7 @@ namespace Resonance.Combat
 
         private PlayerActionsInput playerActionsInput;
         private PlayerInventory inventory;
+        private Dictionary<string, IAugmentAbility> abilityMap = new();
 
         #endregion
 
@@ -20,6 +22,12 @@ namespace Resonance.Combat
         {
             playerActionsInput = GetComponent<PlayerActionsInput>();
             inventory = GetComponent<PlayerInventory>();
+
+            foreach (IAugmentAbility ability in GetComponents<IAugmentAbility>())
+            {
+                abilityMap[ability.AbilityKey] = ability;
+                SetAbilityEnabled(ability, false);
+            }
         }
 
         #endregion
@@ -43,9 +51,35 @@ namespace Resonance.Combat
 
         #region Methods
 
+        public void OnAugmentEquipped(AugmentProperties augment)
+        {
+            if (augment == null || string.IsNullOrEmpty(augment.AbilityKey))
+            {
+                return;
+            }
+
+            if (abilityMap.TryGetValue(augment.AbilityKey, out IAugmentAbility ability))
+            {
+                SetAbilityEnabled(ability, true);
+            }
+        }
+
+        public void OnAugmentRemoved(AugmentProperties augment)
+        {
+            if (augment == null || string.IsNullOrEmpty(augment.AbilityKey))
+            {
+                return;
+            }
+
+            if (abilityMap.TryGetValue(augment.AbilityKey, out IAugmentAbility ability))
+            {
+                SetAbilityEnabled(ability, false);
+            }
+        }
+
         private void TryUseUpperActiveAbility()
         {
-            AugmentAbility ability = inventory.augmentInventory[0]?.Ability;
+            IAugmentAbility ability = GetAbility(inventory.augmentInventory[0]?.AbilityKey);
             if (ability == null || !ability.AbilityReady)
             {
                 return;
@@ -56,13 +90,32 @@ namespace Resonance.Combat
 
         private void TryUseLowerActiveAbility()
         {
-            AugmentAbility ability = inventory.augmentInventory[1]?.Ability;
+            IAugmentAbility ability = GetAbility(inventory.augmentInventory[1]?.AbilityKey);
             if (ability == null || !ability.AbilityReady)
             {
                 return;
             }
 
             ability.ActivateAbility();
+        }
+
+        private IAugmentAbility GetAbility(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                return null;
+            }
+
+            abilityMap.TryGetValue(key, out IAugmentAbility ability);
+            return ability;
+        }
+
+        private void SetAbilityEnabled(IAugmentAbility ability, bool enabled)
+        {
+            if (ability is MonoBehaviour mb)
+            {
+                mb.enabled = enabled;
+            }
         }
 
         #endregion

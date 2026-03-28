@@ -19,6 +19,7 @@ namespace Resonance.Combat
         private PlayerSkinRenderer playerSkinRenderer;
         private WeaponStatManager weaponStatManager;
         private PlayerAugmentEquipper playerAugmentEquipper;
+        private PlayerAbilityManager playerAbilityManager;
 
         private ObservableValue<WeaponProperties> equippedWeaponObservable = new ObservableValue<WeaponProperties>();
         public ObservableValue<WeaponProperties> EquippedWeaponObservable => equippedWeaponObservable;
@@ -52,6 +53,7 @@ namespace Resonance.Combat
         {
             playerStats = GetComponent<PlayerStats>();
             playerAugmentEquipper = GetComponent<PlayerAugmentEquipper>();
+            playerAbilityManager = GetComponent<PlayerAbilityManager>();
             weaponStatManager = GetComponent<WeaponStatManager>();
 
             StartCoroutine(EquipStartingWeaponNextFrame());
@@ -313,6 +315,7 @@ namespace Resonance.Combat
 
                     playerInventory.AddAugment(augment);
                     playerAugmentEquipper.ApplyAugmentStats(augment);
+                    playerAbilityManager.OnAugmentEquipped(augment);
                     break;
                 case AugmentSlot.Lower:
                     if (playerInventory.augmentInventory[1] != null)
@@ -322,12 +325,14 @@ namespace Resonance.Combat
 
                     playerInventory.AddAugment(augment);
                     playerAugmentEquipper.ApplyAugmentStats(augment);
+                    playerAbilityManager.OnAugmentEquipped(augment);
                     break;
             }
         }
 
         public void RemoveAugment(AugmentProperties augment)
         {
+            playerAbilityManager.OnAugmentRemoved(augment);
             playerAugmentEquipper.RemoveAugmentStats(augment);
             playerInventory.RemoveAugment(augment.Slot);
         }
