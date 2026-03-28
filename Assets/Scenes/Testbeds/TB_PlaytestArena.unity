@@ -9460,58 +9460,6 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!1 &308065501
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 308065502}
-  - component: {fileID: 308065503}
-  m_Layer: 5
-  m_Name: ScannedScreenFlash
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &308065502
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 308065501}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 860036172}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &308065503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 308065501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2403bcfdd411e48208dda0e6fcc512ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.ScannedScreenFlash
-  _postProcessVolume: {fileID: 0}
-  flashColor: {r: 1, g: 0, b: 0.8, a: 1}
-  flashIntensity: 0.6
-  flashDuration: 0.2
 --- !u!1 &308403042
 GameObject:
   m_ObjectHideFlags: 0
@@ -39792,7 +39740,6 @@ RectTransform:
   - {fileID: 630007478}
   - {fileID: 1826207877}
   - {fileID: 1487374095}
-  - {fileID: 308065502}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -40996,8 +40943,25 @@ MonoBehaviour:
   ziplineSpeed: 10
   handReachOffset: 0.5
   interactReach: 4
+  dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!4 &902671254
 Transform:
   m_ObjectHideFlags: 0
@@ -58517,8 +58481,25 @@ MonoBehaviour:
   ziplineSpeed: 10
   handReachOffset: 0.5
   interactReach: 4
+  dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!4 &1288417781
 Transform:
   m_ObjectHideFlags: 0
@@ -78326,9 +78307,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f34316ceba0544c8b196ff1a2ca1258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.InteractPromptUI
-  verticalOffset: 2.5
-  canvasScale: 0.01
   fontAsset: {fileID: 11400000, guid: 555052c8b260f2f468cbd148932ee590, type: 2}
+  anchoredPosition: {x: 0, y: -40}
 --- !u!1 &1827621550
 GameObject:
   m_ObjectHideFlags: 0

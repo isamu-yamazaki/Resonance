@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using PurrNet;
 using Resonance.Helper;
-using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
@@ -291,12 +290,6 @@ namespace Resonance.Abilities.SonarDisc
             transform.SetPositionAndRotation(hitPoint, rotation);
         }
 
-        [TargetRpc]
-        private void NotifyScannedFlashTargetRpc(PlayerID target, GameObject scannedPlayer)
-        {
-            ScannedScreenFlash.Instance?.Flash();
-        }
-
         #endregion
 
         #region Pulse
@@ -346,16 +339,7 @@ namespace Resonance.Abilities.SonarDisc
 
                     ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
                     if (scannedHighlight != null && scannedHighlight.owner.HasValue)
-                    {
-                        PlayerID scannedPlayerID = scannedHighlight.owner.Value;
-
-                        if (isHost && scannedPlayerID == NetworkManager.main.localPlayer)
-                            ScannedScreenFlash.Instance?.Flash();
-                        else
-                            NotifyScannedFlashTargetRpc(scannedPlayerID, candidate.gameObject);
-
                         NotifyScanConfirmedOwnerRpc(_ownerPlayerID);
-                    }
                 }
 
                 yield return null;
