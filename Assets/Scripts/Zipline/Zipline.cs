@@ -21,6 +21,19 @@ public class Zipline : MonoBehaviour, IInteractable
     [SerializeField] private float lineWidth = 0.1f;
     [SerializeField] private Material lineMaterial;
 
+    [Header("Wwise Events")]
+    // TODO: Assign mount event in inspector
+    [SerializeField] private AK.Wwise.Event mountEvent;
+    // TODO: Assign riding loop event in inspector
+    [SerializeField] private AK.Wwise.Event ridingLoopEvent;
+    // TODO: Assign dismount event in inspector
+    [SerializeField] private AK.Wwise.Event dismountEvent;
+    // TODO: Assign RTPC for riding speed in inspector (drives loop volume)
+    [SerializeField] private AK.Wwise.RTPC ridingSpeedRTPC;
+
+    private bool _isLoopPlaying;
+    private float _lastCableProgress;
+
     private LineRenderer lineRenderer;
     private BoxCollider interactCollider;
     private GameObject interactColliderHost;
@@ -92,6 +105,8 @@ public class Zipline : MonoBehaviour, IInteractable
             HandleHorizontalMovement();
         else
             HandleVerticalMovement();
+
+        UpdateRidingAudio();
     }
 
     private void OnDrawGizmos()
@@ -174,11 +189,58 @@ public class Zipline : MonoBehaviour, IInteractable
 
         isRiding = true;
         jumpLatch = false;
+        _lastCableProgress = cableProgress;
+
+#if !UNITY_SERVER
+        if (mountEvent != null && mountEvent.IsValid())
+            mountEvent.Post(gameObject);
+
+        if (ridingLoopEvent != null && ridingLoopEvent.IsValid())
+        {
+            ridingLoopEvent.Post(gameObject);
+            _isLoopPlaying = true;
+        }
+#endif
     }
 
     #endregion
 
     #region Zipline Logic
+
+    private void UpdateRidingAudio()
+    {
+#if !UNITY_SERVER
+        if (!_isLoopPlaying) return;
+
+        float speedNormalized = 0f;
+
+        if (ziplineMode == ZiplineMode.Horizontal)
+        {
+            float progressDelta = Mathf.Abs(cableProgress - _lastCableProgress);
+            speedNormalized = Mathf.Clamp01(progressDelta / (ziplineSpeed / cableLength * Time.deltaTime));
+            _lastCableProgress = cableProgress;
+        }
+        else
+        {
+            float distanceMoved = Vector3.Distance(currentCablePosition, targetCablePosition);
+            speedNormalized = distanceMoved > 0.01f ? 1f : 0f;
+        }
+
+        if (ridingSpeedRTPC != null)
+            ridingSpeedRTPC.SetGlobalValue(speedNormalized * 100f);
+#endif
+    }
+
+    private void StopRidingAudio()
+    {
+#if !UNITY_SERVER
+        if (_isLoopPlaying && ridingLoopEvent != null && ridingLoopEvent.IsValid())
+        {
+            AkUnitySoundEngine.StopPlayingID(ridingLoopEvent.Post(gameObject));
+            _isLoopPlaying = false;
+        }
+#endif
+    }
 
     private void HandleHorizontalMovement()
     {
@@ -283,6 +345,13 @@ public class Zipline : MonoBehaviour, IInteractable
             }
         }
 
+#if !UNITY_SERVER
+        StopRidingAudio();
+
+        if (dismountEvent != null && dismountEvent.IsValid())
+            dismountEvent.Post(gameObject);
+#endif
+
         ForceCleanup();
     }
 
@@ -305,6 +374,9 @@ public class Zipline : MonoBehaviour, IInteractable
 
     private void ForceCleanup()
     {
+#if !UNITY_SERVER
+        StopRidingAudio();
+#endif
         currentPlayer = null;
         playerController = null;
         playerLocomotionInput = null;
