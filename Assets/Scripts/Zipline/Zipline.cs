@@ -1,4 +1,5 @@
 using Resonance.PlayerController;
+using Resonance.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,10 +15,24 @@ public class Zipline : MonoBehaviour, IInteractable
     [SerializeField] private float ziplineSpeed = 10f;
     [SerializeField] private float handReachOffset = 1.0f;
     [SerializeField] private float interactReach = 2.0f;
+    [SerializeField] private float dismountJumpForce = 8f;
 
     [Header("Line Renderer")]
     [SerializeField] private float lineWidth = 0.1f;
     [SerializeField] private Material lineMaterial;
+
+    [Header("Wwise Events")]
+    // TODO: Assign mount event in inspector
+    [SerializeField] private AK.Wwise.Event mountEvent;
+    // TODO: Assign riding loop event in inspector
+    [SerializeField] private AK.Wwise.Event ridingLoopEvent;
+    // TODO: Assign dismount event in inspector
+    [SerializeField] private AK.Wwise.Event dismountEvent;
+    // TODO: Assign RTPC for riding speed in inspector (drives loop volume)
+    [SerializeField] private AK.Wwise.RTPC ridingSpeedRTPC;
+
+    private bool _isLoopPlaying;
+    private float _lastCableProgress;
 
     private LineRenderer lineRenderer;
     private BoxCollider interactCollider;
@@ -26,6 +41,7 @@ public class Zipline : MonoBehaviour, IInteractable
     private GameObject currentPlayer;
     private CharacterController playerController;
     private PlayerLocomotionInput playerLocomotionInput;
+    private PlayerActionsInput playerActionsInput;
     private PlayerState playerState;
     private Transform playerCameraTransform;
 
@@ -72,9 +88,16 @@ public class Zipline : MonoBehaviour, IInteractable
         if (playerLocomotionInput.JumpPressed || Keyboard.current.spaceKey.wasPressedThisFrame)
             jumpLatch = true;
 
+        if (playerActionsInput != null && playerActionsInput.InteractPressed)
+        {
+            playerActionsInput.SetInteractPressedFalse();
+            Dismount(applyJump: false);
+            return;
+        }
+
         if (jumpLatch)
         {
-            Dismount();
+            Dismount(applyJump: true);
             return;
         }
 
@@ -82,6 +105,8 @@ public class Zipline : MonoBehaviour, IInteractable
             HandleHorizontalMovement();
         else
             HandleVerticalMovement();
+
+        UpdateRidingAudio();
     }
 
     private void OnDrawGizmos()
@@ -128,6 +153,7 @@ public class Zipline : MonoBehaviour, IInteractable
 
         playerState = state;
         playerLocomotionInput = locomotionInput;
+        playerActionsInput = interactor.GetComponent<PlayerActionsInput>();
         playerController = characterController;
         currentPlayer = interactor;
         playerHeight = playerController.height;
@@ -159,14 +185,62 @@ public class Zipline : MonoBehaviour, IInteractable
         }
 
         playerState.SetPlayerMovementState(PlayerMovementState.Ziplining);
+        InteractPromptUI.Instance?.Hide();
 
         isRiding = true;
         jumpLatch = false;
+        _lastCableProgress = cableProgress;
+
+#if !UNITY_SERVER
+        if (mountEvent != null && mountEvent.IsValid())
+            mountEvent.Post(gameObject);
+
+        if (ridingLoopEvent != null && ridingLoopEvent.IsValid())
+        {
+            ridingLoopEvent.Post(gameObject);
+            _isLoopPlaying = true;
+        }
+#endif
     }
 
     #endregion
 
     #region Zipline Logic
+
+    private void UpdateRidingAudio()
+    {
+#if !UNITY_SERVER
+        if (!_isLoopPlaying) return;
+
+        float speedNormalized = 0f;
+
+        if (ziplineMode == ZiplineMode.Horizontal)
+        {
+            float progressDelta = Mathf.Abs(cableProgress - _lastCableProgress);
+            speedNormalized = Mathf.Clamp01(progressDelta / (ziplineSpeed / cableLength * Time.deltaTime));
+            _lastCableProgress = cableProgress;
+        }
+        else
+        {
+            float distanceMoved = Vector3.Distance(currentCablePosition, targetCablePosition);
+            speedNormalized = distanceMoved > 0.01f ? 1f : 0f;
+        }
+
+        if (ridingSpeedRTPC != null)
+            ridingSpeedRTPC.SetGlobalValue(speedNormalized * 100f);
+#endif
+    }
+
+    private void StopRidingAudio()
+    {
+#if !UNITY_SERVER
+        if (_isLoopPlaying && ridingLoopEvent != null && ridingLoopEvent.IsValid())
+        {
+            AkUnitySoundEngine.StopPlayingID(ridingLoopEvent.Post(gameObject));
+            _isLoopPlaying = false;
+        }
+#endif
+    }
 
     private void HandleHorizontalMovement()
     {
@@ -196,7 +270,7 @@ public class Zipline : MonoBehaviour, IInteractable
         }
 
         if (cableProgress >= 1f || cableProgress <= 0f)
-            Dismount();
+            Dismount(applyJump: false);
     }
 
     private void HandleVerticalMovement()
@@ -227,7 +301,7 @@ public class Zipline : MonoBehaviour, IInteractable
         }
 
         if (Vector3.Distance(currentCablePosition, targetCablePosition) < 0.05f)
-            Dismount();
+            Dismount(applyJump: false);
     }
 
     private float GetMoveInput()
@@ -251,19 +325,62 @@ public class Zipline : MonoBehaviour, IInteractable
         return Vector3.Dot(desiredDirection, cableDirection);
     }
 
-    private void Dismount()
+    private void Dismount(bool applyJump = true)
     {
         if (currentPlayer != null)
+        {
             playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+
+            if (applyJump)
+            {
+                Resonance.PlayerController.PlayerController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerController>();
+                pc?.ApplyJumpVelocity(dismountJumpForce);
+            }
+
+            // Re-show prompt if player is still within interact range
+            if (interactCollider != null && interactCollider.bounds.Contains(currentPlayer.transform.position))
+            {
+                string keyLabel = GetInteractBindingLabel(currentPlayer);
+                InteractPromptUI.Instance?.Show(keyLabel, "RIDE");
+            }
+        }
+
+#if !UNITY_SERVER
+        StopRidingAudio();
+
+        if (dismountEvent != null && dismountEvent.IsValid())
+            dismountEvent.Post(gameObject);
+#endif
 
         ForceCleanup();
     }
 
+    private string GetInteractBindingLabel(GameObject player)
+    {
+        PlayerActionsInput actionsInput = player.GetComponent<PlayerActionsInput>();
+        if (actionsInput == null) return "E";
+
+        var controls = Resonance.PlayerController.PlayerInputManager.Instance?.PlayerControls;
+        if (controls == null) return "E";
+
+        UnityEngine.InputSystem.InputAction interactAction = controls.PlayerActionMap.Interact;
+
+        if (interactAction == null || interactAction.bindings.Count == 0)
+            return "E";
+
+        string displayString = interactAction.GetBindingDisplayString(0);
+        return string.IsNullOrEmpty(displayString) ? "E" : displayString;
+    }
+
     private void ForceCleanup()
     {
+#if !UNITY_SERVER
+        StopRidingAudio();
+#endif
         currentPlayer = null;
         playerController = null;
         playerLocomotionInput = null;
+        playerActionsInput = null;
         playerState = null;
         playerCameraTransform = null;
         isRiding = false;
