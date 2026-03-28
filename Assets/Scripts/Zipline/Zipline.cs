@@ -15,6 +15,7 @@ public class Zipline : MonoBehaviour, IInteractable
     [SerializeField] private float ziplineSpeed = 10f;
     [SerializeField] private float handReachOffset = 1.0f;
     [SerializeField] private float interactReach = 2.0f;
+    [SerializeField] private float dismountJumpForce = 8f;
 
     [Header("Line Renderer")]
     [SerializeField] private float lineWidth = 0.1f;
@@ -258,6 +259,9 @@ public class Zipline : MonoBehaviour, IInteractable
         if (currentPlayer != null)
         {
             playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+
+            Resonance.PlayerController.PlayerController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerController>();
+            pc?.ApplyJumpVelocity(dismountJumpForce);
 
             // Re-show prompt if player is still within interact range
             if (interactCollider != null && interactCollider.bounds.Contains(currentPlayer.transform.position))

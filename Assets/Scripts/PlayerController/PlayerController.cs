@@ -147,6 +147,11 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Public Methods
+        public void ApplyJumpVelocity(float velocity)
+        {
+            _verticalVelocity = velocity;
+        }
+
         public void ResetState()
         {
             _verticalVelocity = 0f;
