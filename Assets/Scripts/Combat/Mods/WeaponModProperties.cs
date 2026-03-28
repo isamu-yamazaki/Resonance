@@ -28,6 +28,10 @@ namespace Resonance.Combat.Mods
         [SerializeField] private Sprite icon;
         public Sprite Icon => icon;
 
+        [Header("Muzzle Flash Override")]
+        [SerializeField] private MuzzleFlashSettings muzzleFlashOverride;
+        public MuzzleFlashSettings MuzzleFlashOverride => muzzleFlashOverride;
+
         [Header("Stat Modifiers")]
         [SerializeField] private List<StatModifier> modifiers = new();
         public IReadOnlyList<StatModifier> Modifiers => modifiers;
