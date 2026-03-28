@@ -22,8 +22,8 @@ namespace Resonance.UI
         private const float FontSizeKey = 22f;
         private const float FontSizeLabel = 18f;
         private const float Spacing = 12f;
-        private const float PaddingH = 24f;
-        private const float PaddingV = 14f;
+        private const float PaddingH = 14f;
+        private const float PaddingV = 8f;
 
         private static readonly Color ColorBackground = new Color(0.08f, 0.08f, 0.10f, 0.55f);
         private static readonly Color ColorKeyBox = new Color(1f, 1f, 1f, 1f);
@@ -84,8 +84,18 @@ namespace Resonance.UI
             _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             _canvas.sortingOrder = 10;
 
-            gameObject.AddComponent<CanvasScaler>();
+            CanvasScaler scaler = gameObject.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.matchWidthOrHeight = 0.5f;
+
             gameObject.AddComponent<GraphicRaycaster>();
+
+            // Full-screen rect so anchoring works correctly
+            RectTransform canvasRect = GetComponent<RectTransform>();
+            canvasRect.anchorMin = Vector2.zero;
+            canvasRect.anchorMax = Vector2.one;
+            canvasRect.sizeDelta = Vector2.zero;
 
             // Background panel anchored to bottom center
             GameObject panelGO = new GameObject("Panel");
@@ -96,6 +106,7 @@ namespace Resonance.UI
             panelRect.anchorMax = new Vector2(0.5f, 0f);
             panelRect.pivot = new Vector2(0.5f, 0f);
             panelRect.anchoredPosition = anchoredPosition;
+            panelRect.sizeDelta = new Vector2(300f, 80f);
 
             Image panelImage = panelGO.AddComponent<Image>();
             panelImage.color = ColorBackground;
@@ -163,10 +174,10 @@ namespace Resonance.UI
             _labelText.fontSize = FontSizeLabel;
             _labelText.fontStyle = FontStyles.Bold;
             _labelText.color = ColorLabelText;
-            _labelText.alignment = TextAlignmentOptions.MidlineLeft;
+            _labelText.alignment = TextAlignmentOptions.Center;
             if (fontAsset != null) _labelText.font = fontAsset;
 
-            labelGO.AddComponent<LayoutElement>().preferredWidth = 120f;
+            labelGO.AddComponent<LayoutElement>();
 
             // Accent line at bottom of panel
             GameObject accentGO = new GameObject("AccentLine");

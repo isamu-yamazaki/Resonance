@@ -1,4 +1,5 @@
 using Resonance.PlayerController;
+using Resonance.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -159,6 +160,7 @@ public class Zipline : MonoBehaviour, IInteractable
         }
 
         playerState.SetPlayerMovementState(PlayerMovementState.Ziplining);
+        InteractPromptUI.Instance?.Hide();
 
         isRiding = true;
         jumpLatch = false;
