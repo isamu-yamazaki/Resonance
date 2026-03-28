@@ -79,22 +79,20 @@ namespace Resonance.Combat
 
         private void TryUseUpperActiveAbility()
         {
+            playerActionsInput.SetAbilityUpperPressedFalse();
             IAugmentAbility ability = GetAbility(inventory.augmentInventory[0]?.AbilityKey);
             if (ability == null || !ability.AbilityReady)
-            {
                 return;
-            }
 
             ability.ActivateAbility();
         }
 
         private void TryUseLowerActiveAbility()
         {
+            playerActionsInput.SetAbilityLowerPressedFalse();
             IAugmentAbility ability = GetAbility(inventory.augmentInventory[1]?.AbilityKey);
             if (ability == null || !ability.AbilityReady)
-            {
                 return;
-            }
 
             ability.ActivateAbility();
         }
