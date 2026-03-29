@@ -3589,7 +3589,7 @@
 							<ChildrenList>
 								<Sound Name="sfx_combat_pistol_casing" ID="{CF385011-E08A-44C0-AFA2-785FC94E2BE3}" ShortID="492167604">
 									<PropertyList>
-										<Property Name="3DPosition" Type="int16" Value="2"/>
+										<Property Name="3DPosition" Type="int16" Value="1"/>
 										<Property Name="3DSpatialization" Type="int16" Value="2"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
@@ -3601,6 +3601,9 @@
 										<Reference Name="Attenuation">
 											<Custom>
 												<Attenuation Name="Attenuation (Custom)" ID="{221B7157-254B-4A0C-BF68-1F7FF2DBFF0E}" ShortID="29996854">
+													<PropertyList>
+														<Property Name="RadiusMax" Type="Real64" Value="10"/>
+													</PropertyList>
 													<CurveUsageInfoList>
 														<VolumeDryUsage>
 															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
@@ -3615,7 +3618,7 @@
 																			<Flags>5</Flags>
 																		</Point>
 																		<Point>
-																			<XPos>100</XPos>
+																			<XPos>10</XPos>
 																			<YPos>-200</YPos>
 																			<Flags>37</Flags>
 																		</Point>
@@ -4011,6 +4014,9 @@
 										<Reference Name="Attenuation">
 											<Custom>
 												<Attenuation Name="Attenuation (Custom)" ID="{372CE19F-E386-46C9-9098-3EEA7CF8C342}" ShortID="803538902">
+													<PropertyList>
+														<Property Name="RadiusMax" Type="Real64" Value="10"/>
+													</PropertyList>
 													<CurveUsageInfoList>
 														<VolumeDryUsage>
 															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
@@ -4025,7 +4031,7 @@
 																			<Flags>5</Flags>
 																		</Point>
 																		<Point>
-																			<XPos>100</XPos>
+																			<XPos>10</XPos>
 																			<YPos>-200</YPos>
 																			<Flags>37</Flags>
 																		</Point>
@@ -4256,6 +4262,9 @@
 										<Reference Name="Attenuation">
 											<Custom>
 												<Attenuation Name="Attenuation (Custom)" ID="{B4F15EE4-4661-4759-93AF-FCA99E3E109F}" ShortID="473555117">
+													<PropertyList>
+														<Property Name="RadiusMax" Type="Real64" Value="15"/>
+													</PropertyList>
 													<CurveUsageInfoList>
 														<VolumeDryUsage>
 															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
@@ -4270,7 +4279,7 @@
 																			<Flags>5</Flags>
 																		</Point>
 																		<Point>
-																			<XPos>100</XPos>
+																			<XPos>15</XPos>
 																			<YPos>-200</YPos>
 																			<Flags>37</Flags>
 																		</Point>
@@ -4501,6 +4510,9 @@
 										<Reference Name="Attenuation">
 											<Custom>
 												<Attenuation Name="Attenuation (Custom)" ID="{16D06146-254C-4DB9-85F6-5DDC9B0B6F3A}" ShortID="1050725577">
+													<PropertyList>
+														<Property Name="RadiusMax" Type="Real64" Value="80"/>
+													</PropertyList>
 													<CurveUsageInfoList>
 														<VolumeDryUsage>
 															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
@@ -4515,7 +4527,7 @@
 																			<Flags>5</Flags>
 																		</Point>
 																		<Point>
-																			<XPos>100</XPos>
+																			<XPos>80</XPos>
 																			<YPos>-200</YPos>
 																			<Flags>37</Flags>
 																		</Point>
@@ -4751,6 +4763,9 @@
 										<Reference Name="Attenuation">
 											<Custom>
 												<Attenuation Name="Attenuation (Custom)" ID="{EFE2D26D-9A5B-4E29-A28C-7FFE78D92AE9}" ShortID="629045929">
+													<PropertyList>
+														<Property Name="RadiusMax" Type="Real64" Value="15"/>
+													</PropertyList>
 													<CurveUsageInfoList>
 														<VolumeDryUsage>
 															<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
@@ -4765,7 +4780,7 @@
 																			<Flags>5</Flags>
 																		</Point>
 																		<Point>
-																			<XPos>100</XPos>
+																			<XPos>15</XPos>
 																			<YPos>-200</YPos>
 																			<Flags>37</Flags>
 																		</Point>

@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{139887BD-7B58-4A35-40CD-07D3C25415EE}",
+    "Hash": "{D2DA616A-4926-2902-29B7-38A36B75A76B}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -470,7 +470,7 @@
       "Name": "Play_BaseHandgun_Casing",
       "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Casing",
       "GUID": "{F27A7E9E-EEFA-4CD4-8603-F2A26832AFFA}",
-      "MaxAttenuation": "100",
+      "MaxAttenuation": "10",
       "DurationType": "OneShot",
       "DurationMin": "1.0571458",
       "DurationMax": "1.0571458",
@@ -485,7 +485,7 @@
       "Name": "Play_BaseHandgun_Empty",
       "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Empty",
       "GUID": "{D41740C2-2EDF-42F7-8EAD-2B9261B4D253}",
-      "MaxAttenuation": "100",
+      "MaxAttenuation": "10",
       "DurationType": "OneShot",
       "DurationMin": "0.43304166",
       "DurationMax": "0.43304166",
@@ -500,7 +500,7 @@
       "Name": "Play_BaseHandgun_Equip",
       "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Equip",
       "GUID": "{BE95C702-90F5-4D4C-8E89-1F8D8FF66C0C}",
-      "MaxAttenuation": "100",
+      "MaxAttenuation": "15",
       "DurationType": "OneShot",
       "DurationMin": "0.5357083",
       "DurationMax": "0.5357083",
@@ -515,7 +515,7 @@
       "Name": "Play_BaseHandgun_Fire",
       "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Fire",
       "GUID": "{A9498D83-6233-4793-8F13-E647504F5ACF}",
-      "MaxAttenuation": "100",
+      "MaxAttenuation": "80",
       "DurationType": "OneShot",
       "DurationMin": "0.21875",
       "DurationMax": "0.21875",
@@ -530,7 +530,7 @@
       "Name": "Play_BaseHandgun_Reload",
       "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Reload",
       "GUID": "{5B9A6DD5-FE3D-452D-9938-5A9E1CFA4CDE}",
-      "MaxAttenuation": "100",
+      "MaxAttenuation": "15",
       "DurationType": "OneShot",
       "DurationMin": "0.7455417",
       "DurationMax": "0.7455417",
@@ -1056,6 +1056,6 @@
     ]
    }
   ],
-  "FileHash": "{30A19B51-C0F5-33AD-075D-F24B9BD95139}"
+  "FileHash": "{A97AC7B9-8AF4-025F-4210-BCA5CBF85CE7}"
  }
 }

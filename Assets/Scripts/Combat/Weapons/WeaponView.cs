@@ -70,7 +70,6 @@ namespace Resonance.Combat.Weapons
             if (audioProperties?.fireEvent == null) return;
             if (muzzleEmitter == null) return;
             audioProperties.fireEvent.Post(muzzleEmitter);
-
             TryPlayCasing();
         }
 
