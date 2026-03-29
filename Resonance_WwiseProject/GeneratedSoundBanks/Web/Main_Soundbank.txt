@@ -3,6 +3,7 @@ Event	ID	Name			Wwise Object Path	Notes
 	278146749	Play_GlassShardLand			\Default Work Unit\Play_GlassShardLand	
 	1057815627	Play_BaseHandgun_Fire			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Fire	
 	1060624046	Play_BaseHandgun_Casing			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Casing	
+	1166794921	Play_LMG_Fire			\Default Work Unit\Firearms\LMG\Play_LMG_Fire	
 	1529325343	Play_IndoorAmbience			\Default Work Unit\Play_IndoorAmbience	
 	1602358412	Play_Footstep			\Default Work Unit\Play_Footstep	
 	2277071487	Play_SD_Distortion			\Default Work Unit\SonarDisc\Play_SD_Distortion	
@@ -74,6 +75,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	695342955	sfx_props_glass_land_04	.cache\4F\{4F63AB35-73B8-CCC8-086C-FFE66447BCA7}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_04		72096
 	697658533	sfx_foley_footstep_wood_run_05	.cache\D4\{D4648B31-944B-965E-DDE1-9DADF08C731E}.wem		\Containers\Default Work Unit\Footsteps\Wood\sfx_foley_footstep_wood_run_05		37216
 	698658536	sfx_foley_footstep_gravel_run_01	.cache\D7\{D7654DA1-E972-E3C0-DBFB-321BE5879310}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_01		67680
+	708460337	sfx_combat_lmg_fire	.cache\37\{37710D90-D1A2-98D2-B694-FA6EDA966D6C}.wem		\Containers\Default Work Unit\Firearms\LMG\sfx_combat_lmg_fire		329288
 	709312571	sfx_combat_sonardisc_ping	.cache\5D\{5D340140-8EDB-8A86-B57E-5EBAD145FB33}.wem		\Containers\Default Work Unit\SonarDisc\sfx_combat_sonardisc_ping		121952
 	748536120	sfx_props_glass_land_02	.cache\FA\{FAEFFF3B-E9EB-0748-713A-3AF40D293470}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_02		60096
 	749473954	sfx_props_glass_shatter_01	.cache\F7\{F7367A4B-14BE-2DF5-F87E-8DC9F8966AF6}.wem		\Containers\Default Work Unit\Glass_Shatter\sfx_props_glass_shatter_01		167028

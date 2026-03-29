@@ -23,6 +23,7 @@ namespace AK
         static const AkUniqueID PLAY_GLASSSHATTER = 2387432645U;
         static const AkUniqueID PLAY_INDOORAMBIENCE = 1529325343U;
         static const AkUniqueID PLAY_LANDING = 2323405115U;
+        static const AkUniqueID PLAY_LMG_FIRE = 1166794921U;
         static const AkUniqueID PLAY_OUTDOORAMBIENCE = 3267244670U;
         static const AkUniqueID PLAY_REACTIVE_FEEDBACK = 3062989335U;
         static const AkUniqueID PLAY_SD_DISTORTION = 2277071487U;

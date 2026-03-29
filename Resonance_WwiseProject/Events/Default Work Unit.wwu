@@ -222,6 +222,21 @@
 								</Event>
 							</ChildrenList>
 						</Folder>
+						<Folder Name="LMG" ID="{02E9B7C3-99EB-4BDF-943D-BA48BE2F6FCA}" ShortID="849639396">
+							<ChildrenList>
+								<Event Name="Play_LMG_Fire" ID="{E12CFF74-10E0-433D-887D-F7C554635EE9}">
+									<ChildrenList>
+										<Action Name="" ID="{0F397512-12FC-4A1A-B198-7DC5905F4B56}" ShortID="567525724">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_lmg_fire" ID="{ADF37313-33E0-4586-AEB5-8B1ECA8038FB}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>

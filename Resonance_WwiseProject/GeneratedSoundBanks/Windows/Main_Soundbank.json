@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{ACF8FEFA-C00B-B727-B24F-A9346119025C}",
+    "Hash": "{139887BD-7B58-4A35-40CD-07D3C25415EE}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -286,6 +286,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_gravel_run_01.wav",
       "CachePath": "D7/{D7654DA1-E972-E3C0-DBFB-321BE5879310}.wem"
+     },
+     {
+      "Id": "708460337",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_lmg_fire.wav",
+      "CachePath": "37/{37710D90-D1A2-98D2-B694-FA6EDA966D6C}.wem"
      },
      {
       "Id": "709312571",
@@ -824,6 +832,21 @@
       ]
      },
      {
+      "Id": "1166794921",
+      "Name": "Play_LMG_Fire",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\LMG\\Play_LMG_Fire",
+      "GUID": "{E12CFF74-10E0-433D-887D-F7C554635EE9}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "1.7142917",
+      "DurationMax": "1.7142917",
+      "MediaRefs": [
+       {
+        "Id": "708460337"
+       }
+      ]
+     },
+     {
       "Id": "3267244670",
       "Name": "Play_OutdoorAmbience",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_OutdoorAmbience",
@@ -1033,6 +1056,6 @@
     ]
    }
   ],
-  "FileHash": "{AB2C33CD-118A-735E-61A6-39BCB0097A6E}"
+  "FileHash": "{AB5E30AE-D18A-5FED-BBA1-10A8E4A968EF}"
  }
 }
