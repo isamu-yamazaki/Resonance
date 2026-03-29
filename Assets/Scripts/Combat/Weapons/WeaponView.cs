@@ -17,7 +17,7 @@ namespace Resonance.Combat.Weapons
         [SerializeField] private GameObject bodyEmitter;
 
         [Header("Casing Settings")]
-        [SerializeField] private float casingGroundThreshold = 3f;
+        [SerializeField] private float casingGroundThreshold = 5f;
         [SerializeField] private LayerMask casingLayerMask;
 
         private WeaponAudioProperties audioProperties;

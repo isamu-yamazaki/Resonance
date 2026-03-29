@@ -19,6 +19,7 @@
 						<ObjectRef Name="Stop_Train_Moving" ID="{5C6A69E7-5734-4A59-9855-DB5FEB581542}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Train_Moving" ID="{3C5E15D5-9DF8-4C03-9A2A-C8C585369995}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Train_Arrival" ID="{68D90232-C33C-4CBC-9B40-F9164D7350AF}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_BaseHandgun_Casing" ID="{F27A7E9E-EEFA-4CD4-8603-F2A26832AFFA}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_SD_Distortion" ID="{CA254BB4-30E7-4D33-94F7-745C22F42519}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_BaseHandgun_Equip" ID="{BE95C702-90F5-4D4C-8E89-1F8D8FF66C0C}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_OutdoorAmbience" ID="{87B2053E-F857-4EB2-B914-927C0FF52814}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>

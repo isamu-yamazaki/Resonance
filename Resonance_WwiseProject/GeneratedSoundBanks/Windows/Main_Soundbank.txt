@@ -2,6 +2,7 @@ Event	ID	Name			Wwise Object Path	Notes
 	130138219	Stop_Train_Moving			\Default Work Unit\Stop_Train_Moving	
 	278146749	Play_GlassShardLand			\Default Work Unit\Play_GlassShardLand	
 	1057815627	Play_BaseHandgun_Fire			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Fire	
+	1060624046	Play_BaseHandgun_Casing			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Casing	
 	1529325343	Play_IndoorAmbience			\Default Work Unit\Play_IndoorAmbience	
 	1602358412	Play_Footstep			\Default Work Unit\Play_Footstep	
 	2277071487	Play_SD_Distortion			\Default Work Unit\SonarDisc\Play_SD_Distortion	

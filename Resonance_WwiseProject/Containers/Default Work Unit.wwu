@@ -3593,7 +3593,7 @@
 										<Property Name="3DSpatialization" Type="int16" Value="2"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-20</Value>
+												<Value>-25</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>

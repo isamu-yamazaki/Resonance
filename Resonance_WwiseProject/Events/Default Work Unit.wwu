@@ -182,16 +182,6 @@
 												</Reference>
 											</ReferenceList>
 										</Action>
-										<Action Name="" ID="{F79D5732-5C88-4A2B-8763-16845D8EAB0E}" ShortID="758895350">
-											<PropertyList>
-												<Property Name="Delay" Type="Real64" Value="0.2"/>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Target">
-													<ObjectRef Name="sfx_combat_pistol_casing" ID="{CF385011-E08A-44C0-AFA2-785FC94E2BE3}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
-												</Reference>
-											</ReferenceList>
-										</Action>
 									</ChildrenList>
 								</Event>
 								<Event Name="Play_BaseHandgun_Reload" ID="{5B9A6DD5-FE3D-452D-9938-5A9E1CFA4CDE}">
@@ -211,6 +201,20 @@
 											<ReferenceList>
 												<Reference Name="Target">
 													<ObjectRef Name="sfx_combat_pistol_empty_trigger" ID="{A31864DF-25C9-4888-BB3D-4EFB3D3294A0}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_BaseHandgun_Casing" ID="{F27A7E9E-EEFA-4CD4-8603-F2A26832AFFA}">
+									<ChildrenList>
+										<Action Name="" ID="{36130DA9-0E86-4454-BFCC-4E3F5B09EEB3}" ShortID="381065161">
+											<PropertyList>
+												<Property Name="Delay" Type="Real64" Value="0.2"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_pistol_casing" ID="{CF385011-E08A-44C0-AFA2-785FC94E2BE3}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
 												</Reference>
 											</ReferenceList>
 										</Action>

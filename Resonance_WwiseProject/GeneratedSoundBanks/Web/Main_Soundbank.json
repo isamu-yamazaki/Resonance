@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{721AFFE0-1882-1C86-036E-ECF1D016FAD6}",
+    "Hash": "{ACF8FEFA-C00B-B727-B24F-A9346119025C}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -458,6 +458,21 @@
     ],
     "Events": [
      {
+      "Id": "1060624046",
+      "Name": "Play_BaseHandgun_Casing",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Casing",
+      "GUID": "{F27A7E9E-EEFA-4CD4-8603-F2A26832AFFA}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "1.0571458",
+      "DurationMax": "1.0571458",
+      "MediaRefs": [
+       {
+        "Id": "265624677"
+       }
+      ]
+     },
+     {
       "Id": "2638125186",
       "Name": "Play_BaseHandgun_Empty",
       "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Empty",
@@ -494,12 +509,9 @@
       "GUID": "{A9498D83-6233-4793-8F13-E647504F5ACF}",
       "MaxAttenuation": "100",
       "DurationType": "OneShot",
-      "DurationMin": "1.0571458",
-      "DurationMax": "1.0571458",
+      "DurationMin": "0.21875",
+      "DurationMax": "0.21875",
       "MediaRefs": [
-       {
-        "Id": "265624677"
-       },
        {
         "Id": "529592339"
        }
@@ -1021,6 +1033,6 @@
     ]
    }
   ],
-  "FileHash": "{95C57715-AF52-D132-075F-54B46E50CE1C}"
+  "FileHash": "{23857188-41AA-E600-C66D-A923B54FFA69}"
  }
 }
