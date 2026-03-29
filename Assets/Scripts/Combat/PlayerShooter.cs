@@ -180,6 +180,7 @@ namespace Resonance.Combat
             {
                 if (currentAmmo <= 0)
                 {
+                    view.PlayEmptyTrigger();
                     playerActionsInput.RequestReload();
                     return;
                 }
@@ -215,11 +216,16 @@ namespace Resonance.Combat
                 FireProjectile(weapon, view, payload, projectileDirection, count);
             }
 
+            WeaponAudioProperties audioProperties = weaponStatManager.GetAudioProperties();
+            if (audioProperties != null)
+                view.ApplyAudioProperties(audioProperties);
+
             MuzzleFlashSettings flashSettings = weaponStatManager.GetMuzzleFlashSettings();
             if (flashSettings != null)
                 view.ApplyMuzzleFlashSettings(flashSettings);
 
             view.PlayMuzzleFlash();
+            view.PlayFire();
         }
 
         private WeaponPayload BuildBasePayload(WeaponProperties weapon)
@@ -457,6 +463,8 @@ namespace Resonance.Combat
             playerState.SetReloading(true);
             reloadEndTime = Time.time + reloadTime;
 
+            playerEquip.CurrentWeaponView?.PlayReload();
+
             viewModel.SetReloadState(true);
             viewModel.SetReloadProgress(0f);
 
@@ -644,4 +652,3 @@ namespace Resonance.Combat
         #endregion
     }
 }
-
