@@ -335,7 +335,6 @@ MonoBehaviour:
   _decelerationTime: 3
   _arrivalTolerance: 0.15
   _stationStopDuration: 5
-  _displaySpeedDecay: 2
 --- !u!114 &7082317054524908845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -861,12 +860,20 @@ PrefabInstance:
       value: Train
       objectReference: {fileID: 0}
     - target: {fileID: -5283066126737850158, guid: f4aca4acfe47846329f43200394e1fde, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -5283066126737850158, guid: f4aca4acfe47846329f43200394e1fde, type: 3}
       propertyPath: m_TagString
       value: Train
       objectReference: {fileID: 0}
     - target: {fileID: -5041786243778457287, guid: f4aca4acfe47846329f43200394e1fde, type: 3}
       propertyPath: m_TagString
       value: Train
+      objectReference: {fileID: 0}
+    - target: {fileID: -3133292727745147947, guid: f4aca4acfe47846329f43200394e1fde, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -3133292727745147947, guid: f4aca4acfe47846329f43200394e1fde, type: 3}
       propertyPath: m_TagString
@@ -1823,6 +1830,10 @@ PrefabInstance:
     - target: {fileID: 1630794972795428178, guid: f4aca4acfe47846329f43200394e1fde, type: 3}
       propertyPath: 'm_Bones.Array.data[231]'
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2134644344969417515, guid: f4aca4acfe47846329f43200394e1fde, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2134644344969417515, guid: f4aca4acfe47846329f43200394e1fde, type: 3}
       propertyPath: m_TagString

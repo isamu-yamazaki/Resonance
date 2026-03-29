@@ -51,6 +51,11 @@ namespace Resonance.PlayerController
             return CurrentPlayerMovementState == PlayerMovementState.Ziplining;
         }
 
+        public bool IsGrappling()
+        {
+            return CurrentPlayerMovementState == PlayerMovementState.Grappling;
+        }
+
         public bool IsMatchFrozen()
         {
             return CurrentPlayerMovementState == PlayerMovementState.PreMatchFrozen || 
@@ -81,5 +86,6 @@ namespace Resonance.PlayerController
         Ziplining = 9,
         PreMatchFrozen = 10,
         MatchEndedFrozen = 11,
+        Grappling = 12,
     }
 }
