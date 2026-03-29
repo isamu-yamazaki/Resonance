@@ -189,7 +189,7 @@ namespace Resonance.PlayerController
             if (_playerState.IsInShop())
                 return;
             
-            if (_playerState.IsZiplining())
+            if (_playerState.IsZiplining() || _playerState.IsGrappling())
                 return;
             
             // Don't process movement if CharacterController is disabled
@@ -312,7 +312,10 @@ namespace Resonance.PlayerController
             _verticalVelocity -= gravity * Time.deltaTime;
 
             if (isGrounded && _verticalVelocity < 0f)
+            {
                 _verticalVelocity = -_antiBump;
+                _grappleImpulse = Vector3.zero;
+            }
 
             if (_playerLocomotionInput.JumpPressed && isGrounded)
             {
@@ -373,6 +376,8 @@ namespace Resonance.PlayerController
             if (_trainPassengerPhysics != null)
                 _verticalVelocity += _trainPassengerPhysics.GetKnockbackVertical();
             newVelocity.y = _verticalVelocity;
+            newVelocity += ConsumeImpulse();
+            TickImpulse();
             _characterController.Move((newVelocity + trainOffset) * Time.deltaTime);
         }
 
@@ -598,6 +603,35 @@ namespace Resonance.PlayerController
             _virtualCamera.transform.localPosition = config.cameraLocalPosition;
             currentAimOffset = config.aimOffset;
         }
+        #endregion
+        
+        #region Impulse
+
+        private Vector3 _grappleImpulse = Vector3.zero;
+        [SerializeField] private float grappleImpulseDecay = 10f;
+
+        public void ApplyImpulse(Vector3 impulse)
+        {
+            _verticalVelocity = impulse.y;
+            _grappleImpulse = new Vector3(impulse.x, 0f, impulse.z);
+        }
+
+        private void TickImpulse()
+        {
+            if (_grappleImpulse.sqrMagnitude <= 0.001f)
+            {
+                _grappleImpulse = Vector3.zero;
+                return;
+            }
+
+            _grappleImpulse = Vector3.MoveTowards(_grappleImpulse, Vector3.zero, grappleImpulseDecay * Time.deltaTime);
+        }
+
+        private Vector3 ConsumeImpulse()
+        {
+            return _grappleImpulse;
+        }
+
         #endregion
     }
 }

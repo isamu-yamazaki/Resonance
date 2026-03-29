@@ -10,15 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
-  m_Name: Slow N Steady
+  m_Name: Human Turret
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: mod_augment_slowSteady
-  modName: Slow n Steady
-  description: Go slow shoot awesome
+  key: mod_augment_humanTurret
+  modName: Human Turret
+  description: Stop and shoot
   slot: 6
   icon: {fileID: 0}
   modifiers:
-  - stat: 6
+  - stat: 1
+    type: 1
+    value: 1.5
+  - stat: 10
+    type: 1
+    value: 2
+  - stat: 14
+    type: 1
+    value: 2
+  - stat: 13
     type: 1
     value: 0.5
   bulletPropertiesOverride: {fileID: 0}

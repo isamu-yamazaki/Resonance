@@ -23,7 +23,7 @@ MonoBehaviour:
   damage: 2
   fireRate: 20
   projectilesPerShot: 1
-  range: 30
+  range: 50
   accuracy: 0
   control: 0
   muzzleVelocity: 0
