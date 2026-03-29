@@ -16,13 +16,22 @@ namespace Resonance.Combat.Weapons
         [SerializeField] private GameObject muzzleEmitter;
         [SerializeField] private GameObject bodyEmitter;
 
+        [Header("Casing Settings")]
+        [SerializeField] private float casingGroundThreshold = 3f;
+        [SerializeField] private LayerMask casingLayerMask;
+
         private WeaponAudioProperties audioProperties;
 
         private void Awake()
         {
             SetupEmitter(muzzleEmitter);
             SetupEmitter(bodyEmitter);
+
+            if (casingLayerMask == 0)
+                casingLayerMask = 1 << LayerMask.NameToLayer("Environment");
         }
+
+        // ─── Emitter Setup ────────────────────────────────────────────────────────
 
         private void SetupEmitter(GameObject emitter)
         {
@@ -34,6 +43,8 @@ namespace Resonance.Combat.Weapons
             if (emitter.GetComponent<WwiseSmartOcclusion>() == null)
                 emitter.AddComponent<WwiseSmartOcclusion>();
         }
+
+        // ─── Muzzle Flash ─────────────────────────────────────────────────────────
 
         public void PlayMuzzleFlash()
         {
@@ -47,6 +58,8 @@ namespace Resonance.Combat.Weapons
                 muzzleFlash.ApplySettings(settings);
         }
 
+        // ─── Audio ────────────────────────────────────────────────────────────────
+
         public void ApplyAudioProperties(WeaponAudioProperties properties)
         {
             audioProperties = properties;
@@ -57,6 +70,8 @@ namespace Resonance.Combat.Weapons
             if (audioProperties?.fireEvent == null) return;
             if (muzzleEmitter == null) return;
             audioProperties.fireEvent.Post(muzzleEmitter);
+
+            TryPlayCasing();
         }
 
         public void PlayEmptyTrigger()
@@ -79,6 +94,16 @@ namespace Resonance.Combat.Weapons
             if (bodyEmitter == null) return;
             audioProperties.reloadEvent.Post(bodyEmitter);
         }
+
+        private void TryPlayCasing()
+        {
+            if (audioProperties?.casingEvent == null) return;
+            if (bodyEmitter == null) return;
+
+            Vector3 rootPosition = transform.root.position;
+            if (Physics.Raycast(rootPosition, Vector3.down, out RaycastHit hit, casingGroundThreshold, casingLayerMask))
+                audioProperties.casingEvent.Post(bodyEmitter);
+        }
     }
 }
 #else
@@ -88,7 +113,6 @@ namespace Resonance.Combat.Weapons
 {
     public class WeaponView : MonoBehaviour
     {
-        [Header("Muzzle")]
         [SerializeField] private Transform muzzle;
         public Transform Muzzle => muzzle;
 
