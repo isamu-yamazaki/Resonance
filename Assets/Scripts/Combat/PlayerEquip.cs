@@ -255,10 +255,17 @@ namespace Resonance.Combat
                 return;
             }
 
-            // Apply barrel mod flash override if one exists, otherwise WeaponView uses its default.
+            // Apply muzzle flash settings
             MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
             if (flashSettings != null)
                 currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
+
+            // Apply audio properties and play equip sound
+            WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
+            if (audioProperties != null)
+                currentWeaponView.ApplyAudioProperties(audioProperties);
+
+            currentWeaponView.PlayEquip();
         }
 
         public void RemoveWeapon(WeaponSlot slot)
