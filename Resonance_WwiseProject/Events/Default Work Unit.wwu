@@ -237,6 +237,54 @@
 								</Event>
 							</ChildrenList>
 						</Folder>
+						<Folder Name="Revolver" ID="{37136477-B538-4F7B-876A-93CE8D5857B6}" ShortID="85091007">
+							<ChildrenList>
+								<Event Name="Play_Revolver_Empty" ID="{9C19914C-74A0-45BE-9902-04CB13BEB5CF}">
+									<ChildrenList>
+										<Action Name="" ID="{9831308E-0EA0-437C-8B9A-ED031BF44DB3}" ShortID="173151054">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_revolver_empty_trigger" ID="{5D9CF66A-DF38-41E2-82C7-499C2F1DDD26}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Equip" ID="{DF82B734-A831-4D00-8A22-699093FCD3FD}">
+									<ChildrenList>
+										<Action Name="" ID="{DCF52DD3-75F4-4600-8377-606BF37B2D20}" ShortID="916987062">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_revolver_equip" ID="{E93E4358-54C9-44D3-A166-F37DEA4D1842}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Fire" ID="{04B7FAAB-FD35-4CD6-B000-B42F33A5B12D}">
+									<ChildrenList>
+										<Action Name="" ID="{AF6F6B4D-3613-4751-AB9F-D381BBFEA42C}" ShortID="344713928">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_revolver_fire" ID="{46544AC8-B593-48AD-983A-90218ACF82FD}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Reload" ID="{18C46923-A6A5-4AEC-9F06-1E7F2C1EDF8F}">
+									<ChildrenList>
+										<Action Name="" ID="{8A0820E9-70C8-47AE-8138-B22A1FDAD374}" ShortID="167096841">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_revolver_reload" ID="{B5E9D0DE-D2CD-46A3-870E-9F7B6E0FF828}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>
