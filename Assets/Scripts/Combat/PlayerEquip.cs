@@ -39,6 +39,7 @@ namespace Resonance.Combat
         public WeaponProperties EquippedWeapon { get; private set; }
 
         private WeaponProperties[] weapons;
+        private bool _isInitialEquip = true;
 
         private void Awake()
         {
@@ -199,6 +200,11 @@ namespace Resonance.Combat
             }
 
             RefreshWeaponView(weapon);
+
+            if (!_isInitialEquip)
+                currentWeaponView?.PlayEquip();
+
+            _isInitialEquip = false;
         }
 
         private void RefreshWeaponView(WeaponProperties weapon)
@@ -260,12 +266,10 @@ namespace Resonance.Combat
             if (flashSettings != null)
                 currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
 
-            // Apply audio properties and play equip sound
+            // Apply audio properties
             WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
             if (audioProperties != null)
                 currentWeaponView.ApplyAudioProperties(audioProperties);
-
-            currentWeaponView.PlayEquip();
         }
 
         public void RemoveWeapon(WeaponSlot slot)
