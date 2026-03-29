@@ -15,16 +15,16 @@ MonoBehaviour:
   fireEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: ffd5de81c59956c4b8f9fee7b3e7663e, type: 2}
   emptyTriggerEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: 9951d71bd41c33c488d4324d47b97140, type: 2}
   equipEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: 876c522e6537312499e117543d32c402, type: 2}
   reloadEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: cdfe19e4a38962747b4a9b91269d7017, type: 2}

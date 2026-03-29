@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{4B44E965-75C8-FB5C-D77C-0202890731D4}",
+    "Hash": "{721AFFE0-1882-1C86-036E-ECF1D016FAD6}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -64,6 +64,14 @@
       "CachePath": "78/{7869FAF3-19FD-B709-F40F-8CED6B546424}.wem"
      },
      {
+      "Id": "209026899",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_pistol_reload.wav",
+      "CachePath": "1A/{1ACC3B5E-93DB-73B5-570C-3FD2889F2E20}.wem"
+     },
+     {
       "Id": "211680909",
       "Language": "SFX",
       "Streaming": "false",
@@ -86,6 +94,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_wood_run_02.wav",
       "CachePath": "CB/{CB9EF375-C645-22FA-D6EA-99071E83844C}.wem"
+     },
+     {
+      "Id": "265624677",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_pistol_casing.wav",
+      "CachePath": "0A/{0AC13B9D-6A30-D178-15A6-07B13CF2F8F5}.wem"
      },
      {
       "Id": "300811234",
@@ -168,6 +184,22 @@
       "CachePath": "7D/{7D3B5EBB-1E5C-8081-CBAD-0FE4BD5295C1}.wem"
      },
      {
+      "Id": "529592339",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_pistol_fire.wav",
+      "CachePath": "E8/{E8300D91-E97B-1778-0EF5-DB1ACBCD0836}.wem"
+     },
+     {
+      "Id": "554632944",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_pistol_equip.wav",
+      "CachePath": "21/{21C99835-4DF1-0EE4-27A9-6D9C7EDABAFD}.wem"
+     },
+     {
       "Id": "566025932",
       "Language": "SFX",
       "Streaming": "false",
@@ -206,6 +238,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_gravel_land_01.wav",
       "CachePath": "8B/{8B44CA97-AF29-2FEA-839D-4370602D876E}.wem"
+     },
+     {
+      "Id": "640947939",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_pistol_empty_trigger.wav",
+      "CachePath": "C4/{C411C730-4A7F-ACB1-D555-7E43A271CED9}.wem"
      },
      {
       "Id": "644863526",
@@ -416,19 +456,70 @@
       "CachePath": "13/{13B7E8AB-4751-91C9-EA0D-36333D391352}.wem"
      }
     ],
-    "Plugins": {
-     "Custom": [
-      {
-       "Id": "431755879",
-       "Name": "Sine",
-       "ObjectPath": "\\Containers\\Default Work Unit\\Test_Sound\\Sine",
-       "GUID": "{CD3090AF-2AE9-427F-8059-38A6AEB7EB62}",
-       "LibName": "Wwise Sine",
-       "LibId": "6553602"
-      }
-     ]
-    },
     "Events": [
+     {
+      "Id": "2638125186",
+      "Name": "Play_BaseHandgun_Empty",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Empty",
+      "GUID": "{D41740C2-2EDF-42F7-8EAD-2B9261B4D253}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "0.43304166",
+      "DurationMax": "0.43304166",
+      "MediaRefs": [
+       {
+        "Id": "640947939"
+       }
+      ]
+     },
+     {
+      "Id": "2295785721",
+      "Name": "Play_BaseHandgun_Equip",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Equip",
+      "GUID": "{BE95C702-90F5-4D4C-8E89-1F8D8FF66C0C}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "0.5357083",
+      "DurationMax": "0.5357083",
+      "MediaRefs": [
+       {
+        "Id": "554632944"
+       }
+      ]
+     },
+     {
+      "Id": "1057815627",
+      "Name": "Play_BaseHandgun_Fire",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Fire",
+      "GUID": "{A9498D83-6233-4793-8F13-E647504F5ACF}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "1.0571458",
+      "DurationMax": "1.0571458",
+      "MediaRefs": [
+       {
+        "Id": "265624677"
+       },
+       {
+        "Id": "529592339"
+       }
+      ]
+     },
+     {
+      "Id": "3366594044",
+      "Name": "Play_BaseHandgun_Reload",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\BaseHandgun\\Play_BaseHandgun_Reload",
+      "GUID": "{5B9A6DD5-FE3D-452D-9938-5A9E1CFA4CDE}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "0.7455417",
+      "DurationMax": "0.7455417",
+      "MediaRefs": [
+       {
+        "Id": "209026899"
+       }
+      ]
+     },
      {
       "Id": "1602358412",
       "Name": "Play_Footstep",
@@ -791,31 +882,6 @@
       ]
      },
      {
-      "Id": "3211564518",
-      "Name": "Play_Test_Sound",
-      "ObjectPath": "\\Events\\Default Work Unit\\Play_Test_Sound",
-      "GUID": "{DD204AD6-06A3-4E14-98F9-F6A1DC814F3D}",
-      "MaxAttenuation": "50",
-      "DurationType": "OneShot",
-      "DurationMin": "20",
-      "DurationMax": "20",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "431755879"
-        }
-       ]
-      },
-      "AuxBusRefs": [
-       {
-        "Id": "2783051634",
-        "Name": "Reverb_Master",
-        "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Reverb_Master",
-        "GUID": "{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}"
-       }
-      ]
-     },
-     {
       "Id": "2305398106",
       "Name": "Play_Train_Arrival",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Arrival",
@@ -955,6 +1021,6 @@
     ]
    }
   ],
-  "FileHash": "{FEB73695-EB2B-E9DD-FA8C-2396FA7EDE8E}"
+  "FileHash": "{95C57715-AF52-D132-075F-54B46E50CE1C}"
  }
 }
