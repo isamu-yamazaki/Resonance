@@ -15,7 +15,7 @@ MonoBehaviour:
   key: augment_lower_sonarDisc
   augmentName: Sonar Disc
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: e0d975e1924bfe34cac20bb8935204ef, type: 3}
   slot: 0
   speed: 0
   regen: 0
