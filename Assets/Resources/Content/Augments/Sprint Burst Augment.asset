@@ -15,7 +15,7 @@ MonoBehaviour:
   key: augment_lower_sprintBurst
   augmentName: Sprint Burst
   description: Go fast!
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0ccf29d507499d4429ca05366d1d818f, type: 3}
   slot: 1
   speed: 0
   regen: 0

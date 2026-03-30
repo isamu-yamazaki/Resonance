@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Resonance.Combat.Augments;
+using Resonance.Combat.Augments.UI;
 using Resonance.Inventory;
 using Resonance.PlayerController;
 using UnityEngine;
@@ -61,6 +62,7 @@ namespace Resonance.Combat
             if (abilityMap.TryGetValue(augment.AbilityKey, out IAugmentAbility ability))
             {
                 SetAbilityEnabled(ability, true);
+                AugmentHUDManager.Instance.OnAugmentEquipped(augment, ability);
             }
         }
 
@@ -74,6 +76,7 @@ namespace Resonance.Combat
             if (abilityMap.TryGetValue(augment.AbilityKey, out IAugmentAbility ability))
             {
                 SetAbilityEnabled(ability, false);
+                AugmentHUDManager.Instance.OnAugmentRemoved(augment.Slot);
             }
         }
 
@@ -85,6 +88,7 @@ namespace Resonance.Combat
                 return;
 
             ability.ActivateAbility();
+            AugmentHUDManager.Instance.OnAbilityUsed(AugmentSlot.Upper);
         }
 
         private void TryUseLowerActiveAbility()
@@ -95,6 +99,7 @@ namespace Resonance.Combat
                 return;
 
             ability.ActivateAbility();
+            AugmentHUDManager.Instance.OnAbilityUsed(AugmentSlot.Lower);
         }
 
         private IAugmentAbility GetAbility(string key)
