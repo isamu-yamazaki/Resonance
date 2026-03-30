@@ -127,28 +127,10 @@ jobs:
             echo "ARTIFACT=Resonance_win.zip" >> $GITHUB_ENV
           fi
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-${{ matrix.target }}
-          path: ${{ env.ARTIFACT }}
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: build-*
-          merge-multiple: true
-
-      - name: Create release
+      - name: Upload to GitHub Releases
         run: |
-          TAG="build-$(date +%Y%m%d-%H%M%S)"
-          gh release create "$TAG" Resonance_win.zip Resonance_mac.zip \
+          TAG="build-$(date +%Y%m%d-%H%M%S)-${{ matrix.target }}"
+          gh release create "$TAG" "$ARTIFACT" \
             --title "Client Build $TAG (${{ github.event.inputs.config || 'ProductionHost' }})" \
             --notes "Automated client build via GitHub Actions"
         env:
