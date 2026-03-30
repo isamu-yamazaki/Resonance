@@ -22,6 +22,7 @@ public class Zipline : MonoBehaviour, IInteractable
     [SerializeField] private Material lineMaterial;
 
     [Header("Wwise Events")]
+#if !UNITY_SERVER
     // TODO: Assign mount event in inspector
     [SerializeField] private AK.Wwise.Event mountEvent;
     // TODO: Assign riding loop event in inspector
@@ -30,6 +31,7 @@ public class Zipline : MonoBehaviour, IInteractable
     [SerializeField] private AK.Wwise.Event dismountEvent;
     // TODO: Assign RTPC for riding speed in inspector (drives loop volume)
     [SerializeField] private AK.Wwise.RTPC ridingSpeedRTPC;
+#endif
 
     private bool _isLoopPlaying;
     private float _lastCableProgress;
