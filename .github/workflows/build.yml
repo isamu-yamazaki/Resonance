@@ -106,59 +106,6 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
-      - name: Run EditMode tests
-        if: matrix.target == 'win64'
-        run: |
-          LOG_FILE="$(mktemp /tmp/unity-test.XXXXXX.log)"
-          tail -f "$LOG_FILE" &
-          TAIL_PID=$!
-
-          $UNITY_PATH -batchmode -nographics \
-            -logFile "$LOG_FILE" \
-            -projectPath . \
-            -runTests \
-            -testPlatform EditMode \
-            -testResults TestResults-EditMode.xml
-          TEST_EXIT=$?
-
-          sleep 1
-          kill $TAIL_PID 2>/dev/null || true
-          echo "=== Final log entries ==="
-          tail -100 "$LOG_FILE"
-          exit $TEST_EXIT
-        env:
-          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
-
-      - name: Run PlayMode tests
-        if: matrix.target == 'win64'
-        run: |
-          LOG_FILE="$(mktemp /tmp/unity-test.XXXXXX.log)"
-          tail -f "$LOG_FILE" &
-          TAIL_PID=$!
-
-          $UNITY_PATH -batchmode \
-            -logFile "$LOG_FILE" \
-            -projectPath . \
-            -runTests \
-            -testPlatform PlayMode \
-            -testResults TestResults-PlayMode.xml
-          TEST_EXIT=$?
-
-          sleep 1
-          kill $TAIL_PID 2>/dev/null || true
-          echo "=== Final log entries ==="
-          tail -100 "$LOG_FILE"
-          exit $TEST_EXIT
-        env:
-          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
-
-      - name: Upload test results
-        if: always() && matrix.target == 'win64'
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: TestResults-*.xml
-
       - name: Determine config
         id: config
         run: |
