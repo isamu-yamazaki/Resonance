@@ -15,9 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Unity installation
+      - name: Restore Unity installation from cache
         id: cache-unity
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
           key: unity-${{ vars.UNITY_VERSION }}
@@ -31,6 +31,13 @@ jobs:
             --version ${{ vars.UNITY_VERSION }} \
             --changeset ${{ vars.UNITY_CHANGESET }} \
             --architecture arm64
+
+      - name: Save Unity installation to cache
+        if: steps.cache-unity.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
+          key: unity-${{ vars.UNITY_VERSION }}
 
       - name: Activate Unity license
         run: |
@@ -53,10 +60,11 @@ jobs:
           $UNITY_PATH -batchmode -quit \
             -logFile "$LOG_FILE" \
             -projectPath . \
+            -buildTarget linux64 \
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
             -buildMode Server \
             -buildConfig ${{ github.event.inputs.config || 'LocalRelay' }} \
-            -buildTarget Linux64
+            -buildPlatform linux64
           BUILD_EXIT=$?
 
           sleep 1

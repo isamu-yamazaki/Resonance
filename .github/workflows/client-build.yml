@@ -8,9 +8,9 @@ on:
         required: true
         default: DevClient
       target:
-        description: Build target (Windows64 or OSX)
+        description: Build target (win64 or osxuniversal)
         required: true
-        default: Windows64
+        default: win64
 
 jobs:
   build:
@@ -78,10 +78,11 @@ jobs:
           $UNITY_PATH -batchmode -quit \
             -logFile "$LOG_FILE" \
             -projectPath . \
+            -buildTarget ${{ github.event.inputs.target || 'win64' }} \
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
             -buildMode Client \
             -buildConfig ${{ github.event.inputs.config || 'DevClient' }} \
-            -buildTarget ${{ github.event.inputs.target || 'Windows64' }}
+            -buildPlatform ${{ github.event.inputs.target || 'win64' }}
           BUILD_EXIT=$?
 
           sleep 1
@@ -97,7 +98,7 @@ jobs:
       - name: Zip
         run: |
           CONFIG=${{ github.event.inputs.config || 'DevClient' }}
-          if [ "${{ github.event.inputs.target || 'Windows64' }}" = "OSX" ]; then
+          if [ "${{ github.event.inputs.target || 'win64' }}" = "osxuniversal" ]; then
             ditto -c -k --keepParent "Builds/$CONFIG/Mac/Resonance.app" "Resonance_mac.zip"
             echo "ARTIFACT=Resonance_mac.zip" >> $GITHUB_ENV
           else
@@ -109,7 +110,7 @@ jobs:
         run: |
           TAG="build-$(date +%Y%m%d-%H%M%S)"
           gh release create "$TAG" "$ARTIFACT" \
-            --title "Client Build $TAG (${{ github.event.inputs.config || 'DevClient' }} / ${{ github.event.inputs.target || 'Windows64' }})" \
+            --title "Client Build $TAG (${{ github.event.inputs.config || 'DevClient' }} / ${{ github.event.inputs.target || 'win64' }})" \
             --notes "Automated client build via GitHub Actions"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
