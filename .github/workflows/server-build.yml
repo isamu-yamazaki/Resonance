@@ -20,7 +20,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
-          key: unity-${{ vars.UNITY_VERSION }}
+          key: unity-${{ vars.UNITY_VERSION }}-server-build
 
       - name: Install Unity
         if: steps.cache-unity.outputs.cache-hit != 'true'
@@ -30,14 +30,15 @@ jobs:
             --headless install \
             --version ${{ vars.UNITY_VERSION }} \
             --changeset ${{ vars.UNITY_CHANGESET }} \
-            --architecture arm64
+            --architecture arm64 \
+            --module linux-server
 
       - name: Save Unity installation to cache
         if: steps.cache-unity.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
-          key: unity-${{ vars.UNITY_VERSION }}
+          key: unity-${{ vars.UNITY_VERSION }}-server-build
 
       - name: Activate Unity license
         run: |
