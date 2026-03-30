@@ -79,7 +79,7 @@ jobs:
           tail -f "$LOG_FILE" &
           TAIL_PID=$!
 
-          $UNITY_PATH -batchmode -quit \
+          $UNITY_PATH -batchmode -quit -nographics \
             -logFile "$LOG_FILE" \
             -projectPath . \
             -buildTarget linux64 \
