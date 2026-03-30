@@ -8,7 +8,7 @@ on:
       client_config:
         description: "Client config asset name (DevClient, DevClientLocalRelay, DevHost, DevHostLocalRelay, ProductionClient, ProductionHost)"
         required: true
-        default: ProductionHost
+        default: ProductionClient
       server_config:
         description: "Server config asset name (LocalRelay, Production)"
         required: true

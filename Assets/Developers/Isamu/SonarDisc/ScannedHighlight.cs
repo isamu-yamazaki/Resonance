@@ -16,7 +16,6 @@ namespace Resonance.Abilities.SonarDisc
 
 #if !UNITY_SERVER
         [Header("Wwise Events")]
-#if !UNITY_SERVER
         // TODO: Assign scanned snapshot event in inspector
         [SerializeField] private AK.Wwise.Event snapshotEvent;
 #endif
