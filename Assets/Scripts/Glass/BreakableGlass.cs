@@ -57,7 +57,9 @@ namespace Resonance.Environment
         {
             _broken = true;
 
+#if !UNITY_SERVER
             AkSoundEngine.PostEvent("Play_GlassShatter", gameObject);
+#endif
 
             if (shatterEffect != null)
                 shatterEffect.Shatter(hitPoint, hitNormal, hitDirection);

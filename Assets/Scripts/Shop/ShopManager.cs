@@ -62,12 +62,14 @@ namespace Resonance.Shop
 
         [SerializeField] private WeaponStatsDisplay weaponStatsDisplay;
 
+#if !UNITY_SERVER
         [Header("Wwise Events")]
         [SerializeField] private AK.Wwise.Event shopOpenEvent;
         [SerializeField] private AK.Wwise.Event shopCloseEvent;
         [SerializeField] private AK.Wwise.Event shopPageSwitchEvent;
         [SerializeField] private AK.Wwise.Event shopItemBuyEvent;
         [SerializeField] private AK.Wwise.Event buttonClickEvent;
+#endif
 
         private bool isInitialized;
 
@@ -325,8 +327,10 @@ namespace Resonance.Shop
             SetButtonSelected(button, true);
             activeMainTab = button;
 
+#if !UNITY_SERVER
             if (isInitialized && shopPageSwitchEvent != null && shopPageSwitchEvent.IsValid())
                 shopPageSwitchEvent.Post(gameObject);
+#endif
         }
 
         private void SwitchWeaponSubTab(Button button)
@@ -335,8 +339,10 @@ namespace Resonance.Shop
             SetButtonSelected(button, true);
             activeWeaponSubTab = button;
 
+#if !UNITY_SERVER
             if (isInitialized && buttonClickEvent != null && buttonClickEvent.IsValid())
                 buttonClickEvent.Post(gameObject);
+#endif
         }
 
         private void SwitchAugmentSubTab(Button button)
@@ -345,8 +351,10 @@ namespace Resonance.Shop
             SetButtonSelected(button, true);
             activeAugmentSubTab = button;
 
+#if !UNITY_SERVER
             if (isInitialized && buttonClickEvent != null && buttonClickEvent.IsValid())
                 buttonClickEvent.Post(gameObject);
+#endif
         }
 
         private void SwitchModWeaponSubTab(Button button)
@@ -355,8 +363,10 @@ namespace Resonance.Shop
             SetButtonSelected(button, true);
             activeModWeaponSubTab = button;
 
+#if !UNITY_SERVER
             if (isInitialized && buttonClickEvent != null && buttonClickEvent.IsValid())
                 buttonClickEvent.Post(gameObject);
+#endif
         }
 
         private void SwitchModSlotSubTab(Button button)
@@ -365,8 +375,10 @@ namespace Resonance.Shop
             SetButtonSelected(button, true);
             activeModSlotSubTab = button;
 
+#if !UNITY_SERVER
             if (isInitialized && buttonClickEvent != null && buttonClickEvent.IsValid())
                 buttonClickEvent.Post(gameObject);
+#endif
         }
 
         private void SetButtonSelected(Button button, bool selected)
@@ -575,8 +587,10 @@ namespace Resonance.Shop
                 inventory.AddWeapon(weapon);
             }
 
+#if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
+#endif
 
             inventoryDisplay.Refresh();
         }
@@ -592,8 +606,10 @@ namespace Resonance.Shop
 
             equip.EquipAugment(augment);
 
+#if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
+#endif
 
             inventoryDisplay.Refresh();
         }
@@ -621,8 +637,10 @@ namespace Resonance.Shop
 
             GetPlayerShooter()?.RefreshWeaponStats();
 
+#if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
+#endif
 
             inventoryDisplay.Refresh();
         }
@@ -639,14 +657,19 @@ namespace Resonance.Shop
         {
             PlayerState playerState = FindObjectOfType<PlayerState>();
 
+            if (!shopMenu.activeSelf && playerState != null && playerState.IsMatchFrozen())
+                return;
+
             if (shopMenu.activeSelf)
             {
                 shopMenu.SetActive(false);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
 
+#if !UNITY_SERVER
                 if (shopCloseEvent != null && shopCloseEvent.IsValid())
                     shopCloseEvent.Post(gameObject);
+#endif
 
                 playerState?.SetPlayerMovementState(PlayerMovementState.Idling);
             }
@@ -656,8 +679,10 @@ namespace Resonance.Shop
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
 
+#if !UNITY_SERVER
                 if (shopOpenEvent != null && shopOpenEvent.IsValid())
                     shopOpenEvent.Post(gameObject);
+#endif
 
                 playerState?.SetPlayerMovementState(PlayerMovementState.InShop);
                 RefreshModWeaponButtons();

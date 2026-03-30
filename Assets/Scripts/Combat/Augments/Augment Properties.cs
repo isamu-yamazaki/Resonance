@@ -1,6 +1,5 @@
 using Resonance.Combat.Mods;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Resonance.Combat.Augments
 {

@@ -992,6 +992,8 @@ GameObject:
   - component: {fileID: 149970041902487918}
   - component: {fileID: 908468328846122792}
   - component: {fileID: 196866611307186390}
+  - component: {fileID: 8999506435019847406}
+  - component: {fileID: -2561670147325046866}
   m_Layer: 0
   m_Name: TargetDummy
   m_TagString: Untagged
@@ -1051,14 +1053,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ca360bb62ba71c4883fbc6104d1191d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.VFX.DeathEffect
-  highlightDuration: 3
-  fragmentationDuration: 1.5
-  deathShardMaterial: {fileID: 2100000, guid: 8c18848641698f949a07ef904e5b3d70, type: 2}
-  shardColor: {r: 1, g: 1, b: 1, a: 1}
-  emissionColor: {r: 0, g: 1, b: 1, a: 1}
-  emissionIntensity: 5
-  noiseScale: 1
-  shardDensity: 0.1
+  deathGlitchMaterial: {fileID: 2100000, guid: b9a1d38ab4565463ab4661a1743f1780, type: 2}
+  effectDuration: 0.5
 --- !u!114 &908468328846122792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1073,6 +1069,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Entities.TargetDummy
   maxHealth: 100
   respawnDelay: 3
+  countsAsKill: 1
 --- !u!64 &196866611307186390
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1095,6 +1092,43 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4777371684598551356, guid: ee80f84302e52dc40aa2b5b3ace1c7f4, type: 3}
+--- !u!114 &8999506435019847406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2867794313032137791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d4bb70d5cf544cac9778323e8d7b4a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ElectrocuteEffect
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  electrocuteMaterial: {fileID: 2100000, guid: 4d1579aafdebb46108eb90f694a55de4, type: 2}
+  effectDuration: 1
+--- !u!114 &-2561670147325046866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2867794313032137791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8809aee6a74a8492994e6ab7778f5858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ScannedHighlight
+  sonarRevealMaterial: {fileID: 2100000, guid: 58159700c0f274927953c5a5c1721402, type: 2}
+  highlightDuration: 3
 --- !u!1 &2959489552978150184
 GameObject:
   m_ObjectHideFlags: 0

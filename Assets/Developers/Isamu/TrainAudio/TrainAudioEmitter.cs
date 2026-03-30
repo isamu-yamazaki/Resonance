@@ -1,3 +1,4 @@
+#if !UNITY_SERVER
 using UnityEngine;
 
 namespace Resonance.Train
@@ -131,3 +132,4 @@ namespace Resonance.Train
         }
     }
 }
+#endif

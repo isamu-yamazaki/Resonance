@@ -59,6 +59,12 @@ namespace Resonance.Match
         #region Lifecycle
         private void Awake()
         {
+            if (InstanceHandler.TryGetInstance<MatchLogicNetworkAdapter>(out var _))
+            {
+                Destroy(this);
+                return;
+            }
+
             InstanceHandler.RegisterInstance(this);
             DontDestroyOnLoad(this);
 
@@ -66,9 +72,12 @@ namespace Resonance.Match
             Configure(gameModeProvider.gameMode);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
-            InstanceHandler.UnregisterInstance<MatchLogicNetworkAdapter>();
+            if (InstanceHandler.TryGetInstance<MatchLogicNetworkAdapter>(out var instance) && instance == this)
+            {
+                InstanceHandler.UnregisterInstance<MatchLogicNetworkAdapter>();
+            }
         }
         #endregion
 
@@ -93,7 +102,8 @@ namespace Resonance.Match
                     matchDurationSeconds = matchDurationSeconds,
                 };
                 currentRoundManagerNetworkAdapter = new ArenaRoundManagerNetworkAdapter(_matchStatAdapter, arenaConfig);
-            } else if (gameMode == GameMode.Polarity)
+            }
+            else if (gameMode == GameMode.Polarity)
             {
                 var polarityConfig = new PolarityRoundManager.PolarityRoundManagerConfig
                 {

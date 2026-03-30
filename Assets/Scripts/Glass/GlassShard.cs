@@ -35,7 +35,9 @@ namespace Resonance.Environment
             if (collision.relativeVelocity.magnitude < MinImpactSpeed) return;
 
             _hasImpacted = true;
+#if !UNITY_SERVER
             AkSoundEngine.PostEvent("Play_GlassShardLand", gameObject);
+#endif
         }
 
         private IEnumerator FadeAndDestroy(float fadeDelay, float fadeDuration)

@@ -97,9 +97,6 @@ namespace Resonance.Combat
             {
                 playerCamera = Camera.main;
             }
-
-            hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
-
             bulletProperties = Resources.LoadAll<BulletProperties>("Content/Bullets");
         }
 
@@ -159,6 +156,7 @@ namespace Resonance.Combat
 
         private void TryShoot()
         {
+            if (playerState.IsMatchFrozen()) return;
             if (playerState.IsReloading) return;
             if (playerEquip == null) return;
 
@@ -213,6 +211,12 @@ namespace Resonance.Combat
                 Vector3 projectileDirection = GetProjectileAimDirection(view.Muzzle);
                 FireProjectile(weapon, view, payload, projectileDirection, count);
             }
+
+            MuzzleFlashSettings flashSettings = weaponStatManager.GetMuzzleFlashSettings();
+            if (flashSettings != null)
+                view.ApplyMuzzleFlashSettings(flashSettings);
+
+            view.PlayMuzzleFlash();
         }
 
         private WeaponPayload BuildBasePayload(WeaponProperties weapon)
@@ -344,7 +348,7 @@ namespace Resonance.Combat
         {
             Debug.Log($"Spawn decal at {hitInfo.point}");
         }
-        
+
         [ServerRpc]
         private void NotifyMissOnServer()
         {
@@ -637,3 +641,4 @@ namespace Resonance.Combat
         #endregion
     }
 }
+
