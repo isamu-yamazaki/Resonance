@@ -56,18 +56,24 @@ namespace Resonance.Match
 
         protected override void CreateRoundManager(MatchStatTracker tracker)
         {
-            Debug.Log("[ArenaRoundManagerNetworkAdapter] MatchStatTracker instance received, creating ArenaRoundManager and attaching subscribers");
-            arenaRoundManager = new ArenaRoundManager(tracker, config);
+            if (arenaRoundManager == null)
+            {
+                Debug.Log("[ArenaRoundManagerNetworkAdapter] MatchStatTracker instance received, creating ArenaRoundManager and attaching subscribers");
+                arenaRoundManager = new ArenaRoundManager(tracker, config);
 
-            arenaRoundManager.OnMatchStart += OnArenaMatchStart;
-            arenaRoundManager.OnMatchEnd += OnArenaMatchEnd;
-            arenaRoundManager.OnLeaderChanged += OnArenaLeaderChanged;
-            arenaRoundManager.OnFirstKill += OnArenaFirstKill;
-            arenaRoundManager.OnMatchCountdownStart += HandleMatchCountdownStart;
-            arenaRoundManager.OnMatchStateChange += HandleMatchStateChange;
-            arenaRoundManager.OnMatchTimerElapsed += OnArenaMatchTimerElapsed;
+                arenaRoundManager.OnMatchStart += OnArenaMatchStart;
+                arenaRoundManager.OnMatchEnd += OnArenaMatchEnd;
+                arenaRoundManager.OnLeaderChanged += OnArenaLeaderChanged;
+                arenaRoundManager.OnFirstKill += OnArenaFirstKill;
+                arenaRoundManager.OnMatchCountdownStart += HandleMatchCountdownStart;
+                arenaRoundManager.OnMatchStateChange += HandleMatchStateChange;
+                arenaRoundManager.OnMatchTimerElapsed += OnArenaMatchTimerElapsed;
 
-            arenaRatingManager = new ArenaRatingManager(tracker, arenaRoundManager);
+                arenaRatingManager = new ArenaRatingManager(tracker, arenaRoundManager);
+            } else
+            {
+                Debug.Log("[ArenaRoundManagerNetworkAdapter] MatchStatTracker instance received but ArenaRoundManager is not null");
+            }
         }
 
         protected override void DestroyRoundManager()
