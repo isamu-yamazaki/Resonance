@@ -73,6 +73,7 @@ jobs:
         run: |
           echo $MACOS_DEVELOPER_ID_CERTIFICATE_BASE64 | base64 --decode > certificate.p12
           security create-keychain -p "$MACOS_CI_KEYCHAIN_RANDOM_PWD" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "$MACOS_CI_KEYCHAIN_RANDOM_PWD" build.keychain
           security import certificate.p12 -k build.keychain -P "$MACOS_DEVELOPER_ID_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
