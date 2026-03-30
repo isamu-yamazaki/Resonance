@@ -16,6 +16,7 @@ jobs:
   build:
     # to cross-compile for Windows and Mac; uses arm64
     runs-on: macos-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -49,14 +50,35 @@ jobs:
           security import certificate.p12 -k build.keychain -P "$MACOS_DEVELOPER_ID_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_CI_KEYCHAIN_RANDOM_PWD" build.keychain
 
+      - name: Activate Unity license
+        run: |
+          echo "$UNITY_LICENSE" | base64 --decode > /tmp/Unity_lic.ulf
+          $UNITY_PATH -batchmode -quit -nographics \
+            -logFile /tmp/activation.log \
+            -manualLicenseFile /tmp/Unity_lic.ulf || true
+          cat /tmp/activation.log || true
+        env:
+          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
       - name: Build (Unity)
         run: |
+          LOG_FILE="$(mktemp /tmp/unity-build.XXXXXX.log)"
+          tail -f "$LOG_FILE" &
+          TAIL_PID=$!
+
           $UNITY_PATH -batchmode -quit \
+            -logFile "$LOG_FILE" \
             -projectPath . \
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
             -buildMode Client \
             -buildConfig ${{ github.event.inputs.config || 'DevClient' }} \
             -buildTarget ${{ github.event.inputs.target || 'Windows64' }}
+          BUILD_EXIT=$?
+
+          sleep 1
+          kill $TAIL_PID 2>/dev/null || true
+          exit $BUILD_EXIT
         env:
           UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
           SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
