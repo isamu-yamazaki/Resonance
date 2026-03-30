@@ -50,8 +50,6 @@ jobs:
       - name: Install Unity
         if: steps.cache-unity.outputs.cache-hit != 'true'
         run: |
-          gh cache delete "unity-${{ vars.UNITY_VERSION }}" --repo ${{ github.repository }} || true
-          gh cache delete "unity-${{ vars.UNITY_VERSION }}-server-build" --repo ${{ github.repository }} || true
           brew install --cask unity-hub
           /Applications/Unity\ Hub.app/Contents/MacOS/Unity\ Hub -- \
             --headless install \
