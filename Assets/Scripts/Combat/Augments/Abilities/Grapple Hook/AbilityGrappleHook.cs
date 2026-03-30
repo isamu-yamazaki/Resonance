@@ -17,17 +17,13 @@ namespace Resonance.Combat.Augments
 
         [Header("References")]
         [SerializeField] private LayerMask grappleLayerMask;
-        [SerializeField] private GameObject ropeRendererPrefab;
 
         private PlayerLocomotionInput playerLocomotionInput;
         private PlayerState playerState;
         private PlayerController.PlayerController playerController;
         private CharacterController characterController;
-        private LineRenderer lineRenderer;
         private Camera playerCamera;
-
-        private SyncVar<Vector3> hookPoint = new SyncVar<Vector3>();
-        private SyncVar<bool> isGrappling = new SyncVar<bool>();
+        private GrappleRopeRenderer ropeRenderer;
 
         private float currentReelTime;
         private float currentCooldown;
@@ -41,7 +37,7 @@ namespace Resonance.Combat.Augments
             get => currentCooldown;
             set => currentCooldown = Mathf.Clamp(value, 0f, cooldown);
         }
-        public bool AbilityReady => currentCooldown <= 0f && !isGrappling.value;
+        public bool AbilityReady => currentCooldown <= 0f && !ropeRenderer.IsGrappling.value;
 
         public void ActivateAbility()
         {
@@ -57,8 +53,8 @@ namespace Resonance.Combat.Augments
                 return;
             }
 
-            hookPoint.value = hit.point;
-            isGrappling.value = true;
+            ropeRenderer.HookPoint.value = hit.point;
+            ropeRenderer.IsGrappling.value = true;
             currentReelTime = 0f;
 
             playerState.SetPlayerMovementState(PlayerMovementState.Grappling);
@@ -70,14 +66,7 @@ namespace Resonance.Combat.Augments
             playerState = GetComponent<PlayerState>();
             playerController = GetComponent<PlayerController.PlayerController>();
             characterController = GetComponent<CharacterController>();
-
-            if (ropeRendererPrefab != null)
-            {
-                GameObject ropeInstance = Instantiate(ropeRendererPrefab, transform);
-                lineRenderer = ropeInstance.GetComponent<LineRenderer>();
-                lineRenderer.positionCount = 2;
-                lineRenderer.enabled = false;
-            }
+            ropeRenderer = GetComponent<GrappleRopeRenderer>();
         }
 
         protected override void OnSpawned()
@@ -92,17 +81,6 @@ namespace Resonance.Combat.Augments
 
         private void Update()
         {
-            if (lineRenderer != null)
-            {
-                lineRenderer.enabled = isGrappling.value;
-
-                if (isGrappling.value)
-                {
-                    lineRenderer.SetPosition(0, transform.position);
-                    lineRenderer.SetPosition(1, hookPoint.value);
-                }
-            }
-
             if (!isOwner)
             {
                 return;
@@ -113,14 +91,14 @@ namespace Resonance.Combat.Augments
                 currentCooldown -= Time.deltaTime;
             }
 
-            if (!isGrappling.value)
+            if (!ropeRenderer.IsGrappling.value)
             {
                 return;
             }
 
             currentReelTime += Time.deltaTime;
 
-            Vector3 directionToHook = hookPoint.value - transform.position;
+            Vector3 directionToHook = ropeRenderer.HookPoint.value - transform.position;
             float distanceToHook = directionToHook.magnitude;
 
             if (playerLocomotionInput.JumpPressed)
@@ -147,7 +125,7 @@ namespace Resonance.Combat.Augments
 
         private void OnDisable()
         {
-            if (isGrappling.value && isOwner)
+            if (ropeRenderer.IsGrappling.value && isOwner)
             {
                 ExitGrapple(earlyExit: false);
             }
@@ -155,10 +133,10 @@ namespace Resonance.Combat.Augments
 
         private void ExitGrapple(bool earlyExit)
         {
-            isGrappling.value = false;
+            ropeRenderer.IsGrappling.value = false;
             currentCooldown = cooldown;
 
-            Vector3 pullDirection = (hookPoint.value - transform.position).normalized;
+            Vector3 pullDirection = (ropeRenderer.HookPoint.value - transform.position).normalized;
             Vector3 exitDirection = Vector3.Lerp(pullDirection, Vector3.up, upwardBias).normalized;
 
             if (earlyExit)
