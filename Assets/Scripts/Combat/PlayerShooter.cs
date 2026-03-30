@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using PurrNet;
@@ -7,6 +8,7 @@ using Resonance.Helper;
 using Resonance.Match;
 using Resonance.PlayerController;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Resonance.Combat
 {
@@ -29,6 +31,7 @@ namespace Resonance.Combat
         private float nextFireTime;
         private float reloadEndTime;
         private float currentSpread;
+        public event Action OnShotFired;
 
         private WeaponProperties lastWeapon;
 
@@ -216,6 +219,7 @@ namespace Resonance.Combat
             if (flashSettings != null)
                 view.ApplyMuzzleFlashSettings(flashSettings);
 
+            OnShotFired?.Invoke();
             view.PlayMuzzleFlash();
         }
 

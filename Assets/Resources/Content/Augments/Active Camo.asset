@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ce7836e1165da94795069ad946c025a, type: 3}
-  m_Name: Grappling Hook
+  m_Name: Active Camo
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AugmentProperties
-  key: augment_upper_grappleHook
-  augmentName: Grapple Hook
-  description: Grapple it!
-  icon: {fileID: 21300000, guid: 79983110782288c4a956809f29d2eb78, type: 3}
-  slot: 0
+  key: augment_lower_activeCamo
+  augmentName: Active Camo
+  description: 
+  icon: {fileID: 21300000, guid: a8a82571665f7814a8d260b0ac27a057, type: 3}
+  slot: 1
   speed: 0
   regen: 0
   damageReduction: 0
   modProperties: {fileID: 0}
-  abilityKey: ability_grappleHook
+  abilityKey: ability_activeCamo

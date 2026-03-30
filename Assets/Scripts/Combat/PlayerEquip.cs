@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using PurrNet;
 using Resonance.Combat.Augments;
@@ -22,6 +23,7 @@ namespace Resonance.Combat
         private PlayerAbilityManager playerAbilityManager;
 
         private ObservableValue<WeaponProperties> equippedWeaponObservable = new ObservableValue<WeaponProperties>();
+        public event Action<WeaponView> OnWeaponInstanceReady;
         public ObservableValue<WeaponProperties> EquippedWeaponObservable => equippedWeaponObservable;
 
         [SerializeField] PlayerInventory playerInventory;
@@ -265,6 +267,8 @@ namespace Resonance.Combat
             MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
             if (flashSettings != null)
                 currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
+            
+            OnWeaponInstanceReady?.Invoke(currentWeaponView);
         }
 
         public void RemoveWeapon(WeaponSlot slot)

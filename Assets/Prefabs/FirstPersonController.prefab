@@ -347,6 +347,8 @@ GameObject:
   - component: {fileID: 2929268584548212605}
   - component: {fileID: -9158808936870234664}
   - component: {fileID: 7131106383641537564}
+  - component: {fileID: 7322775277264648123}
+  - component: {fileID: 6812177101331996295}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -1414,3 +1416,53 @@ MonoBehaviour:
   upwardLobBias: 0.4
   cooldown: 20
   bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
+--- !u!114 &7322775277264648123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1919f3e7ff04394c8b8d9389844549f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilityActiveCamo
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  maxMeter: 45
+  meterRecoveryRate: 1
+  meterDrainPerSpeed: 0.5
+  fireDrainAmount: 5
+  maxDuration: 45
+  rechargeLockout: 5
+  minMeterToActivate: 2
+--- !u!114 &6812177101331996295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a04233a4769dd9c4eab5248beeeb6a7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.PlayerCamoRenderer
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  camoMaterial: {fileID: -876546973899608171, guid: 0b7a9655b61f43a4a97e8dc017f0f7a9, type: 3}
