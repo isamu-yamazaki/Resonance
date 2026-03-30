@@ -40,12 +40,6 @@ namespace Resonance.Combat
 
         private WeaponProperties[] weapons;
 
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
-            enabled = isOwner;
-        }
-
         private void Awake()
         {
             playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
@@ -230,7 +224,7 @@ namespace Resonance.Combat
             InstantiateCurrentWeaponInstanceForAllClients(weapon.Key);
         }
 
-        // [ObserversRpc(runLocally: true)]
+        [ObserversRpc(runLocally: true)]
         private void InstantiateCurrentWeaponInstanceForAllClients(string weaponKey)
         {
             WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
