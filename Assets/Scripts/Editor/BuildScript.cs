@@ -61,9 +61,9 @@ namespace Resonance.BuildTools
 
         #region CLI entry point
         /// <summary>
-        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildTarget Windows64|OSX|Linux64
+        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildTarget Win64|OSX|Linux64
         /// Supported -buildMode values: Client (default), Server
-        /// Supported -buildTarget values: Windows64 (default), OSX, Linux64
+        /// Supported -buildTarget values: Win64 (default), OSX, Linux64
         /// </summary>
         public static void BuildCLI()
         {
@@ -71,13 +71,13 @@ namespace Resonance.BuildTools
                 ?? throw new System.Exception("Missing -buildConfig argument. Usage: -buildConfig <AssetName>");
 
             string modeName = ReadArg("-buildMode") ?? "Client";
-            string targetName = ReadArg("-buildTarget") ?? "Windows64";
+            string targetName = ReadArg("-buildTarget") ?? "Win64";
             BuildTarget target = targetName switch
             {
-                "Windows64" => BuildTarget.StandaloneWindows64,
+                "Win64" => BuildTarget.StandaloneWindows64,
                 "OSX" => BuildTarget.StandaloneOSX,
                 "Linux64" => BuildTarget.StandaloneLinux64,
-                _ => throw new System.Exception($"Unknown -buildTarget '{targetName}'. Supported: Windows64, OSX, Linux64"),
+                _ => throw new System.Exception($"Unknown -buildTarget '{targetName}'. Supported: Win64, OSX, Linux64"),
             };
 
             if (modeName == "Server")

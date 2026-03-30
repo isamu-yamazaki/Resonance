@@ -53,7 +53,7 @@ Server builds target Linux64 and output to `Builds/<ConfigName>/Linux/ResonanceS
 |---|---|---|
 | `-buildMode` | No (default: `Client`) | `Client`, `Server` |
 | `-buildConfig` | Yes | Client: `DevClient`, `DevClientLocalRelay`, `DevClientRemoteOrchestratorTesting`, `DevHost`, `DevHostLocalRelay`, `ProductionClient`, `ProductionHost` / Server: `LocalRelay`, `Production` |
-| `-buildTarget` | No (default: `Windows64`) | `Windows64`, `OSX`, `Linux64` |
+| `-buildTarget` | No (default: `Win64`) | `Win64`, `OSX`, `Linux64` |
 
 ### Production Mac builds (codesign & notarization)
 
