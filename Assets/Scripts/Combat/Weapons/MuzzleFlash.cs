@@ -1,11 +1,10 @@
 using System.Collections;
-using PurrNet;
 using UnityEngine;
 
 namespace Resonance.Combat.Weapons
 {
     [RequireComponent(typeof(Light))]
-    public class MuzzleFlash : NetworkBehaviour
+    public class MuzzleFlash : MonoBehaviour
     {
         [SerializeField] private MuzzleFlashSettings settings;
 
@@ -26,7 +25,6 @@ namespace Resonance.Combat.Weapons
                 Build();
         }
 
-        [ObserversRpc(runLocally: true)]
         public void Play()
         {
             if (!_built) return;
