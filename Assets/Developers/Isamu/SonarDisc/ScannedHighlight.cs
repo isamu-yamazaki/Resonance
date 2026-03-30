@@ -14,9 +14,11 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float snapshotInterval = 1f;
         [SerializeField] private int snapshotCount = 3;
 
+#if !UNITY_SERVER
         [Header("Wwise Events")]
         // TODO: Assign scanned snapshot event in inspector
         [SerializeField] private AK.Wwise.Event snapshotEvent;
+#endif
 
         private static readonly int RevealTimeID = Shader.PropertyToID("_RevealTime");
 
