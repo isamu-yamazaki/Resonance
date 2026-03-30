@@ -41,13 +41,19 @@ namespace Resonance.Combat
         private WeaponProperties[] weapons;
         private bool _isInitialEquip = true;
 
-        private void Awake()
+        protected override void OnSpawned()
         {
-            playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-            playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
+            base.OnSpawned();
+            enabled = isOwner;
 
-            weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
-            playerState = GetComponent<PlayerState>();
+            if (isOwner)
+            {
+                playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
+                playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
+
+                weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+                playerState = GetComponent<PlayerState>();
+            }
         }
 
         private void Start()
@@ -197,11 +203,10 @@ namespace Resonance.Combat
                 return;
             }
 
-            InstantiateCurrentWeaponInstanceForAllClients(weapon.Key);
+            InstantiateCurrentWeaponInstance(weapon.Key);
         }
 
-        [ObserversRpc(runLocally: true)]
-        private void InstantiateCurrentWeaponInstanceForAllClients(string weaponKey)
+        private void InstantiateCurrentWeaponInstance(string weaponKey)
         {
             WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
             InstantiateCurrentWeaponInstance(weapon);
@@ -211,6 +216,7 @@ namespace Resonance.Combat
         {
             if (currentWeaponInstance != null)
             {
+                currentWeaponInstance.transform.SetParent(null);
                 Destroy(currentWeaponInstance);
                 currentWeaponInstance = null;
                 currentWeaponView = null;

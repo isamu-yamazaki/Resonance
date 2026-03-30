@@ -15,7 +15,7 @@ MonoBehaviour:
   key: 
   augmentName: Grapple Hook
   description: Grapple it!
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 79983110782288c4a956809f29d2eb78, type: 3}
   slot: 0
   speed: 0
   regen: 0
