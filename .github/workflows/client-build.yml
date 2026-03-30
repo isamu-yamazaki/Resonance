@@ -16,7 +16,7 @@ jobs:
   build:
     # to cross-compile for Windows and Mac; uses arm64
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
