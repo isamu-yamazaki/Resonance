@@ -8,7 +8,7 @@ on:
       config:
         description: "Server config asset name (LocalRelay or Production)"
         required: true
-        default: LocalRelay
+        default: Production
 
 jobs:
   check:
