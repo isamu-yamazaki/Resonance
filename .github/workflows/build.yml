@@ -32,107 +32,8 @@ jobs:
             echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
 
-  test:
-    needs: check
-    if: needs.check.outputs.has_changes == 'true'
-    runs-on: macos-26
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Restore Unity installation from cache
-        id: cache-unity
-        uses: actions/cache/restore@v4
-        with:
-          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
-          key: unity-${{ vars.UNITY_VERSION }}-full
-
-      - name: Install Unity
-        if: steps.cache-unity.outputs.cache-hit != 'true'
-        run: |
-          brew install --cask unity-hub
-          /Applications/Unity\ Hub.app/Contents/MacOS/Unity\ Hub -- \
-            --headless install \
-            --version ${{ vars.UNITY_VERSION }} \
-            --changeset ${{ vars.UNITY_CHANGESET }} \
-            --architecture arm64 \
-            --module windows-mono \
-            --module linux-server
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Save Unity installation to cache
-        if: steps.cache-unity.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
-          key: unity-${{ vars.UNITY_VERSION }}-full
-
-      - name: Activate Unity license
-        run: |
-          $UNITY_PATH -batchmode -quit -nographics \
-            -logFile /tmp/activation.log \
-            -username "$UNITY_EMAIL" \
-            -password "$UNITY_PASSWORD" || true
-          cat /tmp/activation.log || true
-        env:
-          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-
-      - name: Run EditMode tests
-        run: |
-          LOG_FILE="$(mktemp /tmp/unity-test.XXXXXX.log)"
-          tail -f "$LOG_FILE" &
-          TAIL_PID=$!
-
-          $UNITY_PATH -batchmode -nographics \
-            -logFile "$LOG_FILE" \
-            -projectPath . \
-            -runTests \
-            -testPlatform EditMode \
-            -testResults TestResults-EditMode.xml
-          TEST_EXIT=$?
-
-          sleep 1
-          kill $TAIL_PID 2>/dev/null || true
-          echo "=== Final log entries ==="
-          tail -100 "$LOG_FILE"
-          exit $TEST_EXIT
-        env:
-          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
-
-      - name: Run PlayMode tests
-        run: |
-          LOG_FILE="$(mktemp /tmp/unity-test.XXXXXX.log)"
-          tail -f "$LOG_FILE" &
-          TAIL_PID=$!
-
-          $UNITY_PATH -batchmode \
-            -logFile "$LOG_FILE" \
-            -projectPath . \
-            -runTests \
-            -testPlatform PlayMode \
-            -testResults TestResults-PlayMode.xml
-          TEST_EXIT=$?
-
-          sleep 1
-          kill $TAIL_PID 2>/dev/null || true
-          echo "=== Final log entries ==="
-          tail -100 "$LOG_FILE"
-          exit $TEST_EXIT
-        env:
-          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: TestResults-*.xml
-
   build:
-    needs: [check, test]
+    needs: check
     if: needs.check.outputs.has_changes == 'true'
     runs-on: macos-26
     timeout-minutes: 60
@@ -204,6 +105,59 @@ jobs:
           UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Run EditMode tests
+        if: matrix.target == 'win64'
+        run: |
+          LOG_FILE="$(mktemp /tmp/unity-test.XXXXXX.log)"
+          tail -f "$LOG_FILE" &
+          TAIL_PID=$!
+
+          $UNITY_PATH -batchmode -nographics \
+            -logFile "$LOG_FILE" \
+            -projectPath . \
+            -runTests \
+            -testPlatform EditMode \
+            -testResults TestResults-EditMode.xml
+          TEST_EXIT=$?
+
+          sleep 1
+          kill $TAIL_PID 2>/dev/null || true
+          echo "=== Final log entries ==="
+          tail -100 "$LOG_FILE"
+          exit $TEST_EXIT
+        env:
+          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
+
+      - name: Run PlayMode tests
+        if: matrix.target == 'win64'
+        run: |
+          LOG_FILE="$(mktemp /tmp/unity-test.XXXXXX.log)"
+          tail -f "$LOG_FILE" &
+          TAIL_PID=$!
+
+          $UNITY_PATH -batchmode \
+            -logFile "$LOG_FILE" \
+            -projectPath . \
+            -runTests \
+            -testPlatform PlayMode \
+            -testResults TestResults-PlayMode.xml
+          TEST_EXIT=$?
+
+          sleep 1
+          kill $TAIL_PID 2>/dev/null || true
+          echo "=== Final log entries ==="
+          tail -100 "$LOG_FILE"
+          exit $TEST_EXIT
+        env:
+          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
+
+      - name: Upload test results
+        if: always() && matrix.target == 'win64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults-*.xml
 
       - name: Determine config
         id: config
