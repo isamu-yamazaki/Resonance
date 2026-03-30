@@ -345,6 +345,7 @@ GameObject:
   - component: {fileID: 3428471863637891944}
   - component: {fileID: -6813632310427250886}
   - component: {fileID: 2929268584548212605}
+  - component: {fileID: 7131106383641537564}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -780,7 +781,7 @@ MonoBehaviour:
   debugAmmoLogs: 1
   hitscanLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1344
 --- !u!114 &7304100629892152196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1366,3 +1367,28 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   ropeRendererPrefab: {fileID: 7923988320775917421, guid: 7a709c6d619f87947b3b00b58ae31e97, type: 3}
+--- !u!114 &7131106383641537564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c9b65a90592be42910be98e69f32a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.BubbleShield.AbilityBubbleShield
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  lobForce: 6
+  upwardLobBias: 0.4
+  cooldown: 20
+  bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}

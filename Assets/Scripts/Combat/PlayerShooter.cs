@@ -97,9 +97,6 @@ namespace Resonance.Combat
             {
                 playerCamera = Camera.main;
             }
-
-            hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
-
             bulletProperties = Resources.LoadAll<BulletProperties>("Content/Bullets");
         }
 
