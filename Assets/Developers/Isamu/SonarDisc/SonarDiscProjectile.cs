@@ -33,6 +33,7 @@ namespace Resonance.Abilities.SonarDisc
         [Header("Collision")]
         [SerializeField] private LayerMask discCollisionMask;
 
+#if !UNITY_SERVER
         [Header("Wwise Events")]
 #if !UNITY_SERVER
         // TODO: Assign shoot event (Play_SD_Shoot) in inspector

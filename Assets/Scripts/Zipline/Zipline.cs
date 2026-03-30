@@ -21,6 +21,7 @@ public class Zipline : MonoBehaviour, IInteractable
     [SerializeField] private float lineWidth = 0.1f;
     [SerializeField] private Material lineMaterial;
 
+#if !UNITY_SERVER
     [Header("Wwise Events")]
 #if !UNITY_SERVER
     // TODO: Assign mount event in inspector

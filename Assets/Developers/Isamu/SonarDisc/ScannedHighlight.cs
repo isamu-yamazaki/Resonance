@@ -14,6 +14,7 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private float snapshotInterval = 1f;
         [SerializeField] private int snapshotCount = 3;
 
+#if !UNITY_SERVER
         [Header("Wwise Events")]
 #if !UNITY_SERVER
         // TODO: Assign scanned snapshot event in inspector
