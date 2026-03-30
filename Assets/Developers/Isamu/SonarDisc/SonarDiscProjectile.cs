@@ -35,7 +35,6 @@ namespace Resonance.Abilities.SonarDisc
 
 #if !UNITY_SERVER
         [Header("Wwise Events")]
-#if !UNITY_SERVER
         // TODO: Assign shoot event (Play_SD_Shoot) in inspector
         [SerializeField] private AK.Wwise.Event shootEvent;
         // TODO: Assign wall impact event (Play_SD_WallImpact) in inspector

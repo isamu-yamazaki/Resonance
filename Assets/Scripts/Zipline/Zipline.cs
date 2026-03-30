@@ -23,7 +23,6 @@ public class Zipline : MonoBehaviour, IInteractable
 
 #if !UNITY_SERVER
     [Header("Wwise Events")]
-#if !UNITY_SERVER
     // TODO: Assign mount event in inspector
     [SerializeField] private AK.Wwise.Event mountEvent;
     // TODO: Assign riding loop event in inspector
