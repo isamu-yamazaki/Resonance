@@ -126,6 +126,7 @@ namespace Resonance.PlayerController
             }
 
             enabled = isOwner;
+            EvaluateVisibility();
             _virtualCamera.gameObject.SetActive(isOwner);
         }
 
