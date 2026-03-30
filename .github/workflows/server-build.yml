@@ -34,14 +34,15 @@ jobs:
 
       - name: Activate Unity license
         run: |
-          echo "$UNITY_LICENSE" | base64 --decode > /tmp/Unity_lic.ulf
           $UNITY_PATH -batchmode -quit -nographics \
             -logFile /tmp/activation.log \
-            -manualLicenseFile /tmp/Unity_lic.ulf || true
+            -username "$UNITY_EMAIL" \
+            -password "$UNITY_PASSWORD" || true
           cat /tmp/activation.log || true
         env:
           UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
       - name: Build (Unity)
         run: |
