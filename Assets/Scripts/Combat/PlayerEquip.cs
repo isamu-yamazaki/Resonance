@@ -227,10 +227,11 @@ namespace Resonance.Combat
                 return;
             }
 
-            InstantiateCurrentWeaponInstance(weapon.Key);
+            InstantiateCurrentWeaponInstanceForAllClients(weapon.Key);
         }
 
-        private void InstantiateCurrentWeaponInstance(string weaponKey)
+        // [ObserversRpc(runLocally: true)]
+        private void InstantiateCurrentWeaponInstanceForAllClients(string weaponKey)
         {
             WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
             InstantiateCurrentWeaponInstance(weapon);
