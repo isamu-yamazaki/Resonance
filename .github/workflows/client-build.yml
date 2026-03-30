@@ -109,6 +109,8 @@ jobs:
 
           sleep 1
           kill $TAIL_PID 2>/dev/null || true
+          echo "=== Final log entries ==="
+          tail -100 "$LOG_FILE"
           exit $BUILD_EXIT
         env:
           UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
