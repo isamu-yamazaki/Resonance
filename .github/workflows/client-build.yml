@@ -35,7 +35,8 @@ jobs:
             --headless install \
             --version ${{ vars.UNITY_VERSION }} \
             --changeset ${{ vars.UNITY_CHANGESET }} \
-            --architecture arm64
+            --architecture arm64 \
+            --module windows-mono
 
       - name: Save Unity installation to cache
         if: steps.cache-unity.outputs.cache-hit != 'true'
