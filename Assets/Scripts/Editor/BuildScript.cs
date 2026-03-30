@@ -248,7 +248,7 @@ namespace Resonance.BuildTools
 
             Debug.Log("[BuildScript] Submitting for notarization (may take a few minutes, timeout 5m)...");
             int result = RunShell(
-                $"timeout 300 xcrun notarytool submit \"{zipPath}\" " +
+                $"xcrun notarytool submit \"{zipPath}\" " +
                 $"--apple-id \"{appleId}\" --password \"{appPassword}\" " +
                 $"--team-id \"{teamId}\" --wait");
 
