@@ -8,11 +8,7 @@ on:
       config:
         description: "Client config asset name (DevClient, DevClientLocalRelay, DevHost, DevHostLocalRelay, ProductionClient, ProductionHost)"
         required: true
-        default: DevClient
-      target:
-        description: Build target (win64 or osxuniversal)
-        required: true
-        default: win64
+        default: ProductionHost
 
 jobs:
   check:
@@ -38,6 +34,9 @@ jobs:
     # to cross-compile for Windows and Mac; uses arm64
     runs-on: macos-26
     timeout-minutes: 60
+    strategy:
+      matrix:
+        target: [win64, osxuniversal]
     steps:
       - uses: actions/checkout@v4
 
@@ -100,11 +99,11 @@ jobs:
           $UNITY_PATH -batchmode -quit \
             -logFile "$LOG_FILE" \
             -projectPath . \
-            -buildTarget ${{ github.event.inputs.target || 'win64' }} \
+            -buildTarget ${{ matrix.target }} \
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
             -buildMode Client \
-            -buildConfig ${{ github.event.inputs.config || 'DevClient' }} \
-            -buildPlatform ${{ github.event.inputs.target || 'win64' }}
+            -buildConfig ${{ github.event.inputs.config || 'ProductionHost' }} \
+            -buildPlatform ${{ matrix.target }}
           BUILD_EXIT=$?
 
           sleep 1
@@ -119,8 +118,8 @@ jobs:
 
       - name: Zip
         run: |
-          CONFIG=${{ github.event.inputs.config || 'DevClient' }}
-          if [ "${{ github.event.inputs.target || 'win64' }}" = "osxuniversal" ]; then
+          CONFIG=${{ github.event.inputs.config || 'ProductionHost' }}
+          if [ "${{ matrix.target }}" = "osxuniversal" ]; then
             ditto -c -k --keepParent "Builds/$CONFIG/Mac/Resonance.app" "Resonance_mac.zip"
             echo "ARTIFACT=Resonance_mac.zip" >> $GITHUB_ENV
           else
@@ -128,11 +127,29 @@ jobs:
             echo "ARTIFACT=Resonance_win.zip" >> $GITHUB_ENV
           fi
 
-      - name: Upload to GitHub Releases
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.target }}
+          path: ${{ env.ARTIFACT }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: build-*
+          merge-multiple: true
+
+      - name: Create release
         run: |
           TAG="build-$(date +%Y%m%d-%H%M%S)"
-          gh release create "$TAG" "$ARTIFACT" \
-            --title "Client Build $TAG (${{ github.event.inputs.config || 'DevClient' }} / ${{ github.event.inputs.target || 'win64' }})" \
+          gh release create "$TAG" Resonance_win.zip Resonance_mac.zip \
+            --title "Client Build $TAG (${{ github.event.inputs.config || 'ProductionHost' }})" \
             --notes "Automated client build via GitHub Actions"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
