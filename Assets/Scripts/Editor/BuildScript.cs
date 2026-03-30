@@ -246,9 +246,9 @@ namespace Resonance.BuildTools
             string zipPath = appPath + "_notarize.zip";
             RunShell($"ditto -c -k --keepParent \"{appPath}\" \"{zipPath}\"");
 
-            Debug.Log("[BuildScript] Submitting for notarization (may take a few minutes)...");
+            Debug.Log("[BuildScript] Submitting for notarization (may take a few minutes, timeout 5m)...");
             int result = RunShell(
-                $"xcrun notarytool submit \"{zipPath}\" " +
+                $"timeout 300 xcrun notarytool submit \"{zipPath}\" " +
                 $"--apple-id \"{appleId}\" --password \"{appPassword}\" " +
                 $"--team-id \"{teamId}\" --wait");
 
