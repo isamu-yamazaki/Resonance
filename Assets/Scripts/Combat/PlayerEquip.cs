@@ -44,15 +44,15 @@ namespace Resonance.Combat
         {
             base.OnSpawned();
             enabled = isOwner;
+        }
 
-            if (isOwner)
-            {
-                playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-                playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
+        private void Awake()
+        {
+            playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
+            playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
 
-                weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
-                playerState = GetComponent<PlayerState>();
-            }
+            weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+            playerState = GetComponent<PlayerState>();
         }
 
         private void Start()
@@ -240,7 +240,6 @@ namespace Resonance.Combat
         {
             if (currentWeaponInstance != null)
             {
-                currentWeaponInstance.transform.SetParent(null);
                 Destroy(currentWeaponInstance);
                 currentWeaponInstance = null;
                 currentWeaponView = null;
