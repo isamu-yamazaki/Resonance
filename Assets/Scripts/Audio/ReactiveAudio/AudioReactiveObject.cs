@@ -39,9 +39,10 @@ namespace Resonance.Audio
         private float sustainTimer = 0f;
         private bool inSustain = false;
         private bool isFeedbackPlaying = false;
-        private bool visibilityUpdatePreviouslyTriggeredByAudioSource;
         private float sourceReportTimer = 0f;
         private AudioSourceData clientReportedSource;
+        private float visibilityEvaluationSchedulingCooldown = 2;
+        private bool isVisibilityEvaluationScheduled = false;
 
         void Start()
         {
@@ -89,22 +90,34 @@ namespace Resonance.Audio
                 AudioSourceData nearestSource = FindNearestSource();
                 if (nearestSource != null)
                 {
-                    EvaluateVisibilityForNewAudioSource();
                     SetNearestAudioSourceOnServer(nearestSource);
                 }
             }
         }
 
-        [ServerRpc]
-        private void EvaluateVisibilityForNewAudioSource()
+        private IEnumerator ScheduleVisibilityEvaluation()
         {
+            // visibility evaluation can only happen on the server/host
+            if (!isServer || isVisibilityEvaluationScheduled)
+            {
+                yield break;
+            }
+            isVisibilityEvaluationScheduled = true;
+
+            yield return new WaitForSeconds(visibilityEvaluationSchedulingCooldown);
             EvaluateVisibility();
+            isVisibilityEvaluationScheduled = false;
         }
 
         private IEnumerator ServerEvaluateVisibilityLoop()
         {
+            if (!isServer)
+            {
+                yield break;
+            }
             while (true)
             {
+                // mostly for the purpose of detaching observers
                 yield return new WaitForSeconds(20);
                 if (observers.Count > 0)
                 {
@@ -150,12 +163,20 @@ namespace Resonance.Audio
         [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
         public void SetNearestAudioSourceOnServer(AudioSourceData source)
         {
+            if (source != null)
+            {
+                StartCoroutine(ScheduleVisibilityEvaluation());
+            }
             clientReportedSource = source;
         }
 
         [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
         public void SetExternalIntensity(float intensity)
         {
+            if (intensity > 0)
+            {
+                StartCoroutine(ScheduleVisibilityEvaluation());
+            }
             externalIntensity = Mathf.Clamp01(intensity);
         }
 
