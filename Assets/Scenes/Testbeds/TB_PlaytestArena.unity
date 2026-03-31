@@ -1688,7 +1688,7 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
   assistTimeWindow: 5
   assistDamageThreshold: 20
   matchStartCountdownSeconds: 5
@@ -64358,6 +64358,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 1785730340630332140, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
+      propertyPath: _visitiblityRules
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
     - target: {fileID: 2861628563016785268, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
       propertyPath: m_Layer
       value: 8
