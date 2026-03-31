@@ -38208,16 +38208,6 @@ MonoBehaviour:
   shopItemPrefab: {fileID: 4640606343781412128, guid: ae83a8f6f711c1b44beba717b8be134e, type: 3}
   weaponStatsDisplay: {fileID: 2067273187}
   balanceText: {fileID: 1736229481}
-  sellPrimaryWeaponButton: {fileID: 0}
-  sellSecondaryWeaponButton: {fileID: 0}
-  sellUpperAugmentButton: {fileID: 0}
-  sellLowerAugmentButton: {fileID: 0}
-  sellBarrelModButton: {fileID: 0}
-  sellGripModButton: {fileID: 0}
-  sellStockModButton: {fileID: 0}
-  sellMagazineModButton: {fileID: 0}
-  sellOpticModButton: {fileID: 0}
-  sellSpecialModButton: {fileID: 0}
   shopOpenEvent:
     idInternal: 0
     valueGuidInternal: 

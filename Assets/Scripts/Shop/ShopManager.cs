@@ -65,16 +65,6 @@ namespace Resonance.Shop
         
         [Header("Economy")]
         [SerializeField] private TextMeshProUGUI balanceText;
-        [SerializeField] private Button sellPrimaryWeaponButton;
-        [SerializeField] private Button sellSecondaryWeaponButton;
-        [SerializeField] private Button sellUpperAugmentButton;
-        [SerializeField] private Button sellLowerAugmentButton;
-        [SerializeField] private Button sellBarrelModButton;
-        [SerializeField] private Button sellGripModButton;
-        [SerializeField] private Button sellStockModButton;
-        [SerializeField] private Button sellMagazineModButton;
-        [SerializeField] private Button sellOpticModButton;
-        [SerializeField] private Button sellSpecialModButton;
         private const float SellRefundRate = 0.75f;
 
 #if !UNITY_SERVER
@@ -292,18 +282,6 @@ namespace Resonance.Shop
 
             // Populate
             PopulateWeapons();
-            
-            // Sell button listeners
-            sellPrimaryWeaponButton?.onClick.AddListener(() => SellWeapon(WeaponSlot.Primary));
-            sellSecondaryWeaponButton?.onClick.AddListener(() => SellWeapon(WeaponSlot.Secondary));
-            sellUpperAugmentButton?.onClick.AddListener(() => SellAugment(AugmentSlot.Upper));
-            sellLowerAugmentButton?.onClick.AddListener(() => SellAugment(AugmentSlot.Lower));
-            sellBarrelModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Barrel));
-            sellGripModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Grip));
-            sellStockModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Stock));
-            sellMagazineModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Magazine));
-            sellOpticModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Optic));
-            sellSpecialModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Special));
 
             isInitialized = true;
         }
@@ -607,7 +585,6 @@ namespace Resonance.Shop
 
             if (equip.EquippedWeapon != null && equip.EquippedWeapon.Slot == weapon.Slot)
             {
-                // Refund the weapon being replaced
                 WeaponProperties oldWeapon = equip.EquippedWeapon;
                 foreach (WeaponModProperties mod in oldWeapon.ModList)
                 {
@@ -645,7 +622,6 @@ namespace Resonance.Shop
                 return;
             }
 
-            // Refund existing augment in same slot
             AugmentProperties existing = augment.Slot == AugmentSlot.Upper
                 ? inventory.augmentInventory[0]
                 : inventory.augmentInventory[1];
@@ -683,7 +659,7 @@ namespace Resonance.Shop
             WeaponModProperties existing = targetWeapon.ModList.FirstOrDefault(m => m != null && m.Slot == mod.Slot);
             if (existing != null)
             {
-                PlayerMoney.Instance?.AddFunds(existing.ModCost * SellRefundRate); // add this
+                PlayerMoney.Instance?.AddFunds(existing.ModCost * SellRefundRate);
                 targetWeapon.ModList.Remove(existing);
             }
 
@@ -718,7 +694,6 @@ namespace Resonance.Shop
 
             if (weapon == null) return;
 
-            // Refund mods first
             foreach (WeaponModProperties mod in weapon.ModList)
             {
                 if (mod != null)
@@ -726,7 +701,7 @@ namespace Resonance.Shop
             }
 
             PlayerMoney.Instance?.AddFunds(weapon.WeaponCost * SellRefundRate);
-            equip?.RemoveWeapon(slot); // RemoveWeapon in PlayerEquip already calls inventory.RemoveWeapon
+            equip?.RemoveWeapon(slot);
             inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
@@ -765,7 +740,7 @@ namespace Resonance.Shop
 
             if (augment == null) return;
 
-            equip.RemoveAugment(augment); // already handles inventory + stats cleanup
+            equip.RemoveAugment(augment);
             PlayerMoney.Instance?.AddFunds(augment.AugmentCost * SellRefundRate);
             inventoryDisplay.Refresh();
             RefreshBalanceText();
