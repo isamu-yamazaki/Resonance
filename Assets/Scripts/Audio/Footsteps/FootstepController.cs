@@ -30,7 +30,7 @@ namespace Resonance.Audio
 
         private CharacterController characterController;
         private PlayerState playerState;
-        private string currentSurface = "Concrete"; // concrete is default
+        private string currentSurface = "Concrete";
         private bool wasInAir = false;
 
         protected override void OnSpawned()
@@ -45,27 +45,23 @@ namespace Resonance.Audio
             playerState = GetComponentInParent<PlayerState>();
 
             if (characterController == null)
-            {
                 Debug.LogError("[FootstepController] CharacterController not found in parent!");
-            }
 
             if (playerState == null)
-            {
                 Debug.LogError("[FootstepController] PlayerState not found in parent!");
-            }
         }
 
         void Update()
         {
-            // auto-detect landing
             bool isInAir = !playerState.InGroundedState();
+            bool canLand = playerState.InGroundedState() ||
+                           playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping ||
+                           playerState.CurrentPlayerMovementState == PlayerMovementState.Falling;
 
-            if (wasInAir && !isInAir)
-            {
+            if (wasInAir && !isInAir && canLand)
                 PlayLanding();
-            }
 
-            wasInAir = isInAir;
+            wasInAir = isInAir && canLand;
         }
 
         [ObserversRpc(runLocally: true)]
@@ -80,9 +76,7 @@ namespace Resonance.Audio
                 footstepEvent.Post(gameObject);
 
                 if (AudioSourceTracker.Instance != null)
-                {
                     AudioSourceTracker.Instance.RegisterSound(transform.position, 0.3f);
-                }
             }
 #endif
         }
@@ -98,11 +92,8 @@ namespace Resonance.Audio
             {
                 landingEvent.Post(gameObject);
 
-                // Wait a tiny bit for Wwise Meter to update, then register
                 if (AudioSourceTracker.Instance != null)
-                {
-                    Invoke(nameof(RegisterLanding), 0.05f); // 50ms delay
-                }
+                    Invoke(nameof(RegisterLanding), 0.05f);
             }
 #endif
         }
@@ -111,9 +102,7 @@ namespace Resonance.Audio
         private void RegisterLanding()
         {
             if (AudioSourceTracker.Instance != null)
-            {
                 AudioSourceTracker.Instance.RegisterSound(transform.position, 0.5f);
-            }
         }
 
         void DetectSurface()
@@ -121,11 +110,8 @@ namespace Resonance.Audio
             Vector3 origin = transform.position + characterController.center;
             float distance = (characterController.height / 2f) + raycastDistance;
 
-            RaycastHit hit;
-            if (Physics.Raycast(origin, Vector3.down, out hit, distance, groundLayers))
-            {
+            if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, distance, groundLayers))
                 currentSurface = GetSurfaceFromTag(hit.collider.tag);
-            }
         }
 
         string GetSurfaceFromTag(string tag)
@@ -135,8 +121,6 @@ namespace Resonance.Audio
             if (tag == "Wood") return "Wood";
             if (tag == "Gravel") return "Gravel";
             if (tag == "Grass") return "Grass";
-
-            // default to concrete if tag not recognized
             return "Concrete";
         }
 
@@ -144,21 +128,11 @@ namespace Resonance.Audio
         {
             switch (currentSurface)
             {
-                case "Concrete":
-                    concreteSurface?.SetValue(gameObject);
-                    break;
-                case "Metal":
-                    metalSurface?.SetValue(gameObject);
-                    break;
-                case "Wood":
-                    woodSurface?.SetValue(gameObject);
-                    break;
-                case "Gravel":
-                    gravelSurface?.SetValue(gameObject);
-                    break;
-                case "Grass":
-                    grassSurface?.SetValue(gameObject);
-                    break;
+                case "Concrete": concreteSurface?.SetValue(gameObject); break;
+                case "Metal": metalSurface?.SetValue(gameObject); break;
+                case "Wood": woodSurface?.SetValue(gameObject); break;
+                case "Gravel": gravelSurface?.SetValue(gameObject); break;
+                case "Grass": grassSurface?.SetValue(gameObject); break;
             }
         }
 
