@@ -1,50 +1,50 @@
-name: Build for production
+name: Custom build
 
 on:
-  schedule:
-    - cron: '0 2 * * *'
   workflow_dispatch:
+    inputs:
+      target:
+        description: "Build target"
+        required: true
+        default: win64
+        type: choice
+        options:
+          - win64
+          - osxuniversal
+          - linux64
+      mode:
+        description: "Build mode"
+        required: true
+        default: Client
+        type: choice
+        options:
+          - Client
+          - Server
+      client_config:
+        description: "Client config asset name (used when mode is Client)"
+        required: true
+        default: ProductionClient
+        type: choice
+        options:
+          - DevClient
+          - DevClientLocalRelay
+          - DevHost
+          - DevHostLocalRelay
+          - ProductionClient
+          - ProductionHost
+      server_config:
+        description: "Server config asset name (used when mode is Server)"
+        required: true
+        default: Production
+        type: choice
+        options:
+          - LocalRelay
+          - Production
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    outputs:
-      has_changes: ${{ steps.check.outputs.has_changes }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check for recent commits
-        id: check
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          elif git log --since="24 hours ago" --oneline | grep -q .; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          fi
-
   build:
-    needs: check
-    if: needs.check.outputs.has_changes == 'true'
     runs-on: macos-26
     timeout-minutes: 60
-    strategy:
-      matrix:
-        include:
-          - target: win64
-            mode: Client
-            client_config: ProductionClient
-          - target: win64
-            mode: Client
-            client_config: ProductionHost
-          - target: osxuniversal
-            mode: Client
-            client_config: ProductionClient
-          - target: osxuniversal
-            mode: Client
-            client_config: ProductionHost
-          - target: linux64
-            mode: Server
     steps:
       - uses: actions/checkout@v4
 
@@ -79,7 +79,7 @@ jobs:
           key: unity-${{ vars.UNITY_VERSION }}-full
 
       - name: Import certificate into keychain
-        if: matrix.mode == 'Client'
+        if: github.event.inputs.mode == 'Client'
         env:
           MACOS_DEVELOPER_ID_CERTIFICATE_BASE64: ${{ secrets.MACOS_DEVELOPER_ID_CERTIFICATE_BASE64 }}
           MACOS_DEVELOPER_ID_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_DEVELOPER_ID_CERTIFICATE_PASSWORD }}
@@ -105,6 +105,15 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
+      - name: Determine config
+        id: config
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "Server" ]; then
+            echo "value=${{ github.event.inputs.server_config }}" >> $GITHUB_OUTPUT
+          else
+            echo "value=${{ github.event.inputs.client_config }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build (Unity)
         run: |
           LOG_FILE="$(mktemp /tmp/unity-build.XXXXXX.log)"
@@ -112,20 +121,18 @@ jobs:
           TAIL_PID=$!
 
           GRAPHICS_FLAG=""
-          if [ "${{ matrix.mode }}" = "Server" ]; then
+          if [ "${{ github.event.inputs.mode }}" = "Server" ]; then
             GRAPHICS_FLAG="-nographics"
           fi
-
-          CONFIG=${{ matrix.client_config || 'Production' }}
 
           $UNITY_PATH -batchmode -quit $GRAPHICS_FLAG \
             -logFile "$LOG_FILE" \
             -projectPath . \
-            -buildTarget ${{ matrix.target }} \
+            -buildTarget ${{ github.event.inputs.target }} \
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
-            -buildMode ${{ matrix.mode }} \
-            -buildConfig $CONFIG \
-            -buildPlatform ${{ matrix.target }}
+            -buildMode ${{ github.event.inputs.mode }} \
+            -buildConfig ${{ steps.config.outputs.value }} \
+            -buildPlatform ${{ github.event.inputs.target }}
           BUILD_EXIT=$?
 
           sleep 1
@@ -142,45 +149,20 @@ jobs:
 
       - name: Zip
         run: |
-          CONFIG=${{ matrix.client_config || 'Production' }}
-          if [ "${{ matrix.target }}" = "osxuniversal" ]; then
+          CONFIG=${{ steps.config.outputs.value }}
+          if [ "${{ github.event.inputs.target }}" = "osxuniversal" ]; then
             ditto -c -k --keepParent "Builds/$CONFIG/Mac/Resonance.app" "Resonance_mac_${CONFIG}.zip"
             echo "ARTIFACT=Resonance_mac_${CONFIG}.zip" >> $GITHUB_ENV
-          elif [ "${{ matrix.target }}" = "win64" ]; then
+          elif [ "${{ github.event.inputs.target }}" = "win64" ]; then
             cd "Builds/$CONFIG/Windows" && zip -r "../../../Resonance_win_${CONFIG}.zip" .
             echo "ARTIFACT=Resonance_win_${CONFIG}.zip" >> $GITHUB_ENV
           else
-            cd "Builds/$CONFIG/Linux" && zip -r "../../../ResonanceServer_linux.zip" .
-            echo "ARTIFACT=ResonanceServer_linux.zip" >> $GITHUB_ENV
+            cd "Builds/$CONFIG/Linux" && zip -r "../../../ResonanceServer_linux_${CONFIG}.zip" .
+            echo "ARTIFACT=ResonanceServer_linux_${CONFIG}.zip" >> $GITHUB_ENV
           fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ matrix.target }}-${{ matrix.client_config || 'Production' }}
+          name: build-custom-${{ github.event.inputs.target }}-${{ github.event.inputs.mode }}-${{ steps.config.outputs.value }}
           path: ${{ env.ARTIFACT }}
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: build-*
-          merge-multiple: true
-
-      - name: Create GitHub Release
-        run: |
-          TAG="build-$(date +%Y%m%d-%H%M%S)"
-          gh release create "$TAG" \
-            Resonance_win_ProductionClient.zip \
-            Resonance_win_ProductionHost.zip \
-            Resonance_mac_ProductionClient.zip \
-            Resonance_mac_ProductionHost.zip \
-            ResonanceServer_linux.zip \
-            --repo ${{ github.repository }} \
-            --title "Build $TAG" \
-            --notes "Automated production build: client (win64, macOS) × (ProductionClient, ProductionHost) + server (linux64)"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
