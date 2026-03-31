@@ -40,6 +40,8 @@ MonoBehaviour:
     m_path: Assets/Scenes/Testbeds/TB_AudioReactivity.unity
   - m_enabled: 1
     m_path: Assets/Scenes/Transitions/DisconnectedScene.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Testbeds/TB_RoughCut.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings: []

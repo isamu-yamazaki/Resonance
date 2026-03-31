@@ -15,7 +15,7 @@ MonoBehaviour:
   key: augment_upper_humanTurret
   augmentName: Human Turret
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 7d415c655a5efdb4885efefeb3bada00, type: 3}
   slot: 1
   speed: 0.75
   regen: 0

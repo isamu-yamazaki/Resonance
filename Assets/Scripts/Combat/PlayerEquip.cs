@@ -39,13 +39,6 @@ namespace Resonance.Combat
         public WeaponProperties EquippedWeapon { get; private set; }
 
         private WeaponProperties[] weapons;
-        private bool _isInitialEquip = true;
-
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
-            enabled = isOwner;
-        }
 
         private void Awake()
         {
@@ -72,17 +65,29 @@ namespace Resonance.Combat
         {
             yield return null;
 
-            if (playerInventory == null) yield break;
-            if (playerInventory.weaponInventory == null || playerInventory.weaponInventory.Length <= 1) yield break;
+            if (playerInventory == null)
+            {
+                yield break;
+            }
+
+            if (playerInventory.weaponInventory == null || playerInventory.weaponInventory.Length <= 1)
+            {
+                yield break;
+            }
 
             WeaponProperties startWeapon = playerInventory.weaponInventory[1];
             if (startWeapon != null)
+            {
                 EquipWeapon(startWeapon);
+            }
         }
 
         private void Update()
         {
-            if (playerActionsInput == null || playerInventory == null) return;
+            if (playerActionsInput == null || playerInventory == null)
+            {
+                return;
+            }
 
             if (playerActionsInput.SwapWeaponPressed)
             {
@@ -131,56 +136,69 @@ namespace Resonance.Combat
             }
 
             if (EquippedWeapon.Slot == WeaponSlot.Primary)
+            {
                 EquipFromSlot(1);
+            }
             else
+            {
                 EquipFromSlot(0);
+            }
         }
 
         private void EquipFromSlot(int slotIndex)
         {
-            if (slotIndex < 0 || slotIndex >= playerInventory.weaponInventory.Length) return;
+            if (slotIndex < 0 || slotIndex >= playerInventory.weaponInventory.Length)
+            {
+                return;
+            }
 
             WeaponProperties weapon = playerInventory.weaponInventory[slotIndex];
-            if (weapon == null) return;
+            if (weapon == null)
+            {
+                return;
+            }
 
             EquipWeapon(weapon);
         }
 
         public void EquipWeapon(WeaponProperties weapon)
         {
-            if (weapon == null) return;
-            if (EquippedWeapon == weapon) return;
+            if (weapon == null)
+            {
+                return;
+            }
+
+            if (EquippedWeapon == weapon)
+            {
+                return;
+            }
 
             if (EquippedWeapon != null && playerStats != null)
+            {
                 playerStats.RemoveSpeedModifier(weaponStatManager.GetStat(WeaponStat.Mobility));
+            }
 
             EquippedWeapon = weapon;
             playerState?.SetWeaponClass(weapon.Class);
-
             if (playerSkinRenderer.CurrentMeshInstance != null)
                 UpdateEquipSlotFromSkin(playerSkinRenderer.CurrentMeshInstance);
 
             if (weaponStatManager != null)
+            {
                 weaponStatManager.ManageWeapon(weapon);
+            }
 
             if (equippedWeaponObservable != null)
+            {
                 equippedWeaponObservable.Value = weapon;
+            }
 
             if (playerStats != null)
+            {
                 playerStats.AddSpeedModifier(weaponStatManager.Mobility);
+            }
 
             RefreshWeaponView(weapon);
-
-            if (!_isInitialEquip)
-                PlayEquipOnAllClients();
-
-            _isInitialEquip = false;
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void PlayEquipOnAllClients()
-        {
-            currentWeaponView?.PlayEquip();
         }
 
         private void RefreshWeaponView(WeaponProperties weapon)
@@ -203,10 +221,11 @@ namespace Resonance.Combat
                 return;
             }
 
-            InstantiateCurrentWeaponInstance(weapon.Key);
+            InstantiateCurrentWeaponInstanceForAllClients(weapon.Key);
         }
 
-        private void InstantiateCurrentWeaponInstance(string weaponKey)
+        [ObserversRpc(runLocally: true)]
+        private void InstantiateCurrentWeaponInstanceForAllClients(string weaponKey)
         {
             WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
             InstantiateCurrentWeaponInstance(weapon);
@@ -216,7 +235,6 @@ namespace Resonance.Combat
         {
             if (currentWeaponInstance != null)
             {
-                currentWeaponInstance.transform.SetParent(null);
                 Destroy(currentWeaponInstance);
                 currentWeaponInstance = null;
                 currentWeaponView = null;
@@ -226,6 +244,7 @@ namespace Resonance.Combat
             currentWeaponInstance.transform.localPosition = Vector3.zero;
             currentWeaponInstance.transform.localRotation = Quaternion.identity;
 
+            // Cancel out inherited parent scale so weapon renders at world scale (1,1,1)
             Vector3 ls = equipSlot.lossyScale;
             currentWeaponInstance.transform.localScale = new Vector3(1f / ls.x, 1f / ls.y, 1f / ls.z);
 
@@ -236,13 +255,10 @@ namespace Resonance.Combat
                 return;
             }
 
+            // Apply barrel mod flash override if one exists, otherwise WeaponView uses its default.
             MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
             if (flashSettings != null)
                 currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
-
-            WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
-            if (audioProperties != null)
-                currentWeaponView.ApplyAudioProperties(audioProperties);
         }
 
         public void RemoveWeapon(WeaponSlot slot)
@@ -251,20 +267,29 @@ namespace Resonance.Combat
                 ? playerInventory.weaponInventory[0]
                 : playerInventory.weaponInventory[1];
 
-            if (existing == null) return;
+            if (existing == null)
+            {
+                return;
+            }
 
             if (EquippedWeapon == existing)
             {
                 if (playerStats != null)
+                {
                     playerStats.RemoveSpeedModifier(existing.Mobility);
+                }
 
                 if (weaponStatManager != null)
+                {
                     weaponStatManager.ManageWeapon(null);
+                }
 
                 EquippedWeapon = null;
 
                 if (equippedWeaponObservable != null)
+                {
                     equippedWeaponObservable.Value = null;
+                }
 
                 if (currentWeaponInstance != null)
                 {
@@ -279,13 +304,18 @@ namespace Resonance.Combat
 
         public void EquipAugment(AugmentProperties augment)
         {
-            if (augment == null || playerAugmentEquipper == null) return;
+            if (augment == null || playerAugmentEquipper == null)
+            {
+                return;
+            }
 
             switch (augment.Slot)
             {
                 case AugmentSlot.Upper:
                     if (playerInventory.augmentInventory[0] != null)
+                    {
                         RemoveAugment(playerInventory.augmentInventory[0]);
+                    }
 
                     playerInventory.AddAugment(augment);
                     playerAugmentEquipper.ApplyAugmentStats(augment);
@@ -293,7 +323,9 @@ namespace Resonance.Combat
                     break;
                 case AugmentSlot.Lower:
                     if (playerInventory.augmentInventory[1] != null)
+                    {
                         RemoveAugment(playerInventory.augmentInventory[1]);
+                    }
 
                     playerInventory.AddAugment(augment);
                     playerAugmentEquipper.ApplyAugmentStats(augment);
