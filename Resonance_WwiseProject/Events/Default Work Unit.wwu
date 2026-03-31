@@ -3,17 +3,6 @@
 	<Events>
 		<WorkUnit Name="Default Work Unit" ID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" PersistMode="Standalone">
 			<ChildrenList>
-				<Event Name="Play_Test_Sound" ID="{DD204AD6-06A3-4E14-98F9-F6A1DC814F3D}">
-					<ChildrenList>
-						<Action Name="" ID="{25E8A52B-A684-489A-B772-C764B3843A1D}" ShortID="337463709">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="Test_Sound" ID="{E5578E04-26E1-43DB-9A34-F1B4B81BE03D}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
 				<Event Name="Play_Reactive_Feedback" ID="{96722AA4-1038-4FBD-A751-61F7B5327803}">
 					<ChildrenList>
 						<Action Name="" ID="{D87963E7-D03C-4432-8C5B-D61363D1FD08}" ShortID="487407952">
@@ -167,6 +156,135 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Firearms" ID="{864C9575-D785-4CA1-8C70-AF3F7A4C0340}" ShortID="362822753">
+					<ChildrenList>
+						<Folder Name="BaseHandgun" ID="{9B2DAB16-9194-497E-AE29-5AE8A6A78D8F}" ShortID="237284184">
+							<ChildrenList>
+								<Event Name="Play_BaseHandgun_Equip" ID="{BE95C702-90F5-4D4C-8E89-1F8D8FF66C0C}">
+									<ChildrenList>
+										<Action Name="" ID="{AA4DB9F6-0334-4E41-9222-CF4E16FC9AC9}" ShortID="1009301643">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_pistol_equip" ID="{C7B733B5-A1EC-4342-A456-4A6F32214C4D}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_BaseHandgun_Fire" ID="{A9498D83-6233-4793-8F13-E647504F5ACF}">
+									<ChildrenList>
+										<Action Name="" ID="{70A11F5A-77DB-4C12-A79A-496923FC2F24}" ShortID="946964706">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_pistol_fire" ID="{51BF4F23-9840-4C46-AB1F-A39089409F9B}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_BaseHandgun_Reload" ID="{5B9A6DD5-FE3D-452D-9938-5A9E1CFA4CDE}">
+									<ChildrenList>
+										<Action Name="" ID="{D8B673F0-9D58-468D-BC58-809B20D00E76}" ShortID="223307387">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_pistol_reload" ID="{75CDB11F-4A19-41AA-BDD0-D47176FBDAC4}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_BaseHandgun_Empty" ID="{D41740C2-2EDF-42F7-8EAD-2B9261B4D253}">
+									<ChildrenList>
+										<Action Name="" ID="{2FB9E3B9-C3F6-4AD5-B0E2-AD09C0EB5C52}" ShortID="997255483">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_pistol_empty_trigger" ID="{A31864DF-25C9-4888-BB3D-4EFB3D3294A0}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_BaseHandgun_Casing" ID="{F27A7E9E-EEFA-4CD4-8603-F2A26832AFFA}">
+									<ChildrenList>
+										<Action Name="" ID="{36130DA9-0E86-4454-BFCC-4E3F5B09EEB3}" ShortID="381065161">
+											<PropertyList>
+												<Property Name="Delay" Type="Real64" Value="0.2"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_pistol_casing" ID="{CF385011-E08A-44C0-AFA2-785FC94E2BE3}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
+						<Folder Name="LMG" ID="{02E9B7C3-99EB-4BDF-943D-BA48BE2F6FCA}" ShortID="849639396">
+							<ChildrenList>
+								<Event Name="Play_LMG_Fire" ID="{E12CFF74-10E0-433D-887D-F7C554635EE9}">
+									<ChildrenList>
+										<Action Name="" ID="{0F397512-12FC-4A1A-B198-7DC5905F4B56}" ShortID="567525724">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_lmg_fire" ID="{ADF37313-33E0-4586-AEB5-8B1ECA8038FB}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
+						<Folder Name="Revolver" ID="{3142D193-6397-4B7D-8254-F5D86826AE5C}" ShortID="13225071">
+							<ChildrenList>
+								<Event Name="Play_Revolver_Fire" ID="{0CDD1FD2-CE56-417E-AE61-0671C3176504}">
+									<ChildrenList>
+										<Action Name="" ID="{4F334DA6-6B82-40BA-83B8-71093592EFE5}" ShortID="1040742031">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_revolver_fire" ID="{4E217148-3B9F-4C7D-9305-2F5969065EC5}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Empty" ID="{37F8B618-F71E-45F3-BBC5-28F09BACA3A0}">
+									<ChildrenList>
+										<Action Name="" ID="{59A4726B-7A88-462E-8167-1BA9E0052B80}" ShortID="853991845">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_revolver_empty_trigger" ID="{0762873B-112B-4EBD-AC20-ED12BC202F65}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Equip" ID="{DB37FDD7-37CB-40B1-8796-8675D4DC5F7A}">
+									<ChildrenList>
+										<Action Name="" ID="{2FD97851-ACC6-4CF9-8CB5-5D05B0F7612B}" ShortID="508587649">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_revolver_equip" ID="{DE792277-45F5-4C48-AB7F-D2CF9E4C5415}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Reload" ID="{26C64E56-4751-419A-86A3-18C37374BB38}">
+									<ChildrenList>
+										<Action Name="" ID="{0062D025-CE7B-4474-B37B-B073094271D9}" ShortID="794627644">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_revolver_reload" ID="{50CA7E0D-5F42-43A7-9B9F-CF73B0887DE8}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>

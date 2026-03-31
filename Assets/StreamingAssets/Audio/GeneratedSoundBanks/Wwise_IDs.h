@@ -13,17 +13,26 @@ namespace AK
 {
     namespace EVENTS
     {
+        static const AkUniqueID PLAY_BASEHANDGUN_CASING = 1060624046U;
+        static const AkUniqueID PLAY_BASEHANDGUN_EMPTY = 2638125186U;
+        static const AkUniqueID PLAY_BASEHANDGUN_EQUIP = 2295785721U;
+        static const AkUniqueID PLAY_BASEHANDGUN_FIRE = 1057815627U;
+        static const AkUniqueID PLAY_BASEHANDGUN_RELOAD = 3366594044U;
         static const AkUniqueID PLAY_FOOTSTEP = 1602358412U;
         static const AkUniqueID PLAY_GLASSSHARDLAND = 278146749U;
         static const AkUniqueID PLAY_GLASSSHATTER = 2387432645U;
         static const AkUniqueID PLAY_INDOORAMBIENCE = 1529325343U;
         static const AkUniqueID PLAY_LANDING = 2323405115U;
+        static const AkUniqueID PLAY_LMG_FIRE = 1166794921U;
         static const AkUniqueID PLAY_OUTDOORAMBIENCE = 3267244670U;
         static const AkUniqueID PLAY_REACTIVE_FEEDBACK = 3062989335U;
+        static const AkUniqueID PLAY_REVOLVER_EMPTY = 3017185661U;
+        static const AkUniqueID PLAY_REVOLVER_EQUIP = 3091083318U;
+        static const AkUniqueID PLAY_REVOLVER_FIRE = 3161719826U;
+        static const AkUniqueID PLAY_REVOLVER_RELOAD = 242751549U;
         static const AkUniqueID PLAY_SD_DISTORTION = 2277071487U;
         static const AkUniqueID PLAY_SD_PING = 3350049094U;
         static const AkUniqueID PLAY_SD_PULSEACTIVATE = 3246891746U;
-        static const AkUniqueID PLAY_TEST_SOUND = 3211564518U;
         static const AkUniqueID PLAY_TRAIN_ARRIVAL = 2305398106U;
         static const AkUniqueID PLAY_TRAIN_DISEMBARK = 3903810609U;
         static const AkUniqueID PLAY_TRAIN_MOVING = 2317729681U;

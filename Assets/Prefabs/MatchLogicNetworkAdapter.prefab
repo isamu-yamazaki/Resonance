@@ -52,11 +52,11 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
   assistTimeWindow: 5
   assistDamageThreshold: 20
   matchStartCountdownSeconds: 5
-  eliminationsToWin: 5
+  ratingToWin: 2000
   autoStartDelaySeconds: 5
   autoStartNextMatch: 0
   matchDurationSeconds: 300
