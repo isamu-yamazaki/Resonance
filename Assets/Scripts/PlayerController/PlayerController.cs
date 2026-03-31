@@ -161,6 +161,7 @@ namespace Resonance.PlayerController
             _wasCrouchPressedLastFrame = false;
             _rotatingToTargetTimer = 0f;
             IsRotatingToTarget = false;
+            _grappleImpulse = Vector3.zero;
             
             // Restore step offset to original value
             if (_characterController != null)
