@@ -37,6 +37,10 @@ namespace Resonance.Combat.Weapons
         [SerializeField] private GameObject weaponPrefab;
         public GameObject WeaponPrefab => weaponPrefab;
 
+        [Header("Audio")]
+        [SerializeField] private WeaponAudioProperties audioProperties;
+        public WeaponAudioProperties AudioProperties => audioProperties;
+
         [Header("Damage Stats")]
         [SerializeField] private float damage;
         public float Damage => damage;
@@ -110,6 +114,7 @@ namespace Resonance.Combat.Weapons
             clone.firingType = firingType;
             clone.icon = icon;
             clone.weaponPrefab = weaponPrefab;
+            clone.audioProperties = audioProperties;
             clone.damage = damage;
             clone.fireRate = fireRate;
             clone.range = range;
