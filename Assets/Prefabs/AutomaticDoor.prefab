@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 1981432521713643072}
   - component: {fileID: 1495981214754789514}
   - component: {fileID: 4661628680041848622}
+  - component: {fileID: -6451534699878591532}
   m_Layer: 0
   m_Name: AutomaticDoor
   m_TagString: Untagged
@@ -180,3 +181,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AutomaticDoor
   moveLeft: 1
   slideSpeed: 5
+--- !u!114 &-6451534699878591532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7643646926158781204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 817fe5016bd0a2a49a95b6eb338bb132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkTransform
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _syncPosition: 1
+  _syncRotation: 1
+  _syncScale: 1
+  _syncParent: 1
+  _interpolateSettings: 7
+  _minBufferSize: 1
+  _maxBufferSize: 2
+  _characterControllerPatch: 0
+  _ownerAuth: 1
+  _interpolationTiming: 0
