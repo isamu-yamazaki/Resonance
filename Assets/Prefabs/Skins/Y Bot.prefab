@@ -177,6 +177,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4728426434207774260, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
+      propertyPath: m_TagString
+      value: GrappleOrigin
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d6feed7c5390d524a903d6adc14054d2, type: 3}
       propertyPath: m_Name
       value: Y Bot

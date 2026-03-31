@@ -22,3 +22,4 @@ MonoBehaviour:
   damageReduction: 0
   modProperties: {fileID: 0}
   abilityKey: ability_grappleHook
+  augmentCost: 1

@@ -184,6 +184,8 @@ GameObject:
   - component: {fileID: 6485822093017100666}
   - component: {fileID: 3024070534968682805}
   - component: {fileID: 6081102581006774403}
+  - component: {fileID: 7300087826615597716}
+  - component: {fileID: 8104918514878385418}
   m_Layer: 6
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -262,6 +264,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineHardLockToTarget
   Damping: 0
+--- !u!114 &7300087826615597716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5642366538942606948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02372b49c7f35af4caecfab755da37c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkGameObj
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 1
+  isStaticObject: 0
+  usePositionOffsetData: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  scalingFactor: 1
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
+--- !u!114 &8104918514878385418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5642366538942606948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e325349b27c78b84c8ac5656b66ad2a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkAudioListener
+  isDefaultListener: 1
+  bOverrideScalingFactor: 0
+  scalingFactor: -1
+  listenerId: 0
 --- !u!1 &6430810637274961401
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,8 +363,6 @@ GameObject:
   - component: {fileID: 7304100629892152196}
   - component: {fileID: 8505458450555133255}
   - component: {fileID: 884933758777301057}
-  - component: {fileID: -7842585778944990973}
-  - component: {fileID: 8953151137814889512}
   - component: {fileID: 22982227885916328}
   - component: {fileID: -3400458708190070123}
   - component: {fileID: -3222689995555833044}
@@ -345,6 +385,9 @@ GameObject:
   - component: {fileID: 3428471863637891944}
   - component: {fileID: -6813632310427250886}
   - component: {fileID: 2929268584548212605}
+  - component: {fileID: -9158808936870234664}
+  - component: {fileID: 7131106383641537564}
+  - component: {fileID: 5684997356607948869}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -389,7 +432,7 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
   _characterController: {fileID: 3494420511587806199}
   _virtualCamera: {fileID: 3024070534968682805}
   baseCrouchAcceleration: 25
@@ -780,7 +823,7 @@ MonoBehaviour:
   debugAmmoLogs: 1
   hitscanLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1344
 --- !u!114 &7304100629892152196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -833,46 +876,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56327ccb6bff56942bc369710b03ec1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerViewModel
---- !u!114 &-7842585778944990973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02372b49c7f35af4caecfab755da37c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkGameObj
-  m_listeners:
-    initialListenerList: []
-    useDefaultListeners: 1
-  isEnvironmentAware: 1
-  isStaticObject: 0
-  usePositionOffsetData: 0
-  m_positionOffsetData:
-    KeepMe: 0
-    positionOffset: {x: 0, y: 0, z: 0}
-  scalingFactor: 1
-  m_posOffsetData: {fileID: 0}
-  listenerMask: 1
---- !u!114 &8953151137814889512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e325349b27c78b84c8ac5656b66ad2a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkAudioListener
-  isDefaultListener: 1
-  bOverrideScalingFactor: 0
-  scalingFactor: -1
-  listenerId: 0
 --- !u!114 &22982227885916328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1365,4 +1368,72 @@ MonoBehaviour:
   grappleLayerMask:
     serializedVersion: 2
     m_Bits: 256
+--- !u!114 &-9158808936870234664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf1830bf0f316d4bafd3c046ec7087b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.GrappleRopeRenderer
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   ropeRendererPrefab: {fileID: 7923988320775917421, guid: 7a709c6d619f87947b3b00b58ae31e97, type: 3}
+--- !u!114 &7131106383641537564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c9b65a90592be42910be98e69f32a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.BubbleShield.AbilityBubbleShield
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  lobForce: 6
+  upwardLobBias: 0.4
+  cooldown: 20
+  bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
+--- !u!114 &5684997356607948869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9f1a2183787b15469d6633826859cd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Economy.PlayerMoney
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  startingBalance: 50000

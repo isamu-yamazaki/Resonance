@@ -39,20 +39,15 @@ namespace Resonance.Combat
         public WeaponProperties EquippedWeapon { get; private set; }
 
         private WeaponProperties[] weapons;
+        private bool _isInitialEquip = true;
 
-        protected override void OnSpawned()
+        private void Awake()
         {
-            base.OnSpawned();
-            enabled = isOwner;
+            playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
+            playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
 
-            if (isOwner)
-            {
-                playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-                playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
-
-                weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
-                playerState = GetComponent<PlayerState>();
-            }
+            weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+            playerState = GetComponent<PlayerState>();
         }
 
         private void Start()
@@ -205,6 +200,17 @@ namespace Resonance.Combat
             }
 
             RefreshWeaponView(weapon);
+
+            if (!_isInitialEquip)
+                PlayEquipOnAllClients();
+
+            _isInitialEquip = false;
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void PlayEquipOnAllClients()
+        {
+            currentWeaponView?.PlayEquip();
         }
 
         private void RefreshWeaponView(WeaponProperties weapon)
@@ -227,10 +233,11 @@ namespace Resonance.Combat
                 return;
             }
 
-            InstantiateCurrentWeaponInstance(weapon.Key);
+            InstantiateCurrentWeaponInstanceForAllClients(weapon.Key);
         }
 
-        private void InstantiateCurrentWeaponInstance(string weaponKey)
+        [ObserversRpc(runLocally: true)]
+        private void InstantiateCurrentWeaponInstanceForAllClients(string weaponKey)
         {
             WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
             InstantiateCurrentWeaponInstance(weapon);
@@ -240,7 +247,6 @@ namespace Resonance.Combat
         {
             if (currentWeaponInstance != null)
             {
-                currentWeaponInstance.transform.SetParent(null);
                 Destroy(currentWeaponInstance);
                 currentWeaponInstance = null;
                 currentWeaponView = null;
@@ -261,10 +267,13 @@ namespace Resonance.Combat
                 return;
             }
 
-            // Apply barrel mod flash override if one exists, otherwise WeaponView uses its default.
             MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
             if (flashSettings != null)
                 currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
+
+            WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
+            if (audioProperties != null)
+                currentWeaponView.ApplyAudioProperties(audioProperties);
         }
 
         public void RemoveWeapon(WeaponSlot slot)

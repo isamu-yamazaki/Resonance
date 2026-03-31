@@ -21,6 +21,7 @@ MonoBehaviour:
   firingType: 1
   icon: {fileID: 0}
   weaponPrefab: {fileID: 1737148184329554707, guid: a04aeb84fa5fcff41a60c568eea597ad, type: 3}
+  audioProperties: {fileID: 11400000, guid: 34528873aa7e23541af0cf97fda2ba5a, type: 2}
   damage: 10
   fireRate: 3
   projectilesPerShot: 1
@@ -38,3 +39,4 @@ MonoBehaviour:
   reloadTime: 2.3
   bulletProperties: {fileID: 11400000, guid: efa6dd70ff966ac409b9d07883c05ff2, type: 2}
   modList: []
+  weaponCost: 1

@@ -14,6 +14,7 @@ TagManager:
   - Train
   - Arm
   - Grass
+  - GrappleOrigin
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - Projectile
   - Environment
   - GlassShard
-  - 
+  - Shield
   - 
   - 
   - 

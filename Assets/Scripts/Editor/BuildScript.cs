@@ -61,9 +61,9 @@ namespace Resonance.BuildTools
 
         #region CLI entry point
         /// <summary>
-        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildTarget Windows64|OSX|Linux64
+        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildPlatform win64|osxuniversal|linux64
         /// Supported -buildMode values: Client (default), Server
-        /// Supported -buildTarget values: Windows64 (default), OSX, Linux64
+        /// Supported -buildPlatform values: win64 (default), osxuniversal, linux64
         /// </summary>
         public static void BuildCLI()
         {
@@ -71,13 +71,13 @@ namespace Resonance.BuildTools
                 ?? throw new System.Exception("Missing -buildConfig argument. Usage: -buildConfig <AssetName>");
 
             string modeName = ReadArg("-buildMode") ?? "Client";
-            string targetName = ReadArg("-buildTarget") ?? "Windows64";
+            string targetName = ReadArg("-buildPlatform") ?? "win64";
             BuildTarget target = targetName switch
             {
-                "Windows64" => BuildTarget.StandaloneWindows64,
-                "OSX" => BuildTarget.StandaloneOSX,
-                "Linux64" => BuildTarget.StandaloneLinux64,
-                _ => throw new System.Exception($"Unknown -buildTarget '{targetName}'. Supported: Windows64, OSX, Linux64"),
+                "win64" => BuildTarget.StandaloneWindows64,
+                "osxuniversal" => BuildTarget.StandaloneOSX,
+                "linux64" => BuildTarget.StandaloneLinux64,
+                _ => throw new System.Exception($"Unknown -buildPlatform '{targetName}'. Supported: win64, osxuniversal, linux64"),
             };
 
             if (modeName == "Server")
@@ -246,7 +246,7 @@ namespace Resonance.BuildTools
             string zipPath = appPath + "_notarize.zip";
             RunShell($"ditto -c -k --keepParent \"{appPath}\" \"{zipPath}\"");
 
-            Debug.Log("[BuildScript] Submitting for notarization (may take a few minutes)...");
+            Debug.Log("[BuildScript] Submitting for notarization (may take a few minutes, timeout 5m)...");
             int result = RunShell(
                 $"xcrun notarytool submit \"{zipPath}\" " +
                 $"--apple-id \"{appleId}\" --password \"{appPassword}\" " +

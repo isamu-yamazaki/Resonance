@@ -17,9 +17,11 @@ MonoBehaviour:
   description: More bullets!
   slot: 3
   icon: {fileID: 0}
+  muzzleFlashOverride: {fileID: 0}
   modifiers:
   - stat: 10
     type: 1
     value: 1.5
   bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 05000000
+  modCost: 1

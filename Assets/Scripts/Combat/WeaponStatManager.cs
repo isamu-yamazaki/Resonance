@@ -73,7 +73,7 @@ namespace Resonance.Combat
 
             return managedWeapon.BulletProperties;
         }
-        
+
         public MuzzleFlashSettings GetMuzzleFlashSettings()
         {
             if (managedWeapon == null) return null;
@@ -87,6 +87,22 @@ namespace Resonance.Combat
             }
 
             return null;
+        }
+
+        // Returns barrel mod audio override if one exists, falls back to base weapon audio.
+        public WeaponAudioProperties GetAudioProperties()
+        {
+            if (managedWeapon == null) return null;
+
+            IEnumerable<WeaponModProperties> allMods = managedWeapon.ModList.Concat(augmentMods).Where(mod => mod != null);
+
+            foreach (WeaponModProperties mod in allMods)
+            {
+                if (mod.Slot == ModSlot.Barrel && mod.AudioOverride != null)
+                    return mod.AudioOverride;
+            }
+
+            return managedWeapon.AudioProperties;
         }
 
         private float GetBaseValue(WeaponStat stat) => stat switch

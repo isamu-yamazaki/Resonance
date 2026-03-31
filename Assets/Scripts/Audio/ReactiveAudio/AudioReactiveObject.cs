@@ -39,6 +39,7 @@ namespace Resonance.Audio
         private float sustainTimer = 0f;
         private bool inSustain = false;
         private bool isFeedbackPlaying = false;
+        private bool visibilityUpdatePreviouslyTriggeredByAudioSource;
         private float sourceReportTimer = 0f;
         private AudioSourceData clientReportedSource;
 
@@ -56,6 +57,7 @@ namespace Resonance.Audio
                 currentIntensity = 0f;
                 ApplyEmissionAndAudioFeedbackForAllClients(0f);
                 StartCoroutine(ServerPropagationLoop());
+                StartCoroutine(ServerEvaluateVisibilityLoop());
             }
 
             if (isClient)
@@ -63,6 +65,7 @@ namespace Resonance.Audio
                 StartCoroutine(ClientReportingLoop());
             }
         }
+
 
         protected override void OnDespawned(bool asServer)
         {
@@ -85,7 +88,28 @@ namespace Resonance.Audio
 
                 AudioSourceData nearestSource = FindNearestSource();
                 if (nearestSource != null)
+                {
+                    EvaluateVisibilityForNewAudioSource();
                     SetNearestAudioSourceOnServer(nearestSource);
+                }
+            }
+        }
+
+        [ServerRpc]
+        private void EvaluateVisibilityForNewAudioSource()
+        {
+            EvaluateVisibility();
+        }
+
+        private IEnumerator ServerEvaluateVisibilityLoop()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(20);
+                if (observers.Count > 0)
+                {
+                    EvaluateVisibility();
+                }
             }
         }
 

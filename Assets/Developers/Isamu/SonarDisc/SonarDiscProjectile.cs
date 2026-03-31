@@ -33,6 +33,7 @@ namespace Resonance.Abilities.SonarDisc
         [Header("Collision")]
         [SerializeField] private LayerMask discCollisionMask;
 
+#if !UNITY_SERVER
         [Header("Wwise Events")]
         // TODO: Assign shoot event (Play_SD_Shoot) in inspector
         [SerializeField] private AK.Wwise.Event shootEvent;
@@ -44,6 +45,7 @@ namespace Resonance.Abilities.SonarDisc
         [SerializeField] private AK.Wwise.Event hitPlayerEvent;
         // Plays only for the disc owner on a successful scan (Play_SD_Ping)
         [SerializeField] private AK.Wwise.Event scanConfirmedEvent;
+#endif
 
         private Rigidbody _rigidbody;
         private bool _isAttached;
