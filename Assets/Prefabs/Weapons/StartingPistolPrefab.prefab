@@ -146,10 +146,6 @@ MonoBehaviour:
   muzzleFlash: {fileID: 3631236164844356990}
   muzzleEmitter: {fileID: 993925814565751387}
   bodyEmitter: {fileID: 107863019371055038}
-  casingGroundThreshold: 5
-  casingLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!1 &6941838711628187523
 GameObject:
   m_ObjectHideFlags: 0
