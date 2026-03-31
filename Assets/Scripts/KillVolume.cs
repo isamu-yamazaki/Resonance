@@ -7,13 +7,6 @@ using System.Collections.Generic;
 public class KillVolume : NetworkBehaviour
 {
     private HashSet<PlayerStats> _inside = new HashSet<PlayerStats>();
-    private float _respawnDelay = 3f;
-
-    private void Start()
-    {
-        if (Respawn.Instance != null)
-            _respawnDelay = Respawn.Instance.RespawnDelay + 1f;
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -22,19 +15,26 @@ public class KillVolume : NetworkBehaviour
         if (_inside.Contains(stats)) return;
 
         _inside.Add(stats);
+        stats.OnPlayerRespawn += () => OnPlayerRespawned(stats);
         stats.TakeDamage(999999f, null);
+    }
+
+    private void OnPlayerRespawned(PlayerStats stats)
+    {
+        stats.OnPlayerRespawn -= () => OnPlayerRespawned(stats);
+        StartCoroutine(DelayedRemove(stats));
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!isServer) return;
         if (other.TryGetComponent<PlayerStats>(out var stats))
-            StartCoroutine(DelayedRemove(stats));
+            _inside.Remove(stats);
     }
 
     private IEnumerator DelayedRemove(PlayerStats stats)
     {
-        yield return new WaitForSeconds(_respawnDelay);
+        yield return new WaitForSeconds(1f);
         _inside.Remove(stats);
     }
 }
