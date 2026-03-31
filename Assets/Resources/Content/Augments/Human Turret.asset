@@ -22,3 +22,4 @@ MonoBehaviour:
   damageReduction: 0.25
   modProperties: {fileID: 0}
   abilityKey: ability_humanTurret
+  augmentCost: 1

@@ -22,3 +22,4 @@ MonoBehaviour:
   damageReduction: 0
   modProperties: {fileID: 11400000, guid: cfebd4fdd05044d4ab569311d6e77ad9, type: 2}
   abilityKey: ability_sprintBurst
+  augmentCost: 1

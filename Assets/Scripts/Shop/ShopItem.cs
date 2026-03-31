@@ -1,6 +1,7 @@
 using Resonance.Combat.Augments;
 using Resonance.Combat.Mods;
 using Resonance.Combat.Weapons;
+using Resonance.Economy;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -19,31 +20,48 @@ namespace Resonance.Shop
         public AugmentProperties Augment { get; private set; }
         public WeaponModProperties Mod { get; private set; }
 
+        private float itemCost;
+
         public void SetupWeapon(WeaponProperties weapon)
         {
             Weapon = weapon;
+            itemCost = weapon.WeaponCost;
             itemNameText.text = weapon.WeaponName;
-            //itemCostText.text = weapon.cost;
+            itemCostText.text = $"₢ {weapon.WeaponCost:0}";
             iconImage.sprite = weapon.Icon;
             button.onClick.AddListener(() => ShopManager.Instance.Buy(weapon));
+            RefreshAffordability();
         }
 
         public void SetupAugment(AugmentProperties augment)
         {
             Augment = augment;
+            itemCost = augment.AugmentCost;
             itemNameText.text = augment.AugmentName;
+            itemCostText.text = $"₢ {augment.AugmentCost:0}";
             iconImage.sprite = augment.Icon;
-            //itemCostText.text = augment.cost
             button.onClick.AddListener(() => ShopManager.Instance.Buy(augment));
+            RefreshAffordability();
         }
 
         public void SetupMod(WeaponModProperties mod)
         {
             Mod = mod;
+            itemCost = mod.ModCost;
             itemNameText.text = mod.ModName;
-            //itemCostText.text = mod.cost
+            itemCostText.text = $"₢ {mod.ModCost:0}";
             iconImage.sprite = mod.Icon;
             button.onClick.AddListener(() => ShopManager.Instance.Buy(mod));
+            RefreshAffordability();
+        }
+
+        public void RefreshAffordability()
+        {
+            if (PlayerMoney.Instance == null) return;
+
+            bool canAfford = PlayerMoney.Instance.CanAfford(itemCost);
+            button.interactable = canAfford;
+            itemCostText.color = canAfford ? Color.white : Color.red;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
