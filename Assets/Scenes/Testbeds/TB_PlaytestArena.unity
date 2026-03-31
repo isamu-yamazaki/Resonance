@@ -38224,6 +38224,14 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: af50a7325c68acf42be426a770bf622f, type: 2}
+  shopItemSellEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: ced12259ed8547145876555c884bdf46, type: 2}
+  shopInsufficientFundsEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: b0dcd8f52ea93fd4da0df963eba1bfdd, type: 2}
   buttonClickEvent:
     idInternal: 0
     valueGuidInternal: 

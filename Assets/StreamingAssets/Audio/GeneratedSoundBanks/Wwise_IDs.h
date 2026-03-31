@@ -36,6 +36,14 @@ namespace AK
         static const AkUniqueID PLAY_TRAIN_ARRIVAL = 2305398106U;
         static const AkUniqueID PLAY_TRAIN_DISEMBARK = 3903810609U;
         static const AkUniqueID PLAY_TRAIN_MOVING = 2317729681U;
+        static const AkUniqueID PLAY_UI_BUTTON_CLICK = 1661558166U;
+        static const AkUniqueID PLAY_UI_BUTTON_HOVER = 310530060U;
+        static const AkUniqueID PLAY_UI_SHOP_CLOSE = 3153218754U;
+        static const AkUniqueID PLAY_UI_SHOP_INSUFFICIENT_FUNDS = 1816346010U;
+        static const AkUniqueID PLAY_UI_SHOP_ITEM_BUY = 2394254510U;
+        static const AkUniqueID PLAY_UI_SHOP_ITEM_SELL = 2638998638U;
+        static const AkUniqueID PLAY_UI_SHOP_OPEN = 2720966806U;
+        static const AkUniqueID PLAY_UI_SHOP_PAGE_SWITCH = 1681007094U;
         static const AkUniqueID STOP_REACTIVE_FEEDBACK = 3211783545U;
         static const AkUniqueID STOP_TRAIN_MOVING = 130138219U;
     } // namespace EVENTS

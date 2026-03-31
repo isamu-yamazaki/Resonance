@@ -7,21 +7,29 @@
 					<ObjectInclusionList>
 						<ObjectRef Name="Play_Revolver_Equip" ID="{DB37FDD7-37CB-40B1-8796-8675D4DC5F7A}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Revolver_Fire" ID="{0CDD1FD2-CE56-417E-AE61-0671C3176504}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Shop_Close" ID="{C7428F7C-B78A-4184-839D-F24204314D95}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Revolver_Reload" ID="{26C64E56-4751-419A-86A3-18C37374BB38}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Footstep" ID="{9682FA73-32CF-41B9-931F-A41CE6D92E60}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_GlassShardLand" ID="{6B6E1229-1882-41F9-882E-55BDA79ABE17}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_SD_Ping" ID="{760F0763-1573-41FF-B3EE-17EEB5CB049B}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Shop_Item_Buy" ID="{4DB16980-3E51-420E-9638-94E8C95325A1}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_SD_PulseActivate" ID="{BA656AA4-42E7-42B4-B54E-A4E939C157BA}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_BaseHandgun_Empty" ID="{D41740C2-2EDF-42F7-8EAD-2B9261B4D253}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_LMG_Fire" ID="{E12CFF74-10E0-433D-887D-F7C554635EE9}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Landing" ID="{3F483C2B-4AA2-43B3-B2A7-A916FFF59C74}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Train_Disembark" ID="{51C94B9D-0D94-43C7-AA59-DB3CD379EA80}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Shop_Insufficient_Funds" ID="{A514D865-DF06-447D-9AF8-6B05E1905C08}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_BaseHandgun_Reload" ID="{5B9A6DD5-FE3D-452D-9938-5A9E1CFA4CDE}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Shop_Page_Switch" ID="{B3E94D33-5CBC-4576-8C9A-55F0BF119B70}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Revolver_Empty" ID="{37F8B618-F71E-45F3-BBC5-28F09BACA3A0}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Button_Click" ID="{60237919-104C-4674-8E4B-0C9AC9370B8F}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Stop_Reactive_Feedback" ID="{AC0C71A3-5A4A-4700-84BE-F8438F763A1A}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_GlassShatter" ID="{FF8D6C3A-E13D-4784-A0DD-F5D3850BBB9F}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_BaseHandgun_Fire" ID="{A9498D83-6233-4793-8F13-E647504F5ACF}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Shop_Open" ID="{54C48AD4-81F3-47F3-B99D-CCBE9E95B9F6}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Shop_Item_Sell" ID="{E88DF033-C906-4838-AF88-0DDCC58ED39C}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Stop_Train_Moving" ID="{5C6A69E7-5734-4A59-9855-DB5FEB581542}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Button_Hover" ID="{85C07B17-A696-4AB1-8279-F3DB39B26133}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Train_Moving" ID="{3C5E15D5-9DF8-4C03-9A2A-C8C585369995}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Train_Arrival" ID="{68D90232-C33C-4CBC-9B40-F9164D7350AF}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_BaseHandgun_Casing" ID="{F27A7E9E-EEFA-4CD4-8603-F2A26832AFFA}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
