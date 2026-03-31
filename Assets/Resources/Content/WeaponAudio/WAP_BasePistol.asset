@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5286405e2269f544ea060fc4b0b4c666, type: 3}
+  m_Name: WAP_BasePistol
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponAudioProperties
+  fireEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: ffd5de81c59956c4b8f9fee7b3e7663e, type: 2}
+  emptyTriggerEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 9951d71bd41c33c488d4324d47b97140, type: 2}
+  casingEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 3b3554b94bed8b241a7f8af61a423f87, type: 2}
+  equipEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 876c522e6537312499e117543d32c402, type: 2}
+  reloadEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: cdfe19e4a38962747b4a9b91269d7017, type: 2}

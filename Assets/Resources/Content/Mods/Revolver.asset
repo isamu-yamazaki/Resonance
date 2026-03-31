@@ -18,6 +18,7 @@ MonoBehaviour:
   slot: 0
   icon: {fileID: 0}
   muzzleFlashOverride: {fileID: 11400000, guid: 06d58de9b83ec437196acadaed1957c6, type: 2}
+  audioOverride: {fileID: 11400000, guid: e918acc12eea39540a3388da86ec3635, type: 2}
   modifiers:
   - stat: 0
     type: 0
@@ -36,3 +37,4 @@ MonoBehaviour:
     value: 1.5
   bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 05000000
+  modCost: 1

@@ -8056,6 +8056,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 971534443}
   m_CullTransparentMesh: 1
+--- !u!1 &979698078
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 979698080}
+  - component: {fileID: 979698079}
+  m_Layer: 0
+  m_Name: WwiseGlobal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &979698079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979698078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eca0f06ef035844aab765da7fa50891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkInitializer
+  InitializationSettings: {fileID: 11400000, guid: 5a3706f0c6aa69b40a5f1ee003a8a416, type: 2}
+  basePath: 
+  language: 
+  defaultPoolSize: 0
+  lowerPoolSize: 0
+  streamingPoolSize: 0
+  memoryCutoffThreshold: 0
+  monitorPoolSize: 0
+  monitorQueuePoolSize: 0
+  callbackManagerBufferSize: 0
+  spatialAudioPoolSize: 0
+  maxSoundPropagationDepth: 0
+  engineLogging: 0
+--- !u!4 &979698080
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979698078}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &981451305
 GameObject:
   m_ObjectHideFlags: 0
@@ -9338,6 +9395,7 @@ MonoBehaviour:
   modItemSpawn: {fileID: 1344085713}
   shopItemPrefab: {fileID: 4640606343781412128, guid: ae83a8f6f711c1b44beba717b8be134e, type: 3}
   weaponStatsDisplay: {fileID: 1948992930}
+  balanceText: {fileID: 0}
   shopOpenEvent:
     idInternal: 0
     valueGuidInternal: 
@@ -14447,6 +14505,10 @@ MonoBehaviour:
   modTextPrefab: {fileID: 2616961676535029336, guid: f33132ca3cc9d8342bb31b5e258fc925, type: 3}
   upperAugmentName: {fileID: 1792747508}
   lowerAugmentName: {fileID: 1006783543}
+  primaryWeaponSellButton: {fileID: 0}
+  secondaryWeaponSellButton: {fileID: 0}
+  upperAugmentSellButton: {fileID: 0}
+  lowerAugmentSellButton: {fileID: 0}
 --- !u!1 &1651923851
 GameObject:
   m_ObjectHideFlags: 0
@@ -19729,3 +19791,4 @@ SceneRoots:
   - {fileID: 499827244}
   - {fileID: 1442746257}
   - {fileID: 1110909130}
+  - {fileID: 979698080}

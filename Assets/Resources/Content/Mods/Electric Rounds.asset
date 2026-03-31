@@ -17,9 +17,11 @@ MonoBehaviour:
   description: 
   slot: 3
   icon: {fileID: 0}
+  muzzleFlashOverride: {fileID: 0}
   modifiers:
   - stat: 1
     type: 1
     value: 1.5
   bulletPropertiesOverride: {fileID: 11400000, guid: c7f4d5a89258d57418f7c18084018c43, type: 2}
   compatibleWeaponClasses: 
+  modCost: 1

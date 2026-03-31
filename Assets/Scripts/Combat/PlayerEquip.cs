@@ -39,6 +39,7 @@ namespace Resonance.Combat
         public WeaponProperties EquippedWeapon { get; private set; }
 
         private WeaponProperties[] weapons;
+        private bool _isInitialEquip = true;
 
         private void Awake()
         {
@@ -199,6 +200,17 @@ namespace Resonance.Combat
             }
 
             RefreshWeaponView(weapon);
+
+            if (!_isInitialEquip)
+                PlayEquipOnAllClients();
+
+            _isInitialEquip = false;
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void PlayEquipOnAllClients()
+        {
+            currentWeaponView?.PlayEquip();
         }
 
         private void RefreshWeaponView(WeaponProperties weapon)
@@ -255,10 +267,13 @@ namespace Resonance.Combat
                 return;
             }
 
-            // Apply barrel mod flash override if one exists, otherwise WeaponView uses its default.
             MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
             if (flashSettings != null)
                 currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
+
+            WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
+            if (audioProperties != null)
+                currentWeaponView.ApplyAudioProperties(audioProperties);
         }
 
         public void RemoveWeapon(WeaponSlot slot)

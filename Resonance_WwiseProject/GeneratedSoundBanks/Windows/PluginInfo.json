@@ -4,13 +4,6 @@
   "BasePlatform": "Windows",
   "PluginLibs": [
    {
-    "LibName": "Wwise Sine",
-    "LibId": "6553602",
-    "Type": "Source",
-    "DLL": "AkSineTone",
-    "StaticLib": "AkSineSource"
-   },
-   {
     "LibName": "Wwise RoomVerb",
     "LibId": "7733251",
     "Type": "Effect",
@@ -35,6 +28,6 @@
     "Type": "AudioDevice"
    }
   ],
-  "FileHash": "{4135A521-04BF-5C54-A5C5-34127632E0A0}"
+  "FileHash": "{90FCF289-DD31-E34F-53B0-54C8661B3640}"
  }
 }

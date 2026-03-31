@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Stop and shoot
   slot: 6
   icon: {fileID: 0}
+  muzzleFlashOverride: {fileID: 0}
   modifiers:
   - stat: 1
     type: 1
@@ -32,3 +33,4 @@ MonoBehaviour:
     value: 0.5
   bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 
+  modCost: 1

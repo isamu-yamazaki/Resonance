@@ -37,6 +37,10 @@ namespace Resonance.Combat.Weapons
         [SerializeField] private GameObject weaponPrefab;
         public GameObject WeaponPrefab => weaponPrefab;
 
+        [Header("Audio")]
+        [SerializeField] private WeaponAudioProperties audioProperties;
+        public WeaponAudioProperties AudioProperties => audioProperties;
+
         [Header("Damage Stats")]
         [SerializeField] private float damage;
         public float Damage => damage;
@@ -93,6 +97,10 @@ namespace Resonance.Combat.Weapons
         [Header("Mod List")]
         [SerializeField] private List<WeaponModProperties> modList;
         public List<WeaponModProperties> ModList => modList;
+        
+        [Header("Economy Stats")]
+        [SerializeField] private float weaponCost;
+        public float WeaponCost => weaponCost;
 
         public WeaponProperties Clone()
         {
@@ -106,6 +114,7 @@ namespace Resonance.Combat.Weapons
             clone.firingType = firingType;
             clone.icon = icon;
             clone.weaponPrefab = weaponPrefab;
+            clone.audioProperties = audioProperties;
             clone.damage = damage;
             clone.fireRate = fireRate;
             clone.range = range;
@@ -122,7 +131,8 @@ namespace Resonance.Combat.Weapons
             clone.maxSpread = maxSpread;
             clone.spreadRecoveryRate = spreadRecoveryRate;
             clone.modList = new List<WeaponModProperties>(modList ?? new List<WeaponModProperties>());
-
+            clone.weaponCost = weaponCost;
+            
             return clone;
         }
     }

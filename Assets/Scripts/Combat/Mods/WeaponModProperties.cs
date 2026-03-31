@@ -32,6 +32,10 @@ namespace Resonance.Combat.Mods
         [SerializeField] private MuzzleFlashSettings muzzleFlashOverride;
         public MuzzleFlashSettings MuzzleFlashOverride => muzzleFlashOverride;
 
+        [Header("Audio Override")]
+        [SerializeField] private WeaponAudioProperties audioOverride;
+        public WeaponAudioProperties AudioOverride => audioOverride;
+
         [Header("Stat Modifiers")]
         [SerializeField] private List<StatModifier> modifiers = new();
         public IReadOnlyList<StatModifier> Modifiers => modifiers;
@@ -43,5 +47,9 @@ namespace Resonance.Combat.Mods
         [Header("Weapon Compatibility")]
         [SerializeField] private List<WeaponClass> compatibleWeaponClasses;
         public IReadOnlyList<WeaponClass> CompatibleWeaponClasses => compatibleWeaponClasses;
+
+        [Header("Economy Stats")] 
+        [SerializeField] private float modCost;
+        public float ModCost => modCost;
     }
 }

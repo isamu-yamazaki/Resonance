@@ -17,9 +17,11 @@ MonoBehaviour:
   description: Go fast shoot bad!
   slot: 6
   icon: {fileID: 0}
+  muzzleFlashOverride: {fileID: 0}
   modifiers:
   - stat: 6
     type: 1
     value: 1.5
   bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 
+  modCost: 1
