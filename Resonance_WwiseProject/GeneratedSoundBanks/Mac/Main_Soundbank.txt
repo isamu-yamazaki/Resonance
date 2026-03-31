@@ -1,5 +1,6 @@
 Event	ID	Name			Wwise Object Path	Notes
 	130138219	Stop_Train_Moving			\Default Work Unit\Stop_Train_Moving	
+	242751549	Play_Revolver_Reload			\Default Work Unit\Firearms\Revolver\Play_Revolver_Reload	
 	278146749	Play_GlassShardLand			\Default Work Unit\Play_GlassShardLand	
 	1057815627	Play_BaseHandgun_Fire			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Fire	
 	1060624046	Play_BaseHandgun_Casing			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Casing	
@@ -13,7 +14,10 @@ Event	ID	Name			Wwise Object Path	Notes
 	2323405115	Play_Landing			\Default Work Unit\Play_Landing	
 	2387432645	Play_GlassShatter			\Default Work Unit\Play_GlassShatter	
 	2638125186	Play_BaseHandgun_Empty			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Empty	
+	3017185661	Play_Revolver_Empty			\Default Work Unit\Firearms\Revolver\Play_Revolver_Empty	
 	3062989335	Play_Reactive_Feedback			\Default Work Unit\Play_Reactive_Feedback	
+	3091083318	Play_Revolver_Equip			\Default Work Unit\Firearms\Revolver\Play_Revolver_Equip	
+	3161719826	Play_Revolver_Fire			\Default Work Unit\Firearms\Revolver\Play_Revolver_Fire	
 	3211783545	Stop_Reactive_Feedback			\Default Work Unit\Stop_Reactive_Feedback	
 	3246891746	Play_SD_PulseActivate			\Default Work Unit\SonarDisc\Play_SD_PulseActivate	
 	3267244670	Play_OutdoorAmbience			\Default Work Unit\Play_OutdoorAmbience	
@@ -58,6 +62,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	394509402	sfx_props_glass_shatter_02	.cache\70\{706C9C35-2EEE-27EE-0C2A-C18ACE30D4BE}.wem		\Containers\Default Work Unit\Glass_Shatter\sfx_props_glass_shatter_02		136560
 	394611772	sfx_foley_footstep_concrete_run_02	.cache\59\{59DFC9D1-6CA3-28F0-DFAB-4D5F620517CC}.wem		\Containers\Default Work Unit\Footsteps\Concrete\sfx_foley_footstep_concrete_run_02		51232
 	404163806	amb_outdoor_loop	.cache\AC\{ACC48198-36C3-09FA-78F1-B0E4F36C2100}.wem		\Containers\Default Work Unit\amb_outdoor_loop		2592096
+	479978637	sfx_combat_revolver_reload	.cache\48\{48052FB3-9C61-2CFA-C9FA-2F57F2AC8699}.wem		\Containers\Default Work Unit\Firearms\Revolver\sfx_combat_revolver_reload		484832
 	496429034	sfx_foley_footstep_concrete_run_01	.cache\53\{536EC870-2348-9BED-3E33-55218C0CFEA1}.wem		\Containers\Default Work Unit\Footsteps\Concrete\sfx_foley_footstep_concrete_run_01		44768
 	498119391	sfx_foley_footstep_gravel_run_05	.cache\81\{81BFFE35-2A1E-6D2F-1D5B-FCDF30A30CF3}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_05		68080
 	522480143	sfx_foley_footstep_concrete_land_02	.cache\AC\{AC546118-D92E-A071-DA48-38846D638CEA}.wem		\Containers\Default Work Unit\Landing\Concrete\sfx_foley_footstep_concrete_land_02		87440
@@ -69,9 +74,11 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	598226072	sfx_foley_footstep_metal_land_01	.cache\3F\{3F99F8BC-C824-6A6C-945E-5D537C4D63F3}.wem		\Containers\Default Work Unit\Landing\Metal\sfx_foley_footstep_metal_land_01		110724
 	608212495	sfx_foley_footstep_concrete_run_03	.cache\13\{135DE354-C9CA-4D4B-27F8-E5DA44EACB61}.wem		\Containers\Default Work Unit\Footsteps\Concrete\sfx_foley_footstep_concrete_run_03		50120
 	609943417	sfx_foley_footstep_gravel_land_01	.cache\8B\{8B44CA97-AF29-2FEA-839D-4370602D876E}.wem		\Containers\Default Work Unit\Landing\Gravel\sfx_foley_footstep_gravel_land_01		102100
+	618055297	sfx_combat_revolver_equip	.cache\53\{5302264F-3EE7-4F70-50D1-CC65AD1AA83C}.wem		\Containers\Default Work Unit\Firearms\Revolver\sfx_combat_revolver_equip		97248
 	640947939	sfx_combat_pistol_empty_trigger	.cache\C4\{C411C730-4A7F-ACB1-D555-7E43A271CED9}.wem		\Containers\Default Work Unit\Firearms\BaseHandgun\sfx_combat_pistol_empty_trigger		83288
 	644863526	sfx_props_glass_land_05	.cache\E3\{E36AE422-6376-38B3-79F2-B99A5C5768B6}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_05		39096
 	648897598	sfx_foley_footstep_metal_run_03	.cache\9D\{9D6C8141-24D7-0C3F-BEA4-BD86003D129C}.wem		\Containers\Default Work Unit\Footsteps\Metal\sfx_foley_footstep_metal_run_03		50900
+	692604877	sfx_combat_revolver_fire	.cache\F3\{F361F9D3-DC2E-E174-C226-08CF86ACB70E}.wem		\Containers\Default Work Unit\Firearms\Revolver\sfx_combat_revolver_fire		173664
 	695342955	sfx_props_glass_land_04	.cache\4F\{4F63AB35-73B8-CCC8-086C-FFE66447BCA7}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_04		72096
 	697658533	sfx_foley_footstep_wood_run_05	.cache\D4\{D4648B31-944B-965E-DDE1-9DADF08C731E}.wem		\Containers\Default Work Unit\Footsteps\Wood\sfx_foley_footstep_wood_run_05		37216
 	698658536	sfx_foley_footstep_gravel_run_01	.cache\D7\{D7654DA1-E972-E3C0-DBFB-321BE5879310}.wem		\Containers\Default Work Unit\Footsteps\Gravel\sfx_foley_footstep_gravel_run_01		67680
@@ -95,6 +102,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	941471142	sfx_world_audioreactive_loop	.cache\CA\{CAA224DB-658F-08EA-552A-D9F55F9B8843}.wem		\Containers\Default Work Unit\sfx_world_audioreactive_loop		1027924
 	956380320	sfx_foley_footstep_grass_land_01	.cache\80\{8072AEB0-0AC3-B580-A73F-22AAEF1B109B}.wem		\Containers\Default Work Unit\Landing\Grass\sfx_foley_footstep_grass_land_01		83296
 	986281526	sfx_combat_sonardisc_pulse	.cache\3E\{3EA334D5-963F-A09A-9E5E-F510AE7D7E90}.wem		\Containers\Default Work Unit\SonarDisc\sfx_combat_sonardisc_pulse		148772
+	1044761712	sfx_combat_revolver_empty_trigger	.cache\FD\{FDD54ECC-1E9A-CD52-3FA9-048AEB51D561}.wem		\Containers\Default Work Unit\Firearms\Revolver\sfx_combat_revolver_empty_trigger		64864
 	1054996423	sfx_foley_footstep_wood_land_01	.cache\B6\{B67BF7DB-A0F5-0B2A-1D23-0A037D49C59C}.wem		\Containers\Default Work Unit\Landing\Wood\sfx_foley_footstep_wood_land_01		93280
 	1062683758	sfx_combat_sonardisc_distortion	.cache\13\{13B7E8AB-4751-91C9-EA0D-36333D391352}.wem		\Containers\Default Work Unit\SonarDisc\sfx_combat_sonardisc_distortion		83040
 

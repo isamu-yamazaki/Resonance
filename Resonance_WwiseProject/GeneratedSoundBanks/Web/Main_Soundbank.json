@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{D2DA616A-4926-2902-29B7-38A36B75A76B}",
+    "Hash": "{387DA947-48DA-961B-B3EA-407CE35FE39C}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -152,6 +152,14 @@
       "CachePath": "AC/{ACC48198-36C3-09FA-78F1-B0E4F36C2100}.wem"
      },
      {
+      "Id": "479978637",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_revolver_reload.wav",
+      "CachePath": "48/{48052FB3-9C61-2CFA-C9FA-2F57F2AC8699}.wem"
+     },
+     {
       "Id": "496429034",
       "Language": "SFX",
       "Streaming": "false",
@@ -240,6 +248,14 @@
       "CachePath": "8B/{8B44CA97-AF29-2FEA-839D-4370602D876E}.wem"
      },
      {
+      "Id": "618055297",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_revolver_equip.wav",
+      "CachePath": "53/{5302264F-3EE7-4F70-50D1-CC65AD1AA83C}.wem"
+     },
+     {
       "Id": "640947939",
       "Language": "SFX",
       "Streaming": "false",
@@ -262,6 +278,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_metal_run_03.wav",
       "CachePath": "9D/{9D6C8141-24D7-0C3F-BEA4-BD86003D129C}.wem"
+     },
+     {
+      "Id": "692604877",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_revolver_fire.wav",
+      "CachePath": "F3/{F361F9D3-DC2E-E174-C226-08CF86ACB70E}.wem"
      },
      {
       "Id": "695342955",
@@ -446,6 +470,14 @@
       "Location": "Memory",
       "ShortName": "sfx_combat_sonardisc_pulse.wav",
       "CachePath": "3E/{3EA334D5-963F-A09A-9E5E-F510AE7D7E90}.wem"
+     },
+     {
+      "Id": "1044761712",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_revolver_empty_trigger.wav",
+      "CachePath": "FD/{FDD54ECC-1E9A-CD52-3FA9-048AEB51D561}.wem"
      },
      {
       "Id": "1054996423",
@@ -873,6 +905,66 @@
       ]
      },
      {
+      "Id": "3017185661",
+      "Name": "Play_Revolver_Empty",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Revolver\\Play_Revolver_Empty",
+      "GUID": "{37F8B618-F71E-45F3-BBC5-28F09BACA3A0}",
+      "MaxAttenuation": "10",
+      "DurationType": "OneShot",
+      "DurationMin": "0.33733332",
+      "DurationMax": "0.33733332",
+      "MediaRefs": [
+       {
+        "Id": "1044761712"
+       }
+      ]
+     },
+     {
+      "Id": "3091083318",
+      "Name": "Play_Revolver_Equip",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Revolver\\Play_Revolver_Equip",
+      "GUID": "{DB37FDD7-37CB-40B1-8796-8675D4DC5F7A}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "0.506",
+      "DurationMax": "0.506",
+      "MediaRefs": [
+       {
+        "Id": "618055297"
+       }
+      ]
+     },
+     {
+      "Id": "3161719826",
+      "Name": "Play_Revolver_Fire",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Revolver\\Play_Revolver_Fire",
+      "GUID": "{0CDD1FD2-CE56-417E-AE61-0671C3176504}",
+      "MaxAttenuation": "85",
+      "DurationType": "OneShot",
+      "DurationMin": "0.904",
+      "DurationMax": "0.904",
+      "MediaRefs": [
+       {
+        "Id": "692604877"
+       }
+      ]
+     },
+     {
+      "Id": "242751549",
+      "Name": "Play_Revolver_Reload",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Revolver\\Play_Revolver_Reload",
+      "GUID": "{26C64E56-4751-419A-86A3-18C37374BB38}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "2.5246665",
+      "DurationMax": "2.5246665",
+      "MediaRefs": [
+       {
+        "Id": "479978637"
+       }
+      ]
+     },
+     {
       "Id": "2277071487",
       "Name": "Play_SD_Distortion",
       "ObjectPath": "\\Events\\Default Work Unit\\SonarDisc\\Play_SD_Distortion",
@@ -1056,6 +1148,6 @@
     ]
    }
   ],
-  "FileHash": "{A97AC7B9-8AF4-025F-4210-BCA5CBF85CE7}"
+  "FileHash": "{25584A43-BA27-EABA-CAA9-FDC905A35225}"
  }
 }

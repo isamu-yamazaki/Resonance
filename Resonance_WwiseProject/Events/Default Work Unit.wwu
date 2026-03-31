@@ -237,6 +237,30 @@
 								</Event>
 							</ChildrenList>
 						</Folder>
+						<Folder Name="Revolver" ID="{3142D193-6397-4B7D-8254-F5D86826AE5C}" ShortID="13225071">
+							<ChildrenList>
+								<Event Name="Play_Revolver_Fire" ID="{0CDD1FD2-CE56-417E-AE61-0671C3176504}">
+									<ChildrenList>
+										<Action Name="" ID="{4F334DA6-6B82-40BA-83B8-71093592EFE5}" ShortID="1040742031"/>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Empty" ID="{37F8B618-F71E-45F3-BBC5-28F09BACA3A0}">
+									<ChildrenList>
+										<Action Name="" ID="{59A4726B-7A88-462E-8167-1BA9E0052B80}" ShortID="853991845"/>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Equip" ID="{DB37FDD7-37CB-40B1-8796-8675D4DC5F7A}">
+									<ChildrenList>
+										<Action Name="" ID="{2FD97851-ACC6-4CF9-8CB5-5D05B0F7612B}" ShortID="508587649"/>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Revolver_Reload" ID="{26C64E56-4751-419A-86A3-18C37374BB38}">
+									<ChildrenList>
+										<Action Name="" ID="{0062D025-CE7B-4474-B37B-B073094271D9}" ShortID="794627644"/>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>
