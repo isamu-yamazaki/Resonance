@@ -93,6 +93,10 @@ namespace Resonance.Combat.Weapons
         [Header("Mod List")]
         [SerializeField] private List<WeaponModProperties> modList;
         public List<WeaponModProperties> ModList => modList;
+        
+        [Header("Economy Stats")]
+        [SerializeField] private float weaponCost;
+        public float WeaponCost => weaponCost;
 
         public WeaponProperties Clone()
         {
@@ -122,7 +126,8 @@ namespace Resonance.Combat.Weapons
             clone.maxSpread = maxSpread;
             clone.spreadRecoveryRate = spreadRecoveryRate;
             clone.modList = new List<WeaponModProperties>(modList ?? new List<WeaponModProperties>());
-
+            clone.weaponCost = weaponCost;
+            
             return clone;
         }
     }

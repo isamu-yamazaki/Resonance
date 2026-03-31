@@ -43,5 +43,9 @@ namespace Resonance.Combat.Mods
         [Header("Weapon Compatibility")]
         [SerializeField] private List<WeaponClass> compatibleWeaponClasses;
         public IReadOnlyList<WeaponClass> CompatibleWeaponClasses => compatibleWeaponClasses;
+
+        [Header("Economy Stats")] 
+        [SerializeField] private float modCost;
+        public float ModCost => modCost;
     }
 }

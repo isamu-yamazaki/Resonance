@@ -42,5 +42,9 @@ namespace Resonance.Combat.Augments
         [Header("Augment Ability")]
         [SerializeField] private string abilityKey;
         public string AbilityKey => abilityKey;
+
+        [Header("Economy Stats")] 
+        [SerializeField] private float augmentCost;
+        public float AugmentCost => augmentCost;
     }
 }
