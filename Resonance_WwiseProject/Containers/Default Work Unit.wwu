@@ -6267,7 +6267,186 @@
 				</Folder>
 				<Folder Name="UI" ID="{61B2C834-8A44-4FE4-956F-BAD879FA3271}" ShortID="459014276">
 					<ChildrenList>
-						<Folder Name="Shop" ID="{47174B33-BBD0-4AE7-B667-B2A2F046E1A4}" ShortID="105922728"/>
+						<Folder Name="Shop" ID="{47174B33-BBD0-4AE7-B667-B2A2F046E1A4}" ShortID="105922728">
+							<ChildrenList>
+								<Sound Name="sfx_UI_shop_close" ID="{FBCAEFDB-A7C0-44E0-86FF-3BB673B8EEF6}" ShortID="6965436">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_UI_shop_close" ID="{83CAF790-29EF-48B0-8653-C12C43B8184C}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_UI_shop_close.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="159449927"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_UI_shop_close" ID="{83CAF790-29EF-48B0-8653-C12C43B8184C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_UI_shop_insufficient_funds" ID="{3732E9A3-2A35-49F0-9F28-371F4B18C31D}" ShortID="870506831">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_UI_shop_insufficient_funds" ID="{8F43C0A7-EFD4-4B42-89E1-D802DCE3CE70}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_UI_shop_insufficient_funds.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="309165836"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_UI_shop_insufficient_funds" ID="{8F43C0A7-EFD4-4B42-89E1-D802DCE3CE70}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_UI_shop_item_buy" ID="{60175233-E2FB-4776-96C8-1686FF9B5FE8}" ShortID="365367292">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_UI_shop_item_buy" ID="{CFFEE6C8-76A4-4339-9CC2-5A4AF1F0F062}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_UI_shop_item_buy.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="396251886"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_UI_shop_item_buy" ID="{CFFEE6C8-76A4-4339-9CC2-5A4AF1F0F062}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_UI_shop_item_sell" ID="{E2AEA770-599D-4260-A1ED-005DB66AB745}" ShortID="841834211">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_UI_shop_item_sell" ID="{C5848772-C403-46A2-B67A-AEF522845035}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_UI_shop_item_sell.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="345534459"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_UI_shop_item_sell" ID="{C5848772-C403-46A2-B67A-AEF522845035}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_UI_shop_open" ID="{C2AB21E5-8167-47AB-A052-622AD8E0D8B5}" ShortID="126211514">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_UI_shop_open" ID="{BAA1C967-1875-4D20-A9A6-513793AEF887}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_UI_shop_open.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="829910796"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_UI_shop_open" ID="{BAA1C967-1875-4D20-A9A6-513793AEF887}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_UI_shop_page_switch" ID="{EC42CC3C-5CA8-40E6-AD05-28F770DEA13F}" ShortID="557764670">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_UI_shop_page_switch" ID="{62845C3F-86B6-4921-AF2D-F69071D9C872}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_UI_shop_page_switch.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="802022549"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_UI_shop_page_switch" ID="{62845C3F-86B6-4921-AF2D-F69071D9C872}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</Folder>
+						<Sound Name="sfx_UI_button_click" ID="{3C8735DE-62D9-4857-BC91-21E49D616A72}" ShortID="1029871749">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="sfx_UI_button_click" ID="{9CF64411-A95E-40F0-8C64-44B27F1A8F65}">
+									<Language>SFX</Language>
+									<AudioFile>sfx_UI_button_click.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="1029175838"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="sfx_UI_button_click" ID="{9CF64411-A95E-40F0-8C64-44B27F1A8F65}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="sfx_UI_button_hover" ID="{C6254FD4-3372-4A34-BB0D-0656DDB003D2}" ShortID="618498468">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="sfx_UI_button_hover" ID="{FA076458-4B3B-403D-AC99-75C8EF5EA2B9}">
+									<Language>SFX</Language>
+									<AudioFile>sfx_UI_button_hover.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="831172957"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="sfx_UI_button_hover" ID="{FA076458-4B3B-403D-AC99-75C8EF5EA2B9}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>
