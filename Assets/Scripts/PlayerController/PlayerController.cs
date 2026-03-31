@@ -17,15 +17,15 @@ namespace Resonance.PlayerController
         [Header("Components")]
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private CinemachineCamera _virtualCamera;
-        
+
         private PlayerStats _playerStats;
-        
+
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
-        
+
         public static PlayerController LocalPlayer { get; private set; }
 
-        [Header("Base Movement")] 
+        [Header("Base Movement")]
         public float baseCrouchAcceleration = 25f;
         public float baseCrouchSpeed = 2f;
         public float baseRunAcceleration = 35f;
@@ -42,16 +42,16 @@ namespace Resonance.PlayerController
         [Header("Slide Settings")]
         public float baseSlideSpeed = 8f;
         public float baseMinSlideSpeed = 2f;
-        
+
         public float slideDuration = 1f;
         public float slideDeceleration = 8f;
         public float slopeAngleThreshold = 15f;
         public float uphillSlideDecelerationMultiplier = 2f;
         public float downhillSlideSpeedBoost = 1.5f;
 
-        [Header("Animation")] 
+        [Header("Animation")]
         public float playerModelRotationSpeed = 10f;
-        public float rotateToTargetTime = 0.67f; 
+        public float rotateToTargetTime = 0.67f;
 
         [Header("Camera Settings")]
         public float lookSensitivityH = 0.1f;
@@ -61,7 +61,7 @@ namespace Resonance.PlayerController
         public float sprintFOV = 90f;
         public float overdriveFOV = 110f;
         public float fovTransitionSpeed = 10f;
-        
+
         [Header("Weapon Class Camera Configs")]
         [SerializeField] private WeaponClassCameraConfig defaultConfig;
         [SerializeField] private WeaponClassCameraConfig pistolConfig;
@@ -73,16 +73,16 @@ namespace Resonance.PlayerController
 
         private float currentAimOffset = 0f;
 
-        [Header("Environment Details")] 
+        [Header("Environment Details")]
         [SerializeField] private LayerMask _groundLayers;
-        
+
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
         private OverdriveAbility _overdriveAbility;
         private TrainPassengerPhysics _trainPassengerPhysics;
-        
+
         public bool IsPlayerDead { get; set; } = false;
-        
+
         private float crouchAcceleration;
         private float crouchSpeed;
         private float runAcceleration;
@@ -103,7 +103,7 @@ namespace Resonance.PlayerController
         private float _verticalVelocity = 0f;
         private float _antiBump;
         private float _stepOffset;
-        
+
         private bool _wasCrouchPressedLastFrame = false;
         private float _slideTimer = 0f;
         private Vector3 _slideDirection = Vector3.zero;
@@ -116,7 +116,7 @@ namespace Resonance.PlayerController
         protected override void OnSpawned()
         {
             base.OnSpawned();
-            
+
             if (isOwner)
             {
                 LocalPlayer = this;
@@ -126,9 +126,11 @@ namespace Resonance.PlayerController
             _virtualCamera.gameObject.SetActive(isOwner);
 
             // Only the local player should have an audio listener
+#if !UNITY_SERVER
             AkAudioListener akListener = _virtualCamera.GetComponent<AkAudioListener>();
             if (akListener != null)
                 akListener.enabled = isOwner;
+#endif
         }
 
         private void Awake()
@@ -163,7 +165,7 @@ namespace Resonance.PlayerController
             _wasCrouchPressedLastFrame = false;
             _rotatingToTargetTimer = 0f;
             IsRotatingToTarget = false;
-            
+
             if (_characterController != null)
             {
                 _characterController.stepOffset = _stepOffset;
@@ -181,60 +183,60 @@ namespace Resonance.PlayerController
 
             if (_playerState.IsDead())
                 return;
-            
+
             if (_playerState.IsMatchFrozen())
                 return;
-            
+
             if (_playerState.IsInShop())
                 return;
-            
+
             if (_playerState.IsZiplining() || _playerState.IsGrappling())
                 return;
-            
+
             if (!_characterController.enabled)
                 return;
-            
+
             UpdateStats();
             UpdateMovementState();
             HandleVerticalMovement();
             HandleLateralMovement();
         }
-        
+
         private void UpdateStats()
         {
             float speedMult = _playerStats.PlayerSpeed;
-            
+
             crouchSpeed = baseCrouchSpeed * speedMult;
             runSpeed = baseRunSpeed * speedMult;
             sprintSpeed = baseSprintSpeed * speedMult;
             slideSpeed = baseSlideSpeed * speedMult;
             minSlideSpeed = baseMinSlideSpeed * speedMult;
-            
+
             crouchAcceleration = baseCrouchAcceleration * speedMult;
             runAcceleration = baseRunAcceleration * speedMult;
             sprintAcceleration = baseSprintAcceleration * speedMult;
             inAirAcceleration = baseInAirAcceleration * speedMult;
-            
+
             drag = baseDrag * speedMult;
-            
+
             _antiBump = sprintSpeed;
         }
-        
+
         private void UpdateMovementState()
         {
             _lastMovementState = _playerState.CurrentPlayerMovementState;
-            
+
             bool canRun = CanRun();
             bool isMovementInput = _playerLocomotionInput.MovementInput != Vector2.zero;
             bool isMovingLaterally = IsMovingLaterally();
             bool isGrounded = IsGrounded();
             bool isCrouchToggled = _playerLocomotionInput.CrouchToggledOn;
             bool isSprinting = _playerLocomotionInput.SprintToggledOn && isMovingLaterally && !isCrouchToggled && canRun;
-            
+
             bool crouchJustPressed = isCrouchToggled && !_wasCrouchPressedLastFrame;
             bool isCurrentlySprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
             bool isCurrentlySliding = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sliding;
-            
+
             if (crouchJustPressed && isCurrentlySprinting && isGrounded)
             {
                 _slideTimer = slideDuration;
@@ -246,16 +248,16 @@ namespace Resonance.PlayerController
             }
 
             _wasCrouchPressedLastFrame = isCrouchToggled;
-            
+
             if (isCurrentlySliding)
             {
                 bool shouldEndSlide = !isCrouchToggled || !isGrounded || _playerLocomotionInput.JumpPressed;
-        
+
                 if (shouldEndSlide)
                 {
                     _slideTimer = 0f;
                     _playerLocomotionInput.DisableCrouch();
-            
+
                     if (_playerLocomotionInput.JumpPressed && isGrounded)
                     {
                         _verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
@@ -268,13 +270,13 @@ namespace Resonance.PlayerController
                     return;
                 }
             }
-            
-            PlayerMovementState lateralState = isCrouchToggled ? PlayerMovementState.Crouching : 
-                                               isSprinting ? PlayerMovementState.Sprinting :  
+
+            PlayerMovementState lateralState = isCrouchToggled ? PlayerMovementState.Crouching :
+                                               isSprinting ? PlayerMovementState.Sprinting :
                                                isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
 
             _playerState.SetPlayerMovementState(lateralState);
-            
+
             if ((!isGrounded || _jumpedLastFrame) && _characterController.velocity.y > 0f)
             {
                 _playerState.SetPlayerMovementState(PlayerMovementState.Jumping);
@@ -296,7 +298,7 @@ namespace Resonance.PlayerController
         private void HandleVerticalMovement()
         {
             bool isGrounded = _playerState.InGroundedState();
-            
+
             _verticalVelocity -= gravity * Time.deltaTime;
 
             if (isGrounded && _verticalVelocity < 0f)
@@ -331,27 +333,27 @@ namespace Resonance.PlayerController
                 HandleSlideMovement();
                 return;
             }
-            
+
             bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
             bool isGrounded = _playerState.InGroundedState();
             bool isCrouching = _playerState.CurrentPlayerMovementState == PlayerMovementState.Crouching;
-            
+
             float lateralAcceleration = !isGrounded ? inAirAcceleration :
                                         isCrouching ? crouchAcceleration :
                                         isSprinting ? sprintAcceleration : runAcceleration;
-            float clampLateralMagnitude = !isGrounded ? sprintSpeed : 
+            float clampLateralMagnitude = !isGrounded ? sprintSpeed :
                                           isCrouching ? crouchSpeed :
                                           isSprinting ? sprintSpeed : runSpeed;
 
             Vector3 cameraForwardXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
             Vector3 cameraRightXZ = new Vector3(_virtualCamera.transform.right.x, 0f, _virtualCamera.transform.right.z).normalized;
             Vector3 movementDirection = cameraRightXZ * _playerLocomotionInput.MovementInput.x + cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
-            
+
             Vector3 movementDelta = movementDirection * lateralAcceleration * Time.deltaTime;
             Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetFrameVelocityOffset() : Vector3.zero;
             Vector3 localVelocity = _characterController.velocity - trainOffset;
             Vector3 newVelocity = localVelocity + movementDelta;
-            
+
             Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
             newVelocity = (newVelocity.magnitude > drag * Time.deltaTime) ? newVelocity - currentDrag : Vector3.zero;
             newVelocity = Vector3.ClampMagnitude(new Vector3(newVelocity.x, 0f, newVelocity.z), clampLateralMagnitude);
@@ -370,43 +372,43 @@ namespace Resonance.PlayerController
         {
             Vector3 groundNormal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
             float slopeAngle = Vector3.Angle(groundNormal, Vector3.up);
-    
+
             Vector3 slopeDownDirection = Vector3.ProjectOnPlane(Vector3.down, groundNormal).normalized;
-    
+
             float slopeDot = Vector3.Dot(_slideDirection, slopeDownDirection);
-    
+
             bool isDownhill = slopeAngle > slopeAngleThreshold && slopeDot > 0.1f;
             bool isUphill = slopeAngle > slopeAngleThreshold && slopeDot < -0.1f;
-    
+
             if (isDownhill)
                 _slideTimer -= Time.deltaTime * 0.5f;
             else if (isUphill)
                 _slideTimer -= Time.deltaTime * uphillSlideDecelerationMultiplier;
             else
                 _slideTimer -= Time.deltaTime;
-    
+
             float slideProgress = 1f - (_slideTimer / slideDuration);
             float currentSlideSpeed = Mathf.Lerp(slideSpeed, minSlideSpeed, slideProgress);
-    
+
             if (isDownhill)
                 currentSlideSpeed *= downhillSlideSpeedBoost;
             else if (isUphill)
                 currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * uphillSlideDecelerationMultiplier * Time.deltaTime), minSlideSpeed);
             else
                 currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * Time.deltaTime), minSlideSpeed);
-            
+
             if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
                 currentSlideSpeed *= _overdriveAbility.SpeedMultiplier;
-    
+
             if (_slideTimer <= 0f)
             {
                 _playerLocomotionInput.DisableCrouch();
                 return;
             }
-    
+
             Vector3 slideVelocity = _slideDirection * currentSlideSpeed;
             slideVelocity.y = _verticalVelocity;
-    
+
             Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetFrameVelocityOffset() : Vector3.zero;
             _characterController.Move((slideVelocity + trainOffset) * Time.deltaTime);
         }
@@ -419,20 +421,20 @@ namespace Resonance.PlayerController
 
             if (!validAngle && _verticalVelocity < 0f)
                 velocity = Vector3.ProjectOnPlane(velocity, normal);
-            
+
             return velocity;
         }
         #endregion
-        
+
         #region Late Update Logic
         private void LateUpdate()
         {
             if (IsPlayerDead)
                 return;
-                
+
             if (_playerState.IsInShop())
                 return;
-            
+
             UpdateCameraRotation();
             UpdateCameraFOV();
         }
@@ -440,9 +442,9 @@ namespace Resonance.PlayerController
         private void UpdateCameraFOV()
         {
             if (_virtualCamera == null) return;
-            
+
             float targetFOV = baseFOV;
-            
+
             bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
             bool isOverdriveActive = _overdriveAbility != null && _overdriveAbility.IsInOverdrive;
 
@@ -450,7 +452,7 @@ namespace Resonance.PlayerController
                 targetFOV = overdriveFOV;
             else if (isSprinting)
                 targetFOV = sprintFOV;
-            
+
             _virtualCamera.Lens.FieldOfView = Mathf.Lerp(_virtualCamera.Lens.FieldOfView, targetFOV, fovTransitionSpeed * Time.deltaTime);
         }
 
@@ -480,7 +482,7 @@ namespace Resonance.PlayerController
                 _isRotatingClockwise = RotationMismatch > rotationTolerance;
             }
             _rotatingToTargetTimer -= Time.deltaTime;
-            
+
             if (_isRotatingClockwise && RotationMismatch > 0f ||
                 !_isRotatingClockwise && RotationMismatch < 0f)
             {
@@ -522,17 +524,17 @@ namespace Resonance.PlayerController
             bool validAngle = angle <= _characterController.slopeLimit;
             return _characterController.isGrounded && validAngle;
         }
-        
+
         private bool CanRun()
         {
             return _playerLocomotionInput.MovementInput.y >= MathF.Abs(_playerLocomotionInput.MovementInput.x);
         }
-        
+
         private void OnWeaponClassChanged(WeaponClass weaponClass)
-        { 
+        {
             ApplyCameraConfig(defaultConfig);
         }
-        
+
         private WeaponClassCameraConfig GetConfig(WeaponClass weaponClass)
         {
             return weaponClass switch
@@ -546,7 +548,7 @@ namespace Resonance.PlayerController
                 _ => rifleConfig
             };
         }
-        
+
         private void ApplyCameraConfig(WeaponClassCameraConfig config)
         {
             if (config == null) return;
@@ -554,7 +556,7 @@ namespace Resonance.PlayerController
             currentAimOffset = config.aimOffset;
         }
         #endregion
-        
+
         #region Impulse
 
         private Vector3 _grappleImpulse = Vector3.zero;
