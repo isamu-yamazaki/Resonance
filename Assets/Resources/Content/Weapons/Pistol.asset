@@ -38,3 +38,4 @@ MonoBehaviour:
   reloadTime: 2.3
   bulletProperties: {fileID: 11400000, guid: efa6dd70ff966ac409b9d07883c05ff2, type: 2}
   modList: []
+  weaponCost: 1

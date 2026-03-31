@@ -4,8 +4,10 @@ using Resonance.Combat.Augments;
 using Resonance.Combat.Mods;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
+using Resonance.Economy;
 using Resonance.Inventory;
 using Resonance.PlayerController;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -59,8 +61,21 @@ namespace Resonance.Shop
 
         [Header("Shop Item Prefab")]
         [SerializeField] private GameObject shopItemPrefab;
-
         [SerializeField] private WeaponStatsDisplay weaponStatsDisplay;
+        
+        [Header("Economy")]
+        [SerializeField] private TextMeshProUGUI balanceText;
+        [SerializeField] private Button sellPrimaryWeaponButton;
+        [SerializeField] private Button sellSecondaryWeaponButton;
+        [SerializeField] private Button sellUpperAugmentButton;
+        [SerializeField] private Button sellLowerAugmentButton;
+        [SerializeField] private Button sellBarrelModButton;
+        [SerializeField] private Button sellGripModButton;
+        [SerializeField] private Button sellStockModButton;
+        [SerializeField] private Button sellMagazineModButton;
+        [SerializeField] private Button sellOpticModButton;
+        [SerializeField] private Button sellSpecialModButton;
+        private const float SellRefundRate = 0.75f;
 
 #if !UNITY_SERVER
         [Header("Wwise Events")]
@@ -277,6 +292,18 @@ namespace Resonance.Shop
 
             // Populate
             PopulateWeapons();
+            
+            // Sell button listeners
+            sellPrimaryWeaponButton?.onClick.AddListener(() => SellWeapon(WeaponSlot.Primary));
+            sellSecondaryWeaponButton?.onClick.AddListener(() => SellWeapon(WeaponSlot.Secondary));
+            sellUpperAugmentButton?.onClick.AddListener(() => SellAugment(AugmentSlot.Upper));
+            sellLowerAugmentButton?.onClick.AddListener(() => SellAugment(AugmentSlot.Lower));
+            sellBarrelModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Barrel));
+            sellGripModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Grip));
+            sellStockModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Stock));
+            sellMagazineModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Magazine));
+            sellOpticModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Optic));
+            sellSpecialModButton?.onClick.AddListener(() => SellMod(selectedModWeaponSlot, ModSlot.Special));
 
             isInitialized = true;
         }
@@ -569,8 +596,10 @@ namespace Resonance.Shop
             PlayerEquip equip = GetPlayerEquip();
             PlayerInventory inventory = GetPlayerInventory();
 
-            if (equip == null || inventory == null)
+            if (equip == null || inventory == null) return;
+            if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(newWeapon.WeaponCost))
             {
+                Debug.Log("Not enough credits.");
                 return;
             }
 
@@ -578,6 +607,15 @@ namespace Resonance.Shop
 
             if (equip.EquippedWeapon != null && equip.EquippedWeapon.Slot == weapon.Slot)
             {
+                // Refund the weapon being replaced
+                WeaponProperties oldWeapon = equip.EquippedWeapon;
+                foreach (WeaponModProperties mod in oldWeapon.ModList)
+                {
+                    if (mod != null)
+                        PlayerMoney.Instance?.AddFunds(mod.ModCost * SellRefundRate);
+                }
+                PlayerMoney.Instance?.AddFunds(oldWeapon.WeaponCost * SellRefundRate);
+
                 equip.RemoveWeapon(weapon.Slot);
                 inventory.AddWeapon(weapon);
                 equip.EquipWeapon(weapon);
@@ -587,22 +625,33 @@ namespace Resonance.Shop
                 inventory.AddWeapon(weapon);
             }
 
-#if !UNITY_SERVER
+        #if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
-#endif
-
+        #endif
             inventoryDisplay.Refresh();
+            RefreshBalanceText();
         }
 
         public void Buy(AugmentProperties augment)
         {
             PlayerEquip equip = GetPlayerEquip();
+            PlayerInventory inventory = GetPlayerInventory();
 
-            if (equip == null)
+            if (equip == null || inventory == null) return;
+            if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(augment.AugmentCost))
             {
+                Debug.Log("Not enough credits.");
                 return;
             }
+
+            // Refund existing augment in same slot
+            AugmentProperties existing = augment.Slot == AugmentSlot.Upper
+                ? inventory.augmentInventory[0]
+                : inventory.augmentInventory[1];
+
+            if (existing != null)
+                PlayerMoney.Instance?.AddFunds(existing.AugmentCost * SellRefundRate);
 
             equip.EquipAugment(augment);
 
@@ -610,45 +659,137 @@ namespace Resonance.Shop
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
 #endif
-
             inventoryDisplay.Refresh();
+            RefreshBalanceText();
         }
 
         public void Buy(WeaponModProperties mod)
         {
             PlayerInventory inventory = GetPlayerInventory();
-
-            if (inventory == null)
-                return;
+            if (inventory == null) return;
 
             WeaponProperties targetWeapon = selectedModWeaponSlot == WeaponSlot.Primary
                 ? inventory.weaponInventory[0]
                 : inventory.weaponInventory[1];
 
-            if (targetWeapon == null)
-                return;
+            if (targetWeapon == null) return;
 
-            // Remove existing mod in the same slot if present
+            if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(mod.ModCost))
+            {
+                Debug.Log("Not enough credits.");
+                return;
+            }
+
             WeaponModProperties existing = targetWeapon.ModList.FirstOrDefault(m => m != null && m.Slot == mod.Slot);
             if (existing != null)
+            {
+                PlayerMoney.Instance?.AddFunds(existing.ModCost * SellRefundRate); // add this
                 targetWeapon.ModList.Remove(existing);
+            }
 
             targetWeapon.ModList.Add(mod);
-
             GetPlayerShooter()?.RefreshWeaponStats();
 
-#if !UNITY_SERVER
+        #if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
-#endif
-
+        #endif
             inventoryDisplay.Refresh();
+            RefreshBalanceText();
         }
 
         public void OnItemHovered(ShopItem item)
         {
         }
 
+        #endregion
+
+        #region Selling
+        public void SellWeapon(WeaponSlot slot)
+        {
+            PlayerInventory inventory = GetPlayerInventory();
+            PlayerEquip equip = GetPlayerEquip();
+
+            if (inventory == null) return;
+
+            WeaponProperties weapon = slot == WeaponSlot.Primary
+                ? inventory.weaponInventory[0]
+                : inventory.weaponInventory[1];
+
+            if (weapon == null) return;
+
+            // Refund mods first
+            foreach (WeaponModProperties mod in weapon.ModList)
+            {
+                if (mod != null)
+                    PlayerMoney.Instance?.AddFunds(mod.ModCost * SellRefundRate);
+            }
+
+            PlayerMoney.Instance?.AddFunds(weapon.WeaponCost * SellRefundRate);
+            equip?.RemoveWeapon(slot); // RemoveWeapon in PlayerEquip already calls inventory.RemoveWeapon
+            inventoryDisplay.Refresh();
+            RefreshBalanceText();
+        }
+
+        public void SellMod(WeaponSlot weaponSlot, ModSlot modSlot)
+        {
+            PlayerInventory inventory = GetPlayerInventory();
+            if (inventory == null) return;
+
+            WeaponProperties weapon = weaponSlot == WeaponSlot.Primary
+                ? inventory.weaponInventory[0]
+                : inventory.weaponInventory[1];
+
+            if (weapon == null) return;
+
+            WeaponModProperties mod = weapon.ModList.FirstOrDefault(m => m != null && m.Slot == modSlot);
+            if (mod == null) return;
+
+            weapon.ModList.Remove(mod);
+            GetPlayerShooter()?.RefreshWeaponStats();
+            PlayerMoney.Instance?.AddFunds(mod.ModCost * SellRefundRate);
+            inventoryDisplay.Refresh();
+            PopulateMods();
+            RefreshBalanceText();
+        }
+
+        public void SellAugment(AugmentSlot slot)
+        {
+            PlayerEquip equip = GetPlayerEquip();
+            PlayerInventory inventory = GetPlayerInventory();
+            if (equip == null || inventory == null) return;
+
+            AugmentProperties augment = slot == AugmentSlot.Upper
+                ? inventory.augmentInventory[0]
+                : inventory.augmentInventory[1];
+
+            if (augment == null) return;
+
+            equip.RemoveAugment(augment); // already handles inventory + stats cleanup
+            PlayerMoney.Instance?.AddFunds(augment.AugmentCost * SellRefundRate);
+            inventoryDisplay.Refresh();
+            RefreshBalanceText();
+        }
+        #endregion
+
+        #region Balance
+        private void RefreshBalanceText()
+        {
+            if (balanceText != null && PlayerMoney.Instance != null)
+                balanceText.text = $"₢ {PlayerMoney.Instance.Balance:0.00}";
+            
+            RefreshAllItems();
+        }
+        
+        private void RefreshAllItems()
+        {
+            foreach (Transform child in weaponItemSpawn.transform)
+                child.GetComponent<ShopItem>()?.RefreshAffordability();
+            foreach (Transform child in augmentItemSpawn.transform)
+                child.GetComponent<ShopItem>()?.RefreshAffordability();
+            foreach (Transform child in modItemSpawn.transform)
+                child.GetComponent<ShopItem>()?.RefreshAffordability();
+        }
         #endregion
 
         #region Toggle
@@ -665,7 +806,7 @@ namespace Resonance.Shop
                 shopMenu.SetActive(false);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-
+                
 #if !UNITY_SERVER
                 if (shopCloseEvent != null && shopCloseEvent.IsValid())
                     shopCloseEvent.Post(gameObject);
@@ -686,7 +827,12 @@ namespace Resonance.Shop
 
                 playerState?.SetPlayerMovementState(PlayerMovementState.InShop);
                 RefreshModWeaponButtons();
+                RefreshBalanceText();
 
+                if (activeMainTab == weaponTabButton) PopulateWeapons();
+                else if (activeMainTab == augmentTabButton) PopulateAugments();
+                else if (activeMainTab == modTabButton) PopulateMods();
+                
                 if (inventoryDisplay != null)
                 {
                     inventoryDisplay.Refresh();

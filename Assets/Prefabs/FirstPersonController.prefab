@@ -347,6 +347,7 @@ GameObject:
   - component: {fileID: 2929268584548212605}
   - component: {fileID: -9158808936870234664}
   - component: {fileID: 7131106383641537564}
+  - component: {fileID: 5684997356607948869}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -1414,3 +1415,25 @@ MonoBehaviour:
   upwardLobBias: 0.4
   cooldown: 20
   bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
+--- !u!114 &5684997356607948869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9f1a2183787b15469d6633826859cd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Economy.PlayerMoney
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  startingBalance: 1

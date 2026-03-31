@@ -22,3 +22,4 @@ MonoBehaviour:
   damageReduction: 0
   modProperties: {fileID: 0}
   abilityKey: augment_upper_sonarDisc
+  augmentCost: 1

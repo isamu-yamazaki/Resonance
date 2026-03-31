@@ -36,3 +36,4 @@ MonoBehaviour:
     value: 1.5
   bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 05000000
+  modCost: 1
