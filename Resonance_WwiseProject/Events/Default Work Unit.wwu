@@ -287,6 +287,50 @@
 						</Folder>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="UI" ID="{F2EDE44A-7242-4408-BC7D-D13C850A284A}" ShortID="893595716">
+					<ChildrenList>
+						<Folder Name="Shop" ID="{CA76FA9A-EB35-42FD-A748-F53D1B160450}" ShortID="370860260">
+							<ChildrenList>
+								<Event Name="Play_UI_Shop_Open" ID="{54C48AD4-81F3-47F3-B99D-CCBE9E95B9F6}">
+									<ChildrenList>
+										<Action Name="" ID="{32149782-A25B-4A97-A499-38E9AED5BD45}" ShortID="1063631481"/>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UI_Shop_Close" ID="{C7428F7C-B78A-4184-839D-F24204314D95}">
+									<ChildrenList>
+										<Action Name="" ID="{5C38C2AB-8992-4B40-A96B-29453E421BF8}" ShortID="492364459"/>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UI_Shop_Page_Switch" ID="{B3E94D33-5CBC-4576-8C9A-55F0BF119B70}"/>
+								<Event Name="Play_UI_Shop_Item_Buy" ID="{4DB16980-3E51-420E-9638-94E8C95325A1}">
+									<ChildrenList>
+										<Action Name="" ID="{8FE27742-807E-404F-ACDD-EB569BD718BE}" ShortID="428734700"/>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UI_Shop_Item_Sell" ID="{E88DF033-C906-4838-AF88-0DDCC58ED39C}">
+									<ChildrenList>
+										<Action Name="" ID="{46F4D593-3771-4C80-A71A-30EEB105B32F}" ShortID="626093531"/>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_UI_Shop_Insufficient_Funds" ID="{A514D865-DF06-447D-9AF8-6B05E1905C08}">
+									<ChildrenList>
+										<Action Name="" ID="{65C1AFF1-BDBA-4253-9D94-172CD1A93B81}" ShortID="394032801"/>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
+						<Event Name="Play_UI_Button_Hover" ID="{85C07B17-A696-4AB1-8279-F3DB39B26133}">
+							<ChildrenList>
+								<Action Name="" ID="{30951709-D1F1-41F7-9233-F6C55FB7D062}" ShortID="953435342"/>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_UI_Button_Click" ID="{60237919-104C-4674-8E4B-0C9AC9370B8F}">
+							<ChildrenList>
+								<Action Name="" ID="{442FD567-BB20-49A4-A33A-62EF5D766D67}" ShortID="975359630"/>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

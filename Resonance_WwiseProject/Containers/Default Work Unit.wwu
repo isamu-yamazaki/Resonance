@@ -6265,6 +6265,11 @@
 						</Sound>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="UI" ID="{61B2C834-8A44-4FE4-956F-BAD879FA3271}" ShortID="459014276">
+					<ChildrenList>
+						<Folder Name="Shop" ID="{47174B33-BBD0-4AE7-B667-B2A2F046E1A4}" ShortID="105922728"/>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Containers>
