@@ -20,10 +20,7 @@ using Resonance.Assemblies.LobbySystem;
 
 namespace Resonance.LobbySystem.Providers
 {
-    public class SteamLobbyProvider : MonoBehaviour
-#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
-        , ILobbyProvider
-#endif
+    public class SteamLobbyProvider : MonoBehaviour, ILobbyProvider
     {
         public enum LobbyType
         {
@@ -32,7 +29,6 @@ namespace Resonance.LobbySystem.Providers
             Public,
         }
 
-#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
         public LobbyType lobbyType = LobbyType.Public;
         public int maxLobbiesToFind = 10;
 
@@ -42,9 +38,8 @@ namespace Resonance.LobbySystem.Providers
         public event UnityAction<List<LobbyUser>> OnLobbyPlayerListUpdated;
         public event UnityAction<List<FriendUser>> OnFriendListPulled;
         public event UnityAction<string> OnError;
-        
-        [SerializeField] private bool handleSteamInit = false;
 
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
         private Steamworks.CallResult<Steamworks.LobbyCreated_t> _LobbyCreated;
         private Steamworks.CallResult<Steamworks.LobbyEnter_t> _LobbyEnter;
         private Steamworks.CallResult<Steamworks.LobbyMatchList_t> _LobbyMatchList;
@@ -57,11 +52,13 @@ namespace Resonance.LobbySystem.Providers
         private Steamworks.Callback<Steamworks.LobbyChatUpdate_t> _lobbyChatUpdateCallback;
         private Steamworks.Callback<Steamworks.GameLobbyJoinRequested_t> _gameLobbyJoinRequestedCallback;
 #pragma warning restore IDE0052 // Remove unread private members
+#endif
 
         public bool IsSteamClientAvailable
         {
             get
             {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
                 try
                 {
                     Steamworks.InteropHelp.TestIfAvailableClient();
@@ -71,11 +68,15 @@ namespace Resonance.LobbySystem.Providers
                 {
                     return false;
                 }
+#else
+                return false;
+#endif
             }
         }
 
         public async Task<Lobby> CreateLobbyAsync(int maxPlayers, Dictionary<string, string> lobbyProperties = null)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (!IsSteamClientAvailable)
                 return default;
 
@@ -88,7 +89,7 @@ namespace Resonance.LobbySystem.Providers
             var handle = Steamworks.SteamMatchmaking.CreateLobby((Steamworks.ELobbyType)lobbyType, maxPlayers);
             _LobbyCreated.Set(handle, (result, ioError) =>
             {
-                if(!ioError && result.m_eResult == Steamworks.EResult.k_EResultOK)
+                if (!ioError && result.m_eResult == Steamworks.EResult.k_EResultOK)
                 {
                     lobbyId = new Steamworks.CSteamID(result.m_ulSteamIDLobby);
                     tcs.TrySetResult(true);
@@ -119,10 +120,15 @@ namespace Resonance.LobbySystem.Providers
                 GetLobbyUsers(lobbyId),
                 lobbyProperties
             );
+#else
+            await Task.CompletedTask;
+            return default;
+#endif
         }
 
         public Task<List<FriendUser>> GetFriendsAsync(LobbyManager.FriendFilter filter)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (!IsSteamClientAvailable)
                 return default;
 
@@ -146,59 +152,72 @@ namespace Resonance.LobbySystem.Providers
             }
 
             return Task.FromResult(friends);
+#else
+            return Task.FromResult(new List<FriendUser>());
+#endif
         }
 
         public Task<string> GetLobbyDataAsync(string key)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (!IsSteamClientAvailable)
                 return Task.FromResult(string.Empty);
 
             return Task.FromResult(Steamworks.SteamMatchmaking.GetLobbyData(_currentLobby, key));
+#else
+            return Task.FromResult(string.Empty);
+#endif
         }
 
         public Task<List<LobbyUser>> GetLobbyMembersAsync()
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (!IsSteamClientAvailable)
                 return Task.FromResult(new List<LobbyUser>());
 
             return Task.FromResult(GetLobbyUsers(Steamworks.SteamUser.GetSteamID()));
+#else
+            return Task.FromResult(new List<LobbyUser>());
+#endif
         }
 
         public Task<string> GetLocalUserIdAsync()
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (!IsSteamClientAvailable)
                 return Task.FromResult(string.Empty);
 
             return Task.FromResult(Steamworks.SteamUser.GetSteamID().m_SteamID.ToString());
+#else
+            return Task.FromResult(string.Empty);
+#endif
         }
 
         public Task InitializeAsync()
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             _avatarImageLoadedCallback = Steamworks.Callback<Steamworks.AvatarImageLoaded_t>.Create(OnAvatarImageLoaded);
             _lobbyDataUpdateCallback = Steamworks.Callback<Steamworks.LobbyDataUpdate_t>.Create(OnLobbyDataUpdate);
             _lobbyChatUpdateCallback = Steamworks.Callback<Steamworks.LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
             _gameLobbyJoinRequestedCallback = Steamworks.Callback<Steamworks.GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
 
-            if (handleSteamInit)
-                HandleSteamInit();
-            
+            HandleSteamInit();
+#endif
             return Task.CompletedTask;
         }
 
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
         private void HandleSteamInit()
         {
-            if (handleSteamInit)
+            if (!SteamAPI.Init())
             {
-                if (!SteamAPI.Init())
-                {
-                    PurrLogger.LogError("SteamAPI initialization failed.");
-                    OnError?.Invoke("SteamAPI initialization failed.");
-                    return;
-                }
-                RunSteamCallbacks();
+                PurrLogger.LogError("SteamAPI initialization failed.");
+                OnError?.Invoke("SteamAPI initialization failed.");
+                return;
             }
+            RunSteamCallbacks();
         }
-        
+
         private async void RunSteamCallbacks()
         {
             var runCallbacks = true;
@@ -208,20 +227,23 @@ namespace Resonance.LobbySystem.Providers
                 await Task.Delay(16);
             }
         }
+#endif
 
         public Task InviteFriendAsync(FriendUser user)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (IsSteamClientAvailable && !string.IsNullOrEmpty(user.Id) && ulong.TryParse(user.Id, out var id))
             {
                 var steamID = new Steamworks.CSteamID(id);
                 Steamworks.SteamMatchmaking.InviteUserToLobby(_currentLobby, steamID);
             }
-
+#endif
             return Task.FromResult(Task.CompletedTask);
         }
 
         public async Task<Lobby> JoinLobbyAsync(string lobbyId)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (!IsSteamClientAvailable || string.IsNullOrEmpty(lobbyId))
                 return default;
 
@@ -260,32 +282,40 @@ namespace Resonance.LobbySystem.Providers
 
             OnLobbyUpdated?.Invoke(lobby);
             return lobby;
+#else
+            await Task.CompletedTask;
+            return default;
+#endif
         }
 
         public Task LeaveLobbyAsync()
         {
-            if (!IsSteamClientAvailable || _currentLobby == Steamworks.CSteamID.Nil) 
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
+            if (!IsSteamClientAvailable || _currentLobby == Steamworks.CSteamID.Nil)
                 return Task.CompletedTask;
 
             Steamworks.SteamMatchmaking.LeaveLobby(_currentLobby);
             _currentLobby = default;
             OnLobbyLeft?.Invoke();
+#endif
             return Task.CompletedTask;
         }
 
         public Task LeaveLobbyAsync(string lobbyId)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (IsSteamClientAvailable && !string.IsNullOrEmpty(lobbyId) && ulong.TryParse(lobbyId, out var id))
             {
                 var cLobbyId = new Steamworks.CSteamID(ulong.Parse(lobbyId));
                 Steamworks.SteamMatchmaking.LeaveLobby(cLobbyId);
             }
-
+#endif
             return Task.CompletedTask;
         }
 
         public async Task<List<Lobby>> SearchLobbiesAsync(int maxRoomsToFind = 10, Dictionary<string, string> filters = null)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (!IsSteamClientAvailable)
                 return new List<Lobby>();
 
@@ -329,10 +359,15 @@ namespace Resonance.LobbySystem.Providers
             });
 
             return await tcs.Task;
+#else
+            await Task.CompletedTask;
+            return new List<Lobby>();
+#endif
         }
 
         public Task SetIsReadyAsync(string userId, bool isReady)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             //You can only set the ready state for your own user
             if (IsSteamClientAvailable && !string.IsNullOrEmpty(userId) && ulong.TryParse(userId, out var id)
                 && Steamworks.SteamUser.GetSteamID().m_SteamID == id)
@@ -340,29 +375,32 @@ namespace Resonance.LobbySystem.Providers
                 Steamworks.SteamMatchmaking.SetLobbyMemberData(_currentLobby, "IsReady", isReady.ToString());
                 Steamworks.SteamMatchmaking.SetLobbyData(_currentLobby, "UpdateTrigger", DateTime.UtcNow.Ticks.ToString());
             }
-
+#endif
             return Task.FromResult(Task.CompletedTask);
         }
 
         public Task SetLobbyDataAsync(string key, string value)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (IsSteamClientAvailable)
                 Steamworks.SteamMatchmaking.SetLobbyData(_currentLobby, key, value);
-
+#endif
             return Task.FromResult(Task.CompletedTask);
         }
 
         public Task SetLobbyStartedAsync()
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (IsSteamClientAvailable)
             {
                 Steamworks.SteamMatchmaking.SetLobbyGameServer(_currentLobby, 0, 0, Steamworks.SteamUser.GetSteamID());
                 Steamworks.SteamMatchmaking.SetLobbyData(_currentLobby, "Started", "True");
             }
-
+#endif
             return Task.FromResult(Task.CompletedTask);
         }
 
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
         public void SetLobbyStarted(Steamworks.CSteamID serverId)
         {
             if (IsSteamClientAvailable)
@@ -371,9 +409,11 @@ namespace Resonance.LobbySystem.Providers
                 Steamworks.SteamMatchmaking.SetLobbyData(_currentLobby, "Started", "True");
             }
         }
+#endif
 
         public void SetLobbyStarted(string address, short port)
         {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
             if (IsSteamClientAvailable)
             {
                 var ipAddress = System.Net.IPAddress.Parse(address);
@@ -385,8 +425,10 @@ namespace Resonance.LobbySystem.Providers
                 Steamworks.SteamMatchmaking.SetLobbyGameServer(_currentLobby, ip, (ushort)port, Steamworks.CSteamID.Nil);
                 Steamworks.SteamMatchmaking.SetLobbyData(_currentLobby, "Started", "True");
             }
+#endif
         }
 
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
         public void SetLobbyStarted(string address, short port, Steamworks.CSteamID serverId)
         {
             if (IsSteamClientAvailable)
@@ -401,12 +443,19 @@ namespace Resonance.LobbySystem.Providers
                 Steamworks.SteamMatchmaking.SetLobbyData(_currentLobby, "Started", "True");
             }
         }
+#endif
 
         public void Shutdown()
         {
             //Not needed
         }
 
+        public Task SetAllReadyAsync()
+        {
+            return Task.FromResult(Task.CompletedTask);
+        }
+
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
         private List<LobbyUser> GetLobbyUsers(Steamworks.CSteamID lobbyId)
         {
             var users = new List<LobbyUser>();
@@ -546,7 +595,6 @@ namespace Resonance.LobbySystem.Providers
                 }
             }
 
-
             var updatedLobby = new Lobby
             {
                 Name = Steamworks.SteamMatchmaking.GetLobbyData(_currentLobby, "Name"),
@@ -653,11 +701,6 @@ namespace Resonance.LobbySystem.Providers
             //PurrLogger.Log($"Invite accepted. Joining lobby {lobbyId.m_SteamID}");
 
             _ = JoinLobbyAsync(lobbyId.m_SteamID.ToString());
-        }
-
-        public Task SetAllReadyAsync()
-        {
-            return Task.FromResult(Task.CompletedTask);
         }
 #endif
     }
