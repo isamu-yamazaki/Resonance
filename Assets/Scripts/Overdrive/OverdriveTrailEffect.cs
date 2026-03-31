@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PurrNet;
 using UnityEngine;
@@ -14,10 +15,18 @@ namespace Resonance.PlayerController
         [SerializeField] private int maxGhosts = 10;
         [SerializeField] private bool enableGhostLinger = false;
 
+        /// <summary>
+        /// Delay for the ghost spawning effect. Ensures that all clients
+        /// start spawning ghosts for the Overdrive player at the same time.
+        /// </summary>
+        [SerializeField] private float ghostSpawningDelaySeconds = 0.5f;
+
         [Header("Color Settings")]
         [SerializeField] private Gradient colorGradient;
         [SerializeField] private bool useGradientOverLifetime = true;
 
+        private SyncVar<bool> shouldSpawnGhostsForEveryone = new(false, ownerAuth: true);
+        private SyncVar<DateTime> ghostSpawningStartTime = new(ownerAuth: true);
         private SkinnedMeshRenderer[] _meshesToCopy;
         private PlayerSkinRenderer _playerSkinRenderer;
         private OverdriveAbility _overdriveAbility;
@@ -73,6 +82,20 @@ namespace Resonance.PlayerController
 
             if (_overdriveAbility.IsInOverdrive)
             {
+                if (!shouldSpawnGhostsForEveryone.value)
+                {
+                    ghostSpawningStartTime.value = DateTime.Now.AddSeconds(ghostSpawningDelaySeconds);
+                }
+                shouldSpawnGhostsForEveryone.value = true;
+            }
+            else
+            {
+                shouldSpawnGhostsForEveryone.value = false;
+            }
+
+            if (shouldSpawnGhostsForEveryone && ghostSpawningStartTime <= DateTime.Now)
+            {
+                // fallback to a locally determined loop
                 _spawnTimer += Time.deltaTime;
 
                 if (_spawnTimer >= spawnInterval)
@@ -134,7 +157,6 @@ namespace Resonance.PlayerController
             Debug.Log("[OverdriveTrailEffect] Updating trail effect based on new skin");
         }
 
-        [ObserversRpc]
         private void SpawnGhost()
         {
             GhostInstance ghost = GetGhostFromPool();

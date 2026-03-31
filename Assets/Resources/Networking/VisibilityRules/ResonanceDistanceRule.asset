@@ -15,5 +15,5 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  _distance: 30
+  _distance: 40
   _deadZone: 5

@@ -1,0 +1,168 @@
+name: Custom build
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Build target"
+        required: true
+        default: win64
+        type: choice
+        options:
+          - win64
+          - osxuniversal
+          - linux64
+      mode:
+        description: "Build mode"
+        required: true
+        default: Client
+        type: choice
+        options:
+          - Client
+          - Server
+      client_config:
+        description: "Client config asset name (used when mode is Client)"
+        required: true
+        default: ProductionClient
+        type: choice
+        options:
+          - DevClient
+          - DevClientLocalRelay
+          - DevHost
+          - DevHostLocalRelay
+          - ProductionClient
+          - ProductionHost
+      server_config:
+        description: "Server config asset name (used when mode is Server)"
+        required: true
+        default: Production
+        type: choice
+        options:
+          - LocalRelay
+          - Production
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore Unity installation from cache
+        id: cache-unity
+        uses: actions/cache/restore@v4
+        with:
+          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
+          key: unity-${{ vars.UNITY_VERSION }}-full
+
+      - name: Install Unity
+        if: steps.cache-unity.outputs.cache-hit != 'true'
+        run: |
+          gh cache delete "unity-${{ vars.UNITY_VERSION }}" --repo ${{ github.repository }} || true
+          gh cache delete "unity-${{ vars.UNITY_VERSION }}-server-build" --repo ${{ github.repository }} || true
+          brew install --cask unity-hub
+          /Applications/Unity\ Hub.app/Contents/MacOS/Unity\ Hub -- \
+            --headless install \
+            --version ${{ vars.UNITY_VERSION }} \
+            --changeset ${{ vars.UNITY_CHANGESET }} \
+            --architecture arm64 \
+            --module windows-mono \
+            --module linux-server
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save Unity installation to cache
+        if: steps.cache-unity.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
+          key: unity-${{ vars.UNITY_VERSION }}-full
+
+      - name: Import certificate into keychain
+        if: github.event.inputs.mode == 'Client'
+        env:
+          MACOS_DEVELOPER_ID_CERTIFICATE_BASE64: ${{ secrets.MACOS_DEVELOPER_ID_CERTIFICATE_BASE64 }}
+          MACOS_DEVELOPER_ID_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_DEVELOPER_ID_CERTIFICATE_PASSWORD }}
+          MACOS_CI_KEYCHAIN_RANDOM_PWD: ${{ secrets.MACOS_CI_KEYCHAIN_RANDOM_PWD }}
+        run: |
+          echo $MACOS_DEVELOPER_ID_CERTIFICATE_BASE64 | base64 --decode > certificate.p12
+          security create-keychain -p "$MACOS_CI_KEYCHAIN_RANDOM_PWD" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$MACOS_CI_KEYCHAIN_RANDOM_PWD" build.keychain
+          security import certificate.p12 -k build.keychain -P "$MACOS_DEVELOPER_ID_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_CI_KEYCHAIN_RANDOM_PWD" build.keychain
+
+      - name: Activate Unity license
+        run: |
+          $UNITY_PATH -batchmode -quit -nographics \
+            -logFile /tmp/activation.log \
+            -username "$UNITY_EMAIL" \
+            -password "$UNITY_PASSWORD" || true
+          cat /tmp/activation.log || true
+        env:
+          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Determine config
+        id: config
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "Server" ]; then
+            echo "value=${{ github.event.inputs.server_config }}" >> $GITHUB_OUTPUT
+          else
+            echo "value=${{ github.event.inputs.client_config }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build (Unity)
+        run: |
+          LOG_FILE="$(mktemp /tmp/unity-build.XXXXXX.log)"
+          tail -f "$LOG_FILE" &
+          TAIL_PID=$!
+
+          GRAPHICS_FLAG=""
+          if [ "${{ github.event.inputs.mode }}" = "Server" ]; then
+            GRAPHICS_FLAG="-nographics"
+          fi
+
+          $UNITY_PATH -batchmode -quit $GRAPHICS_FLAG \
+            -logFile "$LOG_FILE" \
+            -projectPath . \
+            -buildTarget ${{ github.event.inputs.target }} \
+            -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
+            -buildMode ${{ github.event.inputs.mode }} \
+            -buildConfig ${{ steps.config.outputs.value }} \
+            -buildPlatform ${{ github.event.inputs.target }}
+          BUILD_EXIT=$?
+
+          sleep 1
+          kill $TAIL_PID 2>/dev/null || true
+          echo "=== Final log entries ==="
+          tail -100 "$LOG_FILE"
+          exit $BUILD_EXIT
+        env:
+          UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: Zip
+        run: |
+          CONFIG=${{ steps.config.outputs.value }}
+          if [ "${{ github.event.inputs.target }}" = "osxuniversal" ]; then
+            ditto -c -k --keepParent "Builds/$CONFIG/Mac/Resonance.app" "Resonance_mac_${CONFIG}.zip"
+            echo "ARTIFACT=Resonance_mac_${CONFIG}.zip" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.target }}" = "win64" ]; then
+            cd "Builds/$CONFIG/Windows" && zip -r "../../../Resonance_win_${CONFIG}.zip" .
+            echo "ARTIFACT=Resonance_win_${CONFIG}.zip" >> $GITHUB_ENV
+          else
+            cd "Builds/$CONFIG/Linux" && zip -r "../../../ResonanceServer_linux_${CONFIG}.zip" .
+            echo "ARTIFACT=ResonanceServer_linux_${CONFIG}.zip" >> $GITHUB_ENV
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-custom-${{ github.event.inputs.target }}-${{ github.event.inputs.mode }}-${{ steps.config.outputs.value }}
+          path: ${{ env.ARTIFACT }}

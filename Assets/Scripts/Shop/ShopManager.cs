@@ -73,6 +73,8 @@ namespace Resonance.Shop
         [SerializeField] private AK.Wwise.Event shopCloseEvent;
         [SerializeField] private AK.Wwise.Event shopPageSwitchEvent;
         [SerializeField] private AK.Wwise.Event shopItemBuyEvent;
+        [SerializeField] private AK.Wwise.Event shopItemSellEvent;
+        [SerializeField] private AK.Wwise.Event shopInsufficientFundsEvent;
         [SerializeField] private AK.Wwise.Event buttonClickEvent;
 #endif
 
@@ -578,6 +580,10 @@ namespace Resonance.Shop
             if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(newWeapon.WeaponCost))
             {
                 Debug.Log("Not enough credits.");
+#if !UNITY_SERVER
+                if (shopInsufficientFundsEvent != null && shopInsufficientFundsEvent.IsValid())
+                    shopInsufficientFundsEvent.Post(gameObject);
+#endif
                 return;
             }
 
@@ -619,6 +625,10 @@ namespace Resonance.Shop
             if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(augment.AugmentCost))
             {
                 Debug.Log("Not enough credits.");
+#if !UNITY_SERVER
+                if (shopInsufficientFundsEvent != null && shopInsufficientFundsEvent.IsValid())
+                    shopInsufficientFundsEvent.Post(gameObject);
+#endif
                 return;
             }
 
@@ -653,6 +663,10 @@ namespace Resonance.Shop
             if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(mod.ModCost))
             {
                 Debug.Log("Not enough credits.");
+#if !UNITY_SERVER
+                if (shopInsufficientFundsEvent != null && shopInsufficientFundsEvent.IsValid())
+                    shopInsufficientFundsEvent.Post(gameObject);
+#endif
                 return;
             }
 
@@ -702,6 +716,11 @@ namespace Resonance.Shop
 
             PlayerMoney.Instance?.AddFunds(weapon.WeaponCost * SellRefundRate);
             equip?.RemoveWeapon(slot);
+
+#if !UNITY_SERVER
+            if (shopItemSellEvent != null && shopItemSellEvent.IsValid())
+                shopItemSellEvent.Post(gameObject);
+#endif
             inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
@@ -723,6 +742,11 @@ namespace Resonance.Shop
             weapon.ModList.Remove(mod);
             GetPlayerShooter()?.RefreshWeaponStats();
             PlayerMoney.Instance?.AddFunds(mod.ModCost * SellRefundRate);
+
+#if !UNITY_SERVER
+            if (shopItemSellEvent != null && shopItemSellEvent.IsValid())
+                shopItemSellEvent.Post(gameObject);
+#endif
             inventoryDisplay.Refresh();
             PopulateMods();
             RefreshBalanceText();
@@ -742,6 +766,11 @@ namespace Resonance.Shop
 
             equip.RemoveAugment(augment);
             PlayerMoney.Instance?.AddFunds(augment.AugmentCost * SellRefundRate);
+
+#if !UNITY_SERVER
+            if (shopItemSellEvent != null && shopItemSellEvent.IsValid())
+                shopItemSellEvent.Post(gameObject);
+#endif
             inventoryDisplay.Refresh();
             RefreshBalanceText();
         }

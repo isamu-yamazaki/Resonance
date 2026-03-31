@@ -165,6 +165,7 @@ namespace Resonance.PlayerController
             _wasCrouchPressedLastFrame = false;
             _rotatingToTargetTimer = 0f;
             IsRotatingToTarget = false;
+            _grappleImpulse = Vector3.zero;
 
             if (_characterController != null)
             {
