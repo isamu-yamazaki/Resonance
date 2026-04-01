@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using PurrNet;
+using Resonance.Audio;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.Helper;
@@ -217,6 +218,11 @@ namespace Resonance.Combat
             if (currentView == null) return;
             currentView.PlayFire();
             currentView.PlayMuzzleFlash();
+
+#if !UNITY_SERVER
+            if (AudioSourceTracker.Instance != null)
+                AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
+#endif
         }
 
         [ObserversRpc(runLocally: true)]

@@ -1,5 +1,6 @@
 using System.Linq;
 using PurrNet;
+using Resonance.Audio;
 using Resonance.Combat.Augments;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
@@ -211,6 +212,11 @@ namespace Resonance.Combat
         private void PlayEquipOnAllClients()
         {
             currentWeaponView?.PlayEquip();
+
+#if !UNITY_SERVER
+            if (AudioSourceTracker.Instance != null)
+                AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
+#endif
         }
 
         private void RefreshWeaponView(WeaponProperties weapon)

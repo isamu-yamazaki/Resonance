@@ -5,6 +5,7 @@ using Resonance.Combat.Mods;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.Economy;
+using Resonance.Helper;
 using Resonance.Inventory;
 using Resonance.PlayerController;
 using TMPro;
@@ -292,7 +293,7 @@ namespace Resonance.Shop
         {
             if (playerEquip == null || !playerEquip.isOwner)
             {
-                playerEquip = FindObjectsOfType<PlayerEquip>().FirstOrDefault(p => p.isOwner);
+                playerEquip = OwnerFinder.FindFirstOwnedObjectByType<PlayerEquip>();
             }
 
             return playerEquip;
@@ -302,7 +303,7 @@ namespace Resonance.Shop
         {
             if (playerInventory == null || !playerInventory.isOwner)
             {
-                playerInventory = FindObjectsOfType<PlayerInventory>().FirstOrDefault(p => p.isOwner);
+                playerInventory = OwnerFinder.FindFirstOwnedObjectByType<PlayerInventory>();
             }
 
             return playerInventory;
@@ -312,7 +313,7 @@ namespace Resonance.Shop
         {
             if (playerShooter == null)
             {
-                playerShooter = FindObjectOfType<PlayerShooter>();
+                playerShooter = OwnerFinder.FindFirstOwnedObjectByType<PlayerShooter>();
             }
 
             return playerShooter;
@@ -800,7 +801,7 @@ namespace Resonance.Shop
 
         public void Toggle()
         {
-            PlayerState playerState = FindObjectOfType<PlayerState>();
+            PlayerState playerState = OwnerFinder.FindFirstOwnedObjectByType<PlayerState>();
 
             if (!shopMenu.activeSelf && playerState != null && playerState.IsMatchFrozen())
                 return;
