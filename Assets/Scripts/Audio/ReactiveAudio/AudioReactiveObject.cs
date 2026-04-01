@@ -1,11 +1,10 @@
-using System;
-using System.Collections;
-using PurrNet;
 using UnityEngine;
 
 namespace Resonance.Audio
 {
-    public class AudioReactiveObject : NetworkBehaviour
+    // Fully client-side. Polls local AudioSourceTracker every frame and runs ADSR locally.
+    // No networking — all clients receive the same sound broadcast and converge on the same result.
+    public class AudioReactiveObject : MonoBehaviour
     {
         [Header("Material Settings")]
         [SerializeField] private Renderer targetRenderer;
@@ -26,11 +25,6 @@ namespace Resonance.Audio
         [Header("Debug")]
         [SerializeField] private bool debugLog = false;
 
-        [Header("Network Update Intervals")]
-        [SerializeField] private float serverToClientPropagationIntervalSeconds = 0.2f;
-        [SerializeField] private float clientToServerNullSourceReportingIntervalSeconds = 1f;
-        [SerializeField] private float clientToServerSourceReportingIntervalSeconds = 0.1f;
-
         private Material materialInstance;
         private float currentIntensity = 0f;
         private float targetIntensity = 0f;
@@ -39,157 +33,44 @@ namespace Resonance.Audio
         private float sustainTimer = 0f;
         private bool inSustain = false;
         private bool isFeedbackPlaying = false;
-        private float sourceReportTimer = 0f;
-        private AudioSourceData clientReportedSource;
-        private float visibilityEvaluationSchedulingCooldown = 2;
-        private bool isVisibilityEvaluationScheduled = false;
 
-        void Start()
+        private void Start()
         {
             SetupMaterial();
         }
 
-        protected override void OnSpawned(bool asServer)
+        private void Update()
         {
-            base.OnSpawned(asServer);
+#if !UNITY_SERVER
+            CalculateAudioState();
+            ApplyEmission();
 
-            if (asServer)
-            {
-                currentIntensity = 0f;
-                ApplyEmissionAndAudioFeedbackForAllClients(0f);
-                StartCoroutine(ServerPropagationLoop());
-                StartCoroutine(ServerEvaluateVisibilityLoop());
-            }
-
-            if (isClient)
-            {
-                StartCoroutine(ClientReportingLoop());
-            }
-        }
-
-
-        protected override void OnDespawned(bool asServer)
-        {
-            base.OnDespawned(asServer);
-            StopAllCoroutines();
-        }
-
-        void Update()
-        {
-            if (isServer)
-            {
-                CalculateAudioState();
-            }
-
-            if (isClient)
-            {
-                sourceReportTimer += Time.deltaTime;
-                if (sourceReportTimer < clientToServerSourceReportingIntervalSeconds) return;
-                sourceReportTimer = 0f;
-
-                AudioSourceData nearestSource = FindNearestSource();
-                if (nearestSource != null)
-                {
-                    SetNearestAudioSourceOnServer(nearestSource);
-                }
-            }
-        }
-
-        private IEnumerator ScheduleVisibilityEvaluation()
-        {
-            // visibility evaluation can only happen on the server/host
-            if (!isServer || isVisibilityEvaluationScheduled)
-            {
-                yield break;
-            }
-            isVisibilityEvaluationScheduled = true;
-
-            yield return new WaitForSeconds(visibilityEvaluationSchedulingCooldown);
-            EvaluateVisibility();
-            isVisibilityEvaluationScheduled = false;
-        }
-
-        private IEnumerator ServerEvaluateVisibilityLoop()
-        {
-            if (!isServer)
-            {
-                yield break;
-            }
-            while (true)
-            {
-                // mostly for the purpose of detaching observers
-                yield return new WaitForSeconds(20);
-                if (observers.Count > 0)
-                {
-                    EvaluateVisibility();
-                }
-            }
-        }
-
-        private IEnumerator ServerPropagationLoop()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(serverToClientPropagationIntervalSeconds);
-                ApplyEmissionAndAudioFeedbackForAllClients(currentIntensity);
-            }
-        }
-
-        private IEnumerator ClientReportingLoop()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(clientToServerNullSourceReportingIntervalSeconds);
-
-                if (AudioSourceTracker.Instance == null)
-                {
-                    Debug.LogWarning("[AudioReactiveObject] AudioSourceTracker not found in scene!");
-                    continue;
-                }
-
-                AudioSourceData nearestSource = FindNearestSource();
-                SetNearestAudioSourceOnServer(nearestSource);
-            }
-        }
-
-        private AudioSourceData FindNearestSource()
-        {
-            return AudioSourceTracker.Instance.FindLoudestNearby(
-                transform.position,
-                AudioSourceTracker.Instance.BaseWaveDistance
-            );
-        }
-
-        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
-        public void SetNearestAudioSourceOnServer(AudioSourceData source)
-        {
-            if (source != null)
-            {
-                StartCoroutine(ScheduleVisibilityEvaluation());
-            }
-            clientReportedSource = source;
-        }
-
-        [ServerRpc(PurrNet.Transports.Channel.ReliableOrdered, requireOwnership: false)]
-        public void SetExternalIntensity(float intensity)
-        {
-            if (intensity > 0)
-            {
-                StartCoroutine(ScheduleVisibilityEvaluation());
-            }
-            externalIntensity = Mathf.Clamp01(intensity);
+            if (enableAudioFeedback)
+                UpdateAudioFeedback(currentIntensity);
+#endif
         }
 
         private void CalculateAudioState()
         {
-            if (clientReportedSource != null)
+            if (AudioSourceTracker.Instance != null)
             {
-                float distance = Vector3.Distance(transform.position, clientReportedSource.Position);
-                float sourceIntensity = clientReportedSource.GetCurrentIntensity();
-                float waveMaxDistance = AudioSourceTracker.Instance.BaseWaveDistance * clientReportedSource.PeakIntensity;
-                float distanceAttenuation = 1f - Mathf.Clamp01(distance / waveMaxDistance);
+                AudioSourceData nearestSource = AudioSourceTracker.Instance.FindLoudestNearby(
+                    transform.position,
+                    AudioSourceTracker.Instance.BaseWaveDistance
+                );
 
-                targetIntensity = Mathf.Clamp01(sourceIntensity * distanceAttenuation);
+                if (nearestSource != null)
+                {
+                    float distance = Vector3.Distance(transform.position, nearestSource.Position);
+                    float sourceIntensity = nearestSource.GetCurrentIntensity();
+                    float waveMaxDistance = AudioSourceTracker.Instance.BaseWaveDistance * nearestSource.PeakIntensity;
+                    float distanceAttenuation = 1f - Mathf.Clamp01(distance / waveMaxDistance);
+                    targetIntensity = Mathf.Clamp01(sourceIntensity * distanceAttenuation);
+                }
+                else
+                {
+                    targetIntensity = 0f;
+                }
             }
             else
             {
@@ -236,6 +117,13 @@ namespace Resonance.Audio
                 Debug.Log($"[AudioReactiveObject] Target: {targetIntensity:F3}, Current: {currentIntensity:F3}, Sustain: {sustainTimer:F2}s");
         }
 
+        private void ApplyEmission()
+        {
+            if (materialInstance == null) return;
+            Color finalEmission = emissionColor * (currentIntensity * emissionIntensity);
+            materialInstance.SetColor("_EmissionColor", finalEmission);
+        }
+
         private void UpdateAudioFeedback(float intensity)
         {
             bool shouldPlay = intensity > 0f;
@@ -270,6 +158,11 @@ namespace Resonance.Audio
             isFeedbackPlaying = false;
         }
 
+        public void SetExternalIntensity(float intensity)
+        {
+            externalIntensity = Mathf.Clamp01(intensity);
+        }
+
         private void SetupMaterial()
         {
             if (targetRenderer == null)
@@ -287,19 +180,7 @@ namespace Resonance.Audio
             }
         }
 
-        [ObserversRpc(PurrNet.Transports.Channel.ReliableOrdered)]
-        private void ApplyEmissionAndAudioFeedbackForAllClients(float intensity)
-        {
-            if (materialInstance == null) return;
-
-            Color finalEmission = emissionColor * (intensity * emissionIntensity);
-            materialInstance.SetColor("_EmissionColor", finalEmission);
-
-            if (enableAudioFeedback)
-                UpdateAudioFeedback(intensity);
-        }
-
-        void OnDestroy()
+        private void OnDestroy()
         {
             if (materialInstance != null)
                 Destroy(materialInstance);

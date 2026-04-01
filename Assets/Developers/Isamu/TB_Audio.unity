@@ -2719,8 +2719,6 @@ MonoBehaviour:
   _playerPrefab: {fileID: 6809321870534573542, guid: 3beb74802a435e54da51d4fd0f95b9b8, type: 3}
   _ignoreNetworkRules: 0
   spawnPoints:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 48770497}
 --- !u!114 &165439721
 MonoBehaviour:
@@ -4024,15 +4022,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 290945802}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -4042,9 +4031,6 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
-  serverToClientPropagationIntervalSeconds: 0.2
-  clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &290945801
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9530,15 +9516,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 646137442}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -9548,9 +9525,6 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
-  serverToClientPropagationIntervalSeconds: 0.2
-  clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &646137441
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15938,15 +15912,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 1061036176}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -15956,9 +15921,6 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
-  serverToClientPropagationIntervalSeconds: 0.2
-  clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1061036175
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16567,15 +16529,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 1111308593}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -16585,9 +16538,6 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
-  serverToClientPropagationIntervalSeconds: 0.2
-  clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1111308592
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17465,15 +17415,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 1225290919}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -17483,9 +17424,6 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
-  serverToClientPropagationIntervalSeconds: 0.2
-  clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1225290918
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18691,15 +18629,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 1265563638}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -18709,9 +18638,6 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
-  serverToClientPropagationIntervalSeconds: 0.2
-  clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1265563637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24729,10 +24655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Player.Respawn
   spawnPoints:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 48770497}
-  - {fileID: 0}
   respawnDelay: 2
 --- !u!4 &1755887619
 Transform:
@@ -26350,15 +26273,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 1848838243}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -26368,9 +26282,6 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
-  serverToClientPropagationIntervalSeconds: 0.2
-  clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &1848838242
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28204,9 +28115,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 828e9ec775a6a384ab9577359857c36f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioSourceTracker
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   defaultDuration: 3
   propagationSpeed: 50
   baseWaveDistance: 150
+  registrationDelay: 0.05
 --- !u!114 &1972020914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28671,15 +28592,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20aab51ccec04b804a28d35ff4c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.AudioReactiveObject
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   targetRenderer: {fileID: 2023304434}
   emissionColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
@@ -28689,9 +28601,6 @@ MonoBehaviour:
   releaseSpeed: 5
   threshold: 0.05
   debugLog: 0
-  serverToClientPropagationIntervalSeconds: 0.2
-  clientToServerNullSourceReportingIntervalSeconds: 1
-  clientToServerSourceReportingIntervalSeconds: 0.1
 --- !u!65 &2023304433
 BoxCollider:
   m_ObjectHideFlags: 0

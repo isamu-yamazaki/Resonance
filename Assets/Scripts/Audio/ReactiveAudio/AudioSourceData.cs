@@ -1,9 +1,8 @@
-using PurrNet.Packing;
 using UnityEngine;
 
 namespace Resonance.Audio
 {
-    public class AudioSourceData: IPackedAuto
+    public class AudioSourceData
     {
         public Vector3 Position;
         public float Timestamp;
