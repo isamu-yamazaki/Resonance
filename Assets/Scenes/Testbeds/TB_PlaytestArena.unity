@@ -4888,7 +4888,7 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
   autoStartAfterPlayersLoadedIn: 1
   autoStartDelaySeconds: 5
 --- !u!4 &154591318
@@ -20364,7 +20364,7 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
 --- !u!4 &463464440
 Transform:
   m_ObjectHideFlags: 0
@@ -39715,7 +39715,7 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
   kdaText: {fileID: 0}
   killStreakText: {fileID: 0}
   eliminationsText: {fileID: 0}
@@ -78494,7 +78494,7 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
 --- !u!4 &1767928148
 Transform:
   m_ObjectHideFlags: 0
