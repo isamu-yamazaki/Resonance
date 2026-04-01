@@ -80,7 +80,7 @@ namespace Resonance.PlayerController
         {
             if (_overdriveAbility == null || _meshesToCopy.Length == 0) return;
 
-            if (_overdriveAbility.IsInOverdrive)
+            if (isOwner && _overdriveAbility.IsInOverdrive)
             {
                 if (!shouldSpawnGhostsForEveryone.value)
                 {
@@ -88,7 +88,7 @@ namespace Resonance.PlayerController
                 }
                 shouldSpawnGhostsForEveryone.value = true;
             }
-            else
+            else if (isOwner)
             {
                 shouldSpawnGhostsForEveryone.value = false;
             }

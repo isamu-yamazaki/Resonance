@@ -268,11 +268,15 @@ namespace Resonance.Player
                 }
             }
 
-            ApplyDeathEffectsRpc(respawnOnDeath);
+            ApplyDeathEffectsRpc();
+            if (respawnOnDeath)
+            {
+                StartRespawnCoroutineOnServer();
+            }
         }
 
         [ObserversRpc]
-        private void ApplyDeathEffectsRpc(bool shouldRespawn)
+        private void ApplyDeathEffectsRpc()
         {
             if (_playerController != null)
             {
@@ -300,33 +304,25 @@ namespace Resonance.Player
             }
 
             OnPlayerDeath?.Invoke();
+        }
 
-            if (isServer && shouldRespawn)
-            {
-                StartCoroutine(RespawnCoroutine());
-            }
+        [ServerRpc]
+        private void StartRespawnCoroutineOnServer()
+        {
+            StartCoroutine(RespawnCoroutine());
         }
 
         private IEnumerator RespawnCoroutine()
         {
-            float respawnDelay = Resonance.Player.Respawn.Instance != null ?
-                                 Resonance.Player.Respawn.Instance.RespawnDelay : 3f;
+            if (!isServer) yield break;
+
+            float respawnDelay = Respawn.Instance != null ?
+                                 Respawn.Instance.RespawnDelay : 3f;
 
             Debug.Log($"[PlayerStats] {owner} respawning in {respawnDelay}s");
             yield return new WaitForSeconds(respawnDelay);
 
-            if (isServer)
-            {
-                ApplyRespawnEffectsRpc();
-            }
-        }
-
-        public void Respawn()
-        {
-            if (isServer)
-            {
-                ApplyRespawnEffectsRpc();
-            }
+            ApplyRespawnEffectsRpc();
         }
 
         [ObserversRpc]
