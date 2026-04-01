@@ -1,14 +1,21 @@
+using PurrNet;
 using Resonance.PlayerController;
 using Resonance.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInteract : MonoBehaviour
+public class PlayerInteract : NetworkBehaviour
 {
     [SerializeField] private GameObject player;
     private IInteractable _currentInteractable;
     private PlayerActionsInput _playerActionsInput;
     private PlayerState _playerState;
+
+    protected override void OnSpawned()
+    {
+        base.OnSpawned();
+        enabled = isOwner;
+    }
 
     private void Awake()
     {
@@ -33,6 +40,7 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!isOwner) return;
         IInteractable interactable = other.GetComponent<IInteractable>() ?? other.GetComponentInParent<IInteractable>();
 
         if (interactable != null)
@@ -44,6 +52,7 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        if (!isOwner) return;
         IInteractable interactable = other.GetComponent<IInteractable>() ?? other.GetComponentInParent<IInteractable>();
 
         if (interactable != null && interactable == _currentInteractable)
