@@ -1453,4 +1453,4 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  startingBalance: 50000
+  startingBalance: 5000
