@@ -50,6 +50,9 @@ namespace Resonance.Combat.Augments
 
         public void ActivateAbility()
         {
+            if (!isOwner)
+                return;
+
             if (!AbilityReady)
                 return;
 
@@ -65,6 +68,7 @@ namespace Resonance.Combat.Augments
             playerState.SetPlayerMovementState(PlayerMovementState.Grappling);
 
             BroadcastShootAndTravelRpc();
+            RequestGrappleRegistrationOnServer(transform.position);
         }
 
         private void Awake()
@@ -156,9 +160,21 @@ namespace Resonance.Combat.Augments
 
             if (travelLoopEvent != null && travelLoopEvent.IsValid())
                 travelLoopEvent.Post(gameObject);
+#endif
+        }
 
+        [ServerRpc]
+        private void RequestGrappleRegistrationOnServer(Vector3 position)
+        {
+            BroadcastGrappleRegistration(position);
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastGrappleRegistration(Vector3 position)
+        {
+#if !UNITY_SERVER
             if (AudioSourceTracker.Instance != null)
-                AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
+                AudioSourceTracker.Instance.RegisterSound(position, 1f);
 #endif
         }
 
