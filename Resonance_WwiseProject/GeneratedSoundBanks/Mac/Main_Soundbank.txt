@@ -5,7 +5,9 @@ Event	ID	Name			Wwise Object Path	Notes
 	310530060	Play_UI_Button_Hover			\Default Work Unit\UI\Play_UI_Button_Hover	
 	1057815627	Play_BaseHandgun_Fire			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Fire	
 	1060624046	Play_BaseHandgun_Casing			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Casing	
+	1098674603	Play_Grappler_Shoot			\Default Work Unit\Grappler\Play_Grappler_Shoot	
 	1166794921	Play_LMG_Fire			\Default Work Unit\Firearms\LMG\Play_LMG_Fire	
+	1243736002	Play_Grappler_Travel			\Default Work Unit\Grappler\Play_Grappler_Travel	
 	1529325343	Play_IndoorAmbience			\Default Work Unit\Play_IndoorAmbience	
 	1602358412	Play_Footstep			\Default Work Unit\Play_Footstep	
 	1661558166	Play_UI_Button_Click			\Default Work Unit\UI\Play_UI_Button_Click	
@@ -18,9 +20,11 @@ Event	ID	Name			Wwise Object Path	Notes
 	2323405115	Play_Landing			\Default Work Unit\Play_Landing	
 	2387432645	Play_GlassShatter			\Default Work Unit\Play_GlassShatter	
 	2394254510	Play_UI_Shop_Item_Buy			\Default Work Unit\UI\Shop\Play_UI_Shop_Item_Buy	
+	2526375596	Stop_Grappler_Travel			\Default Work Unit\Grappler\Stop_Grappler_Travel	
 	2638125186	Play_BaseHandgun_Empty			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Empty	
 	2638998638	Play_UI_Shop_Item_Sell			\Default Work Unit\UI\Shop\Play_UI_Shop_Item_Sell	
 	2720966806	Play_UI_Shop_Open			\Default Work Unit\UI\Shop\Play_UI_Shop_Open	
+	2981775873	Play_Grappler_Release			\Default Work Unit\Grappler\Play_Grappler_Release	
 	3017185661	Play_Revolver_Empty			\Default Work Unit\Firearms\Revolver\Play_Revolver_Empty	
 	3062989335	Play_Reactive_Feedback			\Default Work Unit\Play_Reactive_Feedback	
 	3091083318	Play_Revolver_Equip			\Default Work Unit\Firearms\Revolver\Play_Revolver_Equip	
@@ -83,6 +87,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	554632944	sfx_combat_pistol_equip	.cache\21\{21C99835-4DF1-0EE4-27A9-6D9C7EDABAFD}.wem		\Containers\Default Work Unit\Firearms\BaseHandgun\sfx_combat_pistol_equip		103000
 	566025932	sfx_foley_footstep_gravel_run_03	.cache\33\{3385E922-2DE8-3025-948B-D52B34E8A500}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Gravel\sfx_foley_footstep_gravel_run_03		62692
 	567098917	sfx_foley_footstep_grass_run_04	.cache\39\{39E245C4-A9A7-0614-9791-F2580074163E}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Grass\sfx_foley_footstep_grass_run_04		58592
+	596785904	sfx_combat_grappler_release	.cache\30\{304A02A5-82DC-7D54-E71C-576B02108B5B}.wem		\Containers\Default Work Unit\Grappler\sfx_combat_grappler_release		24096
 	598226072	sfx_foley_footstep_metal_land_01	.cache\3F\{3F99F8BC-C824-6A6C-945E-5D537C4D63F3}.wem		\Containers\Default Work Unit\Locomotion\Landing\Metal\sfx_foley_footstep_metal_land_01		110724
 	608212495	sfx_foley_footstep_concrete_run_03	.cache\13\{135DE354-C9CA-4D4B-27F8-E5DA44EACB61}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Concrete\sfx_foley_footstep_concrete_run_03		50120
 	609943417	sfx_foley_footstep_gravel_land_01	.cache\8B\{8B44CA97-AF29-2FEA-839D-4370602D876E}.wem		\Containers\Default Work Unit\Locomotion\Landing\Gravel\sfx_foley_footstep_gravel_land_01		102100
@@ -117,6 +122,8 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	941471142	sfx_world_audioreactive_loop	.cache\CA\{CAA224DB-658F-08EA-552A-D9F55F9B8843}.wem		\Containers\Default Work Unit\sfx_world_audioreactive_loop		1027924
 	956380320	sfx_foley_footstep_grass_land_01	.cache\80\{8072AEB0-0AC3-B580-A73F-22AAEF1B109B}.wem		\Containers\Default Work Unit\Locomotion\Landing\Grass\sfx_foley_footstep_grass_land_01		83296
 	986281526	sfx_combat_sonardisc_pulse	.cache\3E\{3EA334D5-963F-A09A-9E5E-F510AE7D7E90}.wem		\Containers\Default Work Unit\SonarDisc\sfx_combat_sonardisc_pulse		148772
+	989939147	sfx_combat_grappler_travel_loop	.cache\F9\{F9FE24C4-767F-4FED-99FF-CE5DD523B054}.wem		\Containers\Default Work Unit\Grappler\sfx_combat_grappler_travel_loop		186096
+	1027447290	sfx_combat_grappler_shoot	.cache\E5\{E529DC86-30F9-2986-B784-4D801C77B3C5}.wem		\Containers\Default Work Unit\Grappler\sfx_combat_grappler_shoot		192096
 	1029175838	sfx_UI_button_click	.cache\15\{156CB88D-D51F-DCB6-40C0-B0D2E2053123}.wem		\Containers\Default Work Unit\UI\sfx_UI_button_click		38044
 	1044761712	sfx_combat_revolver_empty_trigger	.cache\FD\{FDD54ECC-1E9A-CD52-3FA9-048AEB51D561}.wem		\Containers\Default Work Unit\Firearms\Revolver\sfx_combat_revolver_empty_trigger		64864
 	1054996423	sfx_foley_footstep_wood_land_01	.cache\B6\{B67BF7DB-A0F5-0B2A-1D23-0A037D49C59C}.wem		\Containers\Default Work Unit\Locomotion\Landing\Wood\sfx_foley_footstep_wood_land_01		93280

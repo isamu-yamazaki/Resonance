@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{12BB6DD1-FB4A-0067-C4E4-07024EC294FF}",
+    "Hash": "{F027A536-439C-2A59-79A5-B6F9763FC90E}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -254,6 +254,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_grass_run_04.wav",
       "CachePath": "39/{39E245C4-A9A7-0614-9791-F2580074163E}.wem"
+     },
+     {
+      "Id": "596785904",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_grappler_release.wav",
+      "CachePath": "30/{304A02A5-82DC-7D54-E71C-576B02108B5B}.wem"
      },
      {
       "Id": "598226072",
@@ -526,6 +534,22 @@
       "Location": "Memory",
       "ShortName": "sfx_combat_sonardisc_pulse.wav",
       "CachePath": "3E/{3EA334D5-963F-A09A-9E5E-F510AE7D7E90}.wem"
+     },
+     {
+      "Id": "989939147",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_grappler_travel_loop.wav",
+      "CachePath": "F9/{F9FE24C4-767F-4FED-99FF-CE5DD523B054}.wem"
+     },
+     {
+      "Id": "1027447290",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_grappler_shoot.wav",
+      "CachePath": "E5/{E529DC86-30F9-2986-B784-4D801C77B3C5}.wem"
      },
      {
       "Id": "1029175838",
@@ -819,6 +843,49 @@
        },
        {
         "Id": "749473954"
+       }
+      ]
+     },
+     {
+      "Id": "2981775873",
+      "Name": "Play_Grappler_Release",
+      "ObjectPath": "\\Events\\Default Work Unit\\Grappler\\Play_Grappler_Release",
+      "GUID": "{8B577926-546D-48C6-B928-333180CFBBDD}",
+      "MaxAttenuation": "10",
+      "DurationType": "OneShot",
+      "DurationMin": "0.125",
+      "DurationMax": "0.125",
+      "MediaRefs": [
+       {
+        "Id": "596785904"
+       }
+      ]
+     },
+     {
+      "Id": "1098674603",
+      "Name": "Play_Grappler_Shoot",
+      "ObjectPath": "\\Events\\Default Work Unit\\Grappler\\Play_Grappler_Shoot",
+      "GUID": "{FF2E59E3-A78E-4903-A04A-64489E7253DC}",
+      "MaxAttenuation": "25",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "MediaRefs": [
+       {
+        "Id": "1027447290"
+       }
+      ]
+     },
+     {
+      "Id": "1243736002",
+      "Name": "Play_Grappler_Travel",
+      "ObjectPath": "\\Events\\Default Work Unit\\Grappler\\Play_Grappler_Travel",
+      "GUID": "{A9A9C1B3-DDE3-49F7-B544-B5248929DCA0}",
+      "MaxAttenuation": "15",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "989939147"
        }
       ]
      },
@@ -1218,6 +1285,16 @@
       ]
      },
      {
+      "Id": "2526375596",
+      "Name": "Stop_Grappler_Travel",
+      "ObjectPath": "\\Events\\Default Work Unit\\Grappler\\Stop_Grappler_Travel",
+      "GUID": "{6B7C0CD9-4727-4169-AB1A-7A06339CCE88}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
       "Id": "3211783545",
       "Name": "Stop_Reactive_Feedback",
       "ObjectPath": "\\Events\\Default Work Unit\\Stop_Reactive_Feedback",
@@ -1324,6 +1401,6 @@
     ]
    }
   ],
-  "FileHash": "{47182F6B-9269-6A7C-7A67-8403A2346273}"
+  "FileHash": "{62212092-28FE-D6D8-D7B6-1B8523155D03}"
  }
 }
