@@ -18,6 +18,14 @@ namespace Resonance.Combat.Augments
         [Header("References")]
         [SerializeField] private LayerMask grappleLayerMask;
 
+#if !UNITY_SERVER
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event shootEvent;
+        [SerializeField] private AK.Wwise.Event travelLoopEvent;
+        [SerializeField] private AK.Wwise.Event stopTravelEvent;
+        [SerializeField] private AK.Wwise.Event releaseEvent;
+#endif
+
         private PlayerLocomotionInput playerLocomotionInput;
         private PlayerState playerState;
         private PlayerController.PlayerController playerController;
@@ -42,22 +50,20 @@ namespace Resonance.Combat.Augments
         public void ActivateAbility()
         {
             if (!AbilityReady)
-            {
                 return;
-            }
 
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
 
             if (!Physics.Raycast(ray, out RaycastHit hit, maxRange, grappleLayerMask))
-            {
                 return;
-            }
 
             ropeRenderer.HookPoint.value = hit.point;
             ropeRenderer.IsGrappling.value = true;
             currentReelTime = 0f;
 
             playerState.SetPlayerMovementState(PlayerMovementState.Grappling);
+
+            BroadcastShootAndTravelRpc();
         }
 
         private void Awake()
@@ -74,27 +80,19 @@ namespace Resonance.Combat.Augments
             base.OnSpawned();
 
             if (isOwner)
-            {
                 playerCamera = Camera.main;
-            }
         }
 
         private void Update()
         {
             if (!isOwner)
-            {
                 return;
-            }
 
             if (currentCooldown > 0f)
-            {
                 currentCooldown -= Time.deltaTime;
-            }
 
             if (!ropeRenderer.IsGrappling.value)
-            {
                 return;
-            }
 
             currentReelTime += Time.deltaTime;
 
@@ -126,9 +124,7 @@ namespace Resonance.Combat.Augments
         private void OnDisable()
         {
             if (ropeRenderer.IsGrappling.value && isOwner)
-            {
                 ExitGrapple(earlyExit: false);
-            }
         }
 
         private void ExitGrapple(bool earlyExit)
@@ -140,11 +136,46 @@ namespace Resonance.Combat.Augments
             Vector3 exitDirection = Vector3.Lerp(pullDirection, Vector3.up, upwardBias).normalized;
 
             if (earlyExit)
-            {
                 playerController.ApplyImpulse(exitDirection * (reelSpeed + exitBoost));
-            }
 
             playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+
+            BroadcastStopTravelRpc();
+            BroadcastReleaseRpc();
         }
+
+        #region Audio RPCs
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastShootAndTravelRpc()
+        {
+#if !UNITY_SERVER
+            if (shootEvent != null && shootEvent.IsValid())
+                shootEvent.Post(gameObject);
+
+            if (travelLoopEvent != null && travelLoopEvent.IsValid())
+                travelLoopEvent.Post(gameObject);
+#endif
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastStopTravelRpc()
+        {
+#if !UNITY_SERVER
+            if (stopTravelEvent != null && stopTravelEvent.IsValid())
+                stopTravelEvent.Post(gameObject);
+#endif
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastReleaseRpc()
+        {
+#if !UNITY_SERVER
+            if (releaseEvent != null && releaseEvent.IsValid())
+                releaseEvent.Post(gameObject);
+#endif
+        }
+
+        #endregion
     }
 }
