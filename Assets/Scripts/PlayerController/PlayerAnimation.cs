@@ -4,7 +4,7 @@ using PurrNet;
 
 namespace Resonance.PlayerController
 {
-    public class PlayerAnimation : MonoBehaviour
+    public class PlayerAnimation : NetworkBehaviour
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private NetworkAnimator _networkAnimator;
@@ -37,6 +37,12 @@ namespace Resonance.PlayerController
         private static int weaponClassInitializedHash = Animator.StringToHash("weaponClassInitialized");
         
         private Vector3 _currentBlendInput = Vector3.zero;
+
+        protected override void OnSpawned()
+        {
+            base.OnSpawned();
+            enabled = isOwner;
+        }
 
         private void Awake()
         {
