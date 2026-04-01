@@ -144,6 +144,7 @@ namespace Resonance.Combat
         private void TryShoot()
         {
             if (playerState.IsMatchFrozen()) return;
+            if (playerState.IsInShop()) return;
             if (playerState.IsReloading) return;
             if (playerEquip == null) return;
 
@@ -206,14 +207,16 @@ namespace Resonance.Combat
             if (flashSettings != null)
                 view.ApplyMuzzleFlashSettings(flashSettings);
 
-            view.PlayMuzzleFlash();
             PlayFireOnAllClients();
         }
 
         [ObserversRpc(runLocally: true)]
         private void PlayFireOnAllClients()
         {
-            playerEquip.CurrentWeaponView?.PlayFire();
+            WeaponView currentView = playerEquip.CurrentWeaponView;
+            if (currentView == null) return;
+            currentView.PlayFire();
+            currentView.PlayMuzzleFlash();
         }
 
         [ObserversRpc(runLocally: true)]

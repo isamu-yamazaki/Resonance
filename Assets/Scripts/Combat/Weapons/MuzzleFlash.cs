@@ -66,6 +66,7 @@ namespace Resonance.Combat.Weapons
             var go = new GameObject("CoreFlash");
             go.transform.SetParent(transform, false);
             _coreFlash = go.AddComponent<ParticleSystem>();
+            _coreFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
             var main = _coreFlash.main;
             main.loop = false;
@@ -90,8 +91,6 @@ namespace Resonance.Combat.Weapons
             renderer.renderMode = ParticleSystemRenderMode.Stretch;
             renderer.lengthScale = 6f;
             renderer.material = CreateAdditiveMaterial(settings.flashColor);
-
-            _coreFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
         private void BuildSparks()
@@ -99,6 +98,7 @@ namespace Resonance.Combat.Weapons
             var go = new GameObject("Sparks");
             go.transform.SetParent(transform, false);
             _sparks = go.AddComponent<ParticleSystem>();
+            _sparks.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
             var main = _sparks.main;
             main.loop = false;
@@ -134,8 +134,6 @@ namespace Resonance.Combat.Weapons
             renderer.lengthScale = 4f;
             renderer.material = CreateAdditiveMaterial(new Color(1f, 0.85f, 0.4f));
             renderer.trailMaterial = CreateAdditiveMaterial(new Color(1f, 0.7f, 0.2f));
-
-            _sparks.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
         private void BuildSmoke()
@@ -143,6 +141,7 @@ namespace Resonance.Combat.Weapons
             var go = new GameObject("Smoke");
             go.transform.SetParent(transform, false);
             _smoke = go.AddComponent<ParticleSystem>();
+            _smoke.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
             var main = _smoke.main;
             main.loop = false;
@@ -181,8 +180,6 @@ namespace Resonance.Combat.Weapons
 
             var renderer = _smoke.GetComponent<ParticleSystemRenderer>();
             renderer.material = CreateAlphaMaterial();
-
-            _smoke.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
         // ─── Refresh (settings hot-swap) ──────────────────────────────────────────
