@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Resonance.Helper;
 using Resonance.NetworkDespawner;
 using Resonance.PlayerController;
 
@@ -51,7 +52,7 @@ namespace Resonance.UI
 
         public void Toggle()
         {
-            PlayerState playerState = FindObjectOfType<PlayerState>();
+            PlayerState playerState = OwnerFinder.FindFirstOwnedObjectByType<PlayerState>();
 
             if (!escMenuPanel.activeSelf && playerState != null && playerState.IsMatchFrozen())
                 return;
