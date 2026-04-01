@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Resonance.Audio
@@ -12,10 +11,6 @@ namespace Resonance.Audio
         [SerializeField] private float defaultDuration = 3f;
         [SerializeField] private float propagationSpeed = 50f;
         [SerializeField] private float baseWaveDistance = 150f;
-
-        [Header("Registration Delay")]
-        [Tooltip("Delay before sampling bus intensity, to let Wwise meter RTPCs catch up. Should match AudioBusMonitor update interval.")]
-        [SerializeField] private float registrationDelay = 0.05f;
 
         private List<AudioSourceData> activeSources = new List<AudioSourceData>();
         private readonly System.Predicate<AudioSourceData> isExpired = source => source.IsExpired();
@@ -41,13 +36,6 @@ namespace Resonance.Audio
         {
             if (duration < 0f)
                 duration = defaultDuration;
-
-            StartCoroutine(RegisterSoundDelayed(position, duration, registrationDelay));
-        }
-
-        private IEnumerator RegisterSoundDelayed(Vector3 position, float duration, float delay)
-        {
-            yield return new WaitForSeconds(delay);
 
 #if !UNITY_SERVER
             float intensity = AudioBusMonitor.Instance != null

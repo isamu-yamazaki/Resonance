@@ -93,12 +93,18 @@ namespace Resonance.Audio
                 landingEvent.Post(gameObject);
 
                 if (AudioSourceTracker.Instance != null)
-                    AudioSourceTracker.Instance.RegisterSound(transform.position, 0.5f);
+                    Invoke(nameof(RegisterLanding), 0.05f);
             }
 #endif
         }
 
 #if !UNITY_SERVER
+        private void RegisterLanding()
+        {
+            if (AudioSourceTracker.Instance != null)
+                AudioSourceTracker.Instance.RegisterSound(transform.position, 0.5f);
+        }
+
         void DetectSurface()
         {
             Vector3 origin = transform.position + characterController.center;

@@ -67,6 +67,7 @@ namespace Resonance.Audio
             }
         }
 
+
         protected override void OnDespawned(bool asServer)
         {
             base.OnDespawned(asServer);
@@ -96,10 +97,13 @@ namespace Resonance.Audio
 
         private IEnumerator ScheduleVisibilityEvaluation()
         {
+            // visibility evaluation can only happen on the server/host
             if (!isServer || isVisibilityEvaluationScheduled)
+            {
                 yield break;
-
+            }
             isVisibilityEvaluationScheduled = true;
+
             yield return new WaitForSeconds(visibilityEvaluationSchedulingCooldown);
             EvaluateVisibility();
             isVisibilityEvaluationScheduled = false;
@@ -108,13 +112,17 @@ namespace Resonance.Audio
         private IEnumerator ServerEvaluateVisibilityLoop()
         {
             if (!isServer)
+            {
                 yield break;
-
+            }
             while (true)
             {
+                // mostly for the purpose of detaching observers
                 yield return new WaitForSeconds(20);
                 if (observers.Count > 0)
+                {
                     EvaluateVisibility();
+                }
             }
         }
 
@@ -156,8 +164,9 @@ namespace Resonance.Audio
         public void SetNearestAudioSourceOnServer(AudioSourceData source)
         {
             if (source != null)
+            {
                 StartCoroutine(ScheduleVisibilityEvaluation());
-
+            }
             clientReportedSource = source;
         }
 
@@ -165,8 +174,9 @@ namespace Resonance.Audio
         public void SetExternalIntensity(float intensity)
         {
             if (intensity > 0)
+            {
                 StartCoroutine(ScheduleVisibilityEvaluation());
-
+            }
             externalIntensity = Mathf.Clamp01(intensity);
         }
 
@@ -178,17 +188,12 @@ namespace Resonance.Audio
                 float sourceIntensity = clientReportedSource.GetCurrentIntensity();
                 float waveMaxDistance = AudioSourceTracker.Instance.BaseWaveDistance * clientReportedSource.PeakIntensity;
                 float distanceAttenuation = 1f - Mathf.Clamp01(distance / waveMaxDistance);
+
                 targetIntensity = Mathf.Clamp01(sourceIntensity * distanceAttenuation);
             }
             else
             {
-#if !UNITY_SERVER
-                targetIntensity = AudioBusMonitor.Instance != null
-                    ? AudioBusMonitor.Instance.GetBusIntensity(BusType.SFX)
-                    : 0f;
-#else
                 targetIntensity = 0f;
-#endif
             }
 
             if (targetIntensity < threshold)
