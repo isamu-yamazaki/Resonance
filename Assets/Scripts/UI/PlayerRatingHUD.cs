@@ -18,7 +18,9 @@ public class PlayerRatingHUD : MonoBehaviour
     private float _displayedRating;
     private Coroutine _countUpCoroutine;
     private Coroutine _pulseCoroutine;
+    private Coroutine _deltaCoroutine;
     private CanvasGroup _deltaCanvasGroup;
+    private Vector3 _deltaStartPos;
     
     private void Start()
     {
@@ -40,6 +42,7 @@ public class PlayerRatingHUD : MonoBehaviour
         viewModel.RatingDelta.ChangeEvent += OnDeltaChanged;
         
         _deltaCanvasGroup.alpha = 0f;
+        _deltaStartPos = deltaText.rectTransform.anchoredPosition3D;
     }
 
     private void OnDisable()
@@ -66,9 +69,11 @@ public class PlayerRatingHUD : MonoBehaviour
     private void OnDeltaChanged(float delta)
     {
         if (delta == 0f) return;
-        StartCoroutine(ShowDelta(delta));
 
-        // Only pulse on gains, not losses
+        if (_deltaCoroutine != null)
+            StopCoroutine(_deltaCoroutine);
+        _deltaCoroutine = StartCoroutine(ShowDelta(delta));
+
         if (delta > 0f)
         {
             if (_pulseCoroutine != null)
@@ -129,10 +134,9 @@ public class PlayerRatingHUD : MonoBehaviour
 
     private IEnumerator ShowDelta(float delta)
     {
+        deltaText.rectTransform.anchoredPosition3D = _deltaStartPos;
         deltaText.text = delta > 0 ? $"+{Mathf.RoundToInt(delta)}" : Mathf.RoundToInt(delta).ToString();
         deltaText.color = delta > 0 ? Color.green : Color.red;
-
-        Vector3 startPos = deltaText.rectTransform.anchoredPosition3D;
         _deltaCanvasGroup.alpha = 1f;
 
         float elapsed = 0f;
@@ -143,11 +147,11 @@ public class PlayerRatingHUD : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
             _deltaCanvasGroup.alpha = 1f - t;
-            deltaText.rectTransform.anchoredPosition3D = startPos + Vector3.up * (t * 30f);
+            deltaText.rectTransform.anchoredPosition3D = _deltaStartPos + Vector3.up * (t * 30f);
             yield return null;
         }
 
         _deltaCanvasGroup.alpha = 0f;
-        deltaText.rectTransform.anchoredPosition3D = startPos;
+        deltaText.rectTransform.anchoredPosition3D = _deltaStartPos;
     }
 }
