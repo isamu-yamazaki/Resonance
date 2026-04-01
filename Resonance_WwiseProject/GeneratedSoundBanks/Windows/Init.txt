@@ -4,7 +4,6 @@ Game Parameter	ID	Name			Wwise Object Path	Notes
 	4004954295	Enclosure			\Default Work Unit\Enclosure	
 
 Audio Bus	ID	Name			Wwise Object Path	Notes
-	247557814	Foley			\Default Work Unit\Master Audio Bus\Foley	
 	393239870	SFX			\Default Work Unit\Master Audio Bus\SFX	
 	1229948536	Environment			\Default Work Unit\Master Audio Bus\Environment	
 	1551306167	UI			\Default Work Unit\Master Audio Bus\UI	
@@ -16,7 +15,6 @@ Auxiliary Bus	ID	Name			Wwise Object Path	Notes
 	2783051634	Reverb_Master			\Default Work Unit\Master Audio Bus\Reverb_Master	
 
 Effect plug-ins	ID	Name	Type				Notes
-	258589154	Meter (Custom)	Wwise Meter			
 	462317545	Meter (Custom)	Wwise Meter			
 	538595301	Meter (Custom)	Wwise Meter			
 	551947351	Meter (Custom)	Wwise Meter			

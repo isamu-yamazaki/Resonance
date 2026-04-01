@@ -73,39 +73,6 @@
 								</ObjectList>
 							</ObjectLists>
 						</Bus>
-						<Bus Name="Foley" ID="{24ADE9C4-BC2E-4743-98CF-EE06AF5D5543}">
-							<PropertyList>
-								<Property Name="BusVolume" Type="Real64">
-									<ValueList>
-										<Value>-6</Value>
-									</ValueList>
-								</Property>
-							</PropertyList>
-							<ReferenceList>
-								<Reference Name="UserAuxSend0">
-									<ObjectRef Name="Reverb_Master" ID="{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
-								</Reference>
-							</ReferenceList>
-							<ObjectLists>
-								<ObjectList Name="Effects">
-									<EffectSlot Name="" ID="{6E29A114-9D2D-4E6A-872F-B2F38BD60CBB}" ShortID="164246851">
-										<ReferenceList>
-											<Reference Name="Effect">
-												<Custom>
-													<Effect Name="Meter (Custom)" ID="{A34A176F-5F08-403A-8349-001190F96737}" ShortID="258589154" PluginName="Wwise Meter" CompanyID="0" PluginID="129" PluginType="3">
-														<ReferenceList>
-															<Reference Name="GameParameter">
-																<ObjectRef Name="Meter_Foley_Intensity" ID="{DD8BD260-2D5B-4650-98EC-464F50A7CA9B}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
-															</Reference>
-														</ReferenceList>
-													</Effect>
-												</Custom>
-											</Reference>
-										</ReferenceList>
-									</EffectSlot>
-								</ObjectList>
-							</ObjectLists>
-						</Bus>
 						<Bus Name="UI" ID="{0C9C6BEC-3135-422B-BDB8-AD709CF8F3FB}">
 							<PropertyList>
 								<Property Name="BusVolume" Type="Real64">

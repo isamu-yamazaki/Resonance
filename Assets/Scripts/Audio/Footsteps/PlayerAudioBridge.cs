@@ -8,13 +8,18 @@ namespace Resonance.PlayerController
     public class PlayerAudioBridge : MonoBehaviour
     {
         [Header("Audio Components")]
-        [SerializeField] private FootstepController  footstepController;
+        [SerializeField] private FootstepController footstepController;
 
         public void PlayFootstep()
         {
             if (footstepController != null)
             {
                 footstepController.PlayFootstep();
+
+#if !UNITY_SERVER
+                if (AudioSourceTracker.Instance != null)
+                    AudioSourceTracker.Instance.RegisterSound(transform.position, 0.3f);
+#endif
             }
         }
     }

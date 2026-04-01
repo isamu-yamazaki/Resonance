@@ -74,9 +74,6 @@ namespace Resonance.Audio
             if (footstepEvent != null && footstepEvent.IsValid())
             {
                 footstepEvent.Post(gameObject);
-
-                if (AudioSourceTracker.Instance != null)
-                    AudioSourceTracker.Instance.RegisterSound(transform.position, 0.3f);
             }
 #endif
         }

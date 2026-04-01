@@ -10,20 +10,12 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{40136EB6-01F9-7346-128F-2D8DB420F22E}",
+    "Hash": "{132B9EF5-46A1-C7FB-0097-D00201D86C33}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
      "Custom": [
-      {
-       "Id": "258589154",
-       "Name": "Meter (Custom)",
-       "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Foley\\[Effect Slot [0]: (Meter)]\\Meter (Custom)",
-       "GUID": "{A34A176F-5F08-403A-8349-001190F96737}",
-       "LibName": "Wwise Meter",
-       "LibId": "8454147"
-      },
       {
        "Id": "462317545",
        "Name": "Meter (Custom)",
@@ -77,27 +69,6 @@
      ]
     },
     "Busses": [
-     {
-      "Id": "247557814",
-      "Name": "Foley",
-      "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Foley",
-      "GUID": "{24ADE9C4-BC2E-4743-98CF-EE06AF5D5543}",
-      "PluginRefs": {
-       "Custom": [
-        {
-         "Id": "258589154"
-        }
-       ]
-      },
-      "AuxBusRefs": [
-       {
-        "Id": "2783051634",
-        "Name": "Reverb_Master",
-        "ObjectPath": "\\Busses\\Default Work Unit\\Master Audio Bus\\Reverb_Master",
-        "GUID": "{C8A2C4AE-C9BE-484B-BE2E-F56C3E08FF4D}"
-       }
-      ]
-     },
      {
       "Id": "393239870",
       "Name": "SFX",
@@ -309,6 +280,6 @@
     ]
    }
   ],
-  "FileHash": "{4EFF00CF-D89E-C52A-6075-41544D0AB97F}"
+  "FileHash": "{5A265F58-66A6-8413-BE39-19E58B1E46C5}"
  }
 }
