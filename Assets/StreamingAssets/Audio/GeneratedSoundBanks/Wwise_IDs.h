@@ -21,6 +21,9 @@ namespace AK
         static const AkUniqueID PLAY_FOOTSTEP = 1602358412U;
         static const AkUniqueID PLAY_GLASSSHARDLAND = 278146749U;
         static const AkUniqueID PLAY_GLASSSHATTER = 2387432645U;
+        static const AkUniqueID PLAY_GRAPPLER_RELEASE = 2981775873U;
+        static const AkUniqueID PLAY_GRAPPLER_SHOOT = 1098674603U;
+        static const AkUniqueID PLAY_GRAPPLER_TRAVEL = 1243736002U;
         static const AkUniqueID PLAY_INDOORAMBIENCE = 1529325343U;
         static const AkUniqueID PLAY_LANDING = 2323405115U;
         static const AkUniqueID PLAY_LMG_FIRE = 1166794921U;
@@ -44,6 +47,7 @@ namespace AK
         static const AkUniqueID PLAY_UI_SHOP_ITEM_SELL = 2638998638U;
         static const AkUniqueID PLAY_UI_SHOP_OPEN = 2720966806U;
         static const AkUniqueID PLAY_UI_SHOP_PAGE_SWITCH = 1681007094U;
+        static const AkUniqueID STOP_GRAPPLER_TRAVEL = 2526375596U;
         static const AkUniqueID STOP_REACTIVE_FEEDBACK = 3211783545U;
         static const AkUniqueID STOP_TRAIN_MOVING = 130138219U;
     } // namespace EVENTS

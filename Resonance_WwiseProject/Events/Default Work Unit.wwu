@@ -383,6 +383,57 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Grappler" ID="{EA5AB27B-0F3B-4D80-80EA-11BE74AABD7E}" ShortID="783007773">
+					<ChildrenList>
+						<Event Name="Play_Grappler_Shoot" ID="{FF2E59E3-A78E-4903-A04A-64489E7253DC}">
+							<ChildrenList>
+								<Action Name="" ID="{CE4D8359-EBC8-49FD-8FDC-FABD799A3DC8}" ShortID="272235482">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_grappler_shoot" ID="{8D13C9C2-DB2E-4CD6-9BB5-7070624725C8}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Grappler_Travel" ID="{A9A9C1B3-DDE3-49F7-B544-B5248929DCA0}">
+							<ChildrenList>
+								<Action Name="" ID="{BE052E2D-3942-4468-A947-47A245CACC8B}" ShortID="820070137">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_grappler_travel_loop" ID="{AF9AF06D-F6C7-4CDC-BE42-B7D63358369A}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Stop_Grappler_Travel" ID="{6B7C0CD9-4727-4169-AB1A-7A06339CCE88}">
+							<ChildrenList>
+								<Action Name="" ID="{4CBF7DC3-0BEC-4B45-ABF5-6E32CF3B504E}" ShortID="368918211">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_grappler_travel_loop" ID="{AF9AF06D-F6C7-4CDC-BE42-B7D63358369A}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Grappler_Release" ID="{8B577926-546D-48C6-B928-333180CFBBDD}">
+							<ChildrenList>
+								<Action Name="" ID="{B431E632-E274-4BF0-8497-25876F3F8861}" ShortID="55473693">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_grappler_release" ID="{BD44F262-C00A-431F-AF81-76C27B72DBB7}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

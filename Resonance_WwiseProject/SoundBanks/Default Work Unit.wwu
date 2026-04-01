@@ -6,6 +6,7 @@
 				<SoundBank Name="Main_Soundbank" ID="{95F38882-910E-47AF-A1A2-7B0E207EEBA0}">
 					<ObjectInclusionList>
 						<ObjectRef Name="Play_Revolver_Equip" ID="{DB37FDD7-37CB-40B1-8796-8675D4DC5F7A}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Grappler_Travel" ID="{6B7C0CD9-4727-4169-AB1A-7A06339CCE88}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Revolver_Fire" ID="{0CDD1FD2-CE56-417E-AE61-0671C3176504}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Shop_Close" ID="{C7428F7C-B78A-4184-839D-F24204314D95}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Revolver_Reload" ID="{26C64E56-4751-419A-86A3-18C37374BB38}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
@@ -28,6 +29,9 @@
 						<ObjectRef Name="Play_BaseHandgun_Fire" ID="{A9498D83-6233-4793-8F13-E647504F5ACF}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Shop_Open" ID="{54C48AD4-81F3-47F3-B99D-CCBE9E95B9F6}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Shop_Item_Sell" ID="{E88DF033-C906-4838-AF88-0DDCC58ED39C}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Grappler_Release" ID="{8B577926-546D-48C6-B928-333180CFBBDD}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Grappler_Shoot" ID="{FF2E59E3-A78E-4903-A04A-64489E7253DC}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Grappler_Travel" ID="{A9A9C1B3-DDE3-49F7-B544-B5248929DCA0}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Stop_Train_Moving" ID="{5C6A69E7-5734-4A59-9855-DB5FEB581542}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Button_Hover" ID="{85C07B17-A696-4AB1-8279-F3DB39B26133}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Train_Moving" ID="{3C5E15D5-9DF8-4C03-9A2A-C8C585369995}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>

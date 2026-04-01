@@ -6959,6 +6959,7 @@
 						</Sound>
 						<Sound Name="sfx_combat_grappler_travel_loop" ID="{AF9AF06D-F6C7-4CDC-BE42-B7D63358369A}" ShortID="242228340">
 							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>-3</Value>
@@ -7076,6 +7077,9 @@
 							</ReferenceList>
 							<ChildrenList>
 								<AudioFileSource Name="sfx_combat_grappler_travel_loop" ID="{37D51C46-DB00-4538-B1E0-56A2AF090F74}">
+									<PropertyList>
+										<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+									</PropertyList>
 									<Language>SFX</Language>
 									<AudioFile>sfx_combat_grappler_travel_loop.wav</AudioFile>
 									<MediaIDList>
