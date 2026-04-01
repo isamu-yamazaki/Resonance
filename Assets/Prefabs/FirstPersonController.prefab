@@ -568,6 +568,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca641dc478de5f4fae60cf9f7cd1016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _animator: {fileID: 186030322157751487}
   _networkAnimator: {fileID: 5378828892324781899}
   locomotionBlendSpeed: 4
@@ -1172,6 +1181,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4ce0fb1f407f3543b800c5c2def9b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteract
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   player: {fileID: 6809321870534573542}
 --- !u!114 &-6030594833308951699
 MonoBehaviour:
@@ -1218,6 +1236,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852536295ce38437fa9654726308ca8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.MatchMovementLock
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
 --- !u!114 &3679427490564648025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1316,7 +1343,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  sonarRevealMaterial: {fileID: 0}
+  sonarRevealMaterial: {fileID: 2100000, guid: 58159700c0f274927953c5a5c1721402, type: 2}
   snapshotDuration: 1
   snapshotInterval: 1
   snapshotCount: 3
