@@ -637,6 +637,7 @@ MonoBehaviour:
   ghostLifetime: 1
   maxGhosts: 10
   enableGhostLinger: 0
+  ghostSpawningDelaySeconds: 0.5
   colorGradient:
     serializedVersion: 2
     key0: {r: 0.3160377, g: 1, b: 0.7887946, a: 1}
@@ -1368,6 +1369,22 @@ MonoBehaviour:
   grappleLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  shootEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: ccfeef1468a60b040a86648f65fb5345, type: 2}
+  travelLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 0542d3919461d10409bca7ea4847ed86, type: 2}
+  stopTravelEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 8ad66c9abd2d8c342b507553d76153c0, type: 2}
+  releaseEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 24e2f969f6ffb554eb2a07b7230a0745, type: 2}
 --- !u!114 &-9158808936870234664
 MonoBehaviour:
   m_ObjectHideFlags: 0
