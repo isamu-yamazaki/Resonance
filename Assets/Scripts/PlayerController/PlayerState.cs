@@ -1,10 +1,11 @@
 using System;
+using PurrNet;
 using Resonance.Combat.Weapons.Enums;
 using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    public class PlayerState : MonoBehaviour
+    public class PlayerState : NetworkBehaviour
     {
         [field: SerializeField]
         public PlayerMovementState CurrentPlayerMovementState { get; private set; } = PlayerMovementState.Idling;
@@ -19,6 +20,7 @@ namespace Resonance.PlayerController
 
         public void SetPlayerMovementState(PlayerMovementState playerMovementState)
         {
+            if (!isOwner) return;
             CurrentPlayerMovementState = playerMovementState;
         }
 
