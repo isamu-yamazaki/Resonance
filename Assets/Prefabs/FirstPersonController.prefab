@@ -637,6 +637,7 @@ MonoBehaviour:
   ghostLifetime: 1
   maxGhosts: 10
   enableGhostLinger: 0
+  ghostSpawningDelaySeconds: 0.5
   colorGradient:
     serializedVersion: 2
     key0: {r: 0.3160377, g: 1, b: 0.7887946, a: 1}
@@ -1436,4 +1437,4 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  startingBalance: 50000
+  startingBalance: 5000
