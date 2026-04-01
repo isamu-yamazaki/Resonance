@@ -1,4 +1,5 @@
 using PurrNet;
+using Resonance.Audio;
 using Resonance.Player;
 using Resonance.PlayerController;
 using UnityEngine;
@@ -155,6 +156,9 @@ namespace Resonance.Combat.Augments
 
             if (travelLoopEvent != null && travelLoopEvent.IsValid())
                 travelLoopEvent.Post(gameObject);
+
+            if (AudioSourceTracker.Instance != null)
+                AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
 #endif
         }
 
