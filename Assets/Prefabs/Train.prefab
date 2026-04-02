@@ -286,6 +286,7 @@ GameObject:
   - component: {fileID: -4140189640091101283}
   - component: {fileID: -3105654030807264256}
   - component: {fileID: 6773602070252493702}
+  - component: {fileID: 6640094424697639188}
   m_Layer: 8
   m_Name: Train
   m_TagString: Train
@@ -525,6 +526,22 @@ MonoBehaviour:
   _reactiveLayer:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6640094424697639188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3592926597777073106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a474f161979b1d48b7e6d912cb2e4d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainDoorController
+  _doorAnimator: {fileID: 921814476180898830}
+  _trainController: {fileID: 3448999368842045501}
+  _openTriggerName: OpenDoors
+  _closeTriggerName: CloseDoors
 --- !u!1 &5660052391384256175
 GameObject:
   m_ObjectHideFlags: 0
@@ -1290,6 +1307,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: afe4fd837c56a6e4f9b63bbdda86d2dc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3420933665506472126}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: afe4fd837c56a6e4f9b63bbdda86d2dc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 921814476180898830}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: afe4fd837c56a6e4f9b63bbdda86d2dc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6185881734160576262}
   m_SourcePrefab: {fileID: 100100000, guid: afe4fd837c56a6e4f9b63bbdda86d2dc, type: 3}
 --- !u!1 &8409097135226629626 stripped
 GameObject:
@@ -1318,6 +1341,53 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7904610056416861863, guid: afe4fd837c56a6e4f9b63bbdda86d2dc, type: 3}
+--- !u!95 &921814476180898830
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8409097135226629626}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4c2f5c8e85cdc1e46a58d7ca46f45ebe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6185881734160576262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8409097135226629626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7b598b9d8509d64abb9fdaf07fa3f6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkAnimator
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _animator: {fileID: 921814476180898830}
+  _ownerAuth: 1
+  _autoSyncParameters: 1
+  _dontSyncParameters: []
 --- !u!4 &9221346625039923008 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: afe4fd837c56a6e4f9b63bbdda86d2dc, type: 3}
