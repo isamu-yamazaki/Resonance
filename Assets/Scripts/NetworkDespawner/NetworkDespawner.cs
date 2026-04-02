@@ -13,6 +13,10 @@ namespace Resonance.NetworkDespawner
 
         private void Awake()
         {
+            // in case the user gets sent here randomly
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
             networkManager = FindFirstObjectByType<NetworkManager>();
 
             Debug.Log("[NetworkDespawner] Despawning network objects");

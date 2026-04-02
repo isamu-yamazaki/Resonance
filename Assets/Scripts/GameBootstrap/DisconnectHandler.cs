@@ -48,7 +48,7 @@ namespace Resonance.GameBootstrap
         {
             networkManager.onClientConnectionState -= OnClientConnectionState;
         }
-        
+
         private async void OnClientConnectionState(ConnectionState state)
         {
             if (state == ConnectionState.Disconnected)
@@ -62,6 +62,8 @@ namespace Resonance.GameBootstrap
             if (!noDisconnectScenes.Contains(SceneManager.GetActiveScene().name))
             {
                 await Task.Delay(1000);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
                 SceneManager.LoadScene(disconnectedScene);
             }
         }
