@@ -1,12 +1,19 @@
+using PurrNet;
 using Resonance.Helper;
 using UnityEngine;
 using Resonance.Player;
 
 namespace Resonance.PlayerController
 {
-    public class OverdriveAbility : MonoBehaviour
+    public class OverdriveAbility : NetworkBehaviour
     {
         #region Class Variables
+        [Header("Audio")]
+#if !UNITY_SERVER
+        [SerializeField] private AK.Wwise.Event activateEvent;
+        [SerializeField] private AK.Wwise.Event activateWorldEvent;
+#endif
+
         [Header("Overdrive Settings")]
         [SerializeField] private float overdriveDuration = 8f;
         [SerializeField] private float overdriveCooldown = 30f;
@@ -140,6 +147,12 @@ namespace Resonance.PlayerController
         {
             SetState(OverdriveState.Active);
             DurationTimeRemaining = overdriveDuration;
+
+#if !UNITY_SERVER
+            if (activateEvent != null && activateEvent.IsValid())
+                activateEvent.Post(gameObject);
+#endif
+            RequestActivateWorldOnServer();
             
             if (_playerStats != null)
             {
@@ -193,6 +206,25 @@ namespace Resonance.PlayerController
             enabled = true;
             Debug.Log("[OverdriveAbility] Component resumed after respawn");
         }
+        #endregion
+
+        #region Audio RPCs
+
+        [ServerRpc]
+        private void RequestActivateWorldOnServer()
+        {
+            BroadcastActivateWorld();
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastActivateWorld()
+        {
+#if !UNITY_SERVER
+            if (activateWorldEvent != null && activateWorldEvent.IsValid())
+                activateWorldEvent.Post(gameObject);
+#endif
+        }
+
         #endregion
 
         public enum OverdriveState
