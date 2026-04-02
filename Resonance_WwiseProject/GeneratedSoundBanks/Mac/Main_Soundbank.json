@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{631667D5-F27E-B486-66E7-F138BE353058}",
+    "Hash": "{C9D9FCA6-202B-C079-AC79-E573720E17B7}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -517,7 +517,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_combat_overdrive_activation.wav",
-      "CachePath": "43/{4356B9EF-3C4C-CE15-13B0-03F816C4543D}.wem"
+      "CachePath": "BB/{BBA11EC6-03D0-6E8A-43C5-85BE3BC91AF6}.wem"
      },
      {
       "Id": "941471142",
@@ -533,7 +533,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_combat_overdrive_activation_world.wav",
-      "CachePath": "9C/{9CC7E43C-5FCF-6BCF-39F5-5360B3FDD682}.wem"
+      "CachePath": "00/{00DA7E52-03EC-4877-7708-90BD31688F53}.wem"
      },
      {
       "Id": "956380320",
@@ -1446,6 +1446,6 @@
     ]
    }
   ],
-  "FileHash": "{76FC000B-098B-4F8C-3C4B-AB882813B1EF}"
+  "FileHash": "{F1EE4E30-FA3D-8B83-9A7C-30CC52E5CDCC}"
  }
 }
