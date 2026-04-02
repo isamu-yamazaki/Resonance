@@ -121,9 +121,9 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	880115635	sfx_foley_footstep_concrete_run_05	.cache\76\{7660372E-464B-3F1B-D178-3C2A06FA5906}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Concrete\sfx_foley_footstep_concrete_run_05		47520
 	901815095	sfx_props_glass_land_01	.cache\30\{301B831C-3A91-E1F0-AAAB-28F743CB28E3}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_01		54096
 	909837310	sfx_foley_footstep_metal_run_01	.cache\52\{52A1F936-1F9A-9F66-629C-32080999EE94}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Metal\sfx_foley_footstep_metal_run_01		50020
-	918221840	sfx_combat_overdrive_activation	.cache\CD\{CD02B1ED-1E05-F352-1184-9EDCF11D9E01}.wem		\Containers\Default Work Unit\Overdrive\sfx_combat_overdrive_activation		193596
+	918221840	sfx_combat_overdrive_activation	.cache\43\{4356B9EF-3C4C-CE15-13B0-03F816C4543D}.wem		\Containers\Default Work Unit\Overdrive\sfx_combat_overdrive_activation		178904
 	941471142	sfx_world_audioreactive_loop	.cache\CA\{CAA224DB-658F-08EA-552A-D9F55F9B8843}.wem		\Containers\Default Work Unit\sfx_world_audioreactive_loop		1027924
-	942573504	sfx_combat_overdrive_activation_world	.cache\5B\{5B0F34D2-6FF6-E37A-0E53-E6D2B2F7CE37}.wem		\Containers\Default Work Unit\Overdrive\sfx_combat_overdrive_activation_world		186096
+	942573504	sfx_combat_overdrive_activation_world	.cache\9C\{9CC7E43C-5FCF-6BCF-39F5-5360B3FDD682}.wem		\Containers\Default Work Unit\Overdrive\sfx_combat_overdrive_activation_world		186096
 	956380320	sfx_foley_footstep_grass_land_01	.cache\80\{8072AEB0-0AC3-B580-A73F-22AAEF1B109B}.wem		\Containers\Default Work Unit\Locomotion\Landing\Grass\sfx_foley_footstep_grass_land_01		83296
 	986281526	sfx_combat_sonardisc_pulse	.cache\3E\{3EA334D5-963F-A09A-9E5E-F510AE7D7E90}.wem		\Containers\Default Work Unit\SonarDisc\sfx_combat_sonardisc_pulse		148772
 	989939147	sfx_combat_grappler_travel_loop	.cache\F9\{F9FE24C4-767F-4FED-99FF-CE5DD523B054}.wem		\Containers\Default Work Unit\Grappler\sfx_combat_grappler_travel_loop		186096

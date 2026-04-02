@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{67F63A86-A6D9-517B-01AD-1F6B1EE1EAA2}",
+    "Hash": "{631667D5-F27E-B486-66E7-F138BE353058}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -517,7 +517,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_combat_overdrive_activation.wav",
-      "CachePath": "CD/{CD02B1ED-1E05-F352-1184-9EDCF11D9E01}.wem"
+      "CachePath": "43/{4356B9EF-3C4C-CE15-13B0-03F816C4543D}.wem"
      },
      {
       "Id": "941471142",
@@ -533,7 +533,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_combat_overdrive_activation_world.wav",
-      "CachePath": "5B/{5B0F34D2-6FF6-E37A-0E53-E6D2B2F7CE37}.wem"
+      "CachePath": "9C/{9CC7E43C-5FCF-6BCF-39F5-5360B3FDD682}.wem"
      },
      {
       "Id": "956380320",
@@ -1044,8 +1044,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Overdrive\\Play_Overdrive_Activate",
       "GUID": "{0D8C9206-F140-4602-B3A3-C5D2563DF1EB}",
       "DurationType": "OneShot",
-      "DurationMin": "1.0078125",
-      "DurationMax": "1.0078125",
+      "DurationMin": "0.70538086",
+      "DurationMax": "0.70538086",
       "MediaRefs": [
        {
         "Id": "918221840"
@@ -1446,6 +1446,6 @@
     ]
    }
   ],
-  "FileHash": "{4BE96893-792A-0179-54A3-1C0C8DE7A764}"
+  "FileHash": "{76FC000B-098B-4F8C-3C4B-AB882813B1EF}"
  }
 }

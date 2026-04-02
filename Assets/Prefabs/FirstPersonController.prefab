@@ -555,6 +555,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50898351a65ff4848b3a068352164aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerState
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   <CurrentPlayerMovementState>k__BackingField: 0
 --- !u!114 &1227219239304027150
 MonoBehaviour:
@@ -614,6 +623,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c38e9634aee9db4684b50e737ad0cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveAbility
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  activateEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: c5b3619e4bff0c44d8779ca1e0d84562, type: 2}
+  activateWorldEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 7d7f96cb21ef4204eb7d687c634973e6, type: 2}
   overdriveDuration: 8
   overdriveCooldown: 30
   overdriveSpeedMultiplier: 1.5

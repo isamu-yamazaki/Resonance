@@ -7219,9 +7219,14 @@
 					<ChildrenList>
 						<Sound Name="sfx_combat_overdrive_activation" ID="{5DED8836-54A8-49C4-9AE2-5DD358C4C030}" ShortID="122541148">
 							<PropertyList>
+								<Property Name="Pitch" Type="int32">
+									<ValueList>
+										<Value>481</Value>
+									</ValueList>
+								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-2</Value>
+										<Value>-4</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -7235,6 +7240,12 @@
 							</ReferenceList>
 							<ChildrenList>
 								<AudioFileSource Name="sfx_combat_overdrive_activation" ID="{80527656-6F97-4D25-887A-50EC02563B5C}">
+									<PropertyList>
+										<Property Name="FadeInDuration" Type="Real64" Value="0.00653211805555556"/>
+										<Property Name="FadeOutDuration" Type="Real64" Value="0.0223958333333333"/>
+										<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+										<Property Name="TrimBegin" Type="Real64" Value="0.0765190972222222"/>
+									</PropertyList>
 									<Language>SFX</Language>
 									<AudioFile>sfx_combat_overdrive_activation.wav</AudioFile>
 									<MediaIDList>
@@ -7366,6 +7377,11 @@
 							</ReferenceList>
 							<ChildrenList>
 								<AudioFileSource Name="sfx_combat_overdrive_activation_world" ID="{80961801-82D3-4AFB-BFD1-546000E4DD16}">
+									<PropertyList>
+										<Property Name="FadeInDuration" Type="Real64" Value="0.00627893518518519"/>
+										<Property Name="FadeOutDuration" Type="Real64" Value="0.0161458333333334"/>
+										<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+									</PropertyList>
 									<Language>SFX</Language>
 									<AudioFile>sfx_combat_overdrive_activation_world.wav</AudioFile>
 									<MediaIDList>
