@@ -18,8 +18,10 @@ namespace Resonance.Train
 
         [Header("Station Behaviour")]
         [SerializeField] private float _stationStopDuration = 15f;
+        [SerializeField] private float _preDepartWarningTime = 3f;
 
         public event Action<int, TrainStation> OnArrivedAtStation;
+        public event Action<int, TrainStation> OnPreDepart;
         public event Action<int, TrainStation> OnDepartedStation;
         public event Action<int, TrainStation> OnNextStationChanged;
         public event Action<TrainState> OnStateChanged;
@@ -37,6 +39,7 @@ namespace Resonance.Train
             : string.Empty;
 
         private float _stopTimer = 0f;
+        private bool _preDepartFired = false;
         private Vector3 _lastPosition = Vector3.zero;
 
         private float Acceleration => _accelerationTime > 0f ? _maxSpeed / _accelerationTime : _maxSpeed;
@@ -56,7 +59,7 @@ namespace Resonance.Train
             Direction = TrainDirection.Forward;
 
             SetState(TrainState.StoppedAtStation);
-            _stopTimer = _stationStopDuration;
+            _stopTimer = _stationStopDuration + _preDepartWarningTime;
         }
 
         private void FixedUpdate()
@@ -83,6 +86,13 @@ namespace Resonance.Train
             MoveDirection = Vector3.zero;
 
             _stopTimer -= Time.fixedDeltaTime;
+
+            if (!_preDepartFired && _stopTimer <= _preDepartWarningTime)
+            {
+                _preDepartFired = true;
+                OnPreDepart?.Invoke(CurrentStationIndex, _stations[CurrentStationIndex]);
+            }
+
             if (_stopTimer <= 0f)
                 Depart();
         }
@@ -143,7 +153,8 @@ namespace Resonance.Train
             CurrentStationIndex = NextStationIndex;
 
             SetState(TrainState.StoppedAtStation);
-            _stopTimer = _stationStopDuration;
+            _stopTimer = _stationStopDuration + _preDepartWarningTime;
+            _preDepartFired = false;
 
             OnArrivedAtStation?.Invoke(CurrentStationIndex, _stations[CurrentStationIndex]);
             AdvanceTarget();

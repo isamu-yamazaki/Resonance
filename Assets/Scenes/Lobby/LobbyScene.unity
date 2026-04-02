@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.DefaultSceneNameSetter
   lobbyManager: {fileID: 1097043115}
-  sceneName: TB_PlaytestArena
+  sceneName: TB_RoughCut
 --- !u!1 &32129099
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,7 +1119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197424294}
   m_Layer: 0
-  m_Name: ------SKIN PREVIEW------
+  m_Name: '------SKIN PREVIEW------'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2628,7 +2628,7 @@ GameObject:
   m_Component:
   - component: {fileID: 461439340}
   m_Layer: 0
-  m_Name: ------DATA PROVIDERS------
+  m_Name: '------DATA PROVIDERS------'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7836,7 +7836,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1829748894}
   m_Layer: 0
-  m_Name: ------BUILD CONFIG------
+  m_Name: '------BUILD CONFIG------'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
