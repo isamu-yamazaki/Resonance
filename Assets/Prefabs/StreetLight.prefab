@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5895043659422687874}
   - component: {fileID: 126360018986407940}
   - component: {fileID: 2823018080716190569}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,9 +187,73 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7481094520959550317, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -7481094520959550317, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
+    - target: {fileID: -7189798786421866201, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -7189798786421866201, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
+    - target: {fileID: -6133338269934927568, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -6133338269934927568, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
+    - target: {fileID: -5523864900237696037, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -5523864900237696037, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
+    - target: {fileID: -4684675769575219879, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -4684675769575219879, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
+    - target: {fileID: -4208658899724909690, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -4208658899724909690, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
+    - target: {fileID: -1422527623800005963, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -1422527623800005963, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
       propertyPath: m_Name
       value: StreetLight
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      propertyPath: m_TagString
+      value: Metal
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
