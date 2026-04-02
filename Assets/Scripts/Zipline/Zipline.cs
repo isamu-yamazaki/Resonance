@@ -333,11 +333,11 @@ public class Zipline : MonoBehaviour, IInteractable
         {
             playerState.SetPlayerMovementState(PlayerMovementState.Falling);
 
+            Resonance.PlayerController.PlayerController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerController>();
+            pc?.ResetState();
+
             if (applyJump)
-            {
-                Resonance.PlayerController.PlayerController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerController>();
                 pc?.ApplyJumpVelocity(dismountJumpForce);
-            }
 
             // Re-show prompt if player is still within interact range
             if (interactCollider != null && interactCollider.bounds.Contains(currentPlayer.transform.position))
