@@ -55,7 +55,7 @@ namespace Resonance.Audio
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoad(gameObject);
         }
 
         private void InitializeBusData()
