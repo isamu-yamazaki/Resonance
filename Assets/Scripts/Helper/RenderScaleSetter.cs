@@ -12,6 +12,8 @@ namespace Resonance.Helper
     /// </summary>
     public class RenderScaleSetter : MonoBehaviour
     {
+        public static RenderScaleSetter Instance { get; private set; }
+
         [Range(0.25f, 1.5f)]
         [SerializeField] private float renderScale = 1f;
         [SerializeField] private UpscalingFilterSelection upscalingFilter = UpscalingFilterSelection.FSR;
@@ -23,9 +25,18 @@ namespace Resonance.Helper
         private UpscalingFilterSelection _originalUpscalingFilter;
         private float _originalFsrSharpness;
 
+        public float RenderScale => renderScale;
+
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
             DontDestroyOnLoad(this);
+
             _urpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
 
             if (_urpAsset == null)
