@@ -17,9 +17,9 @@ namespace Resonance.PlayerController
         public bool SwapSlotTwoPressed { get; private set; }
         public bool SwapWeaponPressed { get; private set; }
         public bool HealPressed { get; private set; }
-        
+
         public bool AbilityUpperPressed { get; private set; }
-        
+
         public bool AbilityLowerPressed { get; private set; }
 
         public bool ShowStatsHeld { get; private set; }
@@ -29,6 +29,9 @@ namespace Resonance.PlayerController
         private PlayerLocomotionInput _playerLocomotionInput;
         private OverdriveAbility _overdriveAbility;
         private PlayerState _playerState;
+
+        // needed for disabling correctly after PurrNet resets the attribute
+        private bool wasPreviouslyOwner;
         #endregion
 
         #region Startup
@@ -43,6 +46,7 @@ namespace Resonance.PlayerController
         {
             base.OnSpawned();
             enabled = isOwner;
+            wasPreviouslyOwner = isOwner;
 
             if (isOwner)
             {
@@ -68,7 +72,7 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (isOwner)
+            if (wasPreviouslyOwner)
             {
                 PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
                 PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(this);
@@ -217,7 +221,7 @@ namespace Resonance.PlayerController
 
             HealPressed = true;
         }
-        
+
         public void OnAbilityUpper(InputAction.CallbackContext context)
         {
             if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
