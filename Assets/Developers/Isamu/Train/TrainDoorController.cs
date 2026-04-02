@@ -1,5 +1,4 @@
 using UnityEngine;
-using Resonance.Train;
 
 namespace Resonance.Train
 {
@@ -32,27 +31,23 @@ namespace Resonance.Train
         {
             if (_trainController == null) return;
             _trainController.OnArrivedAtStation += HandleArrived;
-            _trainController.OnDepartedStation += HandleDeparted;
+            _trainController.OnPreDepart += HandlePreDepart;
         }
 
         private void OnDisable()
         {
             if (_trainController == null) return;
             _trainController.OnArrivedAtStation -= HandleArrived;
-            _trainController.OnDepartedStation -= HandleDeparted;
+            _trainController.OnPreDepart -= HandlePreDepart;
         }
 
         private void HandleArrived(int stationIndex, TrainStation station)
         {
-            if (_doorAnimator == null) return;
-            _doorAnimator.ResetTrigger(_closeTriggerHash);
             _doorAnimator.SetTrigger(_openTriggerHash);
         }
 
-        private void HandleDeparted(int stationIndex, TrainStation station)
+        private void HandlePreDepart(int stationIndex, TrainStation station)
         {
-            if (_doorAnimator == null) return;
-            _doorAnimator.ResetTrigger(_openTriggerHash);
             _doorAnimator.SetTrigger(_closeTriggerHash);
         }
     }

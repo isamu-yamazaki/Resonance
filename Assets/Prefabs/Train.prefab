@@ -335,7 +335,8 @@ MonoBehaviour:
   _accelerationTime: 4
   _decelerationTime: 3
   _arrivalTolerance: 0.15
-  _stationStopDuration: 5
+  _stationStopDuration: 10
+  _preDepartWarningTime: 5
 --- !u!114 &7082317054524908845
 MonoBehaviour:
   m_ObjectHideFlags: 0
