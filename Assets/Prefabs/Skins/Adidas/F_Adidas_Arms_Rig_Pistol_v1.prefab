@@ -49,8 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponView
   muzzle: {fileID: 5371331202588706976}
   muzzleFlash: {fileID: 6656910999452476875}
-  muzzleEmitter: {fileID: 0}
-  bodyEmitter: {fileID: 0}
+  muzzleEmitter: {fileID: 3917752165480271380}
+  bodyEmitter: {fileID: 3917752165480271380}
   casingGroundThreshold: 5
   casingLayerMask:
     serializedVersion: 2
