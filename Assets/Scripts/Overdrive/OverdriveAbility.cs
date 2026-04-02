@@ -1,3 +1,4 @@
+using System.Collections;
 using PurrNet;
 using Resonance.Audio;
 using Resonance.Helper;
@@ -182,7 +183,7 @@ namespace Resonance.PlayerController
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");
 
 #if !UNITY_SERVER
-            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 0f);
+            StartCoroutine(LerpLowPassOut(1f));
 #endif
         }
 
@@ -214,6 +215,21 @@ namespace Resonance.PlayerController
             Debug.Log("[OverdriveAbility] Component resumed after respawn");
         }
         #endregion
+
+        #if !UNITY_SERVER
+        private IEnumerator LerpLowPassOut(float duration)
+        {
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float value = Mathf.Lerp(70f, 0f, elapsed / duration);
+                AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", value);
+                yield return null;
+            }
+            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 0f);
+        }
+        #endif
 
         #region Audio RPCs
 
