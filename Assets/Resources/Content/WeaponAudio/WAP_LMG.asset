@@ -15,7 +15,7 @@ MonoBehaviour:
   fireEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 5204be878c9cdb5479927a03d38216ea, type: 2}
+    WwiseObjectReference: {fileID: 0}
   emptyTriggerEvent:
     idInternal: 0
     valueGuidInternal: 
