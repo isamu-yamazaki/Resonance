@@ -1,4 +1,5 @@
 using PurrNet;
+using Resonance.Audio;
 using Resonance.Helper;
 using UnityEngine;
 using Resonance.Player;
@@ -222,6 +223,9 @@ namespace Resonance.PlayerController
 #if !UNITY_SERVER
             if (activateWorldEvent != null && activateWorldEvent.IsValid())
                 activateWorldEvent.Post(gameObject);
+
+            if (AudioSourceTracker.Instance != null)
+                AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
 #endif
         }
 
