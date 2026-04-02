@@ -1,10 +1,11 @@
 using System;
+using PurrNet;
 using UnityEngine;
 
 namespace Resonance.Train
 {
     [DefaultExecutionOrder(-10)]
-    public class TrainController : MonoBehaviour
+    public class TrainController : NetworkBehaviour
     {
         [Header("Stations")]
         [SerializeField] private TrainStation[] _stations;
@@ -60,17 +61,20 @@ namespace Resonance.Train
 
         private void FixedUpdate()
         {
-            _lastPosition = transform.position;
-
-            switch (CurrentState)
+            if (isServer)
             {
-                case TrainState.StoppedAtStation: TickStopped(); break;
-                case TrainState.Accelerating: TickMovement(); break;
-                case TrainState.Cruising: TickMovement(); break;
-                case TrainState.Braking: TickMovement(); break;
-            }
+                _lastPosition = transform.position;
 
-            Velocity = (transform.position - _lastPosition) / Time.fixedDeltaTime;
+                switch (CurrentState)
+                {
+                    case TrainState.StoppedAtStation: TickStopped(); break;
+                    case TrainState.Accelerating: TickMovement(); break;
+                    case TrainState.Cruising: TickMovement(); break;
+                    case TrainState.Braking: TickMovement(); break;
+                }
+
+                Velocity = (transform.position - _lastPosition) / Time.fixedDeltaTime;
+            }
         }
 
         private void TickStopped()
