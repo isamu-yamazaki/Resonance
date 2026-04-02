@@ -152,6 +152,8 @@ namespace Resonance.PlayerController
 #if !UNITY_SERVER
             if (activateEvent != null && activateEvent.IsValid())
                 activateEvent.Post(gameObject);
+
+            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 70f);
 #endif
             RequestActivateWorldOnServer();
             
@@ -178,6 +180,10 @@ namespace Resonance.PlayerController
             _playerStats.RemoveRegenModifier(overdriveRegenAmount);
             _playerStats.RemoveDamageReductionModifier(overdriveDamageReductionAmount);
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");
+
+#if !UNITY_SERVER
+            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 0f);
+#endif
         }
 
         private void SetState(OverdriveState newState)

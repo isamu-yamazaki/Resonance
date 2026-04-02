@@ -82,6 +82,7 @@ namespace AK
         static const AkUniqueID METER_FOLEY_INTENSITY = 4188395422U;
         static const AkUniqueID METER_SFX_INTENSITY = 2553996342U;
         static const AkUniqueID OCCLUSION = 183903552U;
+        static const AkUniqueID OVERDRIVE_LOWPASS = 3812781257U;
         static const AkUniqueID REACTIVE_FEEDBACK_VOLUME = 1471093987U;
         static const AkUniqueID REVERBSEND = 1572469619U;
         static const AkUniqueID ROOMSIZE = 105837875U;
