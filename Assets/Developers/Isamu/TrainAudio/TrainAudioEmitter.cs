@@ -1,4 +1,5 @@
 #if !UNITY_SERVER
+using System.Collections;
 using UnityEngine;
 
 namespace Resonance.Train
@@ -66,8 +67,9 @@ namespace Resonance.Train
             _trainController.OnArrivedAtStation -= OnArrived;
         }
 
-        private void Start()
+        private IEnumerator Start()
         {
+            yield return new WaitForSeconds(0.5f);
             StartLoop();
         }
 
