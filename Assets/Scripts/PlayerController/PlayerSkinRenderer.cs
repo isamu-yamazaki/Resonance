@@ -77,6 +77,7 @@
 
             private void ApplySkin(int index)
             {
+                Debug.Log($"[SkinRenderer] ApplySkin called. _tpHidden: {_tpHidden}, ShouldRenderArmsOnly: {ShouldRenderArmsOnly}");
                 if (skinCatalog == null || skinCatalog.Count == 0)
                     return;
 

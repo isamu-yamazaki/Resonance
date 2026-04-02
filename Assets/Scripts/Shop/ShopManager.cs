@@ -613,7 +613,10 @@ namespace Resonance.Shop
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
         #endif
-            equip.GetComponent<FPArmsAnimator>()?.TriggerFirstBuy();
+            if (equip.EquippedWeapon == weapon)
+            {
+                equip.GetComponent<FPArmsAnimator>()?.TriggerFirstBuy();
+            }
             inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
