@@ -17,8 +17,9 @@ namespace Resonance.Combat
         #region Fields
 
         [Header("References")]
-        [SerializeField] private PlayerEquip playerEquip;
-        [SerializeField] private PlayerActionsInput playerActionsInput;
+        private PlayerEquip playerEquip;
+        private FPArmsManager fpArmsManager;
+        private PlayerActionsInput playerActionsInput;
         [SerializeField] private Camera playerCamera;
 
         [SerializeField] private DamageNumber damageNumberPrefab;
@@ -84,6 +85,9 @@ namespace Resonance.Combat
         {
             viewModel = GetComponent<PlayerViewModel>();
             playerState = GetComponent<PlayerState>();
+            playerActionsInput = GetComponent<PlayerActionsInput>();
+            playerEquip = GetComponent<PlayerEquip>();
+            fpArmsManager = GetComponent<FPArmsManager>();
 
             if (playerCamera == null)
                 playerCamera = Camera.main;
@@ -131,8 +135,7 @@ namespace Resonance.Combat
                 TryShoot();
                 playerActionsInput.SetAttackPressedFalse();
             }
-
-            if (playerActionsInput.AttackHeld)
+            else if (playerActionsInput.AttackHeld)
             {
                 TryShoot();
             }
@@ -142,8 +145,14 @@ namespace Resonance.Combat
 
         #region Shooting
 
+        private int _lastShootFrame;
+        
         private void TryShoot()
         {
+            if (Time.frameCount == _lastShootFrame) return;
+            _lastShootFrame = Time.frameCount;
+            Debug.Log($"[Shooter] TryShoot called", this);
+            
             if (playerState.IsMatchFrozen()) return;
             if (playerState.IsInShop()) return;
             if (playerState.IsReloading) return;
@@ -152,8 +161,10 @@ namespace Resonance.Combat
             WeaponProperties weapon = playerEquip.EquippedWeapon;
             if (weapon == null) return;
 
-            WeaponView view = playerEquip.CurrentWeaponView;
+            WeaponView view = GetActiveWeaponView();
             if (view == null || view.Muzzle == null) return;
+
+            WeaponView tpView = playerEquip.CurrentWeaponView;
 
             float fireRate = weaponStatManager.FireRate;
             if (fireRate > 0f)
@@ -189,6 +200,8 @@ namespace Resonance.Combat
 
             WeaponPayload payload = BuildBasePayload(weapon);
 
+            Debug.Log($"[Shooter] FiringType: {weapon.FiringType}");
+            
             if (weapon.FiringType == WeaponFiringType.Hitscan)
             {
                 Vector3 baseDirection = GetAimDirection(view.Muzzle);
@@ -214,7 +227,9 @@ namespace Resonance.Combat
         [ObserversRpc(runLocally: true)]
         private void PlayFireOnAllClients()
         {
-            WeaponView currentView = playerEquip.CurrentWeaponView;
+            WeaponView currentView = isOwner 
+                ? fpArmsManager.GetActiveFPWeaponView() 
+                : playerEquip.CurrentWeaponView;
             if (currentView == null) return;
             currentView.PlayFire();
             currentView.PlayMuzzleFlash();
@@ -319,9 +334,17 @@ namespace Resonance.Combat
                 }
 
                 BulletProperties hitscanBullet = weaponStatManager.GetBulletProperties();
-                if (hitscanBullet?.BulletTrailPrefab != null && view.Muzzle != null)
+                Vector3 fpMuzzlePos = fpArmsManager.GetActiveFPWeaponView()?.Muzzle.position ?? view.Muzzle.position;
+                Vector3 tpMuzzlePos = playerEquip.CurrentWeaponView?.Muzzle.position ?? view.Muzzle.position;
+
+                Debug.Log($"[Trail] hitscanBullet: {hitscanBullet?.name ?? "NULL"}");
+                Debug.Log($"[Trail] BulletTrailPrefab: {hitscanBullet?.BulletTrailPrefab?.name ?? "NULL"}");
+                Debug.Log($"[Trail] fpMuzzlePos: {fpMuzzlePos}, tpMuzzlePos: {tpMuzzlePos}, endPoint: {endPoint}");
+
+                if (hitscanBullet?.BulletTrailPrefab != null)
                 {
-                    SpawnTrailOnAllClients(view.Muzzle.position, endPoint, hitscanBullet.Key);
+                    Debug.Log($"[Trail] Calling SpawnTrailOnAllClients");
+                    SpawnTrailOnAllClients(fpMuzzlePos, tpMuzzlePos, endPoint, hitscanBullet.Key);
                 }
             }
 
@@ -330,11 +353,12 @@ namespace Resonance.Combat
         }
 
         [ObserversRpc(runLocally: true)]
-        private void SpawnTrailOnAllClients(Vector3 start, Vector3 end, string bulletPropertyKey)
+        private void SpawnTrailOnAllClients(Vector3 fpStart, Vector3 tpStart, Vector3 end, string bulletPropertyKey)
         {
             BulletProperties properties = System.Array.Find(bulletProperties, w => w.Key == bulletPropertyKey);
+            Debug.Log($"[Trail] RPC received. isOwner: {isOwner}, key: {bulletPropertyKey}, properties found: {properties != null}");
             if (properties != null && properties.BulletTrailPrefab != null)
-                StartCoroutine(SpawnTrail(start, end, properties.BulletTrailPrefab));
+                StartCoroutine(SpawnTrail(isOwner ? fpStart : tpStart, end, properties.BulletTrailPrefab));
         }
 
         private IEnumerator SpawnTrail(Vector3 start, Vector3 end, TrailRenderer trailPrefab)
@@ -386,6 +410,14 @@ namespace Resonance.Combat
             }
 
             projectile.Initialize(payload, direction);
+        }
+        
+        private WeaponView GetActiveWeaponView()
+        {
+            if (isOwner && fpArmsManager != null)
+                return fpArmsManager.GetActiveFPWeaponView();
+
+            return playerEquip.CurrentWeaponView;
         }
 
         #endregion

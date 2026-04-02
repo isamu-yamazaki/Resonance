@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Linq;
+using Resonance.Combat.Weapons.Enums;
 using UnityEngine;
 using Resonance.Player;
 using Resonance.Entities;
@@ -14,13 +16,16 @@ namespace Resonance.VFX
         private static readonly int GlitchTimeID = Shader.PropertyToID("_GlitchTime");
 
         private PlayerStats _playerStats;
+        private PlayerState _playerState;
         private TargetDummy _targetDummy;
         private PlayerSkinRenderer _skinRenderer;
         private SkinnedMeshRenderer[] _meshRenderers;
+        private MeshRenderer[] _meshRenderersNonSkinned;
 
         private void Awake()
         {
             _playerStats  = GetComponentInParent<PlayerStats>();
+            _playerState = GetComponentInParent<PlayerState>();
             _targetDummy  = GetComponentInParent<TargetDummy>();
             _skinRenderer = GetComponentInParent<PlayerSkinRenderer>();
         }
@@ -49,6 +54,8 @@ namespace Resonance.VFX
 
         private void OnEnable()
         {
+            Debug.Log($"[DeathEffect] OnEnable - ShouldRenderArmsOnly: {_skinRenderer?.ShouldRenderArmsOnly}");
+            
             if (_playerStats != null)
             {
                 _playerStats.OnPlayerDeath   += PlayDeathEffect;
@@ -59,6 +66,11 @@ namespace Resonance.VFX
             {
                 _targetDummy.OnDeath   += PlayDeathEffect;
                 _targetDummy.OnRespawn += ResetEffect;
+            }
+
+            if (_playerState != null && _skinRenderer != null && _skinRenderer.ShouldRenderArmsOnly)
+            {
+                _playerState.OnWeaponClassChanged += OnWeaponClassChanged;
             }
         }
 
@@ -75,6 +87,11 @@ namespace Resonance.VFX
                 _targetDummy.OnDeath   -= PlayDeathEffect;
                 _targetDummy.OnRespawn -= ResetEffect;
             }
+            
+            if (_playerState != null)
+            {
+                _playerState.OnWeaponClassChanged -= OnWeaponClassChanged;
+            }
         }
 
         private void OnDestroy()
@@ -87,10 +104,41 @@ namespace Resonance.VFX
 
         private void OnSkinSpawned(GameObject skinRoot)
         {
-            _meshRenderers = skinRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
-            Debug.Log($"[DeathEffect] OnSkinSpawned - found {_meshRenderers.Length} renderers on {skinRoot.name}");
-        }
+            if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnly)
+            {
+                GameObject activeArms = null;
+                foreach (var kvp in _skinRenderer.FPArmsInstances)
+                {
+                    if (kvp.Value != null && kvp.Value.activeSelf)
+                    {
+                        activeArms = kvp.Value;
+                        break;
+                    }
+                }
 
+                if (activeArms != null)
+                {
+                    _meshRenderers = activeArms.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    _meshRenderersNonSkinned = activeArms.GetComponentsInChildren<MeshRenderer>();
+                }
+                
+                Debug.Log($"[DeathEffect] OnSkinSpawned - ShouldRenderArmsOnly: {_skinRenderer.ShouldRenderArmsOnly}, activeArms found: {activeArms != null}, skinnedCount: {_meshRenderers?.Length ?? 0}");
+            }
+            else
+            {
+                _meshRenderers = skinRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
+                _meshRenderersNonSkinned = skinRoot.GetComponentsInChildren<MeshRenderer>();
+            }
+        }
+        
+        private void OnWeaponClassChanged(WeaponClass newClass)
+        {
+            Debug.Log($"[DeathEffect] OnWeaponClassChanged - newClass: {newClass}");
+            
+            if (_skinRenderer.CurrentMeshInstance != null)
+                OnSkinSpawned(_skinRenderer.CurrentMeshInstance);
+        }
+        
         private void PlayDeathEffect()
         {
             Debug.Log($"[DeathEffect] PlayDeathEffect called - meshRenderers: {(_meshRenderers == null ? "null" : _meshRenderers.Length.ToString())}");
@@ -99,35 +147,104 @@ namespace Resonance.VFX
 
         private void ResetEffect()
         {
-            if (_meshRenderers == null) return;
-
-            foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+            if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnly)
             {
-                if (meshRenderer != null)
+                if (_meshRenderers != null)
                 {
-                    meshRenderer.enabled = true;
+                    foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+                    {
+                        if (meshRenderer != null)
+                            meshRenderer.enabled = true;
+                    }
+                }
+
+                if (_meshRenderersNonSkinned != null)
+                {
+                    foreach (MeshRenderer meshRenderer in _meshRenderersNonSkinned)
+                    {
+                        if (meshRenderer != null)
+                            meshRenderer.enabled = true;
+                    }
+                }
+
+                return;
+            }
+
+            if (_meshRenderers != null)
+            {
+                foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+                {
+                    if (meshRenderer != null)
+                        meshRenderer.enabled = true;
+                }
+            }
+
+            if (_meshRenderersNonSkinned != null)
+            {
+                foreach (MeshRenderer meshRenderer in _meshRenderersNonSkinned)
+                {
+                    if (meshRenderer != null)
+                        meshRenderer.enabled = true;
                 }
             }
         }
 
         private IEnumerator GlitchSequence()
         {
-            if (_meshRenderers == null || _meshRenderers.Length == 0)
+            if ((_meshRenderers == null || _meshRenderers.Length == 0) && 
+                (_meshRenderersNonSkinned == null || _meshRenderersNonSkinned.Length == 0))
             {
                 Debug.LogWarning("[DeathEffect] No mesh renderers found, skipping effect.");
                 yield break;
             }
 
-            foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
-            {
-                meshRenderer.enabled = false;
-            }
+            Debug.Log($"[DeathEffect] GlitchSequence - skinnedCount: {_meshRenderers?.Length ?? 0}, nonSkinnedCount: {_meshRenderersNonSkinned?.Length ?? 0}");
 
-            foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+            if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnly)
             {
-                Mesh bakedMesh = new Mesh();
-                meshRenderer.BakeMesh(bakedMesh);
-                StartCoroutine(RunGlitchGhost(bakedMesh, meshRenderer.transform));
+                GameObject activeArms = null;
+                foreach (var kvp in _skinRenderer.FPArmsInstances)
+                {
+                    if (kvp.Value != null && kvp.Value.activeSelf)
+                    {
+                        activeArms = kvp.Value;
+                        break;
+                    }
+                }
+
+                if (activeArms != null)
+                    StartCoroutine(RunFPGlitchGhost(activeArms));
+
+                foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+                {
+                    meshRenderer.enabled = false;
+                }
+            }
+            else
+            {
+                foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+                {
+                    meshRenderer.enabled = false;
+                }
+
+                foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+                {
+                    Mesh bakedMesh = new Mesh();
+                    meshRenderer.BakeMesh(bakedMesh);
+                    StartCoroutine(RunGlitchGhost(bakedMesh, meshRenderer.transform));
+                }
+
+                if (_meshRenderersNonSkinned != null)
+                {
+                    foreach (MeshRenderer meshRenderer in _meshRenderersNonSkinned)
+                    {
+                        if (meshRenderer == null) continue;
+                        MeshFilter mf = meshRenderer.GetComponent<MeshFilter>();
+                        if (mf != null && mf.mesh != null)
+                            StartCoroutine(RunGlitchGhost(mf.mesh, meshRenderer.transform));
+                        meshRenderer.enabled = false;
+                    }
+                }
             }
 
             yield return null;
@@ -140,6 +257,7 @@ namespace Resonance.VFX
                 Debug.LogError("[DeathEffect] Death glitch material not assigned.");
                 yield break;
             }
+            Debug.Log($"[DeathEffect] RunGlitchGhost - bakedMesh vertices: {bakedMesh.vertexCount}, position: {sourceTransform.position}");
 
             GameObject ghost = new GameObject("DeathGlitchGhost");
             ghost.transform.SetPositionAndRotation(sourceTransform.position, sourceTransform.rotation);
@@ -159,6 +277,48 @@ namespace Resonance.VFX
 
             Destroy(material);
             Destroy(bakedMesh);
+            Destroy(ghost);
+        }
+        
+        private IEnumerator RunFPGlitchGhost(GameObject armsSource)
+        {
+            if (deathGlitchMaterial == null)
+            {
+                Debug.LogError("[DeathEffect] Death glitch material not assigned.");
+                yield break;
+            }
+
+            GameObject ghost = Instantiate(armsSource, armsSource.transform.parent);
+            ghost.name = "DeathGlitchGhost";
+            ghost.transform.localPosition = armsSource.transform.localPosition;
+            ghost.transform.localRotation = armsSource.transform.localRotation;
+            ghost.transform.localScale = armsSource.transform.localScale;
+            
+            Animator ghostAnimator = ghost.GetComponent<Animator>();
+            if (ghostAnimator != null)
+                ghostAnimator.enabled = false;
+            
+            Material material = new Material(deathGlitchMaterial);
+
+            foreach (SkinnedMeshRenderer smr in ghost.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                Material[] mats = new Material[smr.materials.Length];
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    mats[i] = material;
+                }
+                smr.materials = mats;
+            }
+
+            float elapsed = 0f;
+            while (elapsed < effectDuration)
+            {
+                elapsed += Time.deltaTime;
+                material.SetFloat(GlitchTimeID, elapsed / effectDuration);
+                yield return null;
+            }
+
+            Destroy(material);
             Destroy(ghost);
         }
     }

@@ -183,7 +183,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6485822093017100666}
   - component: {fileID: 3024070534968682805}
-  - component: {fileID: 6081102581006774403}
   - component: {fileID: 7300087826615597716}
   - component: {fileID: 8104918514878385418}
   m_Layer: 6
@@ -192,7 +191,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6485822093017100666
 Transform:
   m_ObjectHideFlags: 0
@@ -201,11 +200,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5642366538942606948}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children: [{fileID: 1482643949032794281}]
   m_Father: {fileID: 7264354477965666744}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3024070534968682805
@@ -232,9 +231,9 @@ MonoBehaviour:
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
-    FieldOfView: 60.000004
+    FieldOfView: 80
     OrthographicSize: 5
-    NearClipPlane: 0.3
+    NearClipPlane: 0.01
     FarClipPlane: 1000
     Dutch: 0
     ModeOverride: 0
@@ -251,19 +250,37 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
---- !u!114 &6081102581006774403
-MonoBehaviour:
+--- !u!1 &6243626678309486547
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5642366538942606948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36d1163fa822e8b418a0a603ec078d5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineHardLockToTarget
-  Damping: 0
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1482643949032794281}
+  m_Layer: 6
+  m_Name: FPArms
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1482643949032794281
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243626678309486547}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.03, y: -1.4, z: -0.01}
+  m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 6485822093017100666}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &7300087826615597716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,6 +404,8 @@ GameObject:
   - component: {fileID: 2929268584548212605}
   - component: {fileID: -9158808936870234664}
   - component: {fileID: 7131106383641537564}
+  - component: {fileID: 8062843662524459022}
+  - component: {fileID: 1942585291339358380}
   - component: {fileID: 5684997356607948869}
   m_Layer: 6
   m_Name: FirstPersonController
@@ -463,13 +482,6 @@ MonoBehaviour:
   sprintFOV: 85
   overdriveFOV: 95
   fovTransitionSpeed: 10
-  defaultConfig: {fileID: 11400000, guid: 3fdceac9f513e2547b0e6a3a3f10f29d, type: 2}
-  pistolConfig: {fileID: 11400000, guid: 3dddd0fda2c98d54da43526732666bfe, type: 2}
-  rifleConfig: {fileID: 11400000, guid: d151d9ed4584ec848958dd6406de4306, type: 2}
-  shotgunConfig: {fileID: 0}
-  heavyMGConfig: {fileID: 0}
-  sniperConfig: {fileID: 0}
-  swordConfig: {fileID: 0}
   _groundLayers:
     serializedVersion: 2
     m_Bits: 257
@@ -1112,6 +1124,7 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
   animator: {fileID: 186030322157751487}
+  fpArmsRoot: {fileID: 1482643949032794281}
   skinIndex:
     _value: 0
     _ownerAuth: 0
@@ -1485,6 +1498,32 @@ MonoBehaviour:
   upwardLobBias: 0.4
   cooldown: 20
   bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
+--- !u!114 &8062843662524459022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 594f5b14d937cfb44919103412464871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.FPArmsManager
+  _playerState: {fileID: 0}
+  _skinRenderer: {fileID: 0}
+--- !u!114 &1942585291339358380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80934240d14a43742b65e47d627899e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.FPArmsAnimator
 --- !u!114 &5684997356607948869
 MonoBehaviour:
   m_ObjectHideFlags: 0
