@@ -7226,7 +7226,7 @@
 								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-4</Value>
+										<Value>-35</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -7262,7 +7262,7 @@
 								<Property Name="3DSpatialization" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-3</Value>
+										<Value>-10</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
