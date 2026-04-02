@@ -28,6 +28,8 @@ namespace AK
         static const AkUniqueID PLAY_LANDING = 2323405115U;
         static const AkUniqueID PLAY_LMG_FIRE = 1166794921U;
         static const AkUniqueID PLAY_OUTDOORAMBIENCE = 3267244670U;
+        static const AkUniqueID PLAY_OVERDRIVE_ACTIVATE = 920319972U;
+        static const AkUniqueID PLAY_OVERDRIVE_ACTIVATE_WORLD = 103387701U;
         static const AkUniqueID PLAY_REACTIVE_FEEDBACK = 3062989335U;
         static const AkUniqueID PLAY_REVOLVER_EMPTY = 3017185661U;
         static const AkUniqueID PLAY_REVOLVER_EQUIP = 3091083318U;
@@ -80,6 +82,7 @@ namespace AK
         static const AkUniqueID METER_FOLEY_INTENSITY = 4188395422U;
         static const AkUniqueID METER_SFX_INTENSITY = 2553996342U;
         static const AkUniqueID OCCLUSION = 183903552U;
+        static const AkUniqueID OVERDRIVE_LOWPASS = 3812781257U;
         static const AkUniqueID REACTIVE_FEEDBACK_VOLUME = 1471093987U;
         static const AkUniqueID REVERBSEND = 1572469619U;
         static const AkUniqueID ROOMSIZE = 105837875U;

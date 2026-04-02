@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{FFD13CC4-BC75-20B8-2827-26B879FAE424}",
+    "Hash": "{58E54A68-52C0-12B3-C220-1533B4FB2272}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -220,6 +220,12 @@
       "GUID": "{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}"
      },
      {
+      "Id": "3812781257",
+      "Name": "Overdrive_LowPass",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Overdrive_LowPass",
+      "GUID": "{93BF666D-D3A7-4F42-B289-7AC3BA912BEE}"
+     },
+     {
       "Id": "4004916241",
       "Name": "Train_Speed",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Train_Speed",
@@ -280,6 +286,6 @@
     ]
    }
   ],
-  "FileHash": "{F0DC5A3E-CDA7-3CBA-45CF-9EB0B2CEC16A}"
+  "FileHash": "{779401E9-5116-A03E-0D7B-EFD9B873FD2C}"
  }
 }

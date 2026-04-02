@@ -434,6 +434,32 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Overdrive" ID="{4F8E3FDA-C51D-47D0-90C3-4BCE20B8E7C1}" ShortID="737429555">
+					<ChildrenList>
+						<Event Name="Play_Overdrive_Activate" ID="{0D8C9206-F140-4602-B3A3-C5D2563DF1EB}">
+							<ChildrenList>
+								<Action Name="" ID="{D6392AB3-5E7C-4EC4-A6A4-B490EAF81A51}" ShortID="732614976">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_overdrive_activation" ID="{5DED8836-54A8-49C4-9AE2-5DD358C4C030}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_Overdrive_Activate_World" ID="{BB6C9178-04E8-45F6-84CF-9A00A8E9EF0B}">
+							<ChildrenList>
+								<Action Name="" ID="{05EC509F-BD04-48E9-BC1A-6CEE1C6BC38E}" ShortID="954578572">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="sfx_combat_overdrive_activation_world" ID="{43BFC9B1-AD53-4CD6-B761-275C5F30FB1D}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

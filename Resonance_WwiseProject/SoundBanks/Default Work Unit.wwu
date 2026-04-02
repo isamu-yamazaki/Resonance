@@ -23,6 +23,8 @@
 						<ObjectRef Name="Play_BaseHandgun_Reload" ID="{5B9A6DD5-FE3D-452D-9938-5A9E1CFA4CDE}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Shop_Page_Switch" ID="{B3E94D33-5CBC-4576-8C9A-55F0BF119B70}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Revolver_Empty" ID="{37F8B618-F71E-45F3-BBC5-28F09BACA3A0}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Overdrive_Activate_World" ID="{BB6C9178-04E8-45F6-84CF-9A00A8E9EF0B}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Overdrive_Activate" ID="{0D8C9206-F140-4602-B3A3-C5D2563DF1EB}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Button_Click" ID="{60237919-104C-4674-8E4B-0C9AC9370B8F}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Stop_Reactive_Feedback" ID="{AC0C71A3-5A4A-4700-84BE-F8438F763A1A}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_GlassShatter" ID="{FF8D6C3A-E13D-4784-A0DD-F5D3850BBB9F}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>

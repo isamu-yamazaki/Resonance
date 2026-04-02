@@ -45,6 +45,39 @@
 										</ReferenceList>
 									</EffectSlot>
 								</ObjectList>
+								<ObjectList Name="RTPC">
+									<RTPC Name="" ID="{05113FDA-BCD4-4181-86FF-C20AEBDB1712}" ShortID="418335478">
+										<PropertyList>
+											<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+										</PropertyList>
+										<ReferenceList>
+											<Reference Name="ControlInput">
+												<ObjectRef Name="Overdrive_LowPass" ID="{93BF666D-D3A7-4F42-B289-7AC3BA912BEE}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+											</Reference>
+											<Reference Name="Curve">
+												<Custom>
+													<Curve Name="" ID="{588EE2D0-0857-4C0D-847B-4518BDA54F2F}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="65537"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>0</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>100</XPos>
+																<YPos>100</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</RTPC>
+								</ObjectList>
 							</ObjectLists>
 						</Bus>
 						<Bus Name="SFX" ID="{C22677A5-D637-423D-8AED-F11F0D85B4DE}">
@@ -70,6 +103,39 @@
 											</Reference>
 										</ReferenceList>
 									</EffectSlot>
+								</ObjectList>
+								<ObjectList Name="RTPC">
+									<RTPC Name="" ID="{2A6B1F35-0D81-40C5-A161-E84A72BE45CC}" ShortID="39669139">
+										<PropertyList>
+											<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+										</PropertyList>
+										<ReferenceList>
+											<Reference Name="ControlInput">
+												<ObjectRef Name="Overdrive_LowPass" ID="{93BF666D-D3A7-4F42-B289-7AC3BA912BEE}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+											</Reference>
+											<Reference Name="Curve">
+												<Custom>
+													<Curve Name="" ID="{89A114D2-8BBD-4085-B2C2-44B175138976}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="65537"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>0</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>100</XPos>
+																<YPos>100</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</RTPC>
 								</ObjectList>
 							</ObjectLists>
 						</Bus>

@@ -1,6 +1,7 @@
 Game Parameter	ID	Name			Wwise Object Path	Notes
 	105837875	RoomSize			\Default Work Unit\RoomSize	
 	1572469619	ReverbSend			\Default Work Unit\ReverbSend	
+	3812781257	Overdrive_LowPass			\Default Work Unit\Overdrive_LowPass	
 	4004954295	Enclosure			\Default Work Unit\Enclosure	
 
 Audio Bus	ID	Name			Wwise Object Path	Notes

@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{10F54B81-FD11-7E73-0DF5-02BFF206B1F5}",
+    "Hash": "{631667D5-F27E-B486-66E7-F138BE353058}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -512,12 +512,28 @@
       "CachePath": "52/{52A1F936-1F9A-9F66-629C-32080999EE94}.wem"
      },
      {
+      "Id": "918221840",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_overdrive_activation.wav",
+      "CachePath": "43/{4356B9EF-3C4C-CE15-13B0-03F816C4543D}.wem"
+     },
+     {
       "Id": "941471142",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "sfx_world_audioreactive_loop.wav",
       "CachePath": "CA/{CAA224DB-658F-08EA-552A-D9F55F9B8843}.wem"
+     },
+     {
+      "Id": "942573504",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_overdrive_activation_world.wav",
+      "CachePath": "9C/{9CC7E43C-5FCF-6BCF-39F5-5360B3FDD682}.wem"
      },
      {
       "Id": "956380320",
@@ -1023,6 +1039,35 @@
       ]
      },
      {
+      "Id": "920319972",
+      "Name": "Play_Overdrive_Activate",
+      "ObjectPath": "\\Events\\Default Work Unit\\Overdrive\\Play_Overdrive_Activate",
+      "GUID": "{0D8C9206-F140-4602-B3A3-C5D2563DF1EB}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.70538086",
+      "DurationMax": "0.70538086",
+      "MediaRefs": [
+       {
+        "Id": "918221840"
+       }
+      ]
+     },
+     {
+      "Id": "103387701",
+      "Name": "Play_Overdrive_Activate_World",
+      "ObjectPath": "\\Events\\Default Work Unit\\Overdrive\\Play_Overdrive_Activate_World",
+      "GUID": "{BB6C9178-04E8-45F6-84CF-9A00A8E9EF0B}",
+      "MaxAttenuation": "30",
+      "DurationType": "OneShot",
+      "DurationMin": "0.96875",
+      "DurationMax": "0.96875",
+      "MediaRefs": [
+       {
+        "Id": "942573504"
+       }
+      ]
+     },
+     {
       "Id": "3062989335",
       "Name": "Play_Reactive_Feedback",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Reactive_Feedback",
@@ -1401,6 +1446,6 @@
     ]
    }
   ],
-  "FileHash": "{BAA8F96C-438C-A7D7-6C32-4CC29D19B5D3}"
+  "FileHash": "{76FC000B-098B-4F8C-3C4B-AB882813B1EF}"
  }
 }

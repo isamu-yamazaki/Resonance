@@ -1,12 +1,21 @@
+using System.Collections;
+using PurrNet;
+using Resonance.Audio;
 using Resonance.Helper;
 using UnityEngine;
 using Resonance.Player;
 
 namespace Resonance.PlayerController
 {
-    public class OverdriveAbility : MonoBehaviour
+    public class OverdriveAbility : NetworkBehaviour
     {
         #region Class Variables
+        [Header("Audio")]
+#if !UNITY_SERVER
+        [SerializeField] private AK.Wwise.Event activateEvent;
+        [SerializeField] private AK.Wwise.Event activateWorldEvent;
+#endif
+
         [Header("Overdrive Settings")]
         [SerializeField] private float overdriveDuration = 8f;
         [SerializeField] private float overdriveCooldown = 30f;
@@ -140,6 +149,14 @@ namespace Resonance.PlayerController
         {
             SetState(OverdriveState.Active);
             DurationTimeRemaining = overdriveDuration;
+
+#if !UNITY_SERVER
+            if (activateEvent != null && activateEvent.IsValid())
+                activateEvent.Post(gameObject);
+
+            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 70f);
+#endif
+            RequestActivateWorldOnServer();
             
             if (_playerStats != null)
             {
@@ -164,6 +181,10 @@ namespace Resonance.PlayerController
             _playerStats.RemoveRegenModifier(overdriveRegenAmount);
             _playerStats.RemoveDamageReductionModifier(overdriveDamageReductionAmount);
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");
+
+#if !UNITY_SERVER
+            StartCoroutine(LerpLowPassOut(1f));
+#endif
         }
 
         private void SetState(OverdriveState newState)
@@ -193,6 +214,43 @@ namespace Resonance.PlayerController
             enabled = true;
             Debug.Log("[OverdriveAbility] Component resumed after respawn");
         }
+        #endregion
+
+        #if !UNITY_SERVER
+        private IEnumerator LerpLowPassOut(float duration)
+        {
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float value = Mathf.Lerp(70f, 0f, elapsed / duration);
+                AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", value);
+                yield return null;
+            }
+            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 0f);
+        }
+        #endif
+
+        #region Audio RPCs
+
+        [ServerRpc]
+        private void RequestActivateWorldOnServer()
+        {
+            BroadcastActivateWorld();
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastActivateWorld()
+        {
+#if !UNITY_SERVER
+            if (activateWorldEvent != null && activateWorldEvent.IsValid())
+                activateWorldEvent.Post(gameObject);
+
+            if (AudioSourceTracker.Instance != null)
+                AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
+#endif
+        }
+
         #endregion
 
         public enum OverdriveState
