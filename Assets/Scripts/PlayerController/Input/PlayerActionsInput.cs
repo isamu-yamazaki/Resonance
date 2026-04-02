@@ -152,7 +152,6 @@ namespace Resonance.PlayerController
             else if (context.performed)
             {
                 AttackHeld = true;
-                AttackPressed = true;
             }
         }
 

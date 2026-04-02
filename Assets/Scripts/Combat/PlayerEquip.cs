@@ -41,6 +41,7 @@ namespace Resonance.Combat
 
         private WeaponProperties[] weapons;
         private bool _isInitialEquip = true;
+        private bool _tpWeaponHidden;
 
         private void Awake()
         {
@@ -280,6 +281,9 @@ namespace Resonance.Combat
             WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
             if (audioProperties != null)
                 currentWeaponView.ApplyAudioProperties(audioProperties);
+            
+            if (_tpWeaponHidden)
+                HideTPWeapon();
         }
 
         public void RemoveWeapon(WeaponSlot slot)
@@ -360,6 +364,17 @@ namespace Resonance.Combat
             playerAbilityManager.OnAugmentRemoved(augment);
             playerAugmentEquipper.RemoveAugmentStats(augment);
             playerInventory.RemoveAugment(augment.Slot);
+        }
+        
+        public void HideTPWeapon()
+        {
+            if (currentWeaponInstance == null || !isOwner) return;
+            _tpWeaponHidden = true;
+            
+            foreach (var mr in currentWeaponInstance.GetComponentsInChildren<MeshRenderer>())
+                mr.enabled = false;
+            foreach (var smr in currentWeaponInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
+                smr.enabled = false;
         }
     }
 }

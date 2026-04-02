@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Resonance;
+using Resonance.Combat;
 using Resonance.PlayerController;
 using Resonance.Match;
 
@@ -76,6 +77,13 @@ public class PreMatchCameraController : MonoBehaviour
     private void HandleCountdownStart(float seconds)
     {
         countdownStarted = true;
+        StartCoroutine(EndSequenceAfterCountdown(seconds));
+    }
+    
+    private IEnumerator EndSequenceAfterCountdown(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        EndSequence();
     }
 
     private IEnumerator Start()
@@ -111,8 +119,6 @@ public class PreMatchCameraController : MonoBehaviour
         yield return FlyPath();
 
         yield return FlyToHeroPosition();
-
-        EndSequence();
 
         if (droneObject != null)
             droneObject.FlyAway(Vector3.up);
@@ -229,6 +235,21 @@ public class PreMatchCameraController : MonoBehaviour
 
         if (hudCanvas != null)
             hudCanvas.SetActive(true);
+
+        if (target != null)
+        {
+            var skinRenderer = target.GetComponent<PlayerSkinRenderer>();
+            skinRenderer?.HideTPBody();
+
+            var playerEquip = target.GetComponent<PlayerEquip>();
+            playerEquip?.HideTPWeapon();
+
+            var fpArmsManager = target.GetComponent<FPArmsManager>();
+            fpArmsManager?.RefreshArms();
+            
+            var fpArmsAnimator = target.GetComponent<FPArmsAnimator>();
+            fpArmsAnimator?.TriggerFirstBuy();
+        }
 
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(true);
