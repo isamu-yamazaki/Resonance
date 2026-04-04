@@ -14,8 +14,21 @@ namespace Resonance
         [Header("Scattering")]
         [SerializeField, Range(-1f, 1f)] private float mieG = 0.3f;
 
+        [Header("Attenuation")]
+        [SerializeField] private float attenuationScale = 0.02f; // lower = slower falloff
+
         [Header("Mesh")]
         [SerializeField] private Material volumetricMaterial;
+
+        public int      RaymarchSteps    { get => raymarchSteps;    set => raymarchSteps    = value; }
+        public float    Density          { get => density;          set => density          = value; }
+        public float    JitterStrength   { get => jitterStrength;   set => jitterStrength   = value; }
+        public float    MieG             { get => mieG;             set => mieG             = value; }
+        public float    AttenuationScale { get => attenuationScale; set => attenuationScale = value; }
+        public Material Material         { get => volumetricMaterial; set => volumetricMaterial = value; }
+
+        // When set, drives proxy mesh length independently from _light.range (which controls attenuation)
+        public float? ConeLength { get; set; }
 
         private Light        _light;
         private GameObject   _proxyMeshObj;
@@ -23,22 +36,24 @@ namespace Resonance
         private MeshRenderer _meshRenderer;
         private MaterialPropertyBlock _mpb;
 
-        private static readonly int ID_LightColor     = Shader.PropertyToID("_LightColor");
-        private static readonly int ID_LightIntensity = Shader.PropertyToID("_LightIntensity");
-        private static readonly int ID_LightPosWS     = Shader.PropertyToID("_LightPosWS");
-        private static readonly int ID_LightDirWS     = Shader.PropertyToID("_LightDirWS");
-        private static readonly int ID_ConeAngleCos   = Shader.PropertyToID("_ConeAngleCos");
-        private static readonly int ID_ConeRange      = Shader.PropertyToID("_ConeRange");
-        private static readonly int ID_MieG           = Shader.PropertyToID("_MieG");
-        private static readonly int ID_Density        = Shader.PropertyToID("_Density");
-        private static readonly int ID_Steps          = Shader.PropertyToID("_RaymarchSteps");
-        private static readonly int ID_Jitter         = Shader.PropertyToID("_JitterStrength");
+        private static readonly int ID_LightColor       = Shader.PropertyToID("_LightColor");
+        private static readonly int ID_LightIntensity   = Shader.PropertyToID("_LightIntensity");
+        private static readonly int ID_LightPosWS       = Shader.PropertyToID("_LightPosWS");
+        private static readonly int ID_LightDirWS       = Shader.PropertyToID("_LightDirWS");
+        private static readonly int ID_ConeAngleCos     = Shader.PropertyToID("_ConeAngleCos");
+        private static readonly int ID_ConeRange        = Shader.PropertyToID("_ConeRange");
+        private static readonly int ID_AttenuationScale = Shader.PropertyToID("_AttenuationScale");
+        private static readonly int ID_MieG             = Shader.PropertyToID("_MieG");
+        private static readonly int ID_Density          = Shader.PropertyToID("_Density");
+        private static readonly int ID_Steps            = Shader.PropertyToID("_RaymarchSteps");
+        private static readonly int ID_Jitter           = Shader.PropertyToID("_JitterStrength");
 
         private void OnEnable()
         {
             _light = GetComponent<Light>();
             _mpb   = new MaterialPropertyBlock();
-            BuildProxyMesh();
+            if (volumetricMaterial != null)
+                BuildProxyMesh();
         }
 
         private void OnDisable()
@@ -49,6 +64,11 @@ namespace Resonance
         private void LateUpdate()
         {
             if (_light == null || _light.type != LightType.Spot) return;
+
+            // Build deferred if material was set after OnEnable (e.g. set via code before SetActive)
+            if (_proxyMeshObj == null && volumetricMaterial != null)
+                BuildProxyMesh();
+
             UpdateProxyTransform();
             UpdateMaterialProperties();
         }
@@ -89,13 +109,12 @@ namespace Resonance
             if (_proxyMeshObj == null) return;
 
             float halfAngle  = _light.spotAngle * 0.5f * Mathf.Deg2Rad;
-            float range      = _light.range;
-            float baseRadius = Mathf.Tan(halfAngle) * range;
+            float meshLength = ConeLength ?? _light.range; // ConeLength overrides range for mesh only
+            float baseRadius = Mathf.Tan(halfAngle) * meshLength;
 
-            // Use world-space values directly to avoid inheriting parent scale
             _proxyMeshObj.transform.position   = transform.position;
             _proxyMeshObj.transform.rotation   = Quaternion.LookRotation(transform.forward) * Quaternion.Euler(90f, 0f, 0f);
-            _proxyMeshObj.transform.localScale  = new Vector3(baseRadius, range * 0.5f, baseRadius);
+            _proxyMeshObj.transform.localScale  = new Vector3(baseRadius, meshLength * 0.5f, baseRadius);
         }
 
         private void UpdateMaterialProperties()
@@ -110,7 +129,8 @@ namespace Resonance
             _mpb.SetVector(ID_LightPosWS,    transform.position);
             _mpb.SetVector(ID_LightDirWS,    transform.forward);
             _mpb.SetFloat(ID_ConeAngleCos,   Mathf.Cos(halfAngle));
-            _mpb.SetFloat(ID_ConeRange,      _light.range);
+            _mpb.SetFloat(ID_ConeRange,        ConeLength.HasValue ? ConeLength.Value : _light.range);
+            _mpb.SetFloat(ID_AttenuationScale, attenuationScale);
             _mpb.SetFloat(ID_MieG,           mieG);
             _mpb.SetFloat(ID_Density,        density);
             _mpb.SetInt(ID_Steps,            raymarchSteps);

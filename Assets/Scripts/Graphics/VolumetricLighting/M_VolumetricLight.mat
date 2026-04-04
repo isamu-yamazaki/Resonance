@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_VolumetricLight
-  m_Shader: {fileID: 4800000, guid: aa4cc8c20428d4a718ec436d28a6f049, type: 3}
+  m_Shader: {fileID: 4800000, guid: c590fef94e94646e38ea5a8b3c224980, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
