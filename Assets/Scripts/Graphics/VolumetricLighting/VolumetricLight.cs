@@ -17,7 +17,6 @@ namespace Resonance
         [Header("Mesh")]
         [SerializeField] private Material volumetricMaterial;
 
-        // Internal
         private Light        _light;
         private GameObject   _proxyMeshObj;
         private MeshFilter   _meshFilter;
@@ -54,11 +53,6 @@ namespace Resonance
             UpdateMaterialProperties();
         }
 
-        // ------------------------------------------------------------------
-        // Build a cone mesh that covers the spotlight volume.
-        // Unity's cylinder primitive won't work here — we need a real cone
-        // so the proxy tightly wraps the light volume (important for perf).
-        // ------------------------------------------------------------------
         private void BuildProxyMesh()
         {
             if (volumetricMaterial == null)
@@ -73,10 +67,10 @@ namespace Resonance
             _meshFilter   = _proxyMeshObj.AddComponent<MeshFilter>();
             _meshRenderer = _proxyMeshObj.AddComponent<MeshRenderer>();
 
-            _meshFilter.sharedMesh      = BuildConeMesh(32);
+            _meshFilter.sharedMesh       = BuildConeMesh(32);
             _meshRenderer.sharedMaterial = volumetricMaterial;
-            _meshRenderer.shadowCastingMode  = UnityEngine.Rendering.ShadowCastingMode.Off;
-            _meshRenderer.receiveShadows     = false;
+            _meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            _meshRenderer.receiveShadows    = false;
         }
 
         private void DestroyProxyMesh()
@@ -90,7 +84,6 @@ namespace Resonance
             }
         }
 
-        // Positions proxy to match light transform + cone dimensions
         private void UpdateProxyTransform()
         {
             if (_proxyMeshObj == null) return;
@@ -99,13 +92,9 @@ namespace Resonance
             float range      = _light.range;
             float baseRadius = Mathf.Tan(halfAngle) * range;
 
-            // Use world-space position and direction directly to avoid
-            // inheriting any parent scale that would squash the cone
-            Vector3 worldPos = transform.position;
-            Vector3 worldFwd = transform.forward; // already normalized world-space
-
-            _proxyMeshObj.transform.position   = worldPos;
-            _proxyMeshObj.transform.rotation   = Quaternion.LookRotation(worldFwd) * Quaternion.Euler(90f, 0f, 0f);
+            // Use world-space values directly to avoid inheriting parent scale
+            _proxyMeshObj.transform.position   = transform.position;
+            _proxyMeshObj.transform.rotation   = Quaternion.LookRotation(transform.forward) * Quaternion.Euler(90f, 0f, 0f);
             _proxyMeshObj.transform.localScale  = new Vector3(baseRadius, range * 0.5f, baseRadius);
         }
 
@@ -116,7 +105,6 @@ namespace Resonance
             float halfAngle = _light.spotAngle * 0.5f * Mathf.Deg2Rad;
 
             _meshRenderer.GetPropertyBlock(_mpb);
-
             _mpb.SetColor(ID_LightColor,     _light.color);
             _mpb.SetFloat(ID_LightIntensity, _light.intensity);
             _mpb.SetVector(ID_LightPosWS,    transform.position);
@@ -127,42 +115,33 @@ namespace Resonance
             _mpb.SetFloat(ID_Density,        density);
             _mpb.SetInt(ID_Steps,            raymarchSteps);
             _mpb.SetFloat(ID_Jitter,         jitterStrength);
-
             _meshRenderer.SetPropertyBlock(_mpb);
         }
 
-        // Builds a cone with tip at origin, base at +Y * height
-        // Segments = sides of the cone base circle
+        // Cone with tip at origin, base at +Y, radius 1 at base — scaled at runtime
         private static Mesh BuildConeMesh(int segments)
         {
-            Mesh mesh = new Mesh();
-            mesh.name = "VolumetricLightCone";
+            var mesh = new Mesh { name = "VolumetricLightCone" };
 
-            int vertCount = segments + 2; // tip + base ring + base center
-            Vector3[] verts    = new Vector3[vertCount];
-            int[]     tris     = new int[segments * 3 * 2]; // sides + base cap
+            var verts = new Vector3[segments + 2];
+            var tris  = new int[segments * 3 * 2];
 
             verts[0] = Vector3.zero; // tip
-
             for (int i = 0; i < segments; i++)
             {
-                float angle = (float)i / segments * Mathf.PI * 2f;
-                verts[i + 1] = new Vector3(Mathf.Cos(angle), 1f, Mathf.Sin(angle));
+                float a = (float)i / segments * Mathf.PI * 2f;
+                verts[i + 1] = new Vector3(Mathf.Cos(a), 1f, Mathf.Sin(a));
             }
-
             verts[segments + 1] = new Vector3(0f, 1f, 0f); // base center
 
-            // Side triangles
             int t = 0;
-            for (int i = 0; i < segments; i++)
+            for (int i = 0; i < segments; i++) // sides
             {
                 tris[t++] = 0;
                 tris[t++] = (i + 1) % segments + 1;
                 tris[t++] = i + 1;
             }
-
-            // Base cap
-            for (int i = 0; i < segments; i++)
+            for (int i = 0; i < segments; i++) // base cap
             {
                 tris[t++] = segments + 1;
                 tris[t++] = i + 1;
@@ -179,7 +158,6 @@ namespace Resonance
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            // Rebuild mesh if component already live in editor
             if (_proxyMeshObj != null)
             {
                 UpdateProxyTransform();
