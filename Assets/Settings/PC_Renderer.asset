@@ -17,6 +17,19 @@ MonoBehaviour:
     renderPassEvent: 550
     shader: {fileID: 4800000, guid: 988557230cfcdca4dbca89b89af1e62d, type: 3}
   _material: {fileID: 0}
+--- !u!114 &-1501689970736657794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b0c28d9d13724ee9a0a2310679351c5, type: 3}
+  m_Name: VolumetricLightFeature
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.VolumetricLightFeature
+  m_Active: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44,7 +57,8 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
   - {fileID: 8280111140878146723}
-  m_RendererFeatureMap: ad6b866f10d7b46ca3dccb7436dde872
+  - {fileID: -1501689970736657794}
+  m_RendererFeatureMap: ad6b866f10d7b46ca3dccb7436dde8727e8a798bedec28eb
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}

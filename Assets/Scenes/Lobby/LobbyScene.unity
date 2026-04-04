@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.DefaultSceneNameSetter
   lobbyManager: {fileID: 1097043115}
-  sceneName: TB_RoughCut
+  sceneName: TB_PlaytestArena
 --- !u!1 &32129099
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,7 +479,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 43.05
+  m_fontSize: 42.75
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1119,7 +1119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197424294}
   m_Layer: 0
-  m_Name: '------SKIN PREVIEW------'
+  m_Name: ------SKIN PREVIEW------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2628,7 +2628,7 @@ GameObject:
   m_Component:
   - component: {fileID: 461439340}
   m_Layer: 0
-  m_Name: '------DATA PROVIDERS------'
+  m_Name: ------DATA PROVIDERS------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3773,7 +3773,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.55
+  m_fontSize: 34.85
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5950,7 +5950,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 843194953}
   m_HandleRect: {fileID: 843194952}
   m_Direction: 2
-  m_Value: 1.0000036
+  m_Value: 1
   m_Size: 0.9724757
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6453,7 +6453,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 43.45
+  m_fontSize: 43.75
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7836,7 +7836,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1829748894}
   m_Layer: 0
-  m_Name: '------BUILD CONFIG------'
+  m_Name: ------BUILD CONFIG------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8904,7 +8904,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ee279fa2048d4ecc8c544cc1bfdb004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.TemporaryUI.RenderScaleDisplay
-  text: {fileID: 2087819874}
 --- !u!1 &2108133902
 GameObject:
   m_ObjectHideFlags: 0

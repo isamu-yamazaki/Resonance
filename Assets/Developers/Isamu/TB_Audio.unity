@@ -30328,6 +30328,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 126360018986407940, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
+      propertyPath: m_Range
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 126360018986407940, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
+      propertyPath: m_SpotAngle
+      value: 72.56012
+      objectReference: {fileID: 0}
+    - target: {fileID: 126360018986407940, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
+      propertyPath: m_InnerSpotAngle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 126360018986407940, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2823018080716190569, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
+      propertyPath: m_AdditionalLightsShadowResolutionTier
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5081476455263127138, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
       propertyPath: m_LocalPosition.x
       value: -17.22688
@@ -30371,6 +30391,18 @@ PrefabInstance:
     - target: {fileID: 5606655278830853336, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
       propertyPath: m_Name
       value: StreetLight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5895043659422687874, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.303
+      objectReference: {fileID: 0}
+    - target: {fileID: 5895043659422687874, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.006
+      objectReference: {fileID: 0}
+    - target: {fileID: 5895043659422687874, guid: 04bf232aee1792741ba269081d2d4b19, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.136
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
