@@ -51,7 +51,7 @@ namespace Resonance
             _light.type      = LightType.Spot;
             _light.spotAngle = 30f;
             _light.range     = lightRange;
-            _light.intensity = 5f;
+            _light.intensity = 15f;
             _light.shadows   = LightShadows.None;
 
             _lightObj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);

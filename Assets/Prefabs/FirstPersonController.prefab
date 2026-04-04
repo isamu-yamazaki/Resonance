@@ -1251,12 +1251,9 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   volumetricMaterial: {fileID: 2100000, guid: 6b455ac0fb3cf4106b50713b16ca29b2, type: 2}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  heightAbovePlayer: 20
+  heightAbovePlayer: 35
   smoothSpeed: 5
-  lightRange: 100
+  lightRange: 200
 --- !u!114 &4690382465625623557
 MonoBehaviour:
   m_ObjectHideFlags: 0
