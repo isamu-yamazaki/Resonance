@@ -11,9 +11,14 @@ namespace Resonance.Combat
             _driver = GetComponentInParent<FPArmsAnimator>();
         }
 
-        public void OnUndrawComplete()
+        public void OnHolsterComplete()
         {
-            _driver?.OnUndrawComplete();
+            _driver?.OnHolsterComplete();
+        }
+
+        public void OnDrawComplete()
+        {
+            _driver?.OnDrawComplete();
         }
     }
 }

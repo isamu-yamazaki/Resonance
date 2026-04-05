@@ -28,6 +28,7 @@
             private BaseRoundManagerNetworkAdapter roundManager;
             
             private bool _tpHidden;
+            public bool IsTPHidden => _tpHidden;
 
             public bool ShouldRenderArmsOnly
             {
@@ -163,21 +164,11 @@
             
             public void HideTPBody()
             {
-                
                 _tpHidden = true;
                 if (CurrentMeshInstance == null) return;
 
                 foreach (var smr in CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
                     smr.enabled = false;
-
-                var equipPoints = CurrentMeshInstance.transform.Find("EquipPoints");
-                if (equipPoints != null)
-                {
-                    foreach (var mr in equipPoints.GetComponentsInChildren<MeshRenderer>())
-                        mr.enabled = false;
-                    foreach (var smr in equipPoints.GetComponentsInChildren<SkinnedMeshRenderer>())
-                        smr.enabled = false;
-                }
             }
         }
     }

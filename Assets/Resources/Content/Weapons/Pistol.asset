@@ -20,7 +20,7 @@ MonoBehaviour:
   weaponClass: 5
   firingType: 1
   icon: {fileID: 0}
-  weaponPrefab: {fileID: 1737148184329554707, guid: a04aeb84fa5fcff41a60c568eea597ad, type: 3}
+  weaponMuzzleKey: basePistol
   audioProperties: {fileID: 11400000, guid: 34528873aa7e23541af0cf97fda2ba5a, type: 2}
   damage: 10
   fireRate: 3
@@ -35,6 +35,9 @@ MonoBehaviour:
   spreadRecoveryRate: 1
   mobility: 1
   handling: 0
+  reloadClip: {fileID: 7400000, guid: 986c1e91d76b4894d97fafcd41276d0b, type: 2}
+  emptyReloadClip: {fileID: 7400000, guid: e89ba42b475b07a44bc8320568b5a96b, type: 2}
+  fireClip: {fileID: 7400000, guid: 97dd8e7f9ab253f4381514fa160e2a57, type: 2}
   magazineSize: 12
   reloadTime: 2.3
   bulletProperties: {fileID: 11400000, guid: efa6dd70ff966ac409b9d07883c05ff2, type: 2}

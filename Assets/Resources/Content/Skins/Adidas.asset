@@ -13,7 +13,15 @@ MonoBehaviour:
   m_Name: Adidas
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.SkinData
   skinName: Adidas
-  bodyMeshPrefab: {fileID: 7888975620791195872, guid: 3d8dd475ad99d48a9861c8b8b036309f, type: 3}
-  bodyAvatar: {fileID: 9000000, guid: 3c21727da419b4bcc8a117efcc2cfed4, type: 3}
-  armsMeshPrefab: {fileID: 1904636067503296632, guid: 2e849e3cbe77a420e8fcaf15f2426e10, type: 3}
-  armsAvatar: {fileID: 9000000, guid: 3a73b1625addf4ce3a59fbced2cd2b2b, type: 3}
+  bodyMeshPrefab: {fileID: 806252741108147412, guid: d0c407515e847c841ae0c3bd9d56baa0, type: 3}
+  bodyAvatar: {fileID: 9000000, guid: 726e36308ff560047a57a3e42d5ec10d, type: 3}
+  fpArmsVariants:
+  - weaponClass: 5
+    armsPrefab: {fileID: 9026938903291929774, guid: 7839dbad603f6bb4abb7b4f7889031ed, type: 3}
+    animatorController: {fileID: 9100000, guid: 96ff0500351089e4e82e0b3cfc6d5a6e, type: 2}
+  - weaponClass: 2
+    armsPrefab: {fileID: 1729100790766012235, guid: b7f04912e2f96404da51a4ea3c300ec2, type: 3}
+    animatorController: {fileID: 0}
+  - weaponClass: 4
+    armsPrefab: {fileID: 5724544957405671332, guid: 9cd8015c261473b4cb5da1d35a303719, type: 3}
+    animatorController: {fileID: 0}

@@ -116,7 +116,13 @@ namespace Resonance.Combat
 
             if (!playerActionsInput.AttackHeld && !playerActionsInput.AttackPressed)
             {
-                playerState.SetAttacking(false);
+                if (!playerState.IsReloading &&
+                    playerState.CurrentWeaponState != WeaponState.Drawing &&
+                    playerState.CurrentWeaponState != WeaponState.Holstering)
+                {
+                    playerState.SetWeaponState(WeaponState.Idle);
+                }
+
                 currentSpread = Mathf.Max(
                     weaponStatManager.Spread,
                     currentSpread - weaponStatManager.SpreadRecoveryRate * Time.deltaTime
@@ -151,11 +157,13 @@ namespace Resonance.Combat
         {
             if (Time.frameCount == _lastShootFrame) return;
             _lastShootFrame = Time.frameCount;
-            Debug.Log($"[Shooter] TryShoot called", this);
-            
+
             if (playerState.IsMatchFrozen()) return;
             if (playerState.IsInShop()) return;
-            if (playerState.IsReloading) return;
+            if (playerState.CurrentWeaponState == WeaponState.Reloading) return;
+            if (playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
+            if (playerState.CurrentWeaponState == WeaponState.Drawing) return;
+            if (playerState.CurrentWeaponState == WeaponState.Holstering) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
@@ -163,8 +171,6 @@ namespace Resonance.Combat
 
             WeaponView view = GetActiveWeaponView();
             if (view == null || view.Muzzle == null) return;
-
-            WeaponView tpView = playerEquip.CurrentWeaponView;
 
             float fireRate = weaponStatManager.FireRate;
             if (fireRate > 0f)
@@ -184,12 +190,10 @@ namespace Resonance.Combat
 
                 currentAmmo -= 1;
                 viewModel.SetAmmo(currentAmmo, MagazineSize);
-                playerState.SetAttacking(true);
+                playerState.SetWeaponState(WeaponState.Shooting);
 
                 currentSpread += weaponStatManager.SpreadPerShot;
                 currentSpread = Mathf.Min(currentSpread, weaponStatManager.MaxSpread);
-
-                Debug.Log($"[Shooter] Current Spread: {currentSpread:0.000}");
 
                 if (debugAmmoLogs)
                     Debug.Log($"[Shooter] Fired. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
@@ -200,8 +204,6 @@ namespace Resonance.Combat
 
             WeaponPayload payload = BuildBasePayload(weapon);
 
-            Debug.Log($"[Shooter] FiringType: {weapon.FiringType}");
-            
             if (weapon.FiringType == WeaponFiringType.Hitscan)
             {
                 Vector3 baseDirection = GetAimDirection(view.Muzzle);
@@ -337,13 +339,8 @@ namespace Resonance.Combat
                 Vector3 fpMuzzlePos = fpArmsManager.GetActiveFPWeaponView()?.Muzzle.position ?? view.Muzzle.position;
                 Vector3 tpMuzzlePos = playerEquip.CurrentWeaponView?.Muzzle.position ?? view.Muzzle.position;
 
-                Debug.Log($"[Trail] hitscanBullet: {hitscanBullet?.name ?? "NULL"}");
-                Debug.Log($"[Trail] BulletTrailPrefab: {hitscanBullet?.BulletTrailPrefab?.name ?? "NULL"}");
-                Debug.Log($"[Trail] fpMuzzlePos: {fpMuzzlePos}, tpMuzzlePos: {tpMuzzlePos}, endPoint: {endPoint}");
-
                 if (hitscanBullet?.BulletTrailPrefab != null)
                 {
-                    Debug.Log($"[Trail] Calling SpawnTrailOnAllClients");
                     SpawnTrailOnAllClients(fpMuzzlePos, tpMuzzlePos, endPoint, hitscanBullet.Key);
                 }
             }
@@ -428,7 +425,10 @@ namespace Resonance.Combat
         {
             if (!playerState.IsReloading) return;
 
-            float reloadDuration = weaponStatManager.ReloadTime;
+            WeaponProperties weapon = playerEquip.EquippedWeapon;
+            bool isEmpty = playerState.CurrentWeaponState == WeaponState.EmptyReloading;
+            AnimationClip clip = isEmpty ? weapon?.EmptyReloadClip : weapon?.ReloadClip;
+            float reloadDuration = clip != null ? clip.length : weaponStatManager.ReloadTime;
             float timeRemaining = reloadEndTime - Time.time;
 
             if (reloadDuration > 0f)
@@ -440,7 +440,8 @@ namespace Resonance.Combat
 
         private void TryStartReload()
         {
-            if (playerState.IsReloading) return;
+            if (playerState.CurrentWeaponState == WeaponState.Reloading) return;
+            if (playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
@@ -448,21 +449,20 @@ namespace Resonance.Combat
             if (weaponStatManager.MagazineSize <= 0) return;
             if (currentAmmo >= weaponStatManager.MagazineSize) return;
 
-            float reloadTime = weaponStatManager.ReloadTime;
+            bool isEmpty = currentAmmo <= 0;
+            AnimationClip clip = isEmpty ? weapon.EmptyReloadClip : weapon.ReloadClip;
+            float reloadTime = clip != null ? clip.length : weaponStatManager.ReloadTime;
+
             if (reloadTime <= 0f)
             {
                 currentAmmo = weaponStatManager.MagazineSize;
                 viewModel.SetReloadState(false);
                 viewModel.SetReloadProgress(1f);
                 viewModel.SetAmmo(currentAmmo, MagazineSize);
-
-                if (debugAmmoLogs)
-                    Debug.Log($"[Shooter] Reload complete (instant). Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
-
                 return;
             }
 
-            playerState.SetReloading(true);
+            playerState.SetWeaponState(isEmpty ? WeaponState.EmptyReloading : WeaponState.Reloading);
             reloadEndTime = Time.time + reloadTime;
 
             PlayReloadOnAllClients();
@@ -482,7 +482,7 @@ namespace Resonance.Combat
 
         private void FinishReload()
         {
-            playerState.SetReloading(false);
+            playerState.SetWeaponState(WeaponState.Idle);
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
@@ -510,7 +510,8 @@ namespace Resonance.Combat
             if (!force && weapon == lastWeapon) return;
 
             lastWeapon = weapon;
-            playerState.SetReloading(false);
+            if (!playerState.IsReloading)
+                playerState.SetWeaponState(WeaponState.Idle);
             currentSpread = weaponStatManager.Spread;
 
             viewModel.SetReloadState(false);
@@ -594,7 +595,10 @@ namespace Resonance.Combat
             get
             {
                 if (!playerState.IsReloading) return 0f;
-                float reloadDuration = weaponStatManager.ReloadTime;
+                WeaponProperties weapon = playerEquip?.EquippedWeapon;
+                bool isEmpty = playerState.CurrentWeaponState == WeaponState.EmptyReloading;
+                AnimationClip clip = isEmpty ? weapon?.EmptyReloadClip : weapon?.ReloadClip;
+                float reloadDuration = clip != null ? clip.length : weaponStatManager.ReloadTime;
                 float timeRemaining = reloadEndTime - Time.time;
                 return Mathf.Clamp01(1f - (timeRemaining / reloadDuration));
             }
@@ -605,8 +609,11 @@ namespace Resonance.Combat
             get
             {
                 if (playerEquip == null) return 0f;
-                if (playerEquip.EquippedWeapon == null) return 0f;
-                return weaponStatManager.ReloadTime;
+                WeaponProperties weapon = playerEquip.EquippedWeapon;
+                if (weapon == null) return 0f;
+                bool isEmpty = playerState.CurrentWeaponState == WeaponState.EmptyReloading;
+                AnimationClip clip = isEmpty ? weapon.EmptyReloadClip : weapon.ReloadClip;
+                return clip != null ? clip.length : weaponStatManager.ReloadTime;
             }
         }
 

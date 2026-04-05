@@ -12,11 +12,20 @@ namespace Resonance.PlayerController
         public WeaponClass CurrentWeaponClass { get; private set; }
         public bool WeaponClassInitialized { get; private set; }
 
-        public bool IsReloading { get; private set; }
-        public bool IsAttacking { get; private set; }
+        public WeaponState CurrentWeaponState { get; private set; } = WeaponState.Idle;
 
-        public void SetReloading(bool value) => IsReloading = value;
-        public void SetAttacking(bool value) => IsAttacking = value;
+        public bool IsReloading => CurrentWeaponState == WeaponState.Reloading || CurrentWeaponState == WeaponState.EmptyReloading;
+        public bool IsAttacking => CurrentWeaponState == WeaponState.Shooting;
+
+        public event Action<WeaponState> OnWeaponStateChanged;
+        public event Action<WeaponClass> OnWeaponClassChanged;
+
+        public void SetWeaponState(WeaponState state)
+        {
+            if (CurrentWeaponState == state) return;
+            CurrentWeaponState = state;
+            OnWeaponStateChanged?.Invoke(state);
+        }
 
         public void SetPlayerMovementState(PlayerMovementState playerMovementState)
         {
@@ -60,11 +69,9 @@ namespace Resonance.PlayerController
 
         public bool IsMatchFrozen()
         {
-            return CurrentPlayerMovementState == PlayerMovementState.PreMatchFrozen || 
+            return CurrentPlayerMovementState == PlayerMovementState.PreMatchFrozen ||
                    CurrentPlayerMovementState == PlayerMovementState.MatchEndedFrozen;
         }
-
-        public event Action<WeaponClass> OnWeaponClassChanged;
 
         public void SetWeaponClass(WeaponClass weaponClass)
         {
@@ -89,5 +96,17 @@ namespace Resonance.PlayerController
         PreMatchFrozen = 10,
         MatchEndedFrozen = 11,
         Grappling = 12,
+    }
+
+    public enum WeaponState
+    {
+        Idle = 0,
+        Drawing = 1,
+        Holstering = 2,
+        Shooting = 3,
+        Reloading = 4,
+        EmptyReloading = 5,
+        Casting = 6,
+        Stimming = 7,
     }
 }
