@@ -341,6 +341,7 @@ namespace Resonance.Combat
 
                 if (hitscanBullet?.BulletTrailPrefab != null)
                 {
+                    Debug.Log($"[Shooter] Pellet {i} - trailPrefab: {hitscanBullet?.BulletTrailPrefab?.name ?? "NULL"}, key: {hitscanBullet?.Key ?? "NULL"}");
                     SpawnTrailOnAllClients(fpMuzzlePos, tpMuzzlePos, endPoint, hitscanBullet.Key);
                 }
             }
@@ -353,6 +354,7 @@ namespace Resonance.Combat
         private void SpawnTrailOnAllClients(Vector3 fpStart, Vector3 tpStart, Vector3 end, string bulletPropertyKey)
         {
             BulletProperties properties = System.Array.Find(bulletProperties, w => w.Key == bulletPropertyKey);
+            Debug.Log($"[Trail] key: {bulletPropertyKey}, found: {properties != null}, hasPrefab: {properties?.BulletTrailPrefab != null}");
             Debug.Log($"[Trail] RPC received. isOwner: {isOwner}, key: {bulletPropertyKey}, properties found: {properties != null}");
             if (properties != null && properties.BulletTrailPrefab != null)
                 StartCoroutine(SpawnTrail(isOwner ? fpStart : tpStart, end, properties.BulletTrailPrefab));

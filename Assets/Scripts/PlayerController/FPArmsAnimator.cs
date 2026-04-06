@@ -1,3 +1,4 @@
+using System.Collections;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.PlayerController;
 using System.Collections.Generic;
@@ -24,10 +25,11 @@ namespace Resonance.Combat
         private static readonly int FireSpeedHash = Animator.StringToHash("fireSpeed");
 
         private bool _pendingFirstBuy = false;
-        private WeaponClass _pendingWeaponClass;
+        private WeaponProperties _pendingWeapon = null;
         private bool _hasPendingSwap = false;
         private HashSet<WeaponClass> _seenWeaponClasses = new HashSet<WeaponClass>();
         private HashSet<WeaponClass> _holsteredClasses = new HashSet<WeaponClass>();
+
         public Animator GetActiveAnimatorPublic() => GetActiveAnimator();
 
         private void Awake()
@@ -37,8 +39,6 @@ namespace Resonance.Combat
             _fpArmsManager = GetComponent<FPArmsManager>();
             _skinRenderer = GetComponent<PlayerSkinRenderer>();
             _playerActionsInput = GetComponent<PlayerActionsInput>();
-
-            _playerState.OnWeaponClassChanged += OnWeaponClassChanged;
         }
 
         private void OnDestroy()
@@ -46,24 +46,28 @@ namespace Resonance.Combat
             _playerState.OnWeaponClassChanged -= OnWeaponClassChanged;
         }
 
-        private void OnWeaponClassChanged(WeaponClass newClass)
+        public void RequestWeaponSwap(WeaponProperties weapon)
         {
-            WeaponClass bucketed = BucketClass(newClass);
+            if (weapon == null) return;
+
+            WeaponClass bucketed = BucketClass(weapon.Class);
             bool isNew = !_seenWeaponClasses.Contains(bucketed);
             bool isHolstered = _holsteredClasses.Contains(bucketed);
             _seenWeaponClasses.Add(bucketed);
+            Debug.Log($"[FPArmsAnimator] RequestWeaponSwap - bucketed: {bucketed}, isNew: {isNew}, isHolstered: {isHolstered}, seen: {string.Join(",", _seenWeaponClasses)}, holstered: {string.Join(",", _holsteredClasses)}");
 
-            _pendingWeaponClass = newClass;
-            _hasPendingSwap = true;
+            _pendingWeapon = weapon;
             _pendingFirstBuy = isNew;
+            _hasPendingSwap = true;
 
             if (isHolstered)
             {
                 _holsteredClasses.Remove(bucketed);
+                _hasPendingSwap = false;
+                GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(weapon);
                 _fpArmsManager.RefreshArms();
                 TriggerOnActiveAnimator(isNew ? IsFirstBuyHash : IsDrawHash);
                 _pendingFirstBuy = false;
-                _hasPendingSwap = false;
                 _playerState.SetWeaponState(WeaponState.Drawing);
             }
             else
@@ -71,6 +75,10 @@ namespace Resonance.Combat
                 _playerState.SetWeaponState(WeaponState.Holstering);
                 TriggerOnActiveAnimator(IsHolsterHash);
             }
+        }
+
+        private void OnWeaponClassChanged(WeaponClass newClass)
+        {
         }
 
         private void Update()
@@ -87,7 +95,6 @@ namespace Resonance.Combat
             active.SetBool(IsRunningHash, isMoving);
             active.SetBool(IsReloadingHash, _playerState.IsReloading && _playerShooter.CurrentAmmo > 0);
             active.SetBool(IsEmptyReloadHash, _playerState.IsReloading && _playerShooter.CurrentAmmo <= 0);
-
             active.SetBool(IsFireHash, _playerState.IsAttacking);
 
             WeaponProperties weapon = GetComponent<PlayerEquip>()?.EquippedWeapon;
@@ -101,16 +108,25 @@ namespace Resonance.Combat
         public void OnHolsterComplete()
         {
             if (!_hasPendingSwap) return;
+            StartCoroutine(OnHolsterCompleteRoutine());
+        }
 
-            WeaponClass bucketed = BucketClass(_pendingWeaponClass);
+        private IEnumerator OnHolsterCompleteRoutine()
+        {
+            WeaponClass bucketed = BucketClass(_pendingWeapon.Class);
             _holsteredClasses.Add(bucketed);
             _hasPendingSwap = false;
 
-            GetComponent<PlayerEquip>()?.ExecutePendingSwap();
+            _fpArmsManager.SuppressNextRefresh();
+            GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(_pendingWeapon);
 
             _fpArmsManager.RefreshArms();
+
+            yield return null;
+
             TriggerOnActiveAnimator(_pendingFirstBuy ? IsFirstBuyHash : IsDrawHash);
             _pendingFirstBuy = false;
+            _pendingWeapon = null;
             _playerState.SetWeaponState(WeaponState.Drawing);
         }
 
@@ -121,8 +137,6 @@ namespace Resonance.Combat
 
         public void TriggerFirstBuy()
         {
-            Animator active = GetActiveAnimator();
-            Debug.Log($"[FPArmsAnimator] TriggerFirstBuy - active animator: {active?.name ?? "NULL"}, weaponClass: {_playerState.CurrentWeaponClass}");
             _holsteredClasses.Remove(BucketClass(_playerState.CurrentWeaponClass));
             TriggerOnActiveAnimator(IsFirstBuyHash);
             _playerState.SetWeaponState(WeaponState.Drawing);
@@ -149,7 +163,9 @@ namespace Resonance.Combat
             WeaponClass classToCheck = BucketClass(_playerState.CurrentWeaponClass);
 
             if (_skinRenderer.FPArmsInstances.TryGetValue(classToCheck, out GameObject instance))
+            {
                 return instance?.GetComponent<Animator>();
+            }
 
             return null;
         }
@@ -157,14 +173,18 @@ namespace Resonance.Combat
         private WeaponClass BucketClass(WeaponClass weaponClass)
         {
             if (weaponClass == WeaponClass.Pistol || weaponClass == WeaponClass.Sword)
+            {
                 return weaponClass;
+            }
+
             return WeaponClass.Rifle;
         }
-        
+
         public void ResetForMatchStart()
         {
             _hasPendingSwap = false;
             _pendingFirstBuy = false;
+            _pendingWeapon = null;
             _seenWeaponClasses.Clear();
             _holsteredClasses.Clear();
             _playerState.SetWeaponState(WeaponState.Idle);

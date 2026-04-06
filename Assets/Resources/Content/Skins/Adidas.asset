@@ -21,7 +21,7 @@ MonoBehaviour:
     animatorController: {fileID: 9100000, guid: 96ff0500351089e4e82e0b3cfc6d5a6e, type: 2}
   - weaponClass: 2
     armsPrefab: {fileID: 1729100790766012235, guid: b7f04912e2f96404da51a4ea3c300ec2, type: 3}
-    animatorController: {fileID: 0}
+    animatorController: {fileID: 9100000, guid: ffc78c5c79e612f4486231b21aa5d110, type: 2}
   - weaponClass: 4
     armsPrefab: {fileID: 5724544957405671332, guid: 9cd8015c261473b4cb5da1d35a303719, type: 3}
     animatorController: {fileID: 0}
