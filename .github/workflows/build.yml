@@ -93,6 +93,14 @@ jobs:
           security import certificate.p12 -k build.keychain -P "$MACOS_DEVELOPER_ID_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_CI_KEYCHAIN_RANDOM_PWD" build.keychain
 
+      - name: Restore Library cache
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: library-${{ matrix.target }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            library-${{ matrix.target }}-
+
       - name: Activate Unity license
         run: |
           $UNITY_PATH -batchmode -quit -nographics \
