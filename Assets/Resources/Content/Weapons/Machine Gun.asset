@@ -19,7 +19,7 @@ MonoBehaviour:
   weaponClass: 3
   firingType: 1
   icon: {fileID: 0}
-  weaponPrefab: {fileID: 1737148184329554707, guid: abac27ae7a7c8f74db29e88b2f8e646d, type: 3}
+  weaponMuzzleKey: baseRifle
   audioProperties: {fileID: 11400000, guid: 6b6e8fae28bdccc40bc5f9675c206e90, type: 2}
   damage: 2
   fireRate: 20
@@ -34,6 +34,9 @@ MonoBehaviour:
   spreadRecoveryRate: 1
   mobility: 0.75
   handling: 0
+  reloadClip: {fileID: 7400000, guid: fe1843adf6451744a975d3f144909a39, type: 2}
+  emptyReloadClip: {fileID: 7400000, guid: a6828608ace1fa84a812f4093080cca4, type: 2}
+  fireClip: {fileID: 7400000, guid: b94d22415c294f74aa4e79f5d348d4be, type: 2}
   magazineSize: 120
   reloadTime: 3.3
   bulletProperties: {fileID: 11400000, guid: efa6dd70ff966ac409b9d07883c05ff2, type: 2}

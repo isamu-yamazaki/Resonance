@@ -83,7 +83,7 @@ public class PreMatchCameraController : MonoBehaviour
     private IEnumerator EndSequenceAfterCountdown(float seconds)
     {
         yield return new WaitForSeconds(seconds);
-        EndSequence();
+        yield return StartCoroutine(EndSequence());
     }
 
     private IEnumerator Start()
@@ -229,7 +229,7 @@ public class PreMatchCameraController : MonoBehaviour
         );
     }
 
-    private void EndSequence()
+    private IEnumerator EndSequence()
     {
         GetComponent<CinematicCameraPostProcessing>()?.OnCinematicEnd();
 
@@ -241,13 +241,21 @@ public class PreMatchCameraController : MonoBehaviour
             var skinRenderer = target.GetComponent<PlayerSkinRenderer>();
             skinRenderer?.HideTPBody();
 
-            var playerEquip = target.GetComponent<PlayerEquip>();
-            playerEquip?.HideTPWeapon();
-
+            var fpArmsAnimator = target.GetComponent<FPArmsAnimator>();
+            fpArmsAnimator?.ResetForMatchStart();
+            
             var fpArmsManager = target.GetComponent<FPArmsManager>();
             fpArmsManager?.RefreshArms();
-            
-            var fpArmsAnimator = target.GetComponent<FPArmsAnimator>();
+
+            Animator active = null;
+            float timeout = 2f;
+            float elapsed = 0f;
+            while (active == null && elapsed < timeout)
+            {
+                active = target.GetComponent<FPArmsAnimator>()?.GetActiveAnimatorPublic();
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
             fpArmsAnimator?.TriggerFirstBuy();
         }
 

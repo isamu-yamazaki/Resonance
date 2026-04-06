@@ -1,0 +1,491 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TPUpper
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: AK_Acc
+    m_Weight: 0
+  - m_Path: Body
+    m_Weight: 0
+  - m_Path: Cube.006
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/_shadow_Waist
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/_shadow_Waist/_shadow_Waist_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/_dummy_Waist
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/_dummy_Waist/_dummy_Waist_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/_shadow_LegD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/_shadow_LegD_L/_shadow_LegD_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/_shadow_LegD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/_shadow_LegD_R/_shadow_LegD_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegC_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegC_L/LegC_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegC_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegC_R/LegC_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_L/KneeD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_L/KneeD_L/FootD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_L/KneeD_L/FootD_L/ToeEX_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_L/KneeD_L/FootD_L/ToeEX_L/ToeEX_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_L/LegD_L.001
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_L/LegD_L.001/LegD_L.001_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_R/KneeD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_R/KneeD_R/FootD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_R/KneeD_R/FootD_R/ToeEX_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/LegD_R/KneeD_R/FootD_R/ToeEX_R/ToeEX_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/_dummy_LegD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/_dummy_LegD_L/_dummy_LegD_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/_shadow_KneeD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/_shadow_KneeD_L/_shadow_KneeD_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/_dummy_KneeD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/_dummy_KneeD_L/_dummy_KneeD_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/_shadow_FootD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/_shadow_FootD_L/_shadow_FootD_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/Foot_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/Foot_L/_dummy_FootD_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/Foot_L/_dummy_FootD_L/_dummy_FootD_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/Foot_L/ToeFirst_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_L/LowerLeg_L/Foot_L/ToeFirst_L/ToeFirst_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/_dummy_LegD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/_dummy_LegD_R/_dummy_LegD_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/_shadow_KneeD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/_shadow_KneeD_R/_shadow_KneeD_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/_dummy_KneeD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/_dummy_KneeD_R/_dummy_KneeD_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/_shadow_FootD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/_shadow_FootD_R/_shadow_FootD_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/Foot_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/Foot_R/_dummy_FootD_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/Foot_R/_dummy_FootD_R/_dummy_FootD_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/Foot_R/ToeFirst_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Pelvis/UpperLeg_R/LowerLeg_R/Foot_R/ToeFirst_R/ToeFirst_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/_shadow_Clavicle_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/_shadow_Clavicle_L/_shadow_Clavicle_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/_shadow_Clavicle_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/_shadow_Clavicle_R/_shadow_Clavicle_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/_shadow_ShoulderC_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/_shadow_ShoulderC_L/_shadow_ShoulderC_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/_shadow_ShoulderC_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/_shadow_ShoulderC_R/_shadow_ShoulderC_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/_dummy_Clavicle_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/_dummy_Clavicle_L/_dummy_Clavicle_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/ShoulderC_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/ShoulderC_L/ShoulderC_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/_shadow_ArmTwist1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/_shadow_ArmTwist1_L/_shadow_ArmTwist1_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/_shadow_ArmTwist2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/_shadow_ArmTwist2_L/_shadow_ArmTwist2_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/_shadow_ArmTwist3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/_shadow_ArmTwist3_L/_shadow_ArmTwist3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist1_L/ArmTwist1_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist2_L/ArmTwist2_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist3_L/ArmTwist3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/_dummy_ArmTwist1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/_dummy_ArmTwist1_L/_dummy_ArmTwist1_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/_dummy_ArmTwist2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/_dummy_ArmTwist2_L/_dummy_ArmTwist2_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/_dummy_ArmTwist3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/_dummy_ArmTwist3_L/_dummy_ArmTwist3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/_shadow_WristTwist1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/_shadow_WristTwist1_L/_shadow_WristTwist1_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/_shadow_WristTwist2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/_shadow_WristTwist2_L/_shadow_WristTwist2_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/_shadow_WristTwist3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/_shadow_WristTwist3_L/_shadow_WristTwist3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/HandTwist1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/HandTwist1_L/HandTwist1_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/HandTwist2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/HandTwist2_L/HandTwist2_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/HandTwist3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/HandTwist3_L/HandTwist3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/_dummy_WristTwist1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/_dummy_WristTwist1_L/_dummy_WristTwist1_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/_dummy_WristTwist2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/_dummy_WristTwist2_L/_dummy_WristTwist2_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/_dummy_WristTwist3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/_dummy_WristTwist3_L/_dummy_WristTwist3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/HandDummy_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/HandDummy_L/HandDummy_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Index1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Index1_L/Index2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Index1_L/Index2_L/Index3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Index1_L/Index2_L/Index3_L/Index3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Middle1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Middle1_L/Middle2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Middle1_L/Middle2_L/Middle3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Middle1_L/Middle2_L/Middle3_L/Middle3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Pinky1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Pinky1_L/Pinky2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Pinky1_L/Pinky2_L/Pinky3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Pinky1_L/Pinky2_L/Pinky3_L/Pinky3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Ring1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Ring1_L/Ring2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Ring1_L/Ring2_L/Ring3_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Ring1_L/Ring2_L/Ring3_L/Ring3_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Thumb0_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Thumb0_L/Thumb1_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Thumb0_L/Thumb1_L/Thumb2_L
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_L/Clavicle_L/UpperArm_L/ArmTwist_L/ForeArm_L/WristTwist_L/Hand_L/Thumb0_L/Thumb1_L/Thumb2_L/Thumb2_L_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/_dummy_Clavicle_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/_dummy_Clavicle_R/_dummy_Clavicle_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/ShoulderC_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/ShoulderC_R/ShoulderC_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/_shadow_ArmTwist1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/_shadow_ArmTwist1_R/_shadow_ArmTwist1_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/_shadow_ArmTwist2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/_shadow_ArmTwist2_R/_shadow_ArmTwist2_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/_shadow_ArmTwist3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/_shadow_ArmTwist3_R/_shadow_ArmTwist3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist1_R/ArmTwist1_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist2_R/ArmTwist2_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist3_R/ArmTwist3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/_dummy_ArmTwist1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/_dummy_ArmTwist1_R/_dummy_ArmTwist1_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/_dummy_ArmTwist2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/_dummy_ArmTwist2_R/_dummy_ArmTwist2_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/_dummy_ArmTwist3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/_dummy_ArmTwist3_R/_dummy_ArmTwist3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/_shadow_WristTwist1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/_shadow_WristTwist1_R/_shadow_WristTwist1_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/_shadow_WristTwist2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/_shadow_WristTwist2_R/_shadow_WristTwist2_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/_shadow_WristTwist3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/_shadow_WristTwist3_R/_shadow_WristTwist3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/HandTwist1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/HandTwist1_R/HandTwist1_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/HandTwist2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/HandTwist2_R/HandTwist2_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/HandTwist3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/HandTwist3_R/HandTwist3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/_dummy_WristTwist1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/_dummy_WristTwist1_R/_dummy_WristTwist1_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/_dummy_WristTwist2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/_dummy_WristTwist2_R/_dummy_WristTwist2_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/_dummy_WristTwist3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/_dummy_WristTwist3_R/_dummy_WristTwist3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/HandDummy_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/HandDummy_R/HandDummy_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Index1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Index1_R/Index2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Index1_R/Index2_R/Index3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Index1_R/Index2_R/Index3_R/Index3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Middle1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Middle1_R/Middle2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Middle1_R/Middle2_R/Middle3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Middle1_R/Middle2_R/Middle3_R/Middle3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Pinky1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Pinky1_R/Pinky2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Pinky1_R/Pinky2_R/Pinky3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Pinky1_R/Pinky2_R/Pinky3_R/Pinky3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Ring1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Ring1_R/Ring2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Ring1_R/Ring2_R/Ring3_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Ring1_R/Ring2_R/Ring3_R/Ring3_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Thumb0_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Thumb0_R/Thumb1_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Thumb0_R/Thumb1_R/Thumb2_R
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/ClavicleP_R/Clavicle_R/UpperArm_R/ArmTwist_R/ForeArm_R/WristTwist_R/Hand_R/Thumb0_R/Thumb1_R/Thumb2_R/Thumb2_R_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Neck
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Neck/Head
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Neck/Head/Head_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Scarf1
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Scarf1/Scarf2
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Scarf1/Scarf2/Scarf3
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Scarf1/Scarf2/Scarf3/Scarf4
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Scarf1/Scarf2/Scarf3/Scarf4/Scarf5
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Scarf1/Scarf2/Scarf3/Scarf4/Scarf5/Scarf6
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Scarf1/Scarf2/Scarf3/Scarf4/Scarf5/Scarf6/Scarf7
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/Center/Groove/Waist/Spine/Spine2/Scarf1/Scarf2/Scarf3/Scarf4/Scarf5/Scarf6/Scarf7/Scarf7_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/AllParents/FootIKP_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/FootIKP_L/FootIK_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/FootIKP_L/FootIK_L/ToeIK_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/FootIKP_L/FootIK_L/ToeIK_L/ToeIK_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/FootIKP_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/FootIKP_R/FootIK_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/FootIKP_R/FootIK_R/ToeIK_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/AllParents/FootIKP_R/FootIK_R/ToeIK_R/ToeIK_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/katana_body
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/katana_body/katana_body_end
+    m_Weight: 1
+  - m_Path: F_Adidas_Rig/LegPoleTarget_L
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/LegPoleTarget_L/LegPoleTarget_L_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/LegPoleTarget_R
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/LegPoleTarget_R/LegPoleTarget_R_end
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/Root
+    m_Weight: 0
+  - m_Path: F_Adidas_Rig/Root/Root_end
+    m_Weight: 0
+  - m_Path: Pistol_Grip
+    m_Weight: 0

@@ -34,8 +34,8 @@ namespace Resonance.Combat.Weapons
         [SerializeField] private Sprite icon;
         public Sprite Icon => icon;
 
-        [SerializeField] private GameObject weaponPrefab;
-        public GameObject WeaponPrefab => weaponPrefab;
+        [SerializeField] private string weaponMuzzleKey;
+        public string WeaponMuzzleKey => weaponMuzzleKey;
 
         [Header("Audio")]
         [SerializeField] private WeaponAudioProperties audioProperties;
@@ -83,7 +83,15 @@ namespace Resonance.Combat.Weapons
 
         [SerializeField] private float handling;
         public float Handling => handling;
+        
+        [SerializeField] private AnimationClip reloadClip;
+        public AnimationClip ReloadClip => reloadClip;
 
+        [SerializeField] private AnimationClip emptyReloadClip;
+        public AnimationClip EmptyReloadClip => emptyReloadClip;
+        
+        [SerializeField] private AnimationClip fireClip;
+        public AnimationClip FireClip => fireClip;
         [Header("Ammo Stats")]
         [SerializeField] private int magazineSize;
         public int MagazineSize => magazineSize;
@@ -113,7 +121,7 @@ namespace Resonance.Combat.Weapons
             clone.weaponClass = weaponClass;
             clone.firingType = firingType;
             clone.icon = icon;
-            clone.weaponPrefab = weaponPrefab;
+            clone.weaponMuzzleKey = weaponMuzzleKey;
             clone.audioProperties = audioProperties;
             clone.damage = damage;
             clone.fireRate = fireRate;
@@ -132,6 +140,9 @@ namespace Resonance.Combat.Weapons
             clone.spreadRecoveryRate = spreadRecoveryRate;
             clone.modList = new List<WeaponModProperties>(modList ?? new List<WeaponModProperties>());
             clone.weaponCost = weaponCost;
+            clone.reloadClip = reloadClip;
+            clone.emptyReloadClip = emptyReloadClip;
+            clone.fireClip = fireClip;
             
             return clone;
         }

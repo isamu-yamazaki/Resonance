@@ -9,14 +9,12 @@ namespace Resonance.PlayerController
         [SerializeField] private Animator _animator;
         [SerializeField] private NetworkAnimator _networkAnimator;
         [SerializeField] private float locomotionBlendSpeed = 4f;
-        [SerializeField] private float rifleChestCorrection = 0f;
-        
+
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
         private PlayerController _playerController;
         private PlayerActionsInput _playerActionsInput;
-        
-        // Locomotion
+
         private static int inputXHash = Animator.StringToHash("inputX");
         private static int inputYHash = Animator.StringToHash("inputY");
         private static int isIdlingHash = Animator.StringToHash("isIdling");
@@ -25,17 +23,14 @@ namespace Resonance.PlayerController
         private static int isJumpingHash = Animator.StringToHash("isJumping");
         private static int isCrouchingHash = Animator.StringToHash("isCrouching");
         private static int isSlidingHash = Animator.StringToHash("isSliding");
-        
-        // Actions
         private static int isAttackingHash = Animator.StringToHash("isAttacking");
         private static int isReloadingHash = Animator.StringToHash("isReloading");
         private static int isPlayingActionHash = Animator.StringToHash("isPlayingAction");
-        private int[] actionHashes;
-        
-        //Weapon Class
         private static int weaponClassHash = Animator.StringToHash("weaponClass");
         private static int weaponClassInitializedHash = Animator.StringToHash("weaponClassInitialized");
-        
+        private static int verticalAimHash = Animator.StringToHash("verticalAim");
+
+        private int[] actionHashes;
         private Vector3 _currentBlendInput = Vector3.zero;
 
         protected override void OnSpawned()
@@ -72,17 +67,21 @@ namespace Resonance.PlayerController
             bool isPlayingAction = actionHashes.Any(hash => _animator.GetBool(hash));
 
             Vector2 inputTarget = isSliding ? Vector2.zero :
-                                  isSprinting ? _playerLocomotionInput.MovementInput * 1.5f : 
-                                  isRunning ? _playerLocomotionInput.MovementInput * 1f : 
+                                  isSprinting ? _playerLocomotionInput.MovementInput * 1.5f :
+                                  isRunning ? _playerLocomotionInput.MovementInput * 1f :
                                   _playerLocomotionInput.MovementInput * 0.5f;
-            
+
             _currentBlendInput = Vector3.Lerp(_currentBlendInput, inputTarget, locomotionBlendSpeed * Time.deltaTime);
-            
+
             Vector2 clampedInput = new Vector2(
-                Mathf.Abs(_currentBlendInput.x) < 0.01f ? 0f : _currentBlendInput.x,
-                Mathf.Abs(_currentBlendInput.y) < 0.01f ? 0f : _currentBlendInput.y
+                Mathf.Abs(_currentBlendInput.x) < 0.1f ? 0f : _currentBlendInput.x,
+                Mathf.Abs(_currentBlendInput.y) < 0.1f ? 0f : _currentBlendInput.y
             );
-            
+
+            float pitch = Camera.main != null ? Camera.main.transform.localEulerAngles.x : 0f;
+            if (pitch > 180f) pitch -= 360f;
+            float verticalAim = pitch / 90f;
+
             _networkAnimator.SetBool(isGroundedHash, isGrounded);
             _networkAnimator.SetBool(isIdlingHash, isIdling);
             _networkAnimator.SetBool(isFallingHash, isFalling);
@@ -96,16 +95,7 @@ namespace Resonance.PlayerController
             _networkAnimator.SetInt(weaponClassHash, (int)_playerState.CurrentWeaponClass);
             _networkAnimator.SetFloat(inputXHash, clampedInput.x);
             _networkAnimator.SetFloat(inputYHash, clampedInput.y);
-        }
-        
-        private void LateUpdate()
-        {
-            if ((int)_playerState.CurrentWeaponClass != 2) return;
-    
-            Transform chest = _animator.GetBoneTransform(HumanBodyBones.Chest);
-            if (chest == null) return;
-    
-            chest.localRotation = Quaternion.AngleAxis(rifleChestCorrection, Vector3.up) * chest.localRotation;
+            _networkAnimator.SetFloat(verticalAimHash, verticalAim);
         }
     }
 }

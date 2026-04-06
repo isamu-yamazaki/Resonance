@@ -55,6 +55,7 @@ MonoBehaviour:
   casingLayerMask:
     serializedVersion: 2
     m_Bits: 0
+  weaponKey: baseRifle
 --- !u!108 &5911211374279004753
 Light:
   m_ObjectHideFlags: 0
@@ -259,7 +260,7 @@ Animator:
   m_GameObject: {fileID: 1729100790766012235}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ffc78c5c79e612f4486231b21aa5d110, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
