@@ -59,6 +59,6 @@ MonoBehaviour:
   ratingToWin: 2000
   autoStartDelaySeconds: 5
   autoStartNextMatch: 0
-  matchDurationSeconds: 300
+  matchDurationSeconds: 600
   teamEliminationsToWin: 10
   timeBetweenRoleSwitchSeconds: 90
