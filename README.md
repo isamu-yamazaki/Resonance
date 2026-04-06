@@ -4,11 +4,10 @@
 
 To bypass the [bandwidth limits](https://docs.github.com/en/billing/concepts/product-billing/git-lfs), this project uses a custom LFS server instead of GitHub's.
 
-When cloning, you may be asked by your LFS client to enter a username and password.
+Cloning is public and requires no authentication. When pushing new files, you should be asked by your LFS client to enter a username and password.
 
 - Username: your GitHub username
-- Password: a [GitHub personal access token (PAT)](https://github.com/settings/personal-access-tokens)
-    - A token with read-write permission lets you write new LFS objects, while a read-only token only lets you download them
+- Password: a [GitHub personal access token (PAT)](https://github.com/settings/personal-access-tokens) with read-write permissions
 
 ## Building the game
 
