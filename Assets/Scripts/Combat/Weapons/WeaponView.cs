@@ -119,6 +119,9 @@ namespace Resonance.Combat.Weapons
         [SerializeField] private Transform muzzle;
         public Transform Muzzle => muzzle;
 
+        [SerializeField] private string weaponKey;
+        public string WeaponKey => weaponKey;
+
         public void PlayMuzzleFlash() { }
         public void ApplyMuzzleFlashSettings(MuzzleFlashSettings settings) { }
         public void ApplyAudioProperties(WeaponAudioProperties properties) { }
