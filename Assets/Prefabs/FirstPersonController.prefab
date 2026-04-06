@@ -183,6 +183,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6485822093017100666}
   - component: {fileID: 3024070534968682805}
+  - component: {fileID: 4959540185968129922}
   - component: {fileID: 7300087826615597716}
   - component: {fileID: 8104918514878385418}
   m_Layer: 6
@@ -251,6 +252,30 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &4959540185968129922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5642366538942606948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 3
+  ChannelMask: 1
+  Gain: 0.5
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 0.5
+    FrequencyGain: 1
+    Duration: 0.1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!114 &7300087826615597716
 MonoBehaviour:
   m_ObjectHideFlags: 0

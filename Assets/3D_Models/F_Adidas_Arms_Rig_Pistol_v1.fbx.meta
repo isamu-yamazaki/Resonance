@@ -12,6 +12,71 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Pistol_Acc.001
+    second: {fileID: 2100000, guid: 12f05487d0814e147b4c53ebf42ff1ed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Barrel.001
+    second: {fileID: 2100000, guid: ec5e3cc31d4645f4b94f85a60a843cf6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Bullet
+    second: {fileID: 2100000, guid: 94da446821c94134d9974534103cd353, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Bullets
+    second: {fileID: 2100000, guid: 6404d1cf5a79c2640b1f0edd60c6dc22, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Cannon_Base
+    second: {fileID: 2100000, guid: 8f9b79ad11ab32143902573fc1444a67, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Cover.001
+    second: {fileID: 2100000, guid: 519a3a4825837b740aa103fd3e590852, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Grip.001
+    second: {fileID: 2100000, guid: 898e5ad37641d554fbfc0baa50932012, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Mag.001
+    second: {fileID: 2100000, guid: 6add121b071178f45ae3e3ea9c6e9547, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Safety.001
+    second: {fileID: 2100000, guid: f203ecdc687be48458b110addfacf930, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Slide.001
+    second: {fileID: 2100000, guid: 9bf13444885b6e74c87239c7d8477015, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_TopRail.001
+    second: {fileID: 2100000, guid: f542dbe357734224db0f5c581c3311e3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Trigger.001
+    second: {fileID: 2100000, guid: ee04bfca6ab6a254bb5762c392b56a44, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_UnderRail.001
+    second: {fileID: 2100000, guid: 948cbe3616a8f9445b9399e14fc6171e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Skin
     second: {fileID: 2100000, guid: 9a355f4cdd7b54d88aa0aac16a3b1744, type: 2}
   - first:

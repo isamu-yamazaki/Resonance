@@ -226,6 +226,10 @@ namespace Resonance.Combat
                 view.ApplyMuzzleFlashSettings(flashSettings);
 
             PlayFireOnAllClients();
+            if (isOwner)
+            {
+                GetActiveWeaponView()?.GetComponentInChildren<MuzzleScreenShake>()?.Shake();
+            }
         }
 
         [ObserversRpc(runLocally: true)]
@@ -516,8 +520,12 @@ namespace Resonance.Combat
             if (!force && weapon == lastWeapon) return;
 
             lastWeapon = weapon;
-            if (!playerState.IsReloading)
+            if (!playerState.IsReloading && 
+                playerState.CurrentWeaponState != WeaponState.Drawing &&
+                playerState.CurrentWeaponState != WeaponState.Holstering)
+            {
                 playerState.SetWeaponState(WeaponState.Idle);
+            }
             currentSpread = weaponStatManager.Spread;
 
             viewModel.SetReloadState(false);

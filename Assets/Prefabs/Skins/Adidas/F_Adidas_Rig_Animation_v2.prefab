@@ -390,6 +390,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7991213095780372097, guid: 726e36308ff560047a57a3e42d5ec10d, type: 3}
+      propertyPath: m_TagString
+      value: GrappleOrigin
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 726e36308ff560047a57a3e42d5ec10d, type: 3}
       propertyPath: m_Name
       value: F_Adidas_Rig_Animation_v2
