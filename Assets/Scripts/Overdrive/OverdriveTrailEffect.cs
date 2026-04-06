@@ -15,6 +15,9 @@ namespace Resonance.PlayerController
         [SerializeField] private int maxGhosts = 10;
         [SerializeField] private bool enableGhostLinger = false;
         private PlayerState _playerState;
+        private Vector3 _lastGhostPosition;
+        [SerializeField] private float minGhostSpawnDistance = 0.5f;
+        [SerializeField] private float ghostSpawnOffset = 0.3f;
 
         /// <summary>
         /// Delay for the ghost spawning effect. Ensures that all clients
@@ -164,15 +167,17 @@ namespace Resonance.PlayerController
 
         private void SpawnGhost()
         {
+            if (Vector3.Distance(transform.position, _lastGhostPosition) < minGhostSpawnDistance) return;
+            _lastGhostPosition = transform.position;
+
             GhostInstance ghost = GetGhostFromPool();
             if (ghost == null) return;
 
             ghost.gameObject.SetActive(true);
-            ghost.transform.position = transform.position;
+            ghost.transform.position = transform.position - transform.forward * minGhostSpawnDistance;
             ghost.transform.rotation = transform.rotation;
             ghost.lifetime = 0f;
 
-            // Copy mesh data
             for (int i = 0; i < _meshesToCopy.Length && i < ghost.meshFilters.Length; i++)
             {
                 Mesh mesh = new Mesh();
@@ -215,7 +220,7 @@ namespace Resonance.PlayerController
 
                 // Each SkinMeshRenderer has its own local rotation which must correspond to this object
                 meshObj.transform.localPosition = Vector3.zero;
-                meshObj.transform.localRotation = _meshesToCopy[i].transform.localRotation;
+                meshObj.transform.localRotation = _meshesToCopy[i].transform.localRotation * Quaternion.Euler(0f, 0f, 180f);
 
                 MeshFilter mf = meshObj.AddComponent<MeshFilter>();
                 MeshRenderer mr = meshObj.AddComponent<MeshRenderer>();

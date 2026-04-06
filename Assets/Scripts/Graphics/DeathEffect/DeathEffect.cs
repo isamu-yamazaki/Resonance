@@ -132,12 +132,6 @@ namespace Resonance.VFX
 
         private IEnumerator GlitchSequence()
         {
-            if (_meshRenderers == null || _meshRenderers.Length == 0)
-            {
-                Debug.LogWarning("[DeathEffect] No mesh renderers found, skipping effect.");
-                yield break;
-            }
-
             if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnly)
             {
                 GameObject activeArms = null;
@@ -151,21 +145,31 @@ namespace Resonance.VFX
                 }
 
                 if (activeArms != null)
-                    StartCoroutine(RunGlitchGhost(activeArms));
-
-                foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
                 {
-                    meshRenderer.enabled = false;
+                    SkinnedMeshRenderer[] freshRenderers = activeArms.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    foreach (SkinnedMeshRenderer smr in freshRenderers)
+                    {
+                        smr.enabled = false;
+                    }
+                    StartCoroutine(RunGlitchGhost(activeArms));
                 }
             }
             else
             {
-                StartCoroutine(RunGlitchGhost(_skinRenderer.CurrentMeshInstance));
+                if (_skinRenderer?.CurrentMeshInstance == null)
+                {
+                    Debug.LogWarning("[DeathEffect] No mesh instance found, skipping effect.");
+                    yield break;
+                }
 
-                foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+                SkinnedMeshRenderer[] freshRenderers = _skinRenderer.CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+                foreach (SkinnedMeshRenderer meshRenderer in freshRenderers)
                 {
                     meshRenderer.enabled = false;
                 }
+
+                StartCoroutine(RunGlitchGhost(_skinRenderer.CurrentMeshInstance));
             }
 
             yield return null;

@@ -709,6 +709,8 @@ MonoBehaviour:
   ghostLifetime: 1
   maxGhosts: 10
   enableGhostLinger: 0
+  minGhostSpawnDistance: 0.5
+  ghostSpawnOffset: 1
   ghostSpawningDelaySeconds: 0.5
   colorGradient:
     serializedVersion: 2
