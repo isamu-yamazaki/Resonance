@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Resonance.Combat
 {
-    public class MuzzleShaker : MonoBehaviour
+    public class MuzzleScreenShake : MonoBehaviour
     {
         [SerializeField] private CinemachineImpulseSource impulseSource;
 

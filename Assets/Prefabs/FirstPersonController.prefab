@@ -264,17 +264,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
-  ApplyAfter: 2
+  ApplyAfter: 3
   ChannelMask: 1
-  Gain: 1
+  Gain: 0.5
   Use2DDistance: 0
   UseCameraSpace: 1
   SignalCombinationMode: 0
   ReactionSettings:
     m_SecondaryNoise: {fileID: 0}
-    AmplitudeGain: 1
+    AmplitudeGain: 0.5
     FrequencyGain: 1
-    Duration: 1
+    Duration: 0.1
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!114 &7300087826615597716
 MonoBehaviour:

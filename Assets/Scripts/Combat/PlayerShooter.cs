@@ -228,7 +228,7 @@ namespace Resonance.Combat
             PlayFireOnAllClients();
             if (isOwner)
             {
-                
+                GetActiveWeaponView()?.GetComponentInChildren<MuzzleScreenShake>()?.Shake();
             }
         }
 
