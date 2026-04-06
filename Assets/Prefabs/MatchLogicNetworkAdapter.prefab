@@ -56,7 +56,7 @@ MonoBehaviour:
   assistTimeWindow: 5
   assistDamageThreshold: 20
   matchStartCountdownSeconds: 5
-  ratingToWin: 2000
+  ratingToWin: 10000
   autoStartDelaySeconds: 5
   autoStartNextMatch: 0
   matchDurationSeconds: 600
