@@ -1,6 +1,8 @@
 name: Custom build
 
 on:
+  schedule:
+    - cron: '15 */4 * * *'
   workflow_dispatch:
     inputs:
       target:
