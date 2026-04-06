@@ -2,7 +2,7 @@ name: Build for production
 
 on:
   schedule:
-    - cron: '15 */4 * * *'
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:
