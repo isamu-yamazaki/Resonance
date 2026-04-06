@@ -224,7 +224,7 @@ Light:
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 35
-  m_Range: 20
+  m_Range: 30
   m_SpotAngle: 85
   m_InnerSpotAngle: 0
   m_CookieSize: 10
@@ -322,6 +322,7 @@ MonoBehaviour:
   density: 0.01
   jitterStrength: 0.5
   mieG: 0.3
+  attenuationScale: 0.02
   volumetricMaterial: {fileID: 2100000, guid: 6b455ac0fb3cf4106b50713b16ca29b2, type: 2}
 --- !u!1 &4367666111384243785
 GameObject:
@@ -930,10 +931,40 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4178357922679950313}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8327261267273318146}
   m_SourcePrefab: {fileID: 100100000, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
 --- !u!4 &5081476455263127138 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
   m_PrefabInstance: {fileID: 4688175283013230985}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5606655278830853336 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
+  m_PrefabInstance: {fileID: 4688175283013230985}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &-8327261267273318146
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5606655278830853336}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 1065786519234418052, guid: 92f972f2e7ccb5745a58eeabab9e63a3, type: 3}
