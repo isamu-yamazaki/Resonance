@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Resonance.Shop;
 using PurrNet;
+using Resonance.Combat;
 using Resonance.UI;
 
 namespace Resonance.PlayerController
@@ -29,6 +30,7 @@ namespace Resonance.PlayerController
         private PlayerLocomotionInput _playerLocomotionInput;
         private OverdriveAbility _overdriveAbility;
         private PlayerState _playerState;
+        private FPArmsAnimator _fpArmsAnimator;
 
         // needed for disabling correctly after PurrNet resets the attribute
         private bool wasPreviouslyOwner;
@@ -40,6 +42,7 @@ namespace Resonance.PlayerController
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerState = GetComponent<PlayerState>();
+            _fpArmsAnimator = GetComponent<FPArmsAnimator>();
         }
 
         protected override void OnSpawned()
@@ -180,10 +183,7 @@ namespace Resonance.PlayerController
             if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
-            if (_overdriveAbility != null)
-            {
-                _overdriveAbility.TryActivateOverdrive();
-            }
+            _fpArmsAnimator?.RequestOverdriveActivation();
         }
 
         public void OnSwapSlotOne(InputAction.CallbackContext context)
@@ -219,7 +219,7 @@ namespace Resonance.PlayerController
             if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
-            HealPressed = true;
+            _fpArmsAnimator?.RequestStimActivation();
         }
 
         public void OnAbilityUpper(InputAction.CallbackContext context)

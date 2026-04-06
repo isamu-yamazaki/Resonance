@@ -14,6 +14,10 @@ namespace Resonance.Combat
         private FPArmsManager _fpArmsManager;
         private PlayerSkinRenderer _skinRenderer;
         private PlayerActionsInput _playerActionsInput;
+        private GameObject _skillArmsInstance;
+        private OverdriveAbility _overdriveAbility;
+        private PlayerHealthStim _playerHealthStim;
+        private GameObject _activeSkillArms;
 
         private static readonly int IsRunningHash = Animator.StringToHash("isRunning");
         private static readonly int IsFireHash = Animator.StringToHash("isShooting");
@@ -29,6 +33,7 @@ namespace Resonance.Combat
         private bool _hasPendingSwap = false;
         private HashSet<WeaponClass> _seenWeaponClasses = new HashSet<WeaponClass>();
         private HashSet<WeaponClass> _holsteredClasses = new HashSet<WeaponClass>();
+        private WeaponState _pendingSkillState = WeaponState.Idle;
 
         public Animator GetActiveAnimatorPublic() => GetActiveAnimator();
 
@@ -39,6 +44,8 @@ namespace Resonance.Combat
             _fpArmsManager = GetComponent<FPArmsManager>();
             _skinRenderer = GetComponent<PlayerSkinRenderer>();
             _playerActionsInput = GetComponent<PlayerActionsInput>();
+            _overdriveAbility = GetComponent<OverdriveAbility>();
+            _playerHealthStim = GetComponent<PlayerHealthStim>();
         }
 
         private void OnDestroy()
@@ -107,8 +114,46 @@ namespace Resonance.Combat
 
         public void OnHolsterComplete()
         {
+            if (_pendingSkillState != WeaponState.Idle)
+            {
+                StartCoroutine(ActivateSkillArmsRoutine(_pendingSkillState));
+                _pendingSkillState = WeaponState.Idle;
+                return;
+            }
+
             if (!_hasPendingSwap) return;
             StartCoroutine(OnHolsterCompleteRoutine());
+        }
+
+        private IEnumerator ActivateSkillArmsRoutine(WeaponState skillState)
+        {
+            GameObject skillArms = _skinRenderer.SkillArmsInstance;
+            if (skillArms == null) yield break;
+
+            skillArms.SetActive(true);
+            _activeSkillArms = skillArms;
+            _playerState.SetWeaponState(skillState);
+
+            SkillArmsAnimationBridge bridge = skillArms.GetComponent<SkillArmsAnimationBridge>();
+            if (skillState == WeaponState.Casting)
+            {
+                bridge?.HideSyringe();
+            }
+            else
+            {
+                bridge?.ShowSyringe();
+            }
+
+            Animator skillAnimator = skillArms.GetComponent<Animator>();
+            if (skillAnimator != null)
+            {
+                int hash = skillState == WeaponState.Casting ?
+                    Animator.StringToHash("Overdrive") :
+                    Animator.StringToHash("Stim");
+
+                yield return null;
+                skillAnimator.SetTrigger(hash);
+            }
         }
 
         private IEnumerator OnHolsterCompleteRoutine()
@@ -188,6 +233,91 @@ namespace Resonance.Combat
             _seenWeaponClasses.Clear();
             _holsteredClasses.Clear();
             _playerState.SetWeaponState(WeaponState.Idle);
+        }
+        
+        public void RequestOverdriveActivation()
+        {
+            if (_overdriveAbility == null || !_overdriveAbility.IsReady) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Drawing) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Holstering) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Reloading) return;
+            if (_playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Casting) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Stimming) return;
+
+            _pendingSkillState = WeaponState.Casting;
+            _playerState.SetWeaponState(WeaponState.Holstering);
+            TriggerOnActiveAnimator(IsHolsterHash);
+        }
+
+        public void RequestStimActivation()
+        {
+            if (_playerHealthStim == null || !_playerHealthStim.HasCharges) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Drawing) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Holstering) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Reloading) return;
+            if (_playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Casting) return;
+            if (_playerState.CurrentWeaponState == WeaponState.Stimming) return;
+
+            _pendingSkillState = WeaponState.Stimming;
+            _playerState.SetWeaponState(WeaponState.Holstering);
+            TriggerOnActiveAnimator(IsHolsterHash);
+        }
+
+        private IEnumerator SkillActivationRoutine(WeaponState skillState)
+        {
+            _playerState.SetWeaponState(WeaponState.Holstering);
+            TriggerOnActiveAnimator(IsHolsterHash);
+
+            while (_playerState.CurrentWeaponState == WeaponState.Holstering)
+                yield return null;
+
+            _skillArmsInstance = _skinRenderer.SkillArmsInstance;
+            if (_skillArmsInstance == null) yield break;
+
+            _skillArmsInstance.SetActive(true);
+            _playerState.SetWeaponState(skillState);
+
+            Animator skillAnimator = _skillArmsInstance.GetComponent<Animator>();
+            if (skillAnimator != null)
+            {
+                int hash = skillState == WeaponState.Casting ?
+                    Animator.StringToHash("Overdrive") :
+                    Animator.StringToHash("Stim");
+                skillAnimator.SetTrigger(hash);
+            }
+        }
+
+        public void OnOverdriveAnimActivate()
+        {
+            _overdriveAbility?.TryActivateOverdrive();
+        }
+        
+        public void OnStimAnimActivate()
+        {
+            _playerHealthStim?.ActivateStim();
+        }
+
+        public void OnSkillComplete()
+        {
+            StartCoroutine(OnSkillCompleteRoutine());
+        }
+
+        private IEnumerator OnSkillCompleteRoutine()
+        {
+            if (_activeSkillArms != null)
+            {
+                _activeSkillArms.SetActive(false);
+                _activeSkillArms = null;
+            }
+
+            _fpArmsManager.RefreshArms();
+
+            yield return null;
+
+            TriggerOnActiveAnimator(IsDrawHash);
+            _playerState.SetWeaponState(WeaponState.Drawing);
         }
     }
 }
