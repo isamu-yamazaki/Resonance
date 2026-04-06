@@ -286,6 +286,7 @@ namespace Resonance.Player
             if (_playerState != null)
             {
                 _playerState.SetPlayerMovementState(PlayerMovementState.Dead);
+                _playerState.SetWeaponState(WeaponState.Idle);
             }
 
             if (_playerController != null)
@@ -336,6 +337,7 @@ namespace Resonance.Player
             if (_playerState != null)
             {
                 _playerState.SetPlayerMovementState(PlayerMovementState.Idling);
+                _playerState.SetWeaponState(WeaponState.Idle);
             }
 
             if (_playerController != null)

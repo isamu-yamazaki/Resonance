@@ -131,6 +131,12 @@ namespace Resonance.Combat
             if (skillArms == null) yield break;
 
             skillArms.SetActive(true);
+            _fpArmsManager.SuppressNextRefresh();
+            foreach (var kvp in _skinRenderer.FPArmsInstances)
+            {
+                if (kvp.Value != null)
+                    kvp.Value.SetActive(false);
+            }
             _activeSkillArms = skillArms;
             _playerState.SetWeaponState(skillState);
 
