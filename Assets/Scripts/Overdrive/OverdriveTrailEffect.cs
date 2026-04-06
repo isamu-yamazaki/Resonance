@@ -14,6 +14,7 @@ namespace Resonance.PlayerController
         [SerializeField] private float ghostLifetime = 0.5f;
         [SerializeField] private int maxGhosts = 10;
         [SerializeField] private bool enableGhostLinger = false;
+        private PlayerState _playerState;
 
         /// <summary>
         /// Delay for the ghost spawning effect. Ensures that all clients
@@ -40,6 +41,7 @@ namespace Resonance.PlayerController
         private void Awake()
         {
             _overdriveAbility = GetComponent<OverdriveAbility>();
+            _playerState = GetComponent<PlayerState>();
 
             // Create a static container for ghosts in world space
             GameObject container = new GameObject("Overdrive Ghost Container");
@@ -78,24 +80,27 @@ namespace Resonance.PlayerController
         #region Update Logic
         private void Update()
         {
-            if (_overdriveAbility == null || _meshesToCopy.Length == 0) return;
+            if (_overdriveAbility == null || _meshesToCopy == null || _meshesToCopy.Length == 0) return;
 
             if (isOwner && _overdriveAbility.IsInOverdrive)
             {
-                if (!shouldSpawnGhostsForEveryone.value)
+                bool isMoving = _playerState.CurrentPlayerMovementState == PlayerMovementState.Running ||
+                                _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+
+                if (isMoving && !shouldSpawnGhostsForEveryone.value)
                 {
                     ghostSpawningStartTime.value = DateTime.Now.AddSeconds(ghostSpawningDelaySeconds);
                 }
-                shouldSpawnGhostsForEveryone.value = true;
+
+                shouldSpawnGhostsForEveryone.value = isMoving;
             }
             else if (isOwner)
             {
                 shouldSpawnGhostsForEveryone.value = false;
             }
 
-            if (shouldSpawnGhostsForEveryone && ghostSpawningStartTime <= DateTime.Now)
+            if (shouldSpawnGhostsForEveryone.value && ghostSpawningStartTime.value <= DateTime.Now)
             {
-                // fallback to a locally determined loop
                 _spawnTimer += Time.deltaTime;
 
                 if (_spawnTimer >= spawnInterval)

@@ -164,6 +164,8 @@ namespace Resonance.Combat
             if (playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
             if (playerState.CurrentWeaponState == WeaponState.Drawing) return;
             if (playerState.CurrentWeaponState == WeaponState.Holstering) return;
+            if (playerState.CurrentWeaponState == WeaponState.Casting) return;
+            if (playerState.CurrentWeaponState == WeaponState.Stimming) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
@@ -444,6 +446,8 @@ namespace Resonance.Combat
         {
             if (playerState.CurrentWeaponState == WeaponState.Reloading) return;
             if (playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
+            if (playerState.CurrentWeaponState == WeaponState.Casting) return;
+            if (playerState.CurrentWeaponState == WeaponState.Stimming) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;

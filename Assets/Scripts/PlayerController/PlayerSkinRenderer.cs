@@ -21,6 +21,9 @@
 
             public GameObject CurrentMeshInstance { get; private set; }
             public SkinData CurrentlyLoadedSkinData { get; private set; }
+            
+            private GameObject _skillArmsInstance;
+            public GameObject SkillArmsInstance => _skillArmsInstance;
 
             private Dictionary<WeaponClass, GameObject> _fpArmsInstances = new Dictionary<WeaponClass, GameObject>();
             public IReadOnlyDictionary<WeaponClass, GameObject> FPArmsInstances => _fpArmsInstances;
@@ -93,8 +96,16 @@
                 }
 
                 foreach (var kvp in _fpArmsInstances)
+                {
                     if (kvp.Value != null) Destroy(kvp.Value);
+                }
                 _fpArmsInstances.Clear();
+
+                if (_skillArmsInstance != null)
+                {
+                    Destroy(_skillArmsInstance);
+                    _skillArmsInstance = null;
+                }
 
                 CurrentlyLoadedSkinData = skinData;
 
@@ -132,10 +143,27 @@
 
                     Animator armsAnimator = instance.GetComponent<Animator>();
                     if (armsAnimator != null && entry.animatorController != null)
+                    {
                         armsAnimator.runtimeAnimatorController = entry.animatorController;
+                    }
 
                     instance.SetActive(false);
                     _fpArmsInstances[entry.weaponClass] = instance;
+                }
+
+                if (skinData.skillArmsPrefab != null)
+                {
+                    _skillArmsInstance = Instantiate(skinData.skillArmsPrefab, fpArmsRoot);
+                    _skillArmsInstance.transform.localPosition = Vector3.zero;
+                    _skillArmsInstance.transform.localRotation = Quaternion.identity;
+
+                    Animator skillAnimator = _skillArmsInstance.GetComponent<Animator>();
+                    if (skillAnimator != null && skinData.skillArmsAnimatorController != null)
+                    {
+                        skillAnimator.runtimeAnimatorController = skinData.skillArmsAnimatorController;
+                    }
+
+                    _skillArmsInstance.SetActive(false);
                 }
             }
 
