@@ -47,6 +47,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Restore Unity installation from cache
         id: cache-unity
@@ -104,6 +106,14 @@ jobs:
           UNITY_PATH: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Restore Library cache
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: library-${{ github.event.inputs.target }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            library-${{ github.event.inputs.target }}-
 
       - name: Determine config
         id: config
