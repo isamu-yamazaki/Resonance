@@ -47,8 +47,14 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
+
+      - name: Configure LFS credentials
+        run: |
+          git config --global credential.helper store
+          echo "https://${{ secrets.LFS_USERNAME }}:${{ secrets.LFS_PASSWORD }}@${{ vars.LFS_HOST }}" >> ~/.git-credentials
+
+      - name: Pull LFS files
+        run: git lfs pull
 
       - name: Restore Unity installation from cache
         id: cache-unity
