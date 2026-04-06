@@ -239,6 +239,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9151017967318271135, guid: f18eda9f6e937f84899e61ab1913618d, type: 3}
+      propertyPath: m_TagString
+      value: GrappleOrigin
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f18eda9f6e937f84899e61ab1913618d, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
