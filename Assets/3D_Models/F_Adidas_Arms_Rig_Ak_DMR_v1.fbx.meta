@@ -73,12 +73,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: AK_LMG_Mag.001
-    second: {fileID: 2100000, guid: 6de1307d21a4f9b4b84c64d47a3eb7f7, type: 2}
+    second: {fileID: 2100000, guid: 92ba5225a9f3c8f4994cdd56eb4095f8, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: AK_Mag
-    second: {fileID: 2100000, guid: 9310496ecbac7ed429a2d3fff634bf43, type: 2}
+    second: {fileID: 2100000, guid: 92ba5225a9f3c8f4994cdd56eb4095f8, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule

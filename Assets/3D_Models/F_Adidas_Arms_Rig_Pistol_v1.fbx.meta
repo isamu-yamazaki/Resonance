@@ -17,6 +17,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Pistol_Auto_Mag
+    second: {fileID: 2100000, guid: 92ba5225a9f3c8f4994cdd56eb4095f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Pistol_Barrel.001
     second: {fileID: 2100000, guid: ec5e3cc31d4645f4b94f85a60a843cf6, type: 2}
   - first:
@@ -34,6 +39,16 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Pistol_Cannon_Base
     second: {fileID: 2100000, guid: 8f9b79ad11ab32143902573fc1444a67, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Cannon_Slide
+    second: {fileID: 2100000, guid: 9171296b3dfd7b449894ca4a52541534, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Cannon_UnderRail
+    second: {fileID: 2100000, guid: 07cab37f2c3d76343b343c0d127e9115, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -57,8 +72,28 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Pistol_Shotgun_Muzzle
+    second: {fileID: 2100000, guid: 92ba5225a9f3c8f4994cdd56eb4095f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Shotgun_UnderRail
+    second: {fileID: 2100000, guid: 92ba5225a9f3c8f4994cdd56eb4095f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Pistol_Slide.001
     second: {fileID: 2100000, guid: 9bf13444885b6e74c87239c7d8477015, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Supressor
+    second: {fileID: 2100000, guid: 92ba5225a9f3c8f4994cdd56eb4095f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistol_Supressor_Screw
+    second: {fileID: 2100000, guid: 92ba5225a9f3c8f4994cdd56eb4095f8, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
