@@ -226,6 +226,10 @@ namespace Resonance.Combat
                 view.ApplyMuzzleFlashSettings(flashSettings);
 
             PlayFireOnAllClients();
+            if (isOwner)
+            {
+                
+            }
         }
 
         [ObserversRpc(runLocally: true)]
