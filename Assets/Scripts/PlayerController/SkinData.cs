@@ -19,5 +19,7 @@ namespace Resonance.PlayerController
         public GameObject bodyMeshPrefab;
         public Avatar bodyAvatar;
         public List<FPArmsEntry> fpArmsVariants = new List<FPArmsEntry>();
+        public GameObject skillArmsPrefab;
+        public RuntimeAnimatorController skillArmsAnimatorController;
     }
 }

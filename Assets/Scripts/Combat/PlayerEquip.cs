@@ -185,6 +185,8 @@ namespace Resonance.Combat
 
             if (playerState.CurrentWeaponState == WeaponState.Holstering ||
                 playerState.CurrentWeaponState == WeaponState.Drawing) return;
+            if (playerState.CurrentWeaponState == WeaponState.Casting) return;
+            if (playerState.CurrentWeaponState == WeaponState.Stimming) return;
 
             if (isOwner && fpArmsAnimator != null)
             {
