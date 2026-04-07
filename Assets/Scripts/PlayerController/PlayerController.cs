@@ -527,10 +527,15 @@ namespace Resonance.PlayerController
         #endregion
 
         #region State Checks
+
         private bool IsMovingLaterally()
         {
+            if (_trainPassengerPhysics != null && _trainPassengerPhysics.IsOnTrain)
+            {
+                return _playerLocomotionInput.MovementInput != Vector2.zero;
+            }
+
             Vector3 lateralVelocity = new Vector3(_characterController.velocity.x, 0f, _characterController.velocity.z);
-            
             return lateralVelocity.magnitude > movingThreshold;
         }
 
