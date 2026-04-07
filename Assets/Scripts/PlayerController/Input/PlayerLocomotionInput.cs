@@ -17,6 +17,7 @@ namespace Resonance.PlayerController
         public bool CrouchToggledOn { get; private set; }
 
         private PlayerState _playerState;
+        private bool wasPreviouslyOwner;
         #endregion
 
         #region Startup
@@ -30,6 +31,7 @@ namespace Resonance.PlayerController
         {
             base.OnSpawned();
             enabled = isOwner;
+            wasPreviouslyOwner = isOwner;
 
             if (isOwner)
             {
@@ -55,7 +57,7 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (isOwner)
+            if (wasPreviouslyOwner)
             {
                 PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Disable();
                 PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.RemoveCallbacks(this);
