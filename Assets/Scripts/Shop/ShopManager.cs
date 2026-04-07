@@ -820,8 +820,6 @@ namespace Resonance.Shop
                 if (shopCloseEvent != null && shopCloseEvent.IsValid())
                     shopCloseEvent.Post(gameObject);
 #endif
-
-                playerState?.SetPlayerMovementState(PlayerMovementState.Idling);
             }
             else
             {
@@ -833,8 +831,6 @@ namespace Resonance.Shop
                 if (shopOpenEvent != null && shopOpenEvent.IsValid())
                     shopOpenEvent.Post(gameObject);
 #endif
-
-                playerState?.SetPlayerMovementState(PlayerMovementState.InShop);
                 RefreshModWeaponButtons();
                 RefreshBalanceText();
 

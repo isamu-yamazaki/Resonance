@@ -65,14 +65,12 @@ namespace Resonance.UI
                 escMenuPanel.SetActive(false);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                playerState?.SetPlayerMovementState(PlayerMovementState.Idling);
             }
             else
             {
                 escMenuPanel.SetActive(true);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                playerState?.SetPlayerMovementState(PlayerMovementState.InShop);
             }
         }
 
