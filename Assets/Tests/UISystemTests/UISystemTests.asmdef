@@ -1,0 +1,6 @@
+{
+    "name": "UISystemTests",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
