@@ -43,7 +43,11 @@ namespace Resonance.Match
         {
             base.OnSpawn(asServer);
 
-            if (asServer)
+            // caveat: OnSpawn can get called multiple times upon initializing,
+            // with asServer = true, on the server
+            // _tracker == null guard is a workaround for this
+
+            if (asServer && _tracker == null)
             {
                 _tracker = new MatchStatTracker(_config);
                 _tracker.OnAllStatsUpdated += OnTrackerStatsUpdated;
