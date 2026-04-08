@@ -165,6 +165,12 @@ namespace Resonance.Match
 
         #region Getters (Client Callable)
         [ServerRpc]
+        public override async Task<BaseMatchState> GetMatchState()
+        {
+            return polarityRoundManager?.MatchState ?? BaseMatchState.Waiting;
+        }
+
+        [ServerRpc]
         public async Task<Dictionary<int, List<PlayerRanking>>> GetLeaderboard_Server()
         {
             var leaderboard = polarityRoundManager?.GetLeaderboard() ?? new Dictionary<TeamId, List<PlayerRanking>>();

@@ -184,6 +184,12 @@ namespace Resonance.Match
 
         #region Getters (Client Callable)
         [ServerRpc]
+        public override async Task<BaseMatchState> GetMatchState()
+        {
+            return arenaRoundManager?.MatchState ?? BaseMatchState.Waiting;
+        }
+
+        [ServerRpc]
         public async Task<float> GetRatingToWin()
         {
             return arenaRoundManager?.RatingToWin ?? 0f;

@@ -124,6 +124,7 @@ namespace Resonance.Match
         #endregion
 
         #region Getters (Client Callable)
+        public abstract Task<BaseMatchState> GetMatchState();
         [ServerRpc]
         public async Task<bool> GetIsMatchActive() => GetRoundManagerIsMatchActive();
 
