@@ -9,6 +9,9 @@ public class MatchTimerUI : MonoBehaviour
 
     private void Start()
     {
+        if (viewModel == null)
+            viewModel = FindObjectOfType<MatchTimerViewModel>();
+        
         viewModel.FormattedTime.ChangeEvent += UpdateText;
 
         if (ArenaRoundManagerBridge.Instance != null)
