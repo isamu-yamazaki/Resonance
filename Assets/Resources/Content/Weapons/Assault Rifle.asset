@@ -20,7 +20,7 @@ MonoBehaviour:
   firingType: 1
   icon: {fileID: 0}
   weaponMuzzleKey: baseRifle
-  audioProperties: {fileID: 11400000, guid: 6b6e8fae28bdccc40bc5f9675c206e90, type: 2}
+  audioProperties: {fileID: 11400000, guid: f2c6fca08bbd55040b175d82e4bd740e, type: 2}
   damage: 15
   fireRate: 4
   projectilesPerShot: 1

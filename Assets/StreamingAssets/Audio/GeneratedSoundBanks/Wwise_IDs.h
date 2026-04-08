@@ -35,6 +35,11 @@ namespace AK
         static const AkUniqueID PLAY_REVOLVER_EQUIP = 3091083318U;
         static const AkUniqueID PLAY_REVOLVER_FIRE = 3161719826U;
         static const AkUniqueID PLAY_REVOLVER_RELOAD = 242751549U;
+        static const AkUniqueID PLAY_RIFLE_CASING = 936598750U;
+        static const AkUniqueID PLAY_RIFLE_EMPTY = 1716612626U;
+        static const AkUniqueID PLAY_RIFLE_EQUIP = 3479106441U;
+        static const AkUniqueID PLAY_RIFLE_FIRE = 1046869819U;
+        static const AkUniqueID PLAY_RIFLE_RELOAD = 191410604U;
         static const AkUniqueID PLAY_SD_DISTORTION = 2277071487U;
         static const AkUniqueID PLAY_SD_PING = 3350049094U;
         static const AkUniqueID PLAY_SD_PULSEACTIVATE = 3246891746U;
