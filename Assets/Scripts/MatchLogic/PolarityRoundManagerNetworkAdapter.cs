@@ -165,9 +165,9 @@ namespace Resonance.Match
 
         #region Getters (Client Callable)
         [ServerRpc]
-        public override async Task<BaseMatchState> GetMatchState()
+        public override async Task<int> GetMatchState()
         {
-            return polarityRoundManager?.MatchState ?? BaseMatchState.Waiting;
+            return (int)(polarityRoundManager?.MatchState ?? BaseMatchState.Waiting);
         }
 
         [ServerRpc]

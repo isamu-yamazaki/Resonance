@@ -21,7 +21,7 @@ namespace Resonance.Match
 
         public bool IsMatchActive => MatchState == BaseMatchState.MatchActive;
         public bool IsMatchCountdown => MatchState == BaseMatchState.Countdown;
-        public bool IsMatchEnded  => MatchState == BaseMatchState.MatchEnded;
+        public bool IsMatchEnded => MatchState == BaseMatchState.MatchEnded;
         #endregion
 
         #region Events
@@ -42,6 +42,13 @@ namespace Resonance.Match
         public override void OnSpawn(bool asServer)
         {
             base.OnSpawn(asServer);
+            RefreshMatchState();
+        }
+
+        private async void RefreshMatchState()
+        {
+            var matchState = (BaseMatchState)await GetMatchState();
+            MatchState = matchState;
         }
 
         public override void OnDespawned(bool asServer)
@@ -58,11 +65,11 @@ namespace Resonance.Match
         #region Initialization
         private void OnMatchStatTrackerCreated(MatchStatTracker tracker)
         {
-            if (!HasRoundManager())
+            if (!HasRoundManager() && isServer)
             {
                 CreateRoundManager(tracker);
             }
-            else
+            else if (isServer)
             {
                 Debug.LogWarning($"[{GetType().Name}] MatchStatTracker received but round manager already exists; re-creating");
                 DestroyRoundManager();
@@ -124,7 +131,7 @@ namespace Resonance.Match
         #endregion
 
         #region Getters (Client Callable)
-        public abstract Task<BaseMatchState> GetMatchState();
+        public abstract Task<int> GetMatchState();
         [ServerRpc]
         public async Task<bool> GetIsMatchActive() => GetRoundManagerIsMatchActive();
 
