@@ -5,6 +5,8 @@ namespace Resonance.Combat.Weapons
     [CreateAssetMenu(fileName = "New Weapon Audio", menuName = "Resonance/Weapons/Weapon Audio Properties")]
     public class WeaponAudioProperties : ScriptableObject
     {
+        public string key;
+
 #if !UNITY_SERVER
         [Header("Muzzle Events")]
         public AK.Wwise.Event fireEvent;
