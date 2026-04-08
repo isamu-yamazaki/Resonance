@@ -24,6 +24,9 @@
             
             private GameObject _skillArmsInstance;
             public GameObject SkillArmsInstance => _skillArmsInstance;
+            
+            private GameObject _grappleArmsInstance;
+            public GameObject GrappleArmsInstance => _grappleArmsInstance;
 
             private Dictionary<WeaponClass, GameObject> _fpArmsInstances = new Dictionary<WeaponClass, GameObject>();
             public IReadOnlyDictionary<WeaponClass, GameObject> FPArmsInstances => _fpArmsInstances;
@@ -106,6 +109,12 @@
                     Destroy(_skillArmsInstance);
                     _skillArmsInstance = null;
                 }
+                
+                if (_grappleArmsInstance != null)
+                {
+                    Destroy(_grappleArmsInstance);
+                    _grappleArmsInstance = null;
+                }
 
                 CurrentlyLoadedSkinData = skinData;
 
@@ -164,6 +173,21 @@
                     }
 
                     _skillArmsInstance.SetActive(false);
+                }
+                
+                if (skinData.grappleArmsPrefab != null)
+                {
+                    _grappleArmsInstance = Instantiate(skinData.grappleArmsPrefab, fpArmsRoot);
+                    _grappleArmsInstance.transform.localPosition = Vector3.zero;
+                    _grappleArmsInstance.transform.localRotation = Quaternion.identity;
+
+                    Animator grappleAnimator = _grappleArmsInstance.GetComponent<Animator>();
+                    if (grappleAnimator != null && skinData.grappleArmsAnimatorController != null)
+                    {
+                        grappleAnimator.runtimeAnimatorController = skinData.grappleArmsAnimatorController;
+                    }
+
+                    _grappleArmsInstance.SetActive(false);
                 }
             }
 

@@ -13,6 +13,7 @@ namespace Resonance.Combat
 
         private PlayerActionsInput playerActionsInput;
         private PlayerInventory inventory;
+        private FPArmsAnimator fpArmsAnimator;
         private Dictionary<string, IAugmentAbility> abilityMap = new();
 
         #endregion
@@ -23,6 +24,7 @@ namespace Resonance.Combat
         {
             playerActionsInput = GetComponent<PlayerActionsInput>();
             inventory = GetComponent<PlayerInventory>();
+            fpArmsAnimator = GetComponent<FPArmsAnimator>();
 
             foreach (IAugmentAbility ability in GetComponents<IAugmentAbility>())
             {
@@ -84,8 +86,13 @@ namespace Resonance.Combat
         {
             playerActionsInput.SetAbilityUpperPressedFalse();
             IAugmentAbility ability = GetAbility(inventory.augmentInventory[0]?.AbilityKey);
-            if (ability == null || !ability.AbilityReady)
+            if (ability == null || !ability.AbilityReady) return;
+
+            if (ability is AbilityGrappleHook)
+            {
+                fpArmsAnimator?.RequestGrappleActivation();
                 return;
+            }
 
             ability.ActivateAbility();
             AugmentHUDManager.Instance.OnAbilityUsed(AugmentSlot.Upper);
@@ -95,8 +102,13 @@ namespace Resonance.Combat
         {
             playerActionsInput.SetAbilityLowerPressedFalse();
             IAugmentAbility ability = GetAbility(inventory.augmentInventory[1]?.AbilityKey);
-            if (ability == null || !ability.AbilityReady)
+            if (ability == null || !ability.AbilityReady) return;
+
+            if (ability is AbilityGrappleHook)
+            {
+                fpArmsAnimator?.RequestGrappleActivation();
                 return;
+            }
 
             ability.ActivateAbility();
             AugmentHUDManager.Instance.OnAbilityUsed(AugmentSlot.Lower);

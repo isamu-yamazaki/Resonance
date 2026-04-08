@@ -160,12 +160,8 @@ namespace Resonance.Combat
 
             if (playerState.IsMatchFrozen()) return;
             if (playerState.IsInShop()) return;
-            if (playerState.CurrentWeaponState == WeaponState.Reloading) return;
-            if (playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
-            if (playerState.CurrentWeaponState == WeaponState.Drawing) return;
-            if (playerState.CurrentWeaponState == WeaponState.Holstering) return;
-            if (playerState.CurrentWeaponState == WeaponState.Casting) return;
-            if (playerState.CurrentWeaponState == WeaponState.Stimming) return;
+            if (playerState.CurrentWeaponState != WeaponState.Idle && 
+                playerState.CurrentWeaponState != WeaponState.Shooting) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
@@ -448,10 +444,8 @@ namespace Resonance.Combat
 
         private void TryStartReload()
         {
-            if (playerState.CurrentWeaponState == WeaponState.Reloading) return;
-            if (playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
-            if (playerState.CurrentWeaponState == WeaponState.Casting) return;
-            if (playerState.CurrentWeaponState == WeaponState.Stimming) return;
+            if (playerState.CurrentWeaponState != WeaponState.Idle && 
+                playerState.CurrentWeaponState != WeaponState.Shooting) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
