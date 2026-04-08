@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{0D1B9194-3E4C-958B-F6DD-BE2CED472968}",
+    "Hash": "{A0C42EDF-D836-5B0D-FBE9-2250147D9D31}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -1281,7 +1281,7 @@
       "Name": "Play_SD_PulseActivate",
       "ObjectPath": "\\Events\\Default Work Unit\\SonarDisc\\Play_SD_PulseActivate",
       "GUID": "{BA656AA4-42E7-42B4-B54E-A4E939C157BA}",
-      "MaxAttenuation": "50",
+      "MaxAttenuation": "40",
       "DurationType": "OneShot",
       "DurationMin": "0.77435416",
       "DurationMax": "0.77435416",
@@ -1553,6 +1553,6 @@
     ]
    }
   ],
-  "FileHash": "{E5577641-5962-A700-A879-42192DE2C5A9}"
+  "FileHash": "{09CD2F62-A7A5-FB9A-4904-6E6AAFE44506}"
  }
 }
