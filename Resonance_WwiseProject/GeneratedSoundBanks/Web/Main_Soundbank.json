@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{7AF396B2-74F2-6F1B-2970-3900024B9261}",
+    "Hash": "{0D1B9194-3E4C-958B-F6DD-BE2CED472968}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -56,6 +56,14 @@
       "CachePath": "2D/{2D98AB83-F1DD-6D72-63EF-305AC133EA0E}.wem"
      },
      {
+      "Id": "157838617",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_rifle_equip.wav",
+      "CachePath": "3A/{3AC0E483-941E-8385-93C2-255D35510084}.wem"
+     },
+     {
       "Id": "159449927",
       "Language": "SFX",
       "Streaming": "false",
@@ -70,6 +78,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_wood_run_04.wav",
       "CachePath": "78/{7869FAF3-19FD-B709-F40F-8CED6B546424}.wem"
+     },
+     {
+      "Id": "193106364",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_rifle_fire.wav",
+      "CachePath": "A6/{A66F8C6D-31C9-A7E8-EDE4-5328472DCE55}.wem"
      },
      {
       "Id": "209026899",
@@ -296,6 +312,14 @@
       "CachePath": "53/{5302264F-3EE7-4F70-50D1-CC65AD1AA83C}.wem"
      },
      {
+      "Id": "619676449",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_rifle_empty_trigger.wav",
+      "CachePath": "E2/{E210307D-6D1D-82A1-4C17-48734C5720C3}.wem"
+     },
+     {
       "Id": "640947939",
       "Language": "SFX",
       "Streaming": "false",
@@ -366,6 +390,14 @@
       "Location": "Memory",
       "ShortName": "sfx_combat_sonardisc_ping.wav",
       "CachePath": "5D/{5D340140-8EDB-8A86-B57E-5EBAD145FB33}.wem"
+     },
+     {
+      "Id": "714533334",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_rifle_reload.wav",
+      "CachePath": "F6/{F64E1DCE-749B-B4B8-33AE-6F3298475886}.wem"
      },
      {
       "Id": "748536120",
@@ -1141,6 +1173,81 @@
       ]
      },
      {
+      "Id": "936598750",
+      "Name": "Play_Rifle_Casing",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Rifle\\Play_Rifle_Casing",
+      "GUID": "{256A430B-032B-4D25-8207-590B89BDBAC7}",
+      "MaxAttenuation": "10",
+      "DurationType": "OneShot",
+      "DurationMin": "0.85714585",
+      "DurationMax": "0.85714585",
+      "MediaRefs": [
+       {
+        "Id": "265624677"
+       }
+      ]
+     },
+     {
+      "Id": "1716612626",
+      "Name": "Play_Rifle_Empty",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Rifle\\Play_Rifle_Empty",
+      "GUID": "{634E1EFA-DA6A-45D9-9FDB-72CA3F96232D}",
+      "MaxAttenuation": "10",
+      "DurationType": "OneShot",
+      "DurationMin": "0.4285625",
+      "DurationMax": "0.4285625",
+      "MediaRefs": [
+       {
+        "Id": "619676449"
+       }
+      ]
+     },
+     {
+      "Id": "3479106441",
+      "Name": "Play_Rifle_Equip",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Rifle\\Play_Rifle_Equip",
+      "GUID": "{454E30A8-A4E6-49BC-94DD-08451189A30A}",
+      "MaxAttenuation": "10",
+      "DurationType": "OneShot",
+      "DurationMin": "0.85714585",
+      "DurationMax": "0.85714585",
+      "MediaRefs": [
+       {
+        "Id": "157838617"
+       }
+      ]
+     },
+     {
+      "Id": "1046869819",
+      "Name": "Play_Rifle_Fire",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Rifle\\Play_Rifle_Fire",
+      "GUID": "{FC98EF5B-3EDF-46F1-9918-1176BE12ADCA}",
+      "MaxAttenuation": "85",
+      "DurationType": "OneShot",
+      "DurationMin": "0.64285415",
+      "DurationMax": "0.64285415",
+      "MediaRefs": [
+       {
+        "Id": "193106364"
+       }
+      ]
+     },
+     {
+      "Id": "191410604",
+      "Name": "Play_Rifle_Reload",
+      "ObjectPath": "\\Events\\Default Work Unit\\Firearms\\Rifle\\Play_Rifle_Reload",
+      "GUID": "{E4D4F1E2-0952-4A2B-9ED5-7326B4FA20E1}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "1.7142917",
+      "DurationMax": "1.7142917",
+      "MediaRefs": [
+       {
+        "Id": "714533334"
+       }
+      ]
+     },
+     {
       "Id": "2277071487",
       "Name": "Play_SD_Distortion",
       "ObjectPath": "\\Events\\Default Work Unit\\SonarDisc\\Play_SD_Distortion",
@@ -1446,6 +1553,6 @@
     ]
    }
   ],
-  "FileHash": "{A22A1BFB-74E9-52F8-E3D9-0BA5F3594585}"
+  "FileHash": "{E5577641-5962-A700-A879-42192DE2C5A9}"
  }
 }

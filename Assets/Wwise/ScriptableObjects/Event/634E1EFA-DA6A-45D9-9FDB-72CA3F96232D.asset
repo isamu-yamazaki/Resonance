@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c19384f92fab9bd4ab1f02a2a0acf790, type: 3}
+  m_Name: 634E1EFA-DA6A-45D9-9FDB-72CA3F96232D
+  m_EditorClassIdentifier: AK.Wwise.Unity.API.WwiseTypes::WwiseEventReference
+  objectName: Play_Rifle_Empty
+  id: 1716612626
+  guid: 634E1EFA-DA6A-45D9-9FDB-72CA3F96232D
+  IsInUserDefinedSoundBank: 1

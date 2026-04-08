@@ -285,6 +285,65 @@
 								</Event>
 							</ChildrenList>
 						</Folder>
+						<Folder Name="Rifle" ID="{59EB0A9E-07F4-4278-BFFA-52C77AECA9AC}" ShortID="755318988">
+							<ChildrenList>
+								<Event Name="Play_Rifle_Fire" ID="{FC98EF5B-3EDF-46F1-9918-1176BE12ADCA}">
+									<ChildrenList>
+										<Action Name="" ID="{C21053A1-A137-4A7A-AB60-9AA30A36C063}" ShortID="741925684">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_rifle_fire" ID="{FBBAE5E7-C4CF-4496-9847-202339026139}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Rifle_Empty" ID="{634E1EFA-DA6A-45D9-9FDB-72CA3F96232D}">
+									<ChildrenList>
+										<Action Name="" ID="{9CB33E4D-7EB2-4740-8508-145C2A4A4307}" ShortID="171899656">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_rifle_empty_trigger" ID="{2A48D3AC-7D61-4B00-A953-251F86DA6D1C}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Rifle_Equip" ID="{454E30A8-A4E6-49BC-94DD-08451189A30A}">
+									<ChildrenList>
+										<Action Name="" ID="{B167F700-B4BC-4B6A-9368-063148820CDA}" ShortID="328468196">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_rifle_equip" ID="{AC0BEDBF-0B26-4BFD-9F32-1773485EA748}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Rifle_Reload" ID="{E4D4F1E2-0952-4A2B-9ED5-7326B4FA20E1}">
+									<ChildrenList>
+										<Action Name="" ID="{CF24CCD1-D6B2-491A-9C9B-405BC1F2CF2D}" ShortID="582817438">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_rifle_reload" ID="{8703CD7F-80D0-495F-89EE-FF877C59B02A}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="Play_Rifle_Casing" ID="{256A430B-032B-4D25-8207-590B89BDBAC7}">
+									<ChildrenList>
+										<Action Name="" ID="{C922F3AC-A602-461E-A2D8-92D9E21ACDD2}" ShortID="611315297">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="sfx_combat_pistol_casing" ID="{CF385011-E08A-44C0-AFA2-785FC94E2BE3}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="UI" ID="{F2EDE44A-7242-4408-BC7D-D13C850A284A}" ShortID="893595716">
