@@ -11,6 +11,7 @@ namespace Resonance.PlayerController
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerSkinRenderer _skinRenderer;
 
+        private bool _suppressRefresh = false;
         private WeaponClass _currentWeaponClass;
 
         private void Awake()
@@ -29,6 +30,11 @@ namespace Resonance.PlayerController
         private void OnWeaponClassChanged(WeaponClass weaponClass)
         {
             _currentWeaponClass = weaponClass;
+            if (_suppressRefresh)
+            {
+                _suppressRefresh = false;
+                return;
+            }
             RefreshArms();
         }
 
@@ -62,6 +68,11 @@ namespace Resonance.PlayerController
                 return arms.GetComponentInChildren<WeaponView>(true);
 
             return null;
+        }
+        
+        public void SuppressNextRefresh()
+        {
+            _suppressRefresh = true;
         }
     }
 }

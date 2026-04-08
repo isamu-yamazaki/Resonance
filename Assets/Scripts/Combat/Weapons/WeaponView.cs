@@ -20,6 +20,10 @@ namespace Resonance.Combat.Weapons
         [SerializeField] private float casingGroundThreshold = 5f;
         [SerializeField] private LayerMask casingLayerMask;
 
+        [Header("Key")] 
+        [SerializeField] private string weaponKey;
+        public string WeaponKey => weaponKey;
+        
         private WeaponAudioProperties audioProperties;
 
         private void Awake()
@@ -114,6 +118,9 @@ namespace Resonance.Combat.Weapons
     {
         [SerializeField] private Transform muzzle;
         public Transform Muzzle => muzzle;
+
+        [SerializeField] private string weaponKey;
+        public string WeaponKey => weaponKey;
 
         public void PlayMuzzleFlash() { }
         public void ApplyMuzzleFlashSettings(MuzzleFlashSettings settings) { }

@@ -5,8 +5,9 @@
     using Resonance.Combat.Weapons.Enums;
     using Resonance.Match;
     using UnityEngine;
+using UnityEngine.Rendering;
 
-    namespace Resonance.PlayerController
+namespace Resonance.PlayerController
     {
         [DefaultExecutionOrder(-2)]
         public class PlayerSkinRenderer : NetworkBehaviour
@@ -21,6 +22,9 @@
 
             public GameObject CurrentMeshInstance { get; private set; }
             public SkinData CurrentlyLoadedSkinData { get; private set; }
+            
+            private GameObject _skillArmsInstance;
+            public GameObject SkillArmsInstance => _skillArmsInstance;
 
             private Dictionary<WeaponClass, GameObject> _fpArmsInstances = new Dictionary<WeaponClass, GameObject>();
             public IReadOnlyDictionary<WeaponClass, GameObject> FPArmsInstances => _fpArmsInstances;
@@ -28,6 +32,7 @@
             private BaseRoundManagerNetworkAdapter roundManager;
             
             private bool _tpHidden;
+            public bool IsTPHidden => _tpHidden;
 
             public bool ShouldRenderArmsOnly
             {
@@ -92,8 +97,16 @@
                 }
 
                 foreach (var kvp in _fpArmsInstances)
+                {
                     if (kvp.Value != null) Destroy(kvp.Value);
+                }
                 _fpArmsInstances.Clear();
+
+                if (_skillArmsInstance != null)
+                {
+                    Destroy(_skillArmsInstance);
+                    _skillArmsInstance = null;
+                }
 
                 CurrentlyLoadedSkinData = skinData;
 
@@ -131,10 +144,27 @@
 
                     Animator armsAnimator = instance.GetComponent<Animator>();
                     if (armsAnimator != null && entry.animatorController != null)
+                    {
                         armsAnimator.runtimeAnimatorController = entry.animatorController;
+                    }
 
                     instance.SetActive(false);
                     _fpArmsInstances[entry.weaponClass] = instance;
+                }
+
+                if (skinData.skillArmsPrefab != null)
+                {
+                    _skillArmsInstance = Instantiate(skinData.skillArmsPrefab, fpArmsRoot);
+                    _skillArmsInstance.transform.localPosition = Vector3.zero;
+                    _skillArmsInstance.transform.localRotation = Quaternion.identity;
+
+                    Animator skillAnimator = _skillArmsInstance.GetComponent<Animator>();
+                    if (skillAnimator != null && skinData.skillArmsAnimatorController != null)
+                    {
+                        skillAnimator.runtimeAnimatorController = skinData.skillArmsAnimatorController;
+                    }
+
+                    _skillArmsInstance.SetActive(false);
                 }
             }
 
@@ -163,21 +193,11 @@
             
             public void HideTPBody()
             {
-                
                 _tpHidden = true;
                 if (CurrentMeshInstance == null) return;
 
                 foreach (var smr in CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
-                    smr.enabled = false;
-
-                var equipPoints = CurrentMeshInstance.transform.Find("EquipPoints");
-                if (equipPoints != null)
-                {
-                    foreach (var mr in equipPoints.GetComponentsInChildren<MeshRenderer>())
-                        mr.enabled = false;
-                    foreach (var smr in equipPoints.GetComponentsInChildren<SkinnedMeshRenderer>())
-                        smr.enabled = false;
-                }
+                    smr.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
             }
         }
     }

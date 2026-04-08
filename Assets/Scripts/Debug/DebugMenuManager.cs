@@ -14,6 +14,7 @@ namespace Resonance.DebugTools
         [SerializeField] private bool showOnStart = false;
 
         public bool _showMenu = false;
+        public static bool KeepCursorUnlocked = false;
         private Keyboard _keyboard;
 
         // Panels
@@ -23,10 +24,11 @@ namespace Resonance.DebugTools
 #if !UNITY_SERVER
         private AudioDebugPanel _audioPanel;
 #endif
+        private MatchDebugPanel _matchPanel;
 
         // Tab system
         private int _selectedTab = 0;
-        private readonly string[] _tabNames = { "Scene", "Performance", "Player", "Audio" };
+        private readonly string[] _tabNames = { "Scene", "Performance", "Player", "Audio", "Match" };
         #endregion
 
         #region Startup
@@ -51,6 +53,7 @@ namespace Resonance.DebugTools
 #if !UNITY_SERVER
             _audioPanel = gameObject.AddComponent<AudioDebugPanel>();
 #endif
+            _matchPanel = gameObject.AddComponent<MatchDebugPanel>();
         }
         #endregion
 
@@ -66,7 +69,7 @@ namespace Resonance.DebugTools
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
                 }
-                else
+                else if (!KeepCursorUnlocked)
                 {
                     Cursor.lockState = CursorLockMode.Locked;
                     Cursor.visible = false;
@@ -110,6 +113,9 @@ namespace Resonance.DebugTools
 #if !UNITY_SERVER
                     _audioPanel.DrawPanel();
 #endif
+                    break;
+                case 4:
+                    _matchPanel.DrawPanel();
                     break;
             }
 

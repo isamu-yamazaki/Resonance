@@ -15,12 +15,12 @@ namespace Resonance.Combat
     [DefaultExecutionOrder(-1)]
     public class PlayerEquip : NetworkBehaviour
     {
-        private GameObject currentWeaponInstance;
         private PlayerStats playerStats;
         private PlayerSkinRenderer playerSkinRenderer;
         private WeaponStatManager weaponStatManager;
         private PlayerAugmentEquipper playerAugmentEquipper;
         private PlayerAbilityManager playerAbilityManager;
+        private FPArmsAnimator fpArmsAnimator;
 
         private ObservableValue<WeaponProperties> equippedWeaponObservable = new ObservableValue<WeaponProperties>();
         public ObservableValue<WeaponProperties> EquippedWeaponObservable => equippedWeaponObservable;
@@ -28,28 +28,24 @@ namespace Resonance.Combat
         [SerializeField] PlayerInventory playerInventory;
         public PlayerInventory PlayerInventory => playerInventory;
 
-        [SerializeField] Transform equipSlot;
-        public Transform EquipSlot => equipSlot;
-
         [SerializeField] private PlayerActionsInput playerActionsInput;
         private PlayerState playerState;
 
-        [SerializeField] private WeaponView currentWeaponView;
+        private WeaponView currentWeaponView;
         public WeaponView CurrentWeaponView => currentWeaponView;
 
         public WeaponProperties EquippedWeapon { get; private set; }
 
         private WeaponProperties[] weapons;
         private bool _isInitialEquip = true;
-        private bool _tpWeaponHidden;
 
         private void Awake()
         {
             playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-            playerSkinRenderer.OnNewSkinSpawned += UpdateEquipSlotFromSkin;
-
+            playerSkinRenderer.OnNewSkinSpawned += OnNewSkinSpawned;
             weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
             playerState = GetComponent<PlayerState>();
+            fpArmsAnimator = GetComponent<FPArmsAnimator>();
         }
 
         private void Start()
@@ -62,21 +58,12 @@ namespace Resonance.Combat
             StartCoroutine(EquipStartingWeaponNextFrame());
         }
 
-        private WeaponProperties previousWeapon;
-
         private System.Collections.IEnumerator EquipStartingWeaponNextFrame()
         {
             yield return null;
 
-            if (playerInventory == null)
-            {
-                yield break;
-            }
-
-            if (playerInventory.weaponInventory == null || playerInventory.weaponInventory.Length <= 1)
-            {
-                yield break;
-            }
+            if (playerInventory == null) yield break;
+            if (playerInventory.weaponInventory == null || playerInventory.weaponInventory.Length <= 1) yield break;
 
             WeaponProperties startWeapon = playerInventory.weaponInventory[1];
             if (startWeapon != null)
@@ -87,10 +74,7 @@ namespace Resonance.Combat
 
         private void Update()
         {
-            if (playerActionsInput == null || playerInventory == null)
-            {
-                return;
-            }
+            if (playerActionsInput == null || playerInventory == null) return;
 
             if (playerActionsInput.SwapWeaponPressed)
             {
@@ -111,23 +95,66 @@ namespace Resonance.Combat
             }
         }
 
-        private void UpdateEquipSlotFromSkin(GameObject skinInstance)
+        private void OnNewSkinSpawned(GameObject skinInstance)
         {
-            var slots = skinInstance.GetComponentsInChildren<WeaponEquipSlot>();
+            RefreshTPWeaponView(skinInstance);
+        }
 
-            var match = slots.FirstOrDefault(s => s.weaponClass == playerState.CurrentWeaponClass);
+        private void RefreshTPWeaponView(GameObject skinInstance)
+        {
+            if (skinInstance == null) return;
 
-            if (match == null)
-                match = slots.FirstOrDefault(s => s.weaponClass == WeaponClass.Rifle);
+            var allViews = skinInstance.GetComponentsInChildren<WeaponView>(true);
+            var allMeshes = skinInstance.GetComponentsInChildren<TPWeaponMesh>(true);
 
-            if (match == null)
+            foreach (var mesh in allMeshes)
             {
-                Debug.LogError($"[PlayerEquip] No WeaponEquipSlot found on skin.", skinInstance);
+                mesh.gameObject.SetActive(false);
+            }
+
+            if (EquippedWeapon == null)
+            {
+                currentWeaponView = null;
                 return;
             }
 
-            equipSlot = match.transform;
-            RefreshWeaponView(EquippedWeapon);
+            WeaponClass classToShow = EquippedWeapon.Class;
+            if (classToShow != WeaponClass.Pistol && classToShow != WeaponClass.Sword)
+            {
+                classToShow = WeaponClass.Rifle;
+            }
+
+            foreach (var mesh in allMeshes)
+            {
+                if (mesh.weaponClass == classToShow)
+                {
+                    if (!playerSkinRenderer.IsTPHidden)
+                    {
+                        mesh.gameObject.SetActive(true);
+                    }
+                    break;
+                }
+            }
+
+            currentWeaponView = allViews.FirstOrDefault(v => v.WeaponKey == EquippedWeapon.WeaponMuzzleKey);
+
+            if (currentWeaponView == null)
+            {
+                Debug.LogWarning($"[PlayerEquip] No WeaponView found for key: {EquippedWeapon.WeaponMuzzleKey}", this);
+                return;
+            }
+
+            MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
+            if (flashSettings != null)
+            {
+                currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
+            }
+
+            WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
+            if (audioProperties != null)
+            {
+                currentWeaponView.ApplyAudioProperties(audioProperties);
+            }
         }
 
         private void SwapWeapon()
@@ -150,31 +177,36 @@ namespace Resonance.Combat
 
         private void EquipFromSlot(int slotIndex)
         {
-            if (slotIndex < 0 || slotIndex >= playerInventory.weaponInventory.Length)
-            {
-                return;
-            }
+            if (slotIndex < 0 || slotIndex >= playerInventory.weaponInventory.Length) return;
 
             WeaponProperties weapon = playerInventory.weaponInventory[slotIndex];
-            if (weapon == null)
-            {
-                return;
-            }
+            if (weapon == null) return;
+            if (weapon == EquippedWeapon) return;
 
+            if (playerState.CurrentWeaponState == WeaponState.Holstering ||
+                playerState.CurrentWeaponState == WeaponState.Drawing) return;
+            if (playerState.CurrentWeaponState == WeaponState.Casting) return;
+            if (playerState.CurrentWeaponState == WeaponState.Stimming) return;
+
+            if (isOwner && fpArmsAnimator != null)
+            {
+                fpArmsAnimator.RequestWeaponSwap(weapon);
+            }
+            else
+            {
+                EquipWeapon(weapon);
+            }
+        }
+
+        public void ExecuteWeaponSwap(WeaponProperties weapon)
+        {
             EquipWeapon(weapon);
         }
 
         public void EquipWeapon(WeaponProperties weapon)
         {
-            if (weapon == null)
-            {
-                return;
-            }
-
-            if (EquippedWeapon == weapon)
-            {
-                return;
-            }
+            if (weapon == null) return;
+            if (EquippedWeapon == weapon) return;
 
             if (EquippedWeapon != null && playerStats != null)
             {
@@ -183,8 +215,6 @@ namespace Resonance.Combat
 
             EquippedWeapon = weapon;
             playerState?.SetWeaponClass(weapon.Class);
-            if (playerSkinRenderer.CurrentMeshInstance != null)
-                UpdateEquipSlotFromSkin(playerSkinRenderer.CurrentMeshInstance);
 
             if (weaponStatManager != null)
             {
@@ -201,12 +231,26 @@ namespace Resonance.Combat
                 playerStats.AddSpeedModifier(weaponStatManager.Mobility);
             }
 
-            RefreshWeaponView(weapon);
+            if (playerSkinRenderer.CurrentMeshInstance != null)
+            {
+                RefreshTPWeaponViewOnAllClients(weapon.Key);
+            }
 
             if (!_isInitialEquip)
+            {
                 PlayEquipOnAllClients();
+            }
 
             _isInitialEquip = false;
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void RefreshTPWeaponViewOnAllClients(string weaponKey)
+        {
+            WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
+            if (weapon == null) return;
+            EquippedWeapon = weapon;
+            RefreshTPWeaponView(playerSkinRenderer.CurrentMeshInstance);
         }
 
         [ObserversRpc(runLocally: true)]
@@ -216,74 +260,10 @@ namespace Resonance.Combat
 
 #if !UNITY_SERVER
             if (AudioSourceTracker.Instance != null)
+            {
                 AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
+            }
 #endif
-        }
-
-        private void RefreshWeaponView(WeaponProperties weapon)
-        {
-            if (weapon == null)
-            {
-                currentWeaponView = null;
-                return;
-            }
-
-            if (equipSlot == null)
-            {
-                Debug.LogError("PlayerEquip has no equipSlot assigned.", this);
-                return;
-            }
-
-            if (weapon.WeaponPrefab == null)
-            {
-                Debug.LogError("WeaponProperties has no WeaponPrefab assigned.", weapon);
-                return;
-            }
-
-            InstantiateCurrentWeaponInstanceForAllClients(weapon.Key);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void InstantiateCurrentWeaponInstanceForAllClients(string weaponKey)
-        {
-            WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
-            InstantiateCurrentWeaponInstance(weapon);
-        }
-
-        private void InstantiateCurrentWeaponInstance(WeaponProperties weapon)
-        {
-            if (currentWeaponInstance != null)
-            {
-                Destroy(currentWeaponInstance);
-                currentWeaponInstance = null;
-                currentWeaponView = null;
-            }
-
-            currentWeaponInstance = Instantiate(weapon.WeaponPrefab, equipSlot);
-            currentWeaponInstance.transform.localPosition = Vector3.zero;
-            currentWeaponInstance.transform.localRotation = Quaternion.identity;
-
-            // Cancel out inherited parent scale so weapon renders at world scale (1,1,1)
-            Vector3 ls = equipSlot.lossyScale;
-            currentWeaponInstance.transform.localScale = new Vector3(1f / ls.x, 1f / ls.y, 1f / ls.z);
-
-            currentWeaponView = currentWeaponInstance.GetComponent<WeaponView>();
-            if (currentWeaponView == null)
-            {
-                Debug.LogError("WeaponPrefab is missing WeaponView component.", currentWeaponInstance);
-                return;
-            }
-
-            MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
-            if (flashSettings != null)
-                currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
-
-            WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
-            if (audioProperties != null)
-                currentWeaponView.ApplyAudioProperties(audioProperties);
-            
-            if (_tpWeaponHidden)
-                HideTPWeapon();
         }
 
         public void RemoveWeapon(WeaponSlot slot)
@@ -292,10 +272,7 @@ namespace Resonance.Combat
                 ? playerInventory.weaponInventory[0]
                 : playerInventory.weaponInventory[1];
 
-            if (existing == null)
-            {
-                return;
-            }
+            if (existing == null) return;
 
             if (EquippedWeapon == existing)
             {
@@ -316,11 +293,11 @@ namespace Resonance.Combat
                     equippedWeaponObservable.Value = null;
                 }
 
-                if (currentWeaponInstance != null)
+                currentWeaponView = null;
+
+                if (playerSkinRenderer.CurrentMeshInstance != null)
                 {
-                    Destroy(currentWeaponInstance);
-                    currentWeaponInstance = null;
-                    currentWeaponView = null;
+                    RefreshTPWeaponView(playerSkinRenderer.CurrentMeshInstance);
                 }
             }
 
@@ -329,10 +306,7 @@ namespace Resonance.Combat
 
         public void EquipAugment(AugmentProperties augment)
         {
-            if (augment == null || playerAugmentEquipper == null)
-            {
-                return;
-            }
+            if (augment == null || playerAugmentEquipper == null) return;
 
             switch (augment.Slot)
             {
@@ -364,17 +338,6 @@ namespace Resonance.Combat
             playerAbilityManager.OnAugmentRemoved(augment);
             playerAugmentEquipper.RemoveAugmentStats(augment);
             playerInventory.RemoveAugment(augment.Slot);
-        }
-        
-        public void HideTPWeapon()
-        {
-            if (currentWeaponInstance == null || !isOwner) return;
-            _tpWeaponHidden = true;
-            
-            foreach (var mr in currentWeaponInstance.GetComponentsInChildren<MeshRenderer>())
-                mr.enabled = false;
-            foreach (var smr in currentWeaponInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
-                smr.enabled = false;
         }
     }
 }

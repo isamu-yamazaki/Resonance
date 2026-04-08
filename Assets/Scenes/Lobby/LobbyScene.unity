@@ -479,7 +479,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 43.95
+  m_fontSize: 42.75
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1274,6 +1274,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 222992678}
+  - component: {fileID: 222992679}
   m_Layer: 5
   m_Name: RenderScale
   m_TagString: Untagged
@@ -1303,6 +1304,20 @@ RectTransform:
   m_AnchoredPosition: {x: 228.32043, y: 261.91147}
   m_SizeDelta: {x: 456.6414, y: 247.1247}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &222992679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 222992677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac29413e177542f68ad32fd5775ec03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.TemporaryUI.RenderScaleSlider
+  slider: {fileID: 1460428269}
+  displayText: {fileID: 2087819874}
 --- !u!1 &230791597
 GameObject:
   m_ObjectHideFlags: 0
@@ -2064,7 +2079,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 738067767}
   m_HandleRect: {fileID: 738067766}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3758,7 +3773,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33.8
+  m_fontSize: 34.85
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5935,7 +5950,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 843194953}
   m_HandleRect: {fileID: 843194952}
   m_Direction: 2
-  m_Value: 0.9999964
+  m_Value: 1
   m_Size: 0.9724757
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6438,7 +6453,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.55
+  m_fontSize: 43.75
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6999,32 +7014,7 @@ MonoBehaviour:
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1020143244}
-        m_TargetAssemblyTypeName: Resonance.Helper.RenderScaleSetter, Assembly-CSharp
-        m_MethodName: ChangeRenderScale
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2087819876}
-        m_TargetAssemblyTypeName: Resonance.LobbySystem.TemporaryUI.RenderScaleDisplay,
-          Assembly-CSharp
-        m_MethodName: SetDisplayValue
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1481301044
 GameObject:
   m_ObjectHideFlags: 0
@@ -8914,7 +8904,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ee279fa2048d4ecc8c544cc1bfdb004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.TemporaryUI.RenderScaleDisplay
-  text: {fileID: 2087819874}
 --- !u!1 &2108133902
 GameObject:
   m_ObjectHideFlags: 0

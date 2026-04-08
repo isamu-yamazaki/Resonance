@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Resonance.Shop;
 using PurrNet;
+using Resonance.Combat;
 using Resonance.UI;
 
 namespace Resonance.PlayerController
@@ -17,9 +18,9 @@ namespace Resonance.PlayerController
         public bool SwapSlotTwoPressed { get; private set; }
         public bool SwapWeaponPressed { get; private set; }
         public bool HealPressed { get; private set; }
-        
+
         public bool AbilityUpperPressed { get; private set; }
-        
+
         public bool AbilityLowerPressed { get; private set; }
 
         public bool ShowStatsHeld { get; private set; }
@@ -29,6 +30,10 @@ namespace Resonance.PlayerController
         private PlayerLocomotionInput _playerLocomotionInput;
         private OverdriveAbility _overdriveAbility;
         private PlayerState _playerState;
+        private FPArmsAnimator _fpArmsAnimator;
+
+        // needed for disabling correctly after PurrNet resets the attribute
+        private bool wasPreviouslyOwner;
         #endregion
 
         #region Startup
@@ -37,12 +42,14 @@ namespace Resonance.PlayerController
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerState = GetComponent<PlayerState>();
+            _fpArmsAnimator = GetComponent<FPArmsAnimator>();
         }
 
         protected override void OnSpawned()
         {
             base.OnSpawned();
             enabled = isOwner;
+            wasPreviouslyOwner = isOwner;
 
             if (isOwner)
             {
@@ -68,7 +75,7 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (isOwner)
+            if (wasPreviouslyOwner)
             {
                 PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
                 PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(this);
@@ -176,10 +183,7 @@ namespace Resonance.PlayerController
             if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
-            if (_overdriveAbility != null)
-            {
-                _overdriveAbility.TryActivateOverdrive();
-            }
+            _fpArmsAnimator?.RequestOverdriveActivation();
         }
 
         public void OnSwapSlotOne(InputAction.CallbackContext context)
@@ -215,9 +219,9 @@ namespace Resonance.PlayerController
             if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
                 return;
 
-            HealPressed = true;
+            _fpArmsAnimator?.RequestStimActivation();
         }
-        
+
         public void OnAbilityUpper(InputAction.CallbackContext context)
         {
             if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
