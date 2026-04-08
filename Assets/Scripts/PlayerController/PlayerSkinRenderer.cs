@@ -5,8 +5,9 @@
     using Resonance.Combat.Weapons.Enums;
     using Resonance.Match;
     using UnityEngine;
+using UnityEngine.Rendering;
 
-    namespace Resonance.PlayerController
+namespace Resonance.PlayerController
     {
         [DefaultExecutionOrder(-2)]
         public class PlayerSkinRenderer : NetworkBehaviour
@@ -196,7 +197,7 @@
                 if (CurrentMeshInstance == null) return;
 
                 foreach (var smr in CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
-                    smr.enabled = false;
+                    smr.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
             }
         }
     }
