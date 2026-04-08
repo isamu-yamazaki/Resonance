@@ -4,6 +4,7 @@ using PurrNet;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.SharedGameLogic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Resonance.Match
 {
@@ -14,7 +15,7 @@ namespace Resonance.Match
     [Serializable]
     public abstract class BaseRoundManagerNetworkAdapter : NetworkModule
     {
-        protected MatchStatNetworkAdapter matchStatNetworkAdapter;
+        private readonly UnityEvent<MatchStatTracker> _trackerCreatedEvent;
 
         #region Cached Client-Side State
         public BaseMatchState MatchState { get; private set; }
@@ -33,8 +34,8 @@ namespace Resonance.Match
         #region Constructor
         protected BaseRoundManagerNetworkAdapter(MatchStatNetworkAdapter adapter)
         {
-            matchStatNetworkAdapter = adapter;
-            matchStatNetworkAdapter.OnMatchStatTrackerCreated.AddListener(OnMatchStatTrackerCreated);
+            _trackerCreatedEvent = adapter.OnMatchStatTrackerCreated;
+            _trackerCreatedEvent.AddListener(OnMatchStatTrackerCreated);
         }
         #endregion
 
@@ -54,7 +55,7 @@ namespace Resonance.Match
         public override void OnDespawned(bool asServer)
         {
             base.OnDespawned(asServer);
-            matchStatNetworkAdapter?.OnMatchStatTrackerCreated.RemoveListener(OnMatchStatTrackerCreated);
+            _trackerCreatedEvent?.RemoveListener(OnMatchStatTrackerCreated);
             if (asServer)
             {
                 DestroyRoundManager();
