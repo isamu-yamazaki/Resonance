@@ -66,6 +66,7 @@ namespace Resonance.Combat
         public int CurrentAmmo => currentAmmo;
 
         private BulletProperties[] bulletProperties;
+        private WeaponAudioProperties[] weaponAudioProperties;
 
         #endregion
 
@@ -94,6 +95,7 @@ namespace Resonance.Combat
 
             hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
             bulletProperties = Resources.LoadAll<BulletProperties>("Content/Bullets");
+            weaponAudioProperties = Resources.LoadAll<WeaponAudioProperties>("Content/WeaponAudio");
         }
 
         private void Start()
@@ -218,14 +220,13 @@ namespace Resonance.Combat
             }
 
             WeaponAudioProperties audioProperties = weaponStatManager.GetAudioProperties();
-            if (audioProperties != null)
-                view.ApplyAudioProperties(audioProperties);
 
             MuzzleFlashSettings flashSettings = weaponStatManager.GetMuzzleFlashSettings();
             if (flashSettings != null)
                 view.ApplyMuzzleFlashSettings(flashSettings);
 
-            PlayFireOnAllClients();
+            PlayFireOnAllClients(audioProperties.Key);
+
             if (isOwner)
             {
                 GetActiveWeaponView()?.GetComponentInChildren<MuzzleScreenShake>()?.Shake();
@@ -233,11 +234,16 @@ namespace Resonance.Combat
         }
 
         [ObserversRpc(runLocally: true)]
-        private void PlayFireOnAllClients()
+        private void PlayFireOnAllClients(string weaponAudioPropertyKey)
         {
             WeaponView currentView = isOwner 
                 ? fpArmsManager.GetActiveFPWeaponView() 
                 : playerEquip.CurrentWeaponView;
+
+            var audioProperties = System.Array.Find(weaponAudioProperties, w => w.Key == weaponAudioPropertyKey);
+            if (audioProperties != null)
+                currentView.ApplyAudioProperties(audioProperties);
+
             if (currentView == null) return;
             currentView.PlayFire();
             currentView.PlayMuzzleFlash();

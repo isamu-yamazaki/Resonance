@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5286405e2269f544ea060fc4b0b4c666, type: 3}
   m_Name: WAP_LMG
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponAudioProperties
-  key: lmg
+  Key: lmg
   fireEvent:
     idInternal: 0
     valueGuidInternal: 
