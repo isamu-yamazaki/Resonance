@@ -108,5 +108,6 @@ namespace Resonance.PlayerController
         EmptyReloading = 5,
         Casting = 6,
         Stimming = 7,
+        Grappling = 8,
     }
 }

@@ -66,6 +66,7 @@ namespace Resonance.Combat
         public int CurrentAmmo => currentAmmo;
 
         private BulletProperties[] bulletProperties;
+        private WeaponAudioProperties[] weaponAudioProperties;
 
         #endregion
 
@@ -94,6 +95,7 @@ namespace Resonance.Combat
 
             hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
             bulletProperties = Resources.LoadAll<BulletProperties>("Content/Bullets");
+            weaponAudioProperties = Resources.LoadAll<WeaponAudioProperties>("Content/WeaponAudio");
         }
 
         private void Start()
@@ -160,12 +162,8 @@ namespace Resonance.Combat
 
             if (playerState.IsMatchFrozen()) return;
             if (playerState.IsInShop()) return;
-            if (playerState.CurrentWeaponState == WeaponState.Reloading) return;
-            if (playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
-            if (playerState.CurrentWeaponState == WeaponState.Drawing) return;
-            if (playerState.CurrentWeaponState == WeaponState.Holstering) return;
-            if (playerState.CurrentWeaponState == WeaponState.Casting) return;
-            if (playerState.CurrentWeaponState == WeaponState.Stimming) return;
+            if (playerState.CurrentWeaponState != WeaponState.Idle && 
+                playerState.CurrentWeaponState != WeaponState.Shooting) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;
@@ -218,14 +216,13 @@ namespace Resonance.Combat
             }
 
             WeaponAudioProperties audioProperties = weaponStatManager.GetAudioProperties();
-            if (audioProperties != null)
-                view.ApplyAudioProperties(audioProperties);
 
             MuzzleFlashSettings flashSettings = weaponStatManager.GetMuzzleFlashSettings();
             if (flashSettings != null)
                 view.ApplyMuzzleFlashSettings(flashSettings);
 
-            PlayFireOnAllClients();
+            PlayFireOnAllClients(audioProperties.Key);
+
             if (isOwner)
             {
                 GetActiveWeaponView()?.GetComponentInChildren<MuzzleScreenShake>()?.Shake();
@@ -233,11 +230,16 @@ namespace Resonance.Combat
         }
 
         [ObserversRpc(runLocally: true)]
-        private void PlayFireOnAllClients()
+        private void PlayFireOnAllClients(string weaponAudioPropertyKey)
         {
             WeaponView currentView = isOwner 
                 ? fpArmsManager.GetActiveFPWeaponView() 
                 : playerEquip.CurrentWeaponView;
+
+            var audioProperties = System.Array.Find(weaponAudioProperties, w => w.Key == weaponAudioPropertyKey);
+            if (audioProperties != null)
+                currentView.ApplyAudioProperties(audioProperties);
+
             if (currentView == null) return;
             currentView.PlayFire();
             currentView.PlayMuzzleFlash();
@@ -448,10 +450,8 @@ namespace Resonance.Combat
 
         private void TryStartReload()
         {
-            if (playerState.CurrentWeaponState == WeaponState.Reloading) return;
-            if (playerState.CurrentWeaponState == WeaponState.EmptyReloading) return;
-            if (playerState.CurrentWeaponState == WeaponState.Casting) return;
-            if (playerState.CurrentWeaponState == WeaponState.Stimming) return;
+            if (playerState.CurrentWeaponState != WeaponState.Idle && 
+                playerState.CurrentWeaponState != WeaponState.Shooting) return;
             if (playerEquip == null) return;
 
             WeaponProperties weapon = playerEquip.EquippedWeapon;

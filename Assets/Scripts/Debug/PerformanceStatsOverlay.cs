@@ -107,7 +107,7 @@ public class PerformanceStatsOverlay : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.backquoteKey.wasPressedThisFrame)
+        if (Keyboard.current != null && (Keyboard.current.backquoteKey.wasPressedThisFrame || Keyboard.current.jKey.wasPressedThisFrame))
         {
             _isVisible = !_isVisible;
         }
