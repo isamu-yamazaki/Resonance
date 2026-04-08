@@ -65,11 +65,11 @@ namespace Resonance.Match
         #region Initialization
         private void OnMatchStatTrackerCreated(MatchStatTracker tracker)
         {
-            if (!HasRoundManager() && isServer)
+            if (!HasRoundManager())
             {
                 CreateRoundManager(tracker);
             }
-            else if (isServer)
+            else
             {
                 Debug.LogWarning($"[{GetType().Name}] MatchStatTracker received but round manager already exists; re-creating");
                 DestroyRoundManager();
