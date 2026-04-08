@@ -67,9 +67,6 @@ namespace Resonance.Match
 
             InstanceHandler.RegisterInstance(this);
             DontDestroyOnLoad(this);
-
-            var gameModeProvider = FindFirstObjectByType<GameModeProvider>();
-            Configure(gameModeProvider.gameMode);
         }
 
         protected override void OnDestroy()
@@ -78,6 +75,15 @@ namespace Resonance.Match
             {
                 InstanceHandler.UnregisterInstance<MatchLogicNetworkAdapter>();
             }
+        }
+
+        // See https://purrnet.gitbook.io/docs/systems-and-modules/network-modules/common-pitfalls
+        protected override void OnInitializeModules()
+        {
+            base.OnInitializeModules();
+
+            var gameModeProvider = FindFirstObjectByType<GameModeProvider>();
+            Configure(gameModeProvider.gameMode);
         }
         #endregion
 
