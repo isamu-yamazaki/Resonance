@@ -1573,10 +1573,9 @@
 						<Sound Name="sfx_combat_sonardisc_pulse" ID="{B226CB90-6E55-42FA-823E-0E6C6DCF73BA}" ShortID="584849083">
 							<PropertyList>
 								<Property Name="3DSpatialization" Type="int16" Value="1"/>
-								<Property Name="AttenuationDistanceScaling" Type="Real32" Value="0.5"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-2</Value>
+										<Value>-4</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -1584,6 +1583,9 @@
 								<Reference Name="Attenuation">
 									<Custom>
 										<Attenuation Name="Attenuation (Custom)" ID="{C337BF21-B3C1-4092-8C28-DA530FD58D74}" ShortID="932024612">
+											<PropertyList>
+												<Property Name="RadiusMax" Type="Real64" Value="40"/>
+											</PropertyList>
 											<CurveUsageInfoList>
 												<VolumeDryUsage>
 													<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
@@ -1598,7 +1600,7 @@
 																	<Flags>5</Flags>
 																</Point>
 																<Point>
-																	<XPos>100</XPos>
+																	<XPos>40</XPos>
 																	<YPos>-200</YPos>
 																	<Flags>37</Flags>
 																</Point>
@@ -4743,6 +4745,13 @@
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="sfx_combat_rifle_equip" ID="{AC0BEDBF-0B26-4BFD-9F32-1773485EA748}" ShortID="133794833">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
 											<Custom>
@@ -4988,6 +4997,13 @@
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="sfx_combat_rifle_fire" ID="{FBBAE5E7-C4CF-4496-9847-202339026139}" ShortID="1072662055">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
 											<Custom>
@@ -5487,6 +5503,11 @@
 							<PropertyList>
 								<Property Name="3DSpatialization" Type="int16" Value="1"/>
 								<Property Name="AttenuationDistanceScaling" Type="Real32" Value="0.5"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-3</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Attenuation">
