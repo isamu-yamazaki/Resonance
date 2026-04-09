@@ -33,6 +33,7 @@ namespace Resonance.Combat.Augments
         private CharacterController characterController;
         private Camera playerCamera;
         private GrappleRopeRenderer ropeRenderer;
+        private FPArmsAnimator fpArmsAnimator;
 
         private float currentReelTime;
         private float currentCooldown;
@@ -50,16 +51,16 @@ namespace Resonance.Combat.Augments
 
         public void ActivateAbility()
         {
-            if (!isOwner)
-                return;
-
-            if (!AbilityReady)
-                return;
+            if (!isOwner) return;
+            if (!AbilityReady) return;
 
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
 
             if (!Physics.Raycast(ray, out RaycastHit hit, maxRange, grappleLayerMask))
+            {
+                fpArmsAnimator?.TriggerGrappleEnd();
                 return;
+            }
 
             ropeRenderer.HookPoint.value = hit.point;
             ropeRenderer.IsGrappling.value = true;
@@ -78,6 +79,7 @@ namespace Resonance.Combat.Augments
             playerController = GetComponent<PlayerController.PlayerController>();
             characterController = GetComponent<CharacterController>();
             ropeRenderer = GetComponent<GrappleRopeRenderer>();
+            fpArmsAnimator = GetComponent<FPArmsAnimator>();
         }
 
         protected override void OnSpawned()
@@ -145,8 +147,16 @@ namespace Resonance.Combat.Augments
 
             playerState.SetPlayerMovementState(PlayerMovementState.Falling);
 
+            fpArmsAnimator?.TriggerGrappleEnd();
             BroadcastStopTravelRpc();
             BroadcastReleaseRpc();
+        }
+        
+        public bool CanGrapple()
+        {
+            if (playerCamera == null) return false;
+            Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+            return Physics.Raycast(ray, maxRange, grappleLayerMask);
         }
 
         #region Audio RPCs

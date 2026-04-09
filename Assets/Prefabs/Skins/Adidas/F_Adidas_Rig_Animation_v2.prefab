@@ -49,8 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponView
   muzzle: {fileID: 9043532253554626043}
   muzzleFlash: {fileID: 7033697819602281838}
-  muzzleEmitter: {fileID: 0}
-  bodyEmitter: {fileID: 0}
+  muzzleEmitter: {fileID: 2499308311600136134}
+  bodyEmitter: {fileID: 2499308311600136134}
   casingGroundThreshold: 5
   casingLayerMask:
     serializedVersion: 2
@@ -212,8 +212,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Weapons.WeaponView
   muzzle: {fileID: 902080561128142207}
   muzzleFlash: {fileID: 8498304738649410775}
-  muzzleEmitter: {fileID: 0}
-  bodyEmitter: {fileID: 0}
+  muzzleEmitter: {fileID: 2873321685845926352}
+  bodyEmitter: {fileID: 2873321685845926352}
   casingGroundThreshold: 5
   casingLayerMask:
     serializedVersion: 2
@@ -389,6 +389,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 726e36308ff560047a57a3e42d5ec10d, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7991213095780372097, guid: 726e36308ff560047a57a3e42d5ec10d, type: 3}
+      propertyPath: m_TagString
+      value: GrappleOrigin
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 726e36308ff560047a57a3e42d5ec10d, type: 3}
       propertyPath: m_Name

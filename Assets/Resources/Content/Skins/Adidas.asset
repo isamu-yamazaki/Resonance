@@ -25,3 +25,7 @@ MonoBehaviour:
   - weaponClass: 4
     armsPrefab: {fileID: 5724544957405671332, guid: 9cd8015c261473b4cb5da1d35a303719, type: 3}
     animatorController: {fileID: 0}
+  skillArmsPrefab: {fileID: 6540715828540356492, guid: 50c58f92bddb426469bb22774d7970e0, type: 3}
+  skillArmsAnimatorController: {fileID: 9100000, guid: 92ea1d642d8ee2847b21b1586a55a4c9, type: 2}
+  grappleArmsPrefab: {fileID: 64578158455738819, guid: acd43e88e6e70d64990fc87ca0b1f585, type: 3}
+  grappleArmsAnimatorController: {fileID: 9100000, guid: ad4408c0cba420440874ee6337d10ea7, type: 2}

@@ -49,16 +49,6 @@ namespace Resonance.Combat
         #region Update Logic
         private void Update()
         {
-            if (actions.HealPressed)
-            {
-                actions.SetHealPressedFalse();
-
-                if (HasCharges)
-                {
-                    UseHealthStim();
-                }
-            }
-
             UpdateCooldown();
         }
 
@@ -120,5 +110,13 @@ namespace Resonance.Combat
             }
         }
         #endregion
+        
+        public void ActivateStim()
+        {
+            if (HasCharges)
+            {
+                UseHealthStim();
+            }
+        }
     }
 }

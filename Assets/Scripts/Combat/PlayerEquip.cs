@@ -183,8 +183,7 @@ namespace Resonance.Combat
             if (weapon == null) return;
             if (weapon == EquippedWeapon) return;
 
-            if (playerState.CurrentWeaponState == WeaponState.Holstering ||
-                playerState.CurrentWeaponState == WeaponState.Drawing) return;
+            if (playerState.CurrentWeaponState != WeaponState.Idle) return;
 
             if (isOwner && fpArmsAnimator != null)
             {
