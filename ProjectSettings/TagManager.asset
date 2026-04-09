@@ -15,6 +15,7 @@ TagManager:
   - Arm
   - Grass
   - GrappleOrigin
+  - HUDCanvas
   layers:
   - Default
   - TransparentFX

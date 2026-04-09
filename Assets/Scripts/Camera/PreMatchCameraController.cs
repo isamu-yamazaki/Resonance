@@ -91,6 +91,9 @@ public class PreMatchCameraController : MonoBehaviour
         while (PlayerController.LocalPlayer == null)
             yield return null;
 
+        if (hudCanvas == null)
+            hudCanvas = GameObject.FindWithTag("HUDCanvas");
+        
         target = PlayerController.LocalPlayer.transform;
         playerCamera = PlayerController.LocalPlayer.GetComponentInChildren<Camera>(true);
 

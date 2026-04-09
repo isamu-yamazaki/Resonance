@@ -31,6 +31,9 @@ namespace Resonance.UI
 
         private void Start()
         {
+            if (despawnerSceneLoader == null)
+                despawnerSceneLoader = FindObjectOfType<NetworkDespawnerSceneLoader>();
+            
             if (matchEndPanel != null)
             {
                 matchEndPanel.SetActive(false);
