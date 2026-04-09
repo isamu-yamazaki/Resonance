@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using PurrNet;
 using Resonance.Assemblies.SharedGameLogic;
 using Resonance.Combat.Weapons.Enums;
@@ -35,17 +36,35 @@ namespace Resonance.PlayerController
         private bool _tpHidden;
         public bool IsTPHidden => _tpHidden;
 
-        public bool ShouldRenderArmsOnly
+        public bool ShouldRenderArmsOnlyBasedOnCachedMatchState
         {
             get
             {
                 var roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
-                if (roundManager != null && roundManager.IsMatchActive)
-                    return isOwner;
-                else if (roundManager == null)
-                    return isOwner;
-                return false;
+                if (roundManager != null)
+                {
+                    if (roundManager.IsMatchActive)
+                        return isOwner;
+                    else
+                        return false;
+                }
+                return isOwner;
             }
+        }
+
+        public async Task<bool> ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState()
+        {
+            var roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
+            if (roundManager != null)
+            {
+                var matchState = await roundManager.GetMatchState();
+
+                if ((BaseMatchState)matchState == BaseMatchState.MatchActive)
+                    return isOwner;
+                else
+                    return false;
+            }
+            return isOwner;
         }
 
         private void Awake()
@@ -97,9 +116,11 @@ namespace Resonance.PlayerController
             ApplySkin(newIndex);
         }
 
-        private void ApplySkin(int index)
+        private async void ApplySkin(int index)
         {
-            Debug.Log($"[SkinRenderer] ApplySkin called. _tpHidden: {_tpHidden}, ShouldRenderArmsOnly: {ShouldRenderArmsOnly}");
+            var shouldRenderArmsOnly = await ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState();
+
+            Debug.Log($"[SkinRenderer] ApplySkin called. _tpHidden: {_tpHidden}, ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState: {shouldRenderArmsOnly}");
             if (skinCatalog == null || skinCatalog.Count == 0)
                 return;
 
@@ -133,7 +154,7 @@ namespace Resonance.PlayerController
 
             CurrentlyLoadedSkinData = skinData;
 
-            if (ShouldRenderArmsOnly)
+            if (shouldRenderArmsOnly)
             {
                 SpawnFPArmsVariants(skinData);
                 ApplyMeshPrefabAndAvatar(skinData.bodyMeshPrefab, skinData.bodyAvatar);
@@ -145,6 +166,12 @@ namespace Resonance.PlayerController
 
             animator.Rebind();
             OnNewSkinSpawned.Invoke(CurrentMeshInstance);
+
+            if (shouldRenderArmsOnly && !_tpHidden)
+            {
+                HideTPBody();
+            }
+
             if (_tpHidden)
             {
                 HideTPBody();
