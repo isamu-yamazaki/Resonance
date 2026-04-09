@@ -100,6 +100,9 @@ public class PreMatchCameraController : MonoBehaviour
         while (PlayerController.LocalPlayer == null || !_configured)
             yield return null;
 
+        target = PlayerController.LocalPlayer.transform;
+        playerCamera = PlayerController.LocalPlayer.GetComponentInChildren<Camera>(true);
+
         Task<int> matchStateTask = ArenaRoundManagerBridge.Instance?.GetMatchState();
         if (matchStateTask == null)
         {
@@ -115,9 +118,6 @@ public class PreMatchCameraController : MonoBehaviour
             StartCoroutine(EndSequence());
             yield break;
         }
-
-        target = PlayerController.LocalPlayer.transform;
-        playerCamera = PlayerController.LocalPlayer.GetComponentInChildren<Camera>(true);
 
         if (waypointOffsets == null || waypointOffsets.Length < 2)
             waypointOffsets = DefaultWaypointOffsets;
