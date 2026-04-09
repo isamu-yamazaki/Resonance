@@ -32,8 +32,6 @@ namespace Resonance.PlayerController
             private Dictionary<WeaponClass, GameObject> _fpArmsInstances = new Dictionary<WeaponClass, GameObject>();
             public IReadOnlyDictionary<WeaponClass, GameObject> FPArmsInstances => _fpArmsInstances;
 
-            private BaseRoundManagerNetworkAdapter roundManager;
-            
             private bool _tpHidden;
             public bool IsTPHidden => _tpHidden;
 
@@ -41,6 +39,7 @@ namespace Resonance.PlayerController
             {
                 get
                 {
+                    var roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
                     if (roundManager != null && roundManager.IsMatchActive)
                         return isOwner;
                     else if (roundManager == null)
@@ -51,13 +50,14 @@ namespace Resonance.PlayerController
 
             private void Awake()
             {
-                roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
-                roundManager.OnMatchStateChange += HandleOnMatchStateChange;
+                if (MatchLogicNetworkAdapter.Instance?.ActiveRoundManager != null)
+                    MatchLogicNetworkAdapter.Instance.ActiveRoundManager.OnMatchStateChange += HandleOnMatchStateChange;
             }
 
             protected override void OnDestroy()
             {
-                roundManager.OnMatchStateChange -= HandleOnMatchStateChange;
+                if (MatchLogicNetworkAdapter.Instance?.ActiveRoundManager != null)
+                    MatchLogicNetworkAdapter.Instance.ActiveRoundManager.OnMatchStateChange -= HandleOnMatchStateChange;
             }
 
             private void HandleOnMatchStateChange(BaseMatchState first, BaseMatchState second)

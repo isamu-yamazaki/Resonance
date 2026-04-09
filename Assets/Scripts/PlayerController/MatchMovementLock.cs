@@ -7,7 +7,7 @@ namespace Resonance.PlayerController
 {
     public class MatchMovementLock : NetworkBehaviour
     {
-        private BaseRoundManagerNetworkAdapter roundManager;
+        // private BaseRoundManagerNetworkAdapter roundManager;
         private PlayerState playerState;
 
         protected override void OnSpawned()
@@ -18,12 +18,12 @@ namespace Resonance.PlayerController
 
         private void Awake()
         {
-            roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
             playerState = GetComponent<PlayerState>();
         }
 
         private void Update()
         {
+            var roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
             if (roundManager == null) return;
 
             if (roundManager.IsMatchEnded)
