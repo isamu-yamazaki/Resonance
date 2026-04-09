@@ -58,6 +58,7 @@ namespace Resonance.Match
 
         #region Events
         public event Action OnFinishedConfiguring;
+        public bool HasFinishedConfiguring { get; private set; }
         #endregion
 
         #region Lifecycle
@@ -124,7 +125,8 @@ namespace Resonance.Match
                 currentRoundManagerNetworkAdapter = new PolarityRoundManagerNetworkAdapter(_matchStatAdapter, polarityConfig);
             }
 
-            OnFinishedConfiguring.Invoke();
+            OnFinishedConfiguring?.Invoke();
+            HasFinishedConfiguring = true;
         }
 
         #endregion

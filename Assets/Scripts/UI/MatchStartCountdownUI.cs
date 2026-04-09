@@ -12,6 +12,9 @@ public class MatchStartCountdownUI : MonoBehaviour
     {
         if (MatchLogicNetworkAdapter.Instance != null)
             MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += OnMatchLogicConfigured;
+
+        if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
+            OnMatchLogicConfigured();
     }
 
     private void OnMatchLogicConfigured()
