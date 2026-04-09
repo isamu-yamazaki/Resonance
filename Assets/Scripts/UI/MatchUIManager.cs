@@ -62,10 +62,12 @@ namespace Resonance.UI
         private void SubscribeToEvents()
         {
             if (MatchLogicNetworkAdapter.Instance != null)
+            {
                 MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += HandleFinishedConfiguring;
-            
-            if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
-                HandleFinishedConfiguring();
+
+                if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
+                    HandleFinishedConfiguring();
+            }
         }
 
         private void HandleFinishedConfiguring()

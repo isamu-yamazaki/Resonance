@@ -6,10 +6,12 @@ public class SampleMatchTimerListener : MonoBehaviour
     void Start()
     {
         if (MatchLogicNetworkAdapter.Instance != null)
+        {
             MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += OnMatchLogicConfigured;
 
-        if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
-            OnMatchLogicConfigured();
+            if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
+                OnMatchLogicConfigured();
+        }
     }
 
     private void OnMatchLogicConfigured()

@@ -12,10 +12,12 @@ public class MatchTimerUI : MonoBehaviour
         viewModel.FormattedTime.ChangeEvent += UpdateText;
 
         if (MatchLogicNetworkAdapter.Instance != null)
+        {
             MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += OnMatchLogicConfigured;
 
-        if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
-            OnMatchLogicConfigured();
+            if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
+                OnMatchLogicConfigured();
+        }
     }
 
     private void OnMatchLogicConfigured()
