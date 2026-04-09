@@ -1,10 +1,10 @@
+using System;
 using PurrNet;
 using Resonance.Assemblies.Arena;
 using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.Polarity;
 using Resonance.GameBootstrap;
-using Resonance.LobbySystem;
 using UnityEngine;
 
 namespace Resonance.Match
@@ -54,6 +54,10 @@ namespace Resonance.Match
 
         private BaseRoundManagerNetworkAdapter currentRoundManagerNetworkAdapter;
         public BaseRoundManagerNetworkAdapter ActiveRoundManager => currentRoundManagerNetworkAdapter;
+        #endregion
+
+        #region Events
+        public event Action OnFinishedConfiguring;
         #endregion
 
         #region Lifecycle
@@ -119,6 +123,8 @@ namespace Resonance.Match
                 };
                 currentRoundManagerNetworkAdapter = new PolarityRoundManagerNetworkAdapter(_matchStatAdapter, polarityConfig);
             }
+
+            OnFinishedConfiguring.Invoke();
         }
 
         #endregion
