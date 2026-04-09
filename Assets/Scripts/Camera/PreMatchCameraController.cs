@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using Resonance;
 using Resonance.Combat;
@@ -68,7 +69,7 @@ public class PreMatchCameraController : MonoBehaviour
     {
         if (MatchLogicNetworkAdapter.Instance != null)
             MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += OnMatchLogicConfigured;
-        
+
         if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
             OnMatchLogicConfigured();
     }
@@ -93,11 +94,27 @@ public class PreMatchCameraController : MonoBehaviour
     {
         countdownStarted = true;
     }
-    
+
     private IEnumerator Start()
     {
         while (PlayerController.LocalPlayer == null || !_configured)
             yield return null;
+
+        Task<int> matchStateTask = ArenaRoundManagerBridge.Instance?.GetMatchState();
+        if (matchStateTask == null)
+        {
+            StartCoroutine(EndSequence());
+            yield break;
+        }
+
+        while (!matchStateTask.IsCompleted)
+            yield return null;
+
+        if (matchStateTask.IsFaulted || (BaseMatchState)matchStateTask.Result != BaseMatchState.Waiting)
+        {
+            StartCoroutine(EndSequence());
+            yield break;
+        }
 
         target = PlayerController.LocalPlayer.transform;
         playerCamera = PlayerController.LocalPlayer.GetComponentInChildren<Camera>(true);
@@ -263,7 +280,7 @@ public class PreMatchCameraController : MonoBehaviour
 
             var fpArmsAnimator = target.GetComponent<FPArmsAnimator>();
             fpArmsAnimator?.ResetForMatchStart();
-            
+
             var fpArmsManager = target.GetComponent<FPArmsManager>();
             fpArmsManager?.RefreshArms();
 
