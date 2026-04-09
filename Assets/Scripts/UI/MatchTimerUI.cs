@@ -11,20 +11,28 @@ public class MatchTimerUI : MonoBehaviour
     {
         viewModel.FormattedTime.ChangeEvent += UpdateText;
 
+        if (MatchLogicNetworkAdapter.Instance != null)
+            MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += OnMatchLogicConfigured;
+
+        if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
+            OnMatchLogicConfigured();
+    }
+
+    private void OnMatchLogicConfigured()
+    {
         if (ArenaRoundManagerBridge.Instance != null)
-        {
             ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed += viewModel.SetTime;
-        }
     }
 
     private void OnDestroy()
     {
         viewModel.FormattedTime.ChangeEvent -= UpdateText;
 
+        if (MatchLogicNetworkAdapter.Instance != null)
+            MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;
+
         if (ArenaRoundManagerBridge.Instance != null)
-        {
             ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed -= viewModel.SetTime;
-        }
     }
 
     private void UpdateText(string time)
