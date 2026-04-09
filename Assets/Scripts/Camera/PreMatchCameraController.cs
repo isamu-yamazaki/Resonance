@@ -4,6 +4,7 @@ using Resonance;
 using Resonance.Combat;
 using Resonance.PlayerController;
 using Resonance.Match;
+using Resonance.Assemblies.SharedGameLogic;
 
 public class PreMatchCameraController : MonoBehaviour
 {
@@ -52,6 +53,7 @@ public class PreMatchCameraController : MonoBehaviour
     private Transform target;
     private Camera playerCamera;
     private bool countdownStarted = false;
+    private bool _configured = false;
 
     private Vector3 driftOffset = Vector3.zero;
     private Vector3 driftVelocity = Vector3.zero;
@@ -64,6 +66,13 @@ public class PreMatchCameraController : MonoBehaviour
 
     private void OnEnable()
     {
+        if (MatchLogicNetworkAdapter.Instance != null)
+            MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += OnMatchLogicConfigured;
+    }
+
+    private void OnMatchLogicConfigured()
+    {
+        _configured = true;
         if (ArenaRoundManagerBridge.Instance != null)
             ArenaRoundManagerBridge.Instance.OnMatchCountdownStart += HandleCountdownStart;
     }
@@ -72,23 +81,19 @@ public class PreMatchCameraController : MonoBehaviour
     {
         if (ArenaRoundManagerBridge.Instance != null)
             ArenaRoundManagerBridge.Instance.OnMatchCountdownStart -= HandleCountdownStart;
+
+        if (MatchLogicNetworkAdapter.Instance != null)
+            MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;
     }
 
     private void HandleCountdownStart(float seconds)
     {
         countdownStarted = true;
-        StartCoroutine(EndSequenceAfterCountdown(seconds));
     }
     
-    private IEnumerator EndSequenceAfterCountdown(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        yield return StartCoroutine(EndSequence());
-    }
-
     private IEnumerator Start()
     {
-        while (PlayerController.LocalPlayer == null)
+        while (PlayerController.LocalPlayer == null || !_configured)
             yield return null;
 
         target = PlayerController.LocalPlayer.transform;
@@ -124,12 +129,24 @@ public class PreMatchCameraController : MonoBehaviour
             droneObject.FlyAway(Vector3.up);
     }
 
+    private void Update()
+    {
+        if (!_configured)
+            return;
+
+        if (ArenaRoundManagerBridge.Instance?.MatchState != BaseMatchState.Waiting
+            && ArenaRoundManagerBridge.Instance?.MatchState != BaseMatchState.Countdown)
+        {
+            StartCoroutine(EndSequence());
+        }
+    }
+
     private IEnumerator FlyPath()
     {
         int waypointCount = waypointOffsets.Length;
         int currentWaypoint = 0;
 
-        while (!countdownStarted)
+        while (ArenaRoundManagerBridge.Instance?.MatchState == BaseMatchState.Waiting)
         {
             int nextWaypoint = (currentWaypoint + 1) % waypointCount;
 
@@ -142,7 +159,7 @@ public class PreMatchCameraController : MonoBehaviour
             float duration = segmentLength / flightSpeed;
             float elapsed = 0f;
 
-            while (elapsed < duration && !countdownStarted)
+            while (elapsed < duration && ArenaRoundManagerBridge.Instance?.MatchState == BaseMatchState.Waiting)
             {
                 elapsed += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsed / duration);
