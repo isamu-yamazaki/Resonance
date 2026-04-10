@@ -72,7 +72,6 @@ namespace Resonance.Match
             }
 
             InstanceHandler.RegisterInstance(this);
-            DontDestroyOnLoad(this);
         }
 
         protected override void OnDestroy()
