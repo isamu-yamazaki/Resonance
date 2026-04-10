@@ -14,6 +14,7 @@ namespace Resonance.Match
     /// Provides singleton access to submodules for match statistics and game mode logic.
     /// </summary>
     [DefaultExecutionOrder(-10)]
+    [RequireComponent(typeof(GameModeProvider))]
     public class MatchLogicNetworkAdapter : NetworkBehaviour
     {
         public static MatchLogicNetworkAdapter Instance
