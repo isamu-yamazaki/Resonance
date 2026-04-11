@@ -16,6 +16,7 @@ namespace Resonance.Match
         [SerializeField] private float autoStartDelaySeconds = 5f; // Small delay to ensure everything is initialized
 
         private LobbyDataHolder lobbyDataHolder;
+        private bool countdownQueued = false;
 
         protected override void OnSpawned(bool asServer)
         {
@@ -45,7 +46,7 @@ namespace Resonance.Match
             if (lobbyDataHolder != null)
             {
                 StartMatchCountdownIfAllPlayersLoadedScene();
-            } else
+            } else if (!countdownQueued)
             {
                 QueueMatchCountdown();
             }
@@ -71,6 +72,7 @@ namespace Resonance.Match
 
         private void QueueMatchCountdown()
         {
+            countdownQueued = true;
             Invoke(nameof(StartMatchCountdown), autoStartDelaySeconds);
         }
 

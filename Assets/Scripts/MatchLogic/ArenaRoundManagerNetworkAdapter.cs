@@ -70,7 +70,8 @@ namespace Resonance.Match
                 arenaRoundManager.OnMatchTimerElapsed += OnArenaMatchTimerElapsed;
 
                 arenaRatingManager = new ArenaRatingManager(tracker, arenaRoundManager);
-            } else
+            }
+            else
             {
                 Debug.Log("[ArenaRoundManagerNetworkAdapter] MatchStatTracker instance received but ArenaRoundManager is not null");
             }
@@ -183,6 +184,12 @@ namespace Resonance.Match
         #endregion
 
         #region Getters (Client Callable)
+        [ServerRpc]
+        public override async Task<int> GetMatchState()
+        {
+            return (int)(arenaRoundManager?.MatchState ?? BaseMatchState.Waiting);
+        }
+
         [ServerRpc]
         public async Task<float> GetRatingToWin()
         {

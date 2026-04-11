@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using System.Collections;
 using Resonance.Match;
+using System;
 
 public class MatchStartCountdownUI : MonoBehaviour
 {
@@ -9,18 +10,28 @@ public class MatchStartCountdownUI : MonoBehaviour
 
     private void OnEnable()
     {
-        if (ArenaRoundManagerBridge.Instance != null)
+        if (MatchLogicNetworkAdapter.Instance != null)
         {
-            ArenaRoundManagerBridge.Instance.OnMatchCountdownStart += HandleCountdownStart;
+            MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += OnMatchLogicConfigured;
+
+            if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
+                OnMatchLogicConfigured();
         }
+    }
+
+    private void OnMatchLogicConfigured()
+    {
+        if (ArenaRoundManagerBridge.Instance != null)
+            ArenaRoundManagerBridge.Instance.OnMatchCountdownStart += HandleCountdownStart;
     }
 
     private void OnDisable()
     {
         if (ArenaRoundManagerBridge.Instance != null)
-        {
             ArenaRoundManagerBridge.Instance.OnMatchCountdownStart -= HandleCountdownStart;
-        }
+
+        if (MatchLogicNetworkAdapter.Instance != null)
+            MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;
     }
 
     private void HandleCountdownStart(float seconds)

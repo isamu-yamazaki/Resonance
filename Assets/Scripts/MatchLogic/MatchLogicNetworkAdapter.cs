@@ -1,10 +1,10 @@
+using System;
 using PurrNet;
 using Resonance.Assemblies.Arena;
 using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.Polarity;
 using Resonance.GameBootstrap;
-using Resonance.LobbySystem;
 using UnityEngine;
 
 namespace Resonance.Match
@@ -14,6 +14,7 @@ namespace Resonance.Match
     /// Provides singleton access to submodules for match statistics and game mode logic.
     /// </summary>
     [DefaultExecutionOrder(-10)]
+    [RequireComponent(typeof(GameModeProvider))]
     public class MatchLogicNetworkAdapter : NetworkBehaviour
     {
         public static MatchLogicNetworkAdapter Instance
@@ -56,6 +57,11 @@ namespace Resonance.Match
         public BaseRoundManagerNetworkAdapter ActiveRoundManager => currentRoundManagerNetworkAdapter;
         #endregion
 
+        #region Events
+        public event Action OnFinishedConfiguring;
+        public bool HasFinishedConfiguring { get; private set; }
+        #endregion
+
         #region Lifecycle
         private void Awake()
         {
@@ -66,10 +72,6 @@ namespace Resonance.Match
             }
 
             InstanceHandler.RegisterInstance(this);
-            DontDestroyOnLoad(this);
-
-            var gameModeProvider = FindFirstObjectByType<GameModeProvider>();
-            Configure(gameModeProvider.gameMode);
         }
 
         protected override void OnDestroy()
@@ -78,6 +80,15 @@ namespace Resonance.Match
             {
                 InstanceHandler.UnregisterInstance<MatchLogicNetworkAdapter>();
             }
+        }
+
+        // See https://purrnet.gitbook.io/docs/systems-and-modules/network-modules/common-pitfalls
+        protected override void OnInitializeModules()
+        {
+            base.OnInitializeModules();
+
+            var gameModeProvider = FindFirstObjectByType<GameModeProvider>();
+            Configure(gameModeProvider.gameMode);
         }
         #endregion
 
@@ -113,6 +124,9 @@ namespace Resonance.Match
                 };
                 currentRoundManagerNetworkAdapter = new PolarityRoundManagerNetworkAdapter(_matchStatAdapter, polarityConfig);
             }
+
+            OnFinishedConfiguring?.Invoke();
+            HasFinishedConfiguring = true;
         }
 
         #endregion

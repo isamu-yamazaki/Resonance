@@ -43,7 +43,7 @@ namespace Resonance.Combat.Augments
 
         private void OnSkinSpawned(GameObject skinInstance)
         {
-            if (playerSkinRenderer.ShouldRenderArmsOnly)
+            if (playerSkinRenderer.ShouldRenderArmsOnlyBasedOnCachedMatchState)
             {
                 if (playerSkinRenderer.GrappleArmsInstance != null)
                 {

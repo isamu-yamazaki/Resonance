@@ -28,6 +28,17 @@ namespace Resonance
                 SetActive(false);
             }
 
+            if (MatchLogicNetworkAdapter.Instance != null)
+            {
+                MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += OnMatchLogicConfigured;
+
+                if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
+                    OnMatchLogicConfigured();
+            }
+        }
+
+        private void OnMatchLogicConfigured()
+        {
             if (ArenaRoundManagerBridge.Instance != null)
                 ArenaRoundManagerBridge.Instance.OnLeaderChanged += OnLeaderChanged;
         }
@@ -38,6 +49,9 @@ namespace Resonance
 
             if (_lightObj != null)
                 Destroy(_lightObj);
+
+            if (MatchLogicNetworkAdapter.Instance != null)
+                MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;
 
             if (ArenaRoundManagerBridge.Instance != null)
                 ArenaRoundManagerBridge.Instance.OnLeaderChanged -= OnLeaderChanged;

@@ -87,7 +87,7 @@ namespace Resonance.VFX
 
         private void OnSkinSpawned(GameObject skinRoot)
         {
-            if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnly)
+            if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnlyBasedOnCachedMatchState)
             {
                 GameObject activeArms = null;
                 foreach (var kvp in _skinRenderer.FPArmsInstances)
@@ -138,7 +138,7 @@ namespace Resonance.VFX
                 yield break;
             }
 
-            if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnly)
+            if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnlyBasedOnCachedMatchState)
             {
                 GameObject activeArms = null;
                 foreach (var kvp in _skinRenderer.FPArmsInstances)
