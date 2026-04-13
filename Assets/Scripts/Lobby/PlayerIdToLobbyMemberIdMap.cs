@@ -1,3 +1,4 @@
+using System;
 using PurrNet;
 using UnityEngine;
 
@@ -26,6 +27,11 @@ namespace Resonance.LobbySystem
         private void RegisterLobbyMemberIdWithPlayerId(PlayerID playerId, string lobbyMemberId)
         {
             lobbyMemberIdsByPlayerId.Add(playerId, lobbyMemberId);
+        }
+
+        private void UnregisterPlayerId(PlayerID playerId)
+        {
+            lobbyMemberIdsByPlayerId.Remove(playerId);
         }
 
         public string GetLobbyMemberId(PlayerID playerId)
@@ -62,6 +68,29 @@ namespace Resonance.LobbySystem
             if (!asServer && lobbyDataHolder != null)
             {
                 RegisterLobbyMemberIdWithPlayerId(networkManager.localPlayer, lobbyDataHolder.LocalUserId);
+            }
+
+            if (asServer)
+            {
+                networkManager.onPlayerLeft += HandlePlayerLeft;
+            }
+        }
+
+        protected override void OnDespawned(bool asServer)
+        {
+            base.OnDespawned(asServer);
+
+            if (asServer)
+            {
+                networkManager.onPlayerLeft -= HandlePlayerLeft;
+            }
+        }
+
+        private void HandlePlayerLeft(PlayerID player, bool asServer)
+        {
+            if (isServer)
+            {
+                UnregisterPlayerId(player);
             }
         }
 
