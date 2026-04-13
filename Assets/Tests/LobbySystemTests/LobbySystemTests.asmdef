@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "LobbySystem",
-        "PurrNet.Runtime"
+        "PurrNet.Runtime",
+        "TestEngineHelpers"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
