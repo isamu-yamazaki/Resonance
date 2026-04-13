@@ -1,8 +1,7 @@
 using PurrNet;
-using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 
-namespace Resonance.LobbySystem
+namespace Resonance.Assemblies.LobbySystem
 {
     public class PlayerIdToLobbyMemberIdMap : NetworkBehaviour
     {

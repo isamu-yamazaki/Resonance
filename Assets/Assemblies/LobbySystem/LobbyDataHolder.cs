@@ -1,4 +1,3 @@
-using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 
 namespace Resonance.Assemblies.LobbySystem
