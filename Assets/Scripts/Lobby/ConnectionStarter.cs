@@ -2,6 +2,7 @@ using System.Collections;
 using PurrNet;
 using PurrNet.Logging;
 using PurrNet.Transports;
+using Resonance.Assemblies.LobbySystem;
 using Resonance.BuildTools;
 using UnityEngine;
 
