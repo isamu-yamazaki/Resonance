@@ -1,6 +1,7 @@
 using System.Collections;
 using NUnit.Framework;
 using PurrNet;
+using PurrNet.Modules;
 using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -36,8 +37,9 @@ public class PlayerIdToLobbyMemberIdMapTests
     }
 
     [UnityTest]
-    public IEnumerator MapWithLobbyDataHolder_SetsIdMapping()
+    public IEnumerator MapWithLocalLobbyDataHolder_SetsIdMapping()
     {
+        // if there is a local LobbyDataHolder, use that to set the ID mapping
         var lobbyDataHolderGameObject = new GameObject("LobbyDataHolder");
         var lobbyDataHolder = lobbyDataHolderGameObject.AddComponent<LobbyDataHolder>();
 
@@ -54,5 +56,29 @@ public class PlayerIdToLobbyMemberIdMapTests
 
         Object.DestroyImmediate(map.gameObject);
         Object.DestroyImmediate(lobbyDataHolder.gameObject);
+    }
+
+    [UnityTest]
+    public IEnumerator PlayerLeave_RemovesIdMapping()
+    {
+        PlayerIdToLobbyMemberIdMap map = null;
+        yield return NetworkTestHelpers.SetupNetworkIdentityOnNewGameObject<PlayerIdToLobbyMemberIdMap>(networkManager, c => map = c);
+
+        var playersManager = networkManager.GetModule<PlayersManager>(asServer: true);
+        PlayerID botPlayer = playersManager.CreateBot();
+        yield return null;
+
+        string expectedBotMemberId = "bot-member-id";
+        map.RegisterLobbyMemberIdWithBotId(botPlayer, expectedBotMemberId);
+        yield return null;
+
+        Assert.AreEqual(expectedBotMemberId, map.GetLobbyMemberId(botPlayer));
+
+        playersManager.KickPlayer(botPlayer);
+        yield return null;
+
+        Assert.IsNull(map.GetLobbyMemberId(botPlayer));
+
+        Object.DestroyImmediate(map.gameObject);
     }
 }

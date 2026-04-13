@@ -28,6 +28,17 @@ namespace Resonance.Assemblies.LobbySystem
             lobbyMemberIdsByPlayerId.Add(playerId, lobbyMemberId);
         }
 
+        /// <summary>
+        /// Public setter method exclusively for use with bot creation, since bots cannot
+        /// have their own Unity environment/spawn their own variant of this object.
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <param name="lobbyMemberId"></param>
+        public void RegisterLobbyMemberIdWithBotId(PlayerID playerId, string lobbyMemberId)
+        {
+            RegisterLobbyMemberIdWithPlayerId(playerId, lobbyMemberId);
+        }
+
         private void UnregisterPlayerId(PlayerID playerId)
         {
             lobbyMemberIdsByPlayerId.Remove(playerId);
