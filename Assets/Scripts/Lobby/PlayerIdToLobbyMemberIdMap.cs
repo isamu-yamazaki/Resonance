@@ -5,6 +5,7 @@ namespace Resonance.LobbySystem
 {
     public class PlayerIdToLobbyMemberIdMap : NetworkBehaviour
     {
+        // allow easy access for consumers
         public static PlayerIdToLobbyMemberIdMap Instance
         {
             get
@@ -47,20 +48,18 @@ namespace Resonance.LobbySystem
             lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
             if (lobbyDataHolder == null)
             {
-                Debug.LogError($"[{GetType()}] Unable to find {nameof(LobbyDataHolder)} component");
-                Destroy(this);
+                Debug.LogWarning($"[{GetType()}] Unable to find {nameof(LobbyDataHolder)} component, local player will not be mapped to lobby member ID");
                 return;
             }
 
             InstanceHandler.RegisterInstance(this);
-            DontDestroyOnLoad(this);
         }
 
         protected override void OnSpawned(bool asServer)
         {
             base.OnSpawned(asServer);
 
-            if (!asServer)
+            if (!asServer && lobbyDataHolder != null)
             {
                 RegisterLobbyMemberIdWithPlayerId(networkManager.localPlayer, lobbyDataHolder.LocalUserId);
             }
