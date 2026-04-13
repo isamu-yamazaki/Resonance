@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using PurrNet;
 using PurrNet.Transports;
 using UnityEditor;
@@ -5,7 +7,7 @@ using UnityEngine;
 
 public static class NetworkTestHelpers
 {
-    public static NetworkManager SetupNetworkManager()
+    public static IEnumerator SetupNetworkManager(Action<NetworkManager> onReady)
     {
         var networkManagerGO = new GameObject("NetworkManager");
         networkManagerGO.SetActive(false);
@@ -29,12 +31,14 @@ public static class NetworkTestHelpers
         nmType.GetField("_visibilityRules", flags).SetValue(networkManager, visibilityRuleSet);
 
         networkManagerGO.SetActive(true);
-        // server is automatically started when set to active with transport
 
-        return networkManager;
+        // yield return new WaitUntil(() => networkManager.isLocalPlayerReady);
+        yield return new WaitForSeconds(1);
+
+        onReady(networkManager);
     }
 
-    public static T SetupNetworkIdentityOnNewGameObject<T>(NetworkManager networkManager) where T : NetworkIdentity
+    public static IEnumerator SetupNetworkIdentityOnNewGameObject<T>(NetworkManager networkManager, Action<T> onReady) where T : NetworkIdentity
     {
         var mapGameObject = new GameObject(typeof(T).Name);
         var component = mapGameObject.AddComponent<T>();
@@ -42,6 +46,9 @@ public static class NetworkTestHelpers
         NetworkManager.SetupPrefabInfo(mapGameObject, 0, false);
         networkManager.Spawn(mapGameObject);
 
-        return component;
+        // yield return new WaitUntil(() => component.isSpawned);
+        yield return new WaitForSeconds(1);
+
+        onReady(component);
     }
 }

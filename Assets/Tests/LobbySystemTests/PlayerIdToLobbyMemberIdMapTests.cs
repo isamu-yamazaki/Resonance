@@ -1,33 +1,58 @@
 using System.Collections;
 using NUnit.Framework;
 using PurrNet;
-using PurrNet.Transports;
 using Resonance.Assemblies.LobbySystem;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 
 public class PlayerIdToLobbyMemberIdMapTests
 {
-    // A Test behaves as an ordinary method
-    [Test]
-    public void PlayerIdToLobbyMemberIdMapTestsSimplePasses()
+    private NetworkManager networkManager;
+
+    [UnitySetUp]
+    public IEnumerator Setup()
     {
-        // Use the Assert class to test conditions
+        yield return NetworkTestHelpers.SetupNetworkManager(nm => networkManager = nm);
     }
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
+    [UnityTearDown]
+    public IEnumerator Teardown()
+    {
+        Object.Destroy(networkManager.gameObject);
+        yield return null;
+    }
+
     [UnityTest]
     public IEnumerator MapWithoutLobbyDataHolder_DoesNotSetIdMapping()
     {
-        var networkManager = NetworkTestHelpers.SetupNetworkManager();
-        yield return new WaitForSeconds(1);
-
-        var map = NetworkTestHelpers.SetupNetworkIdentityOnNewGameObject<PlayerIdToLobbyMemberIdMap>(networkManager);
+        PlayerIdToLobbyMemberIdMap map = null;
+        yield return NetworkTestHelpers.SetupNetworkIdentityOnNewGameObject<PlayerIdToLobbyMemberIdMap>(networkManager, c => map = c);
 
         var localPlayerId = networkManager.localPlayer;
         var lobbyMemberId = map.GetLobbyMemberId(localPlayerId);
         Assert.IsNull(lobbyMemberId);
+
+        Object.DestroyImmediate(map.gameObject);
+    }
+
+    [UnityTest]
+    public IEnumerator MapWithLobbyDataHolder_SetsIdMapping()
+    {
+        var lobbyDataHolderGameObject = new GameObject("LobbyDataHolder");
+        var lobbyDataHolder = lobbyDataHolderGameObject.AddComponent<LobbyDataHolder>();
+
+        string localLobbyMemberId = "1";
+        lobbyDataHolder.SetLocalUserId(localLobbyMemberId);
+        lobbyDataHolder.SetCurrentLobby(new() {});
+
+        PlayerIdToLobbyMemberIdMap map = null;
+        yield return NetworkTestHelpers.SetupNetworkIdentityOnNewGameObject<PlayerIdToLobbyMemberIdMap>(networkManager, c => map = c);
+
+        var localPlayerId = networkManager.localPlayer;
+        var lobbyMemberId = map.GetLobbyMemberId(localPlayerId);
+        Assert.AreEqual(localLobbyMemberId, lobbyMemberId);
+
+        Object.DestroyImmediate(map.gameObject);
+        Object.DestroyImmediate(lobbyDataHolder.gameObject);
     }
 }
