@@ -243,10 +243,11 @@ namespace Resonance.PlayerController
             if (!context.performed)
                 return;
 
-            if (EscMenuManager.Instance == null)
+            if (EscOverlayView.Instance == null)
                 return;
 
-            EscMenuManager.Instance.Toggle();
+            // TODO: use the view router
+            // EscMenuManager.Instance.Toggle();
         }
 
         public void OnShowMatchStats(InputAction.CallbackContext context)

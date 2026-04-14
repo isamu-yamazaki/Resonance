@@ -1,14 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Resonance.Helper;
 using Resonance.NetworkDespawner;
-using Resonance.PlayerController;
+using Resonance.Assemblies.UISystem;
 
 namespace Resonance.UI
 {
-    public class EscMenuManager : MonoBehaviour
+    public class EscOverlayView : MonoBehaviour, IOverlayView
     {
-        public static EscMenuManager Instance { get; private set; }
+        public static EscOverlayView Instance { get; private set; }
 
         [Header("ESC Menu UI")]
         [SerializeField] private GameObject escMenuPanel;
@@ -33,12 +32,13 @@ namespace Resonance.UI
         {
             if (despawnerSceneLoader == null)
                 despawnerSceneLoader = FindObjectOfType<NetworkDespawnerSceneLoader>();
-            
+
             escMenuPanel.SetActive(false);
             quitConfirmationPanel.SetActive(false);
 
-            if (resumeButton != null)
-                resumeButton.onClick.AddListener(Toggle);
+            // TODO: use the Dismiss action injected by the view router
+            // if (resumeButton != null)
+            //     resumeButton.onClick.AddListener(Toggle);
 
             if (leaveGameButton != null)
                 leaveGameButton.onClick.AddListener(OnLeaveGameClicked);
@@ -53,28 +53,22 @@ namespace Resonance.UI
                 quitNoButton.onClick.AddListener(OnQuitCancelled);
         }
 
-        public void Toggle()
+        public void OnShow(OverlayViewActions viewActions)
         {
-            PlayerState playerState = OwnerFinder.FindFirstOwnedObjectByType<PlayerState>();
-
-            if (!escMenuPanel.activeSelf && playerState != null && playerState.IsMatchFrozen())
-                return;
-
-            // Close confirmation panel too if it was open
             quitConfirmationPanel.SetActive(false);
 
-            if (escMenuPanel.activeSelf)
-            {
-                escMenuPanel.SetActive(false);
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-            else
-            {
-                escMenuPanel.SetActive(true);
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
+            escMenuPanel.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        public void OnHide()
+        {
+            quitConfirmationPanel.SetActive(false);
+
+            escMenuPanel.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
         private void OnLeaveGameClicked()
@@ -90,14 +84,15 @@ namespace Resonance.UI
         private void OnQuitConfirmed()
         {
             Application.Quit();
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-            #endif
+#endif
         }
 
         private void OnQuitCancelled()
         {
             quitConfirmationPanel.SetActive(false);
         }
+
     }
 }
