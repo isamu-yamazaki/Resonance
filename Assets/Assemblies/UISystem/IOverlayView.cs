@@ -1,9 +1,8 @@
-
 namespace Resonance.Assemblies.UISystem
 {
     public interface IOverlayView
     {
-        public void Show();
-        public void Hide();
+        public void OnShow(OverlayViewActions viewActions);
+        public void OnHide();
     }
 }

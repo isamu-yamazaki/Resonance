@@ -43,7 +43,15 @@ namespace Resonance.Assemblies.UISystem
             activeOverlayIds.Add(id);
 
             OverlayOptions overlayOptions = overlays[id];
-            overlayOptions.view.Show();
+            OverlayViewActions viewActions = new()
+            {
+                Dismiss = () =>
+                {
+                    HideOverlay(id);
+                },
+                Id = id,
+            };
+            overlayOptions.view.OnShow(viewActions);
 
             RefreshCursorUnlocks();
             RefreshInputMaps();
@@ -58,7 +66,7 @@ namespace Resonance.Assemblies.UISystem
             }
 
             activeOverlayIds.Remove(id);
-            overlays[id].view.Hide();
+            overlays[id].view.OnHide();
 
             RefreshCursorUnlocks();
             RefreshInputMaps();

@@ -14,9 +14,16 @@ public class ViewRouterTests
         public bool IsShown { get; private set; }
         public int ShowCallCount { get; private set; }
         public int HideCallCount { get; private set; }
+        public OverlayViewActions assignedViewActions { get; private set; }
 
-        public void Show() { IsShown = true; ShowCallCount++; }
-        public void Hide() { IsShown = false; HideCallCount++; }
+        public void OnShow(OverlayViewActions viewActions)
+        {
+            IsShown = true;
+            ShowCallCount++;
+            assignedViewActions = viewActions;
+        }
+
+        public void OnHide() { IsShown = false; HideCallCount++; }
     }
 
     [SetUp]
