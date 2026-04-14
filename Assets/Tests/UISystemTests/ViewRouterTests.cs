@@ -14,13 +14,13 @@ public class ViewRouterTests
         public bool IsShown { get; private set; }
         public int ShowCallCount { get; private set; }
         public int HideCallCount { get; private set; }
-        public OverlayViewActions assignedViewActions { get; private set; }
+        public OverlayViewActions AssignedViewActions { get; private set; }
 
         public void OnShow(OverlayViewActions viewActions)
         {
             IsShown = true;
             ShowCallCount++;
-            assignedViewActions = viewActions;
+            AssignedViewActions = viewActions;
         }
 
         public void OnHide() { IsShown = false; HideCallCount++; }
@@ -100,6 +100,20 @@ public class ViewRouterTests
 
         Assert.IsTrue(view.IsShown);
         Assert.AreEqual(1, view.ShowCallCount);
+    }
+
+    [Test]
+    public void ShowOverlay_RegisteredOverlay_InjectsOverlayViewActions()
+    {
+        var view = new MockOverlayView();
+        int id = router.RegisterOverlay(new OverlayOptions { view = view });
+
+        router.ShowOverlay(id);
+
+        Assert.AreEqual(id, view.AssignedViewActions.Id);
+
+        view.AssignedViewActions.Dismiss();
+        Assert.AreEqual(1, view.HideCallCount);
     }
 
     [Test]
