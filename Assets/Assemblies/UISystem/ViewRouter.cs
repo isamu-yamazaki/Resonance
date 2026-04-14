@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Resonance.Assemblies.UISystem
 {
@@ -7,6 +9,10 @@ namespace Resonance.Assemblies.UISystem
     {
         private Dictionary<int, OverlayOptions> overlays = new();
         private HashSet<int> activeOverlayIds = new();
+
+        public IReadOnlyDictionary<int, OverlayOptions> Overlays => overlays;
+        public IReadOnlyCollection<int> ActiveOverlayIds => activeOverlayIds;
+        public IReadOnlyCollection<int> NonActiveOverlayIds => overlays.Keys.Except(activeOverlayIds).ToHashSet();
 
         // note that because this just toggles on/off existing game objects,
         // z-ordering is done in the Unity editor
