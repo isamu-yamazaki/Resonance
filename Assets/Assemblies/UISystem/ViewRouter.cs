@@ -46,11 +46,7 @@ namespace Resonance.Assemblies.UISystem
             overlayOptions.view.Show();
 
             RefreshCursorUnlocks();
-
-            foreach (var inputMap in overlayOptions.inputMapsToDisableWhenShown)
-            {
-                inputMap.Disable();
-            }
+            RefreshInputMaps();
         }
 
         public void HideOverlay(int id)
@@ -65,11 +61,7 @@ namespace Resonance.Assemblies.UISystem
             overlays[id].view.Hide();
 
             RefreshCursorUnlocks();
-
-            foreach (var inputMap in overlays[id].inputMapsToDisableWhenShown)
-            {
-                inputMap.Enable();
-            }
+            RefreshInputMaps();
         }
 
         private void RefreshCursorUnlocks()
@@ -86,6 +78,41 @@ namespace Resonance.Assemblies.UISystem
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        private void RefreshInputMaps()
+        {
+            // if disabled input map is shared among both active/non-active overlay,
+            // that input maps should still be disabled
+
+            var inputMapsToDisable = GetInputMapsForOverlays(activeOverlayIds);
+            var inputMapsToEnable = GetInputMapsForOverlays(NonActiveOverlayIds).Except(inputMapsToDisable);
+
+            foreach (var inputMap in inputMapsToEnable)
+            {
+                inputMap.Enable();
+            }
+            foreach (var inputMap in inputMapsToDisable)
+            {
+                inputMap.Disable();
+            }
+        }
+
+        private HashSet<InputActionMap> GetInputMapsForOverlays(IReadOnlyCollection<int> overlayIds)
+        {
+            HashSet<InputActionMap> inputMapsToDisable = new();
+            foreach (var id in overlayIds)
+            {
+                if (overlays.ContainsKey(id))
+                {
+                    foreach (var inputMap in overlays[id].inputMapsToDisableWhenShown)
+                    {
+                        inputMapsToDisable.Add(inputMap);
+                    }
+                }
+            }
+
+            return inputMapsToDisable;
         }
     }
 }
