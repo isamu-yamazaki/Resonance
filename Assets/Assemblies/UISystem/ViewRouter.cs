@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Resonance.Assemblies.UISystem
 {
-    public abstract class ViewRouter : MonoBehaviour
+    public class ViewRouter
     {
         private Dictionary<int, OverlayOptions> overlays = new();
         private HashSet<int> activeOverlayIds = new();
