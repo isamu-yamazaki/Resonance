@@ -42,6 +42,11 @@ namespace Resonance.Assemblies.UISystem
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
+
+            foreach (var inputMap in overlays[id].inputMapsToDisableWhenShown)
+            {
+                inputMap.Disable();
+            }
         }
 
         public void HideOverlay(int id)
@@ -59,6 +64,11 @@ namespace Resonance.Assemblies.UISystem
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+            }
+
+            foreach (var inputMap in overlays[id].inputMapsToDisableWhenShown)
+            {
+                inputMap.Enable();
             }
         }
     }
