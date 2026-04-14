@@ -2,18 +2,22 @@ using UnityEngine;
 
 namespace Resonance.Assemblies.UISystem
 {
-    public class OverlayView : MonoBehaviour
+    public abstract class OverlayView : MonoBehaviour
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        public void Awake()
         {
-
+            // All overlay views start out disabled
+            enabled = false;
         }
 
-        // Update is called once per frame
-        void Update()
+        public virtual void Show()
         {
+            enabled = true;
+        }
 
+        public virtual void Hide()
+        {
+            enabled = false;
         }
     }
 }
