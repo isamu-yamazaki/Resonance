@@ -8953,6 +8953,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2878321669456898750}
+  - component: {fileID: 4141131493183228018}
   m_Layer: 0
   m_Name: UIPrefab
   m_TagString: Untagged
@@ -8982,6 +8983,25 @@ Transform:
   - {fileID: 2081595421985748008}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4141131493183228018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5457436812598143677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c01159fe26114540955ac62f0832b87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.InGameViewRouterBridge
+  overlays:
+  - view: {fileID: 0}
+    unlockCursorWhenShown: 0
+    inputMapsToDisableWhenShown: []
+  - view: {fileID: 0}
+    unlockCursorWhenShown: 0
+    inputMapsToDisableWhenShown: []
 --- !u!1 &5480201575521567377
 GameObject:
   m_ObjectHideFlags: 0

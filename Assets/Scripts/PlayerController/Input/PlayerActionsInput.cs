@@ -243,11 +243,10 @@ namespace Resonance.PlayerController
             if (!context.performed)
                 return;
 
-            if (EscOverlayView.Instance == null)
+            if (InGameViewRouterBridge.Instance == null)
                 return;
 
-            // TODO: use the view router
-            // EscMenuManager.Instance.Toggle();
+            InGameViewRouterBridge.Instance.ToggleEsc();
         }
 
         public void OnShowMatchStats(InputAction.CallbackContext context)
@@ -275,13 +274,12 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (ShopOverlayView.Instance == null)
+            if (InGameViewRouterBridge.Instance == null)
             {
                 return;
             }
 
-            // TODO: re-enable shop toggle
-            // ShopManager.Instance.Toggle();
+            InGameViewRouterBridge.Instance.ToggleShop();
         }
         #endregion
         public void RequestReload()
