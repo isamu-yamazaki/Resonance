@@ -42,10 +42,10 @@ namespace Resonance.Shop
             if (playerInventory == null || !playerInventory.isOwner)
                 playerInventory = FindObjectsOfType<PlayerInventory>().FirstOrDefault(p => p.isOwner);
 
-            primaryWeaponSellButton?.onClick.AddListener(() => ShopManager.Instance.SellWeapon(WeaponSlot.Primary));
-            secondaryWeaponSellButton?.onClick.AddListener(() => ShopManager.Instance.SellWeapon(WeaponSlot.Secondary));
-            upperAugmentSellButton?.onClick.AddListener(() => ShopManager.Instance.SellAugment(AugmentSlot.Upper));
-            lowerAugmentSellButton?.onClick.AddListener(() => ShopManager.Instance.SellAugment(AugmentSlot.Lower));
+            primaryWeaponSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellWeapon(WeaponSlot.Primary));
+            secondaryWeaponSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellWeapon(WeaponSlot.Secondary));
+            upperAugmentSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellAugment(AugmentSlot.Upper));
+            lowerAugmentSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellAugment(AugmentSlot.Lower));
         }
 
         public void Refresh()
@@ -111,7 +111,7 @@ namespace Resonance.Shop
                 {
                     ModSlot modSlot = mod.Slot;
                     sellBtn.onClick.RemoveAllListeners();
-                    sellBtn.onClick.AddListener(() => ShopManager.Instance.SellMod(slot, modSlot));
+                    sellBtn.onClick.AddListener(() => ShopOverlayView.Instance.SellMod(slot, modSlot));
                 }
             }
         }

@@ -274,7 +274,7 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (ShopManager.Instance == null)
+            if (ShopOverlayView.Instance == null)
             {
                 return;
             }

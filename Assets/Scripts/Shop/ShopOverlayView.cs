@@ -14,9 +14,9 @@ using UnityEngine.UI;
 
 namespace Resonance.Shop
 {
-    public class ShopManager : MonoBehaviour, IOverlayView
+    public class ShopOverlayView : MonoBehaviour, IOverlayView
     {
-        public static ShopManager Instance { get; private set; }
+        public static ShopOverlayView Instance { get; private set; }
 
         [SerializeField] private GameObject shopMenu;
         [SerializeField] private ShopInventoryDisplay inventoryDisplay;
