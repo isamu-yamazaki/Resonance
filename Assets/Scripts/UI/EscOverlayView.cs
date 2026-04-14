@@ -36,10 +36,6 @@ namespace Resonance.UI
             escMenuPanel.SetActive(false);
             quitConfirmationPanel.SetActive(false);
 
-            // TODO: use the Dismiss action injected by the view router
-            // if (resumeButton != null)
-            //     resumeButton.onClick.AddListener(Toggle);
-
             if (leaveGameButton != null)
                 leaveGameButton.onClick.AddListener(OnLeaveGameClicked);
 
@@ -60,6 +56,9 @@ namespace Resonance.UI
             escMenuPanel.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            if (resumeButton != null)
+                resumeButton.onClick.AddListener(() => viewActions.Dismiss());
         }
 
         public void OnHide()
@@ -69,6 +68,8 @@ namespace Resonance.UI
             escMenuPanel.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
+            resumeButton.onClick.RemoveAllListeners();
         }
 
         private void OnLeaveGameClicked()
