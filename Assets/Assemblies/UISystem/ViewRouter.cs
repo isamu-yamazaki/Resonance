@@ -35,15 +35,13 @@ namespace Resonance.Assemblies.UISystem
             }
 
             activeOverlayIds.Add(id);
-            overlays[id].view.Show();
 
-            if (overlays[id].unlockCursorWhenShown)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
+            OverlayOptions overlayOptions = overlays[id];
+            overlayOptions.view.Show();
 
-            foreach (var inputMap in overlays[id].inputMapsToDisableWhenShown)
+            RefreshCursorUnlocks();
+
+            foreach (var inputMap in overlayOptions.inputMapsToDisableWhenShown)
             {
                 inputMap.Disable();
             }
@@ -60,16 +58,28 @@ namespace Resonance.Assemblies.UISystem
             activeOverlayIds.Remove(id);
             overlays[id].view.Hide();
 
-            if (overlays[id].unlockCursorWhenShown)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
+            RefreshCursorUnlocks();
 
             foreach (var inputMap in overlays[id].inputMapsToDisableWhenShown)
             {
                 inputMap.Enable();
             }
+        }
+
+        private void RefreshCursorUnlocks()
+        {
+            foreach (var id in activeOverlayIds)
+            {
+                if (overlays.ContainsKey(id) && overlays[id].unlockCursorWhenShown)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                    return;
+                }
+            }
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 }
