@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using PurrNet;
 using Resonance.BuildTools;
-using Resonance.Match;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,33 +22,7 @@ namespace Resonance.NetworkDespawner
 
             networkManager.ResetOriginalScene(SceneManager.GetActiveScene());
 
-            DestroyMatchLogic();
             DestroyNetworkManager();
-        }
-
-        // protected override void OnSpawned()
-        // {
-        //     base.OnSpawned();
-
-        //     Debug.Log("[NetworkDespawner] Despawning network objects");
-
-        //     networkManager.ResetOriginalScene(SceneManager.GetActiveScene());
-
-        //     DestroyMatchLogic();
-        //     DestroyNetworkManager();
-        // }
-
-        private void DestroyMatchLogic()
-        {
-            if (MatchLogicNetworkAdapter.Instance != null)
-            {
-                Debug.Log("[NetworkDespawner] Destroying match logic");
-                MatchLogicNetworkAdapter.Instance.Despawn();
-            }
-            else
-            {
-                Debug.Log("[NetworkDespawner] Match logic already destroyed");
-            }
         }
 
         private bool HasServerConfig => ServerBuildConfigReceiver.Instance != null;

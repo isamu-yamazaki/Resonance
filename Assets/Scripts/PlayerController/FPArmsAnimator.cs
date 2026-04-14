@@ -2,6 +2,7 @@ using System.Collections;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.PlayerController;
 using System.Collections.Generic;
+using Resonance.Combat.Augments;
 using Resonance.Combat.Weapons;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ namespace Resonance.Combat
         private OverdriveAbility _overdriveAbility;
         private PlayerHealthStim _playerHealthStim;
         private GameObject _activeSkillArms;
+        private AbilityGrappleHook _grappleHook;
 
         private static readonly int IsRunningHash = Animator.StringToHash("isRunning");
         private static readonly int IsFireHash = Animator.StringToHash("isShooting");
@@ -46,6 +48,7 @@ namespace Resonance.Combat
             _playerActionsInput = GetComponent<PlayerActionsInput>();
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerHealthStim = GetComponent<PlayerHealthStim>();
+            _grappleHook = GetComponent<AbilityGrappleHook>();
         }
 
         private void OnDestroy()
@@ -127,27 +130,35 @@ namespace Resonance.Combat
 
         private IEnumerator ActivateSkillArmsRoutine(WeaponState skillState)
         {
-            GameObject skillArms = _skinRenderer.SkillArmsInstance;
+            GameObject skillArms = skillState == WeaponState.Grappling ?
+                _skinRenderer.GrappleArmsInstance :
+                _skinRenderer.SkillArmsInstance;
+
             if (skillArms == null) yield break;
 
             skillArms.SetActive(true);
+            _activeSkillArms = skillArms;
             _fpArmsManager.SuppressNextRefresh();
+
             foreach (var kvp in _skinRenderer.FPArmsInstances)
             {
                 if (kvp.Value != null)
                     kvp.Value.SetActive(false);
             }
-            _activeSkillArms = skillArms;
+
             _playerState.SetWeaponState(skillState);
 
-            SkillArmsAnimationBridge bridge = skillArms.GetComponent<SkillArmsAnimationBridge>();
-            if (skillState == WeaponState.Casting)
+            if (skillState != WeaponState.Grappling)
             {
-                bridge?.HideSyringe();
-            }
-            else
-            {
-                bridge?.ShowSyringe();
+                SkillArmsAnimationBridge bridge = skillArms.GetComponent<SkillArmsAnimationBridge>();
+                if (skillState == WeaponState.Casting)
+                {
+                    bridge?.HideSyringe();
+                }
+                else
+                {
+                    bridge?.ShowSyringe();
+                }
             }
 
             Animator skillAnimator = skillArms.GetComponent<Animator>();
@@ -155,7 +166,9 @@ namespace Resonance.Combat
             {
                 int hash = skillState == WeaponState.Casting ?
                     Animator.StringToHash("Overdrive") :
-                    Animator.StringToHash("Stim");
+                    skillState == WeaponState.Stimming ?
+                        Animator.StringToHash("Stim") :
+                        Animator.StringToHash("GrappleShoot");
 
                 yield return null;
                 skillAnimator.SetTrigger(hash);
@@ -324,6 +337,50 @@ namespace Resonance.Combat
 
             TriggerOnActiveAnimator(IsDrawHash);
             _playerState.SetWeaponState(WeaponState.Drawing);
+        }
+        
+        public void RequestGrappleActivation()
+        {
+            if (_grappleHook == null || !_grappleHook.AbilityReady) return;
+            if (_playerState.CurrentWeaponState != WeaponState.Idle) return;
+            if (!_grappleHook.CanGrapple()) return;
+
+            _pendingSkillState = WeaponState.Grappling;
+            _playerState.SetWeaponState(WeaponState.Holstering);
+            TriggerOnActiveAnimator(IsHolsterHash);
+        }
+
+        public void OnGrappleFireHook()
+        {
+            _grappleHook?.ActivateAbility();
+        }
+
+        public void OnGrappleComplete()
+        {
+            StartCoroutine(OnGrappleCompleteRoutine());
+        }
+
+        private IEnumerator OnGrappleCompleteRoutine()
+        {
+            if (_activeSkillArms != null)
+            {
+                _activeSkillArms.SetActive(false);
+                _activeSkillArms = null;
+            }
+
+            _fpArmsManager.RefreshArms();
+
+            yield return null;
+
+            TriggerOnActiveAnimator(IsDrawHash);
+            _playerState.SetWeaponState(WeaponState.Drawing);
+        }
+
+        public void TriggerGrappleEnd()
+        {
+            if (_activeSkillArms == null) return;
+            Animator grappleAnimator = _activeSkillArms.GetComponent<Animator>();
+            grappleAnimator?.SetTrigger(Animator.StringToHash("GrappleEnd"));
         }
     }
 }

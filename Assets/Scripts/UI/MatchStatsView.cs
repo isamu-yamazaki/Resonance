@@ -9,31 +9,33 @@ public class MatchStatsView : MonoBehaviour
     [SerializeField] private LeaderboardRow rowPrefab;
 
     private readonly List<LeaderboardRow> _spawnedRows = new();
+    private MatchStatsViewModel _vm;
 
-    private void Awake()
+    private void Start()
     {
-        var vm = MatchStatsViewModel.Instance;
+        _vm = MatchStatsViewModel.Instance;
 
-        if (vm == null)
+        if (_vm == null)
+            _vm = FindObjectOfType<MatchStatsViewModel>();
+
+        if (_vm == null)
         {
             Debug.LogError("MatchStatsViewModel not found in scene");
             return;
         }
 
-        vm.IsVisible.ChangeEvent += OnVisibilityChanged;
-        vm.Rankings.ChangeEvent += OnRankingsChanged;
+        _vm.IsVisible.ChangeEvent += OnVisibilityChanged;
+        _vm.Rankings.ChangeEvent += OnRankingsChanged;
 
-        // Apply initial visibility state
-        OnVisibilityChanged(vm.IsVisible.Value);
+        OnVisibilityChanged(_vm.IsVisible.Value);
     }
 
     private void OnDestroy()
     {
-        if (MatchStatsViewModel.Instance == null)
-            return;
+        if (_vm == null) return;
 
-        MatchStatsViewModel.Instance.IsVisible.ChangeEvent -= OnVisibilityChanged;
-        MatchStatsViewModel.Instance.Rankings.ChangeEvent -= OnRankingsChanged;
+        _vm.IsVisible.ChangeEvent -= OnVisibilityChanged;
+        _vm.Rankings.ChangeEvent -= OnRankingsChanged;
     }
 
     private void OnVisibilityChanged(bool visible)

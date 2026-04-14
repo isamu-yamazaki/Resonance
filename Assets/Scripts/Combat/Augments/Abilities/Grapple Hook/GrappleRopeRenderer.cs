@@ -43,11 +43,11 @@ namespace Resonance.Combat.Augments
 
         private void OnSkinSpawned(GameObject skinInstance)
         {
-            if (playerSkinRenderer.ShouldRenderArmsOnly)
+            if (playerSkinRenderer.ShouldRenderArmsOnlyBasedOnCachedMatchState)
             {
-                if (playerSkinRenderer.SkillArmsInstance != null)
+                if (playerSkinRenderer.GrappleArmsInstance != null)
                 {
-                    Transform[] children = playerSkinRenderer.SkillArmsInstance.GetComponentsInChildren<Transform>();
+                    Transform[] children = playerSkinRenderer.GrappleArmsInstance.GetComponentsInChildren<Transform>();
                     foreach (Transform child in children)
                     {
                         if (child.CompareTag("GrappleOrigin"))

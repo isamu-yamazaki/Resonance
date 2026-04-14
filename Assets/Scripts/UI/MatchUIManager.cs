@@ -31,6 +31,9 @@ namespace Resonance.UI
 
         private void Start()
         {
+            if (despawnerSceneLoader == null)
+                despawnerSceneLoader = FindObjectOfType<NetworkDespawnerSceneLoader>();
+            
             if (matchEndPanel != null)
             {
                 matchEndPanel.SetActive(false);
@@ -61,18 +64,28 @@ namespace Resonance.UI
         #region Event Subscriptions
         private void SubscribeToEvents()
         {
-            if (ArenaRoundManagerBridge.Instance != null)
+            if (MatchLogicNetworkAdapter.Instance != null)
             {
-                ArenaRoundManagerBridge.Instance.OnMatchEnd += OnMatchEnd;
+                MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += HandleFinishedConfiguring;
+
+                if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
+                    HandleFinishedConfiguring();
             }
+        }
+
+        private void HandleFinishedConfiguring()
+        {
+            if (ArenaRoundManagerBridge.Instance != null)
+                ArenaRoundManagerBridge.Instance.OnMatchEnd += OnMatchEnd;
         }
 
         private void UnsubscribeFromEvents()
         {
+            if (MatchLogicNetworkAdapter.Instance != null)
+                MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= HandleFinishedConfiguring;
+
             if (ArenaRoundManagerBridge.Instance != null)
-            {
                 ArenaRoundManagerBridge.Instance.OnMatchEnd -= OnMatchEnd;
-            }
         }
         #endregion
 

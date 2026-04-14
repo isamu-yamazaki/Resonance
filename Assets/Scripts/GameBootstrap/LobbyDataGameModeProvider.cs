@@ -1,3 +1,4 @@
+using Resonance.Assemblies.LobbySystem;
 using Resonance.LobbySystem;
 using UnityEngine;
 
@@ -5,14 +6,17 @@ namespace Resonance.GameBootstrap
 {
     public class LobbyDataGameModeProvider : GameModeProvider
     {
+        [SerializeField] private GameMode defaultGameModeIfNoLobby;
         private LobbyDataHolder lobbyDataHolder;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
             if (lobbyDataHolder == null)
             {
-                Debug.LogError($"[{GetType()}] Unable to find {nameof(LobbyDataHolder)} component");
+                Debug.LogWarning($"[{GetType()}] Unable to find {nameof(LobbyDataHolder)} component, using default game mode");
+                gameMode = defaultGameModeIfNoLobby;
                 return;
             }
 
