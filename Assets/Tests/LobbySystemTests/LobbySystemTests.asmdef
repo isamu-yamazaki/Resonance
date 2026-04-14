@@ -4,7 +4,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "LobbySystem"
+        "LobbySystem",
+        "PurrNet.Runtime",
+        "TestEngineHelpers"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
