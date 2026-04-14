@@ -4,7 +4,7 @@ namespace Resonance.Assemblies.UISystem
 {
     public struct OverlayOptions
     {
-        public OverlayView view;
+        public IOverlayView view;
         public bool unlockCursorWhenShown;
         public InputActionMap[] inputMapsToDisableWhenShown;
     }
