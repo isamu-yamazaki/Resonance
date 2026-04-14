@@ -279,7 +279,8 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            ShopManager.Instance.Toggle();
+            // TODO: re-enable shop toggle
+            // ShopManager.Instance.Toggle();
         }
         #endregion
         public void RequestReload()

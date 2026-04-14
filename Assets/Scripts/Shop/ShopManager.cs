@@ -1,4 +1,5 @@
 using System.Linq;
+using Resonance.Assemblies.UISystem;
 using Resonance.Combat;
 using Resonance.Combat.Augments;
 using Resonance.Combat.Mods;
@@ -7,14 +8,13 @@ using Resonance.Combat.Weapons.Enums;
 using Resonance.Economy;
 using Resonance.Helper;
 using Resonance.Inventory;
-using Resonance.PlayerController;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Resonance.Shop
 {
-    public class ShopManager : MonoBehaviour
+    public class ShopManager : MonoBehaviour, IOverlayView
     {
         public static ShopManager Instance { get; private set; }
 
@@ -63,7 +63,7 @@ namespace Resonance.Shop
         [Header("Shop Item Prefab")]
         [SerializeField] private GameObject shopItemPrefab;
         [SerializeField] private WeaponStatsDisplay weaponStatsDisplay;
-        
+
         [Header("Economy")]
         [SerializeField] private TextMeshProUGUI balanceText;
         private const float SellRefundRate = 0.75f;
@@ -609,10 +609,10 @@ namespace Resonance.Shop
                 inventory.AddWeapon(weapon);
             }
 
-        #if !UNITY_SERVER
+#if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
-        #endif
+#endif
             if (equip.EquippedWeapon == weapon)
             {
                 equip.GetComponent<FPArmsAnimator>()?.TriggerFirstBuy();
@@ -685,10 +685,10 @@ namespace Resonance.Shop
             targetWeapon.ModList.Add(mod);
             GetPlayerShooter()?.RefreshWeaponStats();
 
-        #if !UNITY_SERVER
+#if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
-        #endif
+#endif
             inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
@@ -786,10 +786,10 @@ namespace Resonance.Shop
         {
             if (balanceText != null && PlayerMoney.Instance != null)
                 balanceText.text = $"₢ {PlayerMoney.Instance.Balance:0.00}";
-            
+
             RefreshAllItems();
         }
-        
+
         private void RefreshAllItems()
         {
             foreach (Transform child in weaponItemSpawn.transform)
@@ -799,52 +799,42 @@ namespace Resonance.Shop
             foreach (Transform child in modItemSpawn.transform)
                 child.GetComponent<ShopItem>()?.RefreshAffordability();
         }
+
         #endregion
 
         #region Toggle
-
-        public void Toggle()
+        public void OnShow(OverlayViewActions viewActions)
         {
-            PlayerState playerState = OwnerFinder.FindFirstOwnedObjectByType<PlayerState>();
-
-            if (!shopMenu.activeSelf && playerState != null && playerState.IsMatchFrozen())
-                return;
-
-            if (shopMenu.activeSelf)
-            {
-                shopMenu.SetActive(false);
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                
-#if !UNITY_SERVER
-                if (shopCloseEvent != null && shopCloseEvent.IsValid())
-                    shopCloseEvent.Post(gameObject);
-#endif
-            }
-            else
-            {
-                shopMenu.SetActive(true);
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+            shopMenu.SetActive(true);
 
 #if !UNITY_SERVER
-                if (shopOpenEvent != null && shopOpenEvent.IsValid())
-                    shopOpenEvent.Post(gameObject);
+            if (shopOpenEvent != null && shopOpenEvent.IsValid())
+                shopOpenEvent.Post(gameObject);
 #endif
-                RefreshModWeaponButtons();
-                RefreshBalanceText();
+            RefreshModWeaponButtons();
+            RefreshBalanceText();
 
-                if (activeMainTab == weaponTabButton) PopulateWeapons();
-                else if (activeMainTab == augmentTabButton) PopulateAugments();
-                else if (activeMainTab == modTabButton) PopulateMods();
-                
-                if (inventoryDisplay != null)
-                {
-                    inventoryDisplay.Refresh();
-                }
+            if (activeMainTab == weaponTabButton) PopulateWeapons();
+            else if (activeMainTab == augmentTabButton) PopulateAugments();
+            else if (activeMainTab == modTabButton) PopulateMods();
+
+            if (inventoryDisplay != null)
+            {
+                inventoryDisplay.Refresh();
             }
         }
 
+        public void OnHide()
+        {
+            shopMenu.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+#if !UNITY_SERVER
+            if (shopCloseEvent != null && shopCloseEvent.IsValid())
+                shopCloseEvent.Post(gameObject);
+#endif
+        }
         #endregion
     }
 }
