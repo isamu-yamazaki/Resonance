@@ -76,6 +76,10 @@ namespace Resonance.Assemblies.UISystem
                 }
             }
 
+            // if view router gets extended to include a "primary view"
+            // underneath the overlay system, we may need to change
+            // cursor refresh behavior
+
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }

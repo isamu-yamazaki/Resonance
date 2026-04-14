@@ -6,6 +6,11 @@ namespace Resonance.Assemblies.UISystem
     {
         public IOverlayView view;
         public bool unlockCursorWhenShown;
-        public InputActionMap[] inputMapsToDisableWhenShown;
+        private InputActionMap[] _inputMapsToDisableWhenShown;
+        public InputActionMap[] inputMapsToDisableWhenShown
+        {
+            get => _inputMapsToDisableWhenShown ?? System.Array.Empty<InputActionMap>();
+            set => _inputMapsToDisableWhenShown = value;
+        }
     }
 }
