@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Resonance.Assemblies.UISystem
 {
@@ -35,6 +36,12 @@ namespace Resonance.Assemblies.UISystem
 
             activeOverlayIds.Add(id);
             overlays[id].view.Show();
+
+            if (overlays[id].unlockCursorWhenShown)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
         }
 
         public void HideOverlay(int id)
@@ -47,6 +54,12 @@ namespace Resonance.Assemblies.UISystem
 
             activeOverlayIds.Remove(id);
             overlays[id].view.Hide();
+
+            if (overlays[id].unlockCursorWhenShown)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
     }
 }
