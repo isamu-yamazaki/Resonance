@@ -1,5 +1,5 @@
 using PurrNet;
-using Resonance.LobbySystem;
+using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 using UnityEngine.Events;
 
