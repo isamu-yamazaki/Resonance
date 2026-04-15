@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Resonance.NetworkDespawner;
 using Resonance.Assemblies.UISystem;
-using UnityEngine.Events;
+using System;
 
 namespace Resonance.UI
 {
@@ -24,7 +24,7 @@ namespace Resonance.UI
         [Header("Dependencies")]
         [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
 
-        private UnityAction resumeCallback = null;
+        private Action dismiss;
 
         private void Awake()
         {
@@ -38,6 +38,9 @@ namespace Resonance.UI
 
             escMenuPanel.SetActive(false);
             quitConfirmationPanel.SetActive(false);
+
+            if (resumeButton != null)
+                resumeButton.onClick.AddListener(OnResumeClicked);
 
             if (leaveGameButton != null)
                 leaveGameButton.onClick.AddListener(OnLeaveGameClicked);
@@ -55,27 +58,20 @@ namespace Resonance.UI
         public void OnShow(OverlayViewActions viewActions)
         {
             quitConfirmationPanel.SetActive(false);
-
             escMenuPanel.SetActive(true);
-
-            if (resumeButton != null)
-            {
-                resumeCallback = () => viewActions.Dismiss();
-                resumeButton.onClick.AddListener(resumeCallback);
-            }
+            dismiss = viewActions.Dismiss;
         }
 
         public void OnHide()
         {
             quitConfirmationPanel.SetActive(false);
-
             escMenuPanel.SetActive(false);
+            dismiss = null;
+        }
 
-            if (resumeCallback != null)
-            {
-                resumeButton.onClick.RemoveListener(resumeCallback);
-                resumeCallback = null;
-            }
+        private void OnResumeClicked()
+        {
+            dismiss?.Invoke();
         }
 
         private void OnLeaveGameClicked()
