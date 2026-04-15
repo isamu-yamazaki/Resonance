@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Resonance.Match;
@@ -12,6 +13,8 @@ public class MatchStatsViewModel : MonoBehaviour
     public ObservableValue<List<PlayerRanking>> Rankings =
         new(new List<PlayerRanking>());
 
+    private Coroutine _refreshCoroutine;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -24,24 +27,45 @@ public class MatchStatsViewModel : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public async void Show()
+    public void Show()
     {
         IsVisible.Value = true;
 
         if (ArenaRoundManagerBridge.Instance == null)
             return;
 
-        var leaderboard = await ArenaRoundManagerBridge.Instance.GetLeaderboard();
-        Rankings.Value = leaderboard;
+        if (_refreshCoroutine != null)
+            StopCoroutine(_refreshCoroutine);
+
+        _refreshCoroutine = StartCoroutine(RefreshLoop());
     }
 
     public void Hide()
     {
         IsVisible.Value = false;
+
+        if (_refreshCoroutine != null)
+        {
+            StopCoroutine(_refreshCoroutine);
+            _refreshCoroutine = null;
+        }
     }
 
     public void Toggle()
     {
-        IsVisible.Value = !IsVisible.Value;
+        if (IsVisible.Value) Hide();
+        else Show();
+    }
+
+    private IEnumerator RefreshLoop()
+    {
+        while (IsVisible.Value)
+        {
+            var fetch = ArenaRoundManagerBridge.Instance.GetLeaderboard();
+            yield return new WaitUntil(() => fetch.IsCompleted);
+            Rankings.Value = fetch.Result;
+
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 }
