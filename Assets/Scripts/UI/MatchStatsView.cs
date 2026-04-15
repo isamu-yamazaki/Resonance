@@ -45,16 +45,25 @@ public class MatchStatsView : MonoBehaviour
 
     private void OnRankingsChanged(List<PlayerRanking> rankings)
     {
-        foreach (var row in _spawnedRows)
-            Destroy(row.gameObject);
-
-        _spawnedRows.Clear();
-
-        for (int i = 0; i < rankings.Count; i++)
+        // Spawn any missing rows
+        while (_spawnedRows.Count < rankings.Count)
         {
             var row = Instantiate(rowPrefab, contentRoot);
-            row.Setup(i + 1, rankings[i]);
             _spawnedRows.Add(row);
+        }
+
+        // Hide any extra rows
+        for (int i = 0; i < _spawnedRows.Count; i++)
+        {
+            if (i < rankings.Count)
+            {
+                _spawnedRows[i].gameObject.SetActive(true);
+                _spawnedRows[i].Setup(i + 1, rankings[i]);
+            }
+            else
+            {
+                _spawnedRows[i].gameObject.SetActive(false);
+            }
         }
     }
 }
