@@ -31,8 +31,8 @@ namespace Resonance.UI
                 view = GetComponentInChildren<ShopOverlayView>(),
                 inputMapsToDisableWhenShown = new InputActionMap[]
                     {
-                        // TODO: make a dedicated input map for shop/esc so we can disable player actions
                         PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
+                        PlayerInputManager.Instance.PlayerControls.PlayerActionMap,
                     },
                 unlockCursorWhenShown = true
             };
@@ -44,6 +44,7 @@ namespace Resonance.UI
                 inputMapsToDisableWhenShown = new InputActionMap[]
                     {
                         PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
+                        PlayerInputManager.Instance.PlayerControls.PlayerActionMap,
                     },
                 unlockCursorWhenShown = true
             };
