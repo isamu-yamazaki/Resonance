@@ -16,6 +16,9 @@ namespace Resonance.UI
         private int shopOverlayId;
         private int escOverlayId;
 
+        public bool IsShopOpen => viewRouter.ActiveOverlayIds.Contains(shopOverlayId);
+        public bool IsEscOpen  => viewRouter.ActiveOverlayIds.Contains(escOverlayId);
+
         private void Awake()
         {
             if (Instance != null)
@@ -25,30 +28,35 @@ namespace Resonance.UI
             Instance = this;
 
             viewRouter = new ViewRouter();
+            RegisterOverlays();
+        }
 
-            var shopOverlayOptions = new OverlayOptions
-            {
-                view = GetComponentInChildren<ShopOverlayView>(),
-                inputMapsToDisableWhenShown = new InputActionMap[]
-                    {
-                        PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
-                        PlayerInputManager.Instance.PlayerControls.PlayerActionMap,
-                    },
-                unlockCursorWhenShown = true
-            };
-            shopOverlayId = viewRouter.RegisterOverlay(shopOverlayOptions);
+        private void RegisterOverlays()
+        {
+            var shopView = GetComponentInChildren<ShopOverlayView>();
+            if (shopView == null) { Debug.LogError("[InGameViewRouterBridge] ShopOverlayView not found in children."); }
 
-            var escOverlayOptions = new OverlayOptions
+            var escView = GetComponentInChildren<EscOverlayView>();
+            if (escView == null) { Debug.LogError("[InGameViewRouterBridge] EscOverlayView not found in children."); }
+
+            var playerLocomotionAndActions = new InputActionMap[]
             {
-                view = GetComponentInChildren<EscOverlayView>(),
-                inputMapsToDisableWhenShown = new InputActionMap[]
-                    {
-                        PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
-                        PlayerInputManager.Instance.PlayerControls.PlayerActionMap,
-                    },
-                unlockCursorWhenShown = true
+                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
+                PlayerInputManager.Instance.PlayerControls.PlayerActionMap,
             };
-            escOverlayId = viewRouter.RegisterOverlay(escOverlayOptions);
+
+            shopOverlayId = viewRouter.RegisterOverlay(new OverlayOptions
+            {
+                view = shopView,
+                inputMapsToDisableWhenShown = playerLocomotionAndActions,
+                unlockCursorWhenShown = true
+            });
+            escOverlayId = viewRouter.RegisterOverlay(new OverlayOptions
+            {
+                view = escView,
+                inputMapsToDisableWhenShown = playerLocomotionAndActions,
+                unlockCursorWhenShown = true
+            });
         }
 
         private void OnDestroy()
