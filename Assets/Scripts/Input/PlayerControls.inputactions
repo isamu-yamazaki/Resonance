@@ -491,6 +491,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleDebugMenu",
+                    "type": "Button",
+                    "id": "a3f2c8e1-5b4d-4f7a-8c9e-1d2e3f4a5b6c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -513,6 +522,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7e1d4c2-6a3f-4e8b-9d0c-2e3f4a5b6c7d",
+                    "path": "<Keyboard>/f1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleDebugMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

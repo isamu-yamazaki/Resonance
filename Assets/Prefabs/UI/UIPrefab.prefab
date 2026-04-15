@@ -8995,13 +8995,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c01159fe26114540955ac62f0832b87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.InGameViewRouterBridge
-  overlays:
-  - view: {fileID: 0}
-    unlockCursorWhenShown: 0
-    inputMapsToDisableWhenShown: []
-  - view: {fileID: 0}
-    unlockCursorWhenShown: 0
-    inputMapsToDisableWhenShown: []
 --- !u!1 &5480201575521567377
 GameObject:
   m_ObjectHideFlags: 0
@@ -12299,6 +12292,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7178577195391531575}
   - {fileID: 6449399217281192336}
   - {fileID: 5901605092637294919}
   - {fileID: 6614106275645850519}
@@ -15666,6 +15660,51 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &8463667837250725563
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7178577195391531575}
+  - component: {fileID: 4487333683566641400}
+  m_Layer: 0
+  m_Name: DebugOverlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7178577195391531575
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8463667837250725563}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -866.90326, y: -504.17648, z: 2.2231445}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6524516648922902759}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4487333683566641400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8463667837250725563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6783ac74788a9564eaf6714c37c8d223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.DebugTools.DebugMenuManager
+  showOnStart: 0
 --- !u!1 &8523854784103712634
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System.Linq;
 using Resonance.Assemblies.UISystem;
+using Resonance.DebugTools;
 using Resonance.Shop;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,9 +16,11 @@ namespace Resonance.UI
 
         private int shopOverlayId;
         private int escOverlayId;
+        private int debugOverlayId;
 
         public bool IsShopOpen => viewRouter.ActiveOverlayIds.Contains(shopOverlayId);
-        public bool IsEscOpen  => viewRouter.ActiveOverlayIds.Contains(escOverlayId);
+        public bool IsEscOpen => viewRouter.ActiveOverlayIds.Contains(escOverlayId);
+        public bool IsDebugMenuOpen => viewRouter.ActiveOverlayIds.Contains(debugOverlayId);
 
         private void Awake()
         {
@@ -39,6 +42,9 @@ namespace Resonance.UI
             var escView = GetComponentInChildren<EscOverlayView>();
             if (escView == null) { Debug.LogError("[InGameViewRouterBridge] EscOverlayView not found in children."); }
 
+            var debugView = GetComponentInChildren<DebugOverlayView>();
+            if (debugView == null) { Debug.LogError("[InGameViewRouterBridge] DebugMenuManager not found in children."); }
+
             var playerLocomotionAndActions = new InputActionMap[]
             {
                 PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
@@ -55,6 +61,11 @@ namespace Resonance.UI
             {
                 view = escView,
                 inputMapsToDisableWhenShown = playerLocomotionAndActions,
+                unlockCursorWhenShown = true
+            });
+            debugOverlayId = viewRouter.RegisterOverlay(new OverlayOptions
+            {
+                view = debugView,
                 unlockCursorWhenShown = true
             });
         }
@@ -75,6 +86,11 @@ namespace Resonance.UI
         public void ToggleEsc()
         {
             viewRouter.ToggleOverlay(escOverlayId);
+        }
+
+        public void ToggleDebugMenu()
+        {
+            viewRouter.ToggleOverlay(debugOverlayId);
         }
     }
 }

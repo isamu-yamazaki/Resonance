@@ -579,6 +579,15 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleDebugMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3f2c8e1-5b4d-4f7a-8c9e-1d2e3f4a5b6c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -601,6 +610,17 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b7e1d4c2-6a3f-4e8b-9d0c-2e3f4a5b6c7d"",
+                    ""path"": ""<Keyboard>/f1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleDebugMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -633,6 +653,7 @@ namespace Resonance.PlayerController
             m_InGameUIActionMap = asset.FindActionMap("InGameUIActionMap", throwIfNotFound: true);
             m_InGameUIActionMap_ToggleShop = m_InGameUIActionMap.FindAction("ToggleShop", throwIfNotFound: true);
             m_InGameUIActionMap_Escape = m_InGameUIActionMap.FindAction("Escape", throwIfNotFound: true);
+            m_InGameUIActionMap_ToggleDebugMenu = m_InGameUIActionMap.FindAction("ToggleDebugMenu", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -1063,6 +1084,7 @@ namespace Resonance.PlayerController
         private List<IInGameUIActionMapActions> m_InGameUIActionMapActionsCallbackInterfaces = new List<IInGameUIActionMapActions>();
         private readonly InputAction m_InGameUIActionMap_ToggleShop;
         private readonly InputAction m_InGameUIActionMap_Escape;
+        private readonly InputAction m_InGameUIActionMap_ToggleDebugMenu;
         /// <summary>
         /// Provides access to input actions defined in input action map "InGameUIActionMap".
         /// </summary>
@@ -1082,6 +1104,10 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "InGameUIActionMap/Escape".
             /// </summary>
             public InputAction @Escape => m_Wrapper.m_InGameUIActionMap_Escape;
+            /// <summary>
+            /// Provides access to the underlying input action "InGameUIActionMap/ToggleDebugMenu".
+            /// </summary>
+            public InputAction @ToggleDebugMenu => m_Wrapper.m_InGameUIActionMap_ToggleDebugMenu;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1114,6 +1140,9 @@ namespace Resonance.PlayerController
                 @Escape.started += instance.OnEscape;
                 @Escape.performed += instance.OnEscape;
                 @Escape.canceled += instance.OnEscape;
+                @ToggleDebugMenu.started += instance.OnToggleDebugMenu;
+                @ToggleDebugMenu.performed += instance.OnToggleDebugMenu;
+                @ToggleDebugMenu.canceled += instance.OnToggleDebugMenu;
             }
 
             /// <summary>
@@ -1131,6 +1160,9 @@ namespace Resonance.PlayerController
                 @Escape.started -= instance.OnEscape;
                 @Escape.performed -= instance.OnEscape;
                 @Escape.canceled -= instance.OnEscape;
+                @ToggleDebugMenu.started -= instance.OnToggleDebugMenu;
+                @ToggleDebugMenu.performed -= instance.OnToggleDebugMenu;
+                @ToggleDebugMenu.canceled -= instance.OnToggleDebugMenu;
             }
 
             /// <summary>
@@ -1313,6 +1345,13 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnEscape(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ToggleDebugMenu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnToggleDebugMenu(InputAction.CallbackContext context);
         }
     }
 }

@@ -67,6 +67,21 @@ namespace Resonance.PlayerController
 
             InGameViewRouterBridge.Instance.ToggleShop();
         }
+
+        public void OnToggleDebugMenu(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+            {
+                return;
+            }
+
+            if (InGameViewRouterBridge.Instance == null)
+            {
+                return;
+            }
+
+            InGameViewRouterBridge.Instance.ToggleDebugMenu();
+        }
     }
 
     #endregion
