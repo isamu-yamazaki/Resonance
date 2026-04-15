@@ -23,7 +23,6 @@ namespace Resonance.UI
         [SerializeField] private Button playAgainButton;
         [SerializeField] private Button returnToLobbyButton;
         [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
-        [SerializeField] private GameObject shopGameObject;  // disabled on match end
 
         [Header("Settings")]
         [SerializeField] private GameObject playerObject; // Assign the player to track
@@ -213,11 +212,6 @@ namespace Resonance.UI
             if (waitingForHostText != null)
             {
                 waitingForHostText.text = "";
-            }
-
-            if (shopGameObject != null)
-            {
-                shopGameObject.SetActive(false);
             }
         }
 

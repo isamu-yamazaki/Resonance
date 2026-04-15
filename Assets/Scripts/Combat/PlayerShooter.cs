@@ -161,7 +161,6 @@ namespace Resonance.Combat
             _lastShootFrame = Time.frameCount;
 
             if (playerState.IsMatchFrozen()) return;
-            if (playerState.IsInShop()) return;
             if (playerState.CurrentWeaponState != WeaponState.Idle && 
                 playerState.CurrentWeaponState != WeaponState.Shooting) return;
             if (playerEquip == null) return;

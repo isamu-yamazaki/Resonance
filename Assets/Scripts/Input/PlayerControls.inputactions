@@ -265,15 +265,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Escape",
-                    "type": "Button",
-                    "id": "037f376f-3039-46e7-a0a9-a709bfdf6512",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Overdrive",
                     "type": "Button",
                     "id": "04db4524-f587-4dcf-b098-97dc2d37f042",
@@ -328,15 +319,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ToggleShop",
-                    "type": "Button",
-                    "id": "f924d80a-fd6e-4d25-9ccc-36b239216c4d",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Stim",
                     "type": "Button",
                     "id": "66c53e41-d145-439e-9915-21ba21226773",
@@ -384,17 +366,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reload",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "74e5d9b3-4391-4e9e-955b-2dd55f71010c",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Escape",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -466,17 +437,6 @@
                 },
                 {
                     "name": "",
-                    "id": "6030c83c-c184-419f-93f2-8fe48e1698a3",
-                    "path": "<Keyboard>/b",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ToggleShop",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "468fc2f2-65eb-4a9a-8f6f-9b0bf4a72b36",
                     "path": "<Keyboard>/f",
                     "interactions": "",
@@ -505,6 +465,74 @@
                     "processors": "",
                     "groups": "",
                     "action": "AbilityLower",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "InGameUIActionMap",
+            "id": "f271f9b7-8dbc-43ce-b71c-5be09be2158b",
+            "actions": [
+                {
+                    "name": "ToggleShop",
+                    "type": "Button",
+                    "id": "bd6e4c1d-9dbf-4d16-a9af-63f882ac20ae",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Escape",
+                    "type": "Button",
+                    "id": "9a441896-0ab1-466d-97ef-8175ab13624d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleDebugMenu",
+                    "type": "Button",
+                    "id": "a3f2c8e1-5b4d-4f7a-8c9e-1d2e3f4a5b6c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "c9a335d2-7ee7-4001-bcc2-79cdbe93bc56",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleShop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d50b543a-3783-4086-9a8c-c5cc5b064676",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7e1d4c2-6a3f-4e8b-9d0c-2e3f4a5b6c7d",
+                    "path": "<Keyboard>/f1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleDebugMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

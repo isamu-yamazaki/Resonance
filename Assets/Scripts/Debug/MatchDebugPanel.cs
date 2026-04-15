@@ -116,8 +116,7 @@ namespace Resonance.DebugTools
             Debug.Log("[MatchDebugPanel] Ending match with no winner via debug tools");
             ArenaRoundManagerBridge.Instance.EndMatch(null);
 
-            // bypass cursor lock
-            DebugMenuManager.Instance._showMenu = false;
+            DebugOverlayView.Instance.Close();
         }
 
         private void ResetAllStats()

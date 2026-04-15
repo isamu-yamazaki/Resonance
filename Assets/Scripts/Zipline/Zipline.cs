@@ -136,7 +136,7 @@ public class Zipline : MonoBehaviour, IInteractable
             return;
 
         PlayerState state = interactor.GetComponent<PlayerState>();
-        if (state == null || state.IsDead() || state.IsInShop())
+        if (state == null || state.IsDead())
             return;
 
         PlayerLocomotionInput locomotionInput = interactor.GetComponent<PlayerLocomotionInput>();
