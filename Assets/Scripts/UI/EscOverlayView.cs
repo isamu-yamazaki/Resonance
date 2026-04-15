@@ -57,8 +57,6 @@ namespace Resonance.UI
             quitConfirmationPanel.SetActive(false);
 
             escMenuPanel.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
 
             if (resumeButton != null)
             {
@@ -72,8 +70,6 @@ namespace Resonance.UI
             quitConfirmationPanel.SetActive(false);
 
             escMenuPanel.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
 
             if (resumeCallback != null)
             {

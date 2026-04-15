@@ -827,8 +827,6 @@ namespace Resonance.Shop
         public void OnHide()
         {
             shopMenu.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
 
 #if !UNITY_SERVER
             if (shopCloseEvent != null && shopCloseEvent.IsValid())
