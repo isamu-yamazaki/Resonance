@@ -72,7 +72,7 @@ namespace Resonance.UI
 
         public void ToggleEsc()
         {
-            if (viewRouter.ActiveOverlayIds.Contains(shopOverlayId))
+            if (viewRouter.ActiveOverlayIds.Contains(escOverlayId))
             {
                 viewRouter.HideOverlay(escOverlayId);
             }
