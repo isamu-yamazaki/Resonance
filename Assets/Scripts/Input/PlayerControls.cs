@@ -353,15 +353,6 @@ namespace Resonance.PlayerController
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Escape"",
-                    ""type"": ""Button"",
-                    ""id"": ""037f376f-3039-46e7-a0a9-a709bfdf6512"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Overdrive"",
                     ""type"": ""Button"",
                     ""id"": ""04db4524-f587-4dcf-b098-97dc2d37f042"",
@@ -416,15 +407,6 @@ namespace Resonance.PlayerController
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ToggleShop"",
-                    ""type"": ""Button"",
-                    ""id"": ""f924d80a-fd6e-4d25-9ccc-36b239216c4d"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Stim"",
                     ""type"": ""Button"",
                     ""id"": ""66c53e41-d145-439e-9915-21ba21226773"",
@@ -472,17 +454,6 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Reload"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""74e5d9b3-4391-4e9e-955b-2dd55f71010c"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -554,17 +525,6 @@ namespace Resonance.PlayerController
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6030c83c-c184-419f-93f2-8fe48e1698a3"",
-                    ""path"": ""<Keyboard>/b"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ToggleShop"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""468fc2f2-65eb-4a9a-8f6f-9b0bf4a72b36"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -597,6 +557,54 @@ namespace Resonance.PlayerController
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""InGameUIActionMap"",
+            ""id"": ""f271f9b7-8dbc-43ce-b71c-5be09be2158b"",
+            ""actions"": [
+                {
+                    ""name"": ""ToggleShop"",
+                    ""type"": ""Button"",
+                    ""id"": ""bd6e4c1d-9dbf-4d16-a9af-63f882ac20ae"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""9a441896-0ab1-466d-97ef-8175ab13624d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""c9a335d2-7ee7-4001-bcc2-79cdbe93bc56"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleShop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d50b543a-3783-4086-9a8c-c5cc5b064676"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -612,23 +620,26 @@ namespace Resonance.PlayerController
             m_PlayerActionMap = asset.FindActionMap("PlayerActionMap", throwIfNotFound: true);
             m_PlayerActionMap_Attack = m_PlayerActionMap.FindAction("Attack", throwIfNotFound: true);
             m_PlayerActionMap_Reload = m_PlayerActionMap.FindAction("Reload", throwIfNotFound: true);
-            m_PlayerActionMap_Escape = m_PlayerActionMap.FindAction("Escape", throwIfNotFound: true);
             m_PlayerActionMap_Overdrive = m_PlayerActionMap.FindAction("Overdrive", throwIfNotFound: true);
             m_PlayerActionMap_Interact = m_PlayerActionMap.FindAction("Interact", throwIfNotFound: true);
             m_PlayerActionMap_SwapSlotOne = m_PlayerActionMap.FindAction("SwapSlotOne", throwIfNotFound: true);
             m_PlayerActionMap_SwapSlotTwo = m_PlayerActionMap.FindAction("SwapSlotTwo", throwIfNotFound: true);
             m_PlayerActionMap_SwapWeapon = m_PlayerActionMap.FindAction("SwapWeapon", throwIfNotFound: true);
             m_PlayerActionMap_ShowMatchStats = m_PlayerActionMap.FindAction("ShowMatchStats", throwIfNotFound: true);
-            m_PlayerActionMap_ToggleShop = m_PlayerActionMap.FindAction("ToggleShop", throwIfNotFound: true);
             m_PlayerActionMap_Stim = m_PlayerActionMap.FindAction("Stim", throwIfNotFound: true);
             m_PlayerActionMap_AbilityUpper = m_PlayerActionMap.FindAction("AbilityUpper", throwIfNotFound: true);
             m_PlayerActionMap_AbilityLower = m_PlayerActionMap.FindAction("AbilityLower", throwIfNotFound: true);
+            // InGameUIActionMap
+            m_InGameUIActionMap = asset.FindActionMap("InGameUIActionMap", throwIfNotFound: true);
+            m_InGameUIActionMap_ToggleShop = m_InGameUIActionMap.FindAction("ToggleShop", throwIfNotFound: true);
+            m_InGameUIActionMap_Escape = m_InGameUIActionMap.FindAction("Escape", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
         {
             UnityEngine.Debug.Assert(!m_PlayerLocomotionMap.enabled, "This will cause a leak and performance issues, PlayerControls.PlayerLocomotionMap.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_PlayerActionMap.enabled, "This will cause a leak and performance issues, PlayerControls.PlayerActionMap.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_InGameUIActionMap.enabled, "This will cause a leak and performance issues, PlayerControls.InGameUIActionMap.Disable() has not been called.");
         }
 
         /// <summary>
@@ -846,14 +857,12 @@ namespace Resonance.PlayerController
         private List<IPlayerActionMapActions> m_PlayerActionMapActionsCallbackInterfaces = new List<IPlayerActionMapActions>();
         private readonly InputAction m_PlayerActionMap_Attack;
         private readonly InputAction m_PlayerActionMap_Reload;
-        private readonly InputAction m_PlayerActionMap_Escape;
         private readonly InputAction m_PlayerActionMap_Overdrive;
         private readonly InputAction m_PlayerActionMap_Interact;
         private readonly InputAction m_PlayerActionMap_SwapSlotOne;
         private readonly InputAction m_PlayerActionMap_SwapSlotTwo;
         private readonly InputAction m_PlayerActionMap_SwapWeapon;
         private readonly InputAction m_PlayerActionMap_ShowMatchStats;
-        private readonly InputAction m_PlayerActionMap_ToggleShop;
         private readonly InputAction m_PlayerActionMap_Stim;
         private readonly InputAction m_PlayerActionMap_AbilityUpper;
         private readonly InputAction m_PlayerActionMap_AbilityLower;
@@ -876,10 +885,6 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerActionMap/Reload".
             /// </summary>
             public InputAction @Reload => m_Wrapper.m_PlayerActionMap_Reload;
-            /// <summary>
-            /// Provides access to the underlying input action "PlayerActionMap/Escape".
-            /// </summary>
-            public InputAction @Escape => m_Wrapper.m_PlayerActionMap_Escape;
             /// <summary>
             /// Provides access to the underlying input action "PlayerActionMap/Overdrive".
             /// </summary>
@@ -904,10 +909,6 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerActionMap/ShowMatchStats".
             /// </summary>
             public InputAction @ShowMatchStats => m_Wrapper.m_PlayerActionMap_ShowMatchStats;
-            /// <summary>
-            /// Provides access to the underlying input action "PlayerActionMap/ToggleShop".
-            /// </summary>
-            public InputAction @ToggleShop => m_Wrapper.m_PlayerActionMap_ToggleShop;
             /// <summary>
             /// Provides access to the underlying input action "PlayerActionMap/Stim".
             /// </summary>
@@ -952,9 +953,6 @@ namespace Resonance.PlayerController
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
-                @Escape.started += instance.OnEscape;
-                @Escape.performed += instance.OnEscape;
-                @Escape.canceled += instance.OnEscape;
                 @Overdrive.started += instance.OnOverdrive;
                 @Overdrive.performed += instance.OnOverdrive;
                 @Overdrive.canceled += instance.OnOverdrive;
@@ -973,9 +971,6 @@ namespace Resonance.PlayerController
                 @ShowMatchStats.started += instance.OnShowMatchStats;
                 @ShowMatchStats.performed += instance.OnShowMatchStats;
                 @ShowMatchStats.canceled += instance.OnShowMatchStats;
-                @ToggleShop.started += instance.OnToggleShop;
-                @ToggleShop.performed += instance.OnToggleShop;
-                @ToggleShop.canceled += instance.OnToggleShop;
                 @Stim.started += instance.OnStim;
                 @Stim.performed += instance.OnStim;
                 @Stim.canceled += instance.OnStim;
@@ -1002,9 +997,6 @@ namespace Resonance.PlayerController
                 @Reload.started -= instance.OnReload;
                 @Reload.performed -= instance.OnReload;
                 @Reload.canceled -= instance.OnReload;
-                @Escape.started -= instance.OnEscape;
-                @Escape.performed -= instance.OnEscape;
-                @Escape.canceled -= instance.OnEscape;
                 @Overdrive.started -= instance.OnOverdrive;
                 @Overdrive.performed -= instance.OnOverdrive;
                 @Overdrive.canceled -= instance.OnOverdrive;
@@ -1023,9 +1015,6 @@ namespace Resonance.PlayerController
                 @ShowMatchStats.started -= instance.OnShowMatchStats;
                 @ShowMatchStats.performed -= instance.OnShowMatchStats;
                 @ShowMatchStats.canceled -= instance.OnShowMatchStats;
-                @ToggleShop.started -= instance.OnToggleShop;
-                @ToggleShop.performed -= instance.OnToggleShop;
-                @ToggleShop.canceled -= instance.OnToggleShop;
                 @Stim.started -= instance.OnStim;
                 @Stim.performed -= instance.OnStim;
                 @Stim.canceled -= instance.OnStim;
@@ -1068,6 +1057,113 @@ namespace Resonance.PlayerController
         /// Provides a new <see cref="PlayerActionMapActions" /> instance referencing this action map.
         /// </summary>
         public PlayerActionMapActions @PlayerActionMap => new PlayerActionMapActions(this);
+
+        // InGameUIActionMap
+        private readonly InputActionMap m_InGameUIActionMap;
+        private List<IInGameUIActionMapActions> m_InGameUIActionMapActionsCallbackInterfaces = new List<IInGameUIActionMapActions>();
+        private readonly InputAction m_InGameUIActionMap_ToggleShop;
+        private readonly InputAction m_InGameUIActionMap_Escape;
+        /// <summary>
+        /// Provides access to input actions defined in input action map "InGameUIActionMap".
+        /// </summary>
+        public struct InGameUIActionMapActions
+        {
+            private @PlayerControls m_Wrapper;
+
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public InGameUIActionMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+            /// <summary>
+            /// Provides access to the underlying input action "InGameUIActionMap/ToggleShop".
+            /// </summary>
+            public InputAction @ToggleShop => m_Wrapper.m_InGameUIActionMap_ToggleShop;
+            /// <summary>
+            /// Provides access to the underlying input action "InGameUIActionMap/Escape".
+            /// </summary>
+            public InputAction @Escape => m_Wrapper.m_InGameUIActionMap_Escape;
+            /// <summary>
+            /// Provides access to the underlying input action map instance.
+            /// </summary>
+            public InputActionMap Get() { return m_Wrapper.m_InGameUIActionMap; }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+            public void Enable() { Get().Enable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+            public void Disable() { Get().Disable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
+            /// <summary>
+            /// Implicitly converts an <see ref="InGameUIActionMapActions" /> to an <see ref="InputActionMap" /> instance.
+            /// </summary>
+            public static implicit operator InputActionMap(InGameUIActionMapActions set) { return set.Get(); }
+            /// <summary>
+            /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <param name="instance">Callback instance.</param>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+            /// </remarks>
+            /// <seealso cref="InGameUIActionMapActions" />
+            public void AddCallbacks(IInGameUIActionMapActions instance)
+            {
+                if (instance == null || m_Wrapper.m_InGameUIActionMapActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_InGameUIActionMapActionsCallbackInterfaces.Add(instance);
+                @ToggleShop.started += instance.OnToggleShop;
+                @ToggleShop.performed += instance.OnToggleShop;
+                @ToggleShop.canceled += instance.OnToggleShop;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
+            }
+
+            /// <summary>
+            /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <remarks>
+            /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+            /// </remarks>
+            /// <seealso cref="InGameUIActionMapActions" />
+            private void UnregisterCallbacks(IInGameUIActionMapActions instance)
+            {
+                @ToggleShop.started -= instance.OnToggleShop;
+                @ToggleShop.performed -= instance.OnToggleShop;
+                @ToggleShop.canceled -= instance.OnToggleShop;
+                @Escape.started -= instance.OnEscape;
+                @Escape.performed -= instance.OnEscape;
+                @Escape.canceled -= instance.OnEscape;
+            }
+
+            /// <summary>
+            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="InGameUIActionMapActions.UnregisterCallbacks(IInGameUIActionMapActions)" />.
+            /// </summary>
+            /// <seealso cref="InGameUIActionMapActions.UnregisterCallbacks(IInGameUIActionMapActions)" />
+            public void RemoveCallbacks(IInGameUIActionMapActions instance)
+            {
+                if (m_Wrapper.m_InGameUIActionMapActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            /// <summary>
+            /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+            /// </summary>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+            /// </remarks>
+            /// <seealso cref="InGameUIActionMapActions.AddCallbacks(IInGameUIActionMapActions)" />
+            /// <seealso cref="InGameUIActionMapActions.RemoveCallbacks(IInGameUIActionMapActions)" />
+            /// <seealso cref="InGameUIActionMapActions.UnregisterCallbacks(IInGameUIActionMapActions)" />
+            public void SetCallbacks(IInGameUIActionMapActions instance)
+            {
+                foreach (var item in m_Wrapper.m_InGameUIActionMapActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_InGameUIActionMapActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        /// <summary>
+        /// Provides a new <see cref="InGameUIActionMapActions" /> instance referencing this action map.
+        /// </summary>
+        public InGameUIActionMapActions @InGameUIActionMap => new InGameUIActionMapActions(this);
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerLocomotionMap" which allows adding and removing callbacks.
         /// </summary>
@@ -1133,13 +1229,6 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnReload(InputAction.CallbackContext context);
             /// <summary>
-            /// Method invoked when associated input action "Escape" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-            /// </summary>
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnEscape(InputAction.CallbackContext context);
-            /// <summary>
             /// Method invoked when associated input action "Overdrive" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
@@ -1182,13 +1271,6 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnShowMatchStats(InputAction.CallbackContext context);
             /// <summary>
-            /// Method invoked when associated input action "ToggleShop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-            /// </summary>
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnToggleShop(InputAction.CallbackContext context);
-            /// <summary>
             /// Method invoked when associated input action "Stim" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
@@ -1209,6 +1291,28 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnAbilityLower(InputAction.CallbackContext context);
+        }
+        /// <summary>
+        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "InGameUIActionMap" which allows adding and removing callbacks.
+        /// </summary>
+        /// <seealso cref="InGameUIActionMapActions.AddCallbacks(IInGameUIActionMapActions)" />
+        /// <seealso cref="InGameUIActionMapActions.RemoveCallbacks(IInGameUIActionMapActions)" />
+        public interface IInGameUIActionMapActions
+        {
+            /// <summary>
+            /// Method invoked when associated input action "ToggleShop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnToggleShop(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Escape" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnEscape(InputAction.CallbackContext context);
         }
     }
 }

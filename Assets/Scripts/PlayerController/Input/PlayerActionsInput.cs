@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Resonance.Shop;
 using PurrNet;
 using Resonance.Combat;
-using Resonance.UI;
 
 namespace Resonance.PlayerController
 {
@@ -238,17 +236,6 @@ namespace Resonance.PlayerController
             AbilityLowerPressed = true;
         }
 
-        public void OnEscape(InputAction.CallbackContext context)
-        {
-            if (!context.performed)
-                return;
-
-            if (InGameViewRouterBridge.Instance == null)
-                return;
-
-            InGameViewRouterBridge.Instance.ToggleEsc();
-        }
-
         public void OnShowMatchStats(InputAction.CallbackContext context)
         {
             if (_playerState != null && _playerState.IsDead())
@@ -267,20 +254,6 @@ namespace Resonance.PlayerController
             }
         }
 
-        public void OnToggleShop(InputAction.CallbackContext context)
-        {
-            if (!context.performed)
-            {
-                return;
-            }
-
-            if (InGameViewRouterBridge.Instance == null)
-            {
-                return;
-            }
-
-            InGameViewRouterBridge.Instance.ToggleShop();
-        }
         #endregion
         public void RequestReload()
         {
