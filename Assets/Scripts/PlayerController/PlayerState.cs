@@ -52,11 +52,6 @@ namespace Resonance.PlayerController
             return CurrentPlayerMovementState == PlayerMovementState.Dead;
         }
 
-        public bool IsInShop()
-        {
-            return CurrentPlayerMovementState == PlayerMovementState.InShop;
-        }
-
         public bool IsZiplining()
         {
             return CurrentPlayerMovementState == PlayerMovementState.Ziplining;
@@ -91,11 +86,10 @@ namespace Resonance.PlayerController
         Falling = 5,
         Sliding = 6,
         Dead = 7,
-        InShop = 8,
-        Ziplining = 9,
-        PreMatchFrozen = 10,
-        MatchEndedFrozen = 11,
-        Grappling = 12,
+        Ziplining = 8,
+        PreMatchFrozen = 9,
+        MatchEndedFrozen = 10,
+        Grappling = 11,
     }
 
     public enum WeaponState

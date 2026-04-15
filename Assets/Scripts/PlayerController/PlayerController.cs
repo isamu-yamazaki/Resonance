@@ -174,9 +174,6 @@ namespace Resonance.PlayerController
             if (_playerState.IsMatchFrozen())
                 return;
             
-            if (_playerState.IsInShop())
-                return;
-            
             if (_playerState.IsZiplining() || _playerState.IsGrappling())
                 return;
             
@@ -452,9 +449,6 @@ namespace Resonance.PlayerController
         {
             // Don't process if player is dead
             if (IsPlayerDead)
-                return;
-                
-            if (_playerState.IsInShop())
                 return;
             
             UpdateCameraRotation();

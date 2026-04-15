@@ -142,7 +142,7 @@ namespace Resonance.PlayerController
         #region Input Callbacks
         public void OnAttack(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             if (context.started)
@@ -162,7 +162,7 @@ namespace Resonance.PlayerController
 
         public void OnReload(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             ReloadPressed = true;
@@ -178,7 +178,7 @@ namespace Resonance.PlayerController
 
         public void OnOverdrive(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             _fpArmsAnimator?.RequestOverdriveActivation();
@@ -186,7 +186,7 @@ namespace Resonance.PlayerController
 
         public void OnSwapSlotOne(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             SwapSlotOnePressed = true;
@@ -194,7 +194,7 @@ namespace Resonance.PlayerController
 
         public void OnSwapSlotTwo(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             SwapSlotTwoPressed = true;
@@ -202,7 +202,7 @@ namespace Resonance.PlayerController
 
         public void OnSwapWeapon(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             Vector2 scroll = context.ReadValue<Vector2>();
@@ -214,7 +214,7 @@ namespace Resonance.PlayerController
 
         public void OnStim(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             _fpArmsAnimator?.RequestStimActivation();
@@ -222,7 +222,7 @@ namespace Resonance.PlayerController
 
         public void OnAbilityUpper(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             AbilityUpperPressed = true;
@@ -230,7 +230,7 @@ namespace Resonance.PlayerController
 
         public void OnAbilityLower(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             AbilityLowerPressed = true;
@@ -257,7 +257,7 @@ namespace Resonance.PlayerController
         #endregion
         public void RequestReload()
         {
-            if (_playerState.IsDead() || _playerState.IsInShop() || _playerState.IsMatchFrozen())
+            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
                 return;
 
             ReloadPressed = true;
