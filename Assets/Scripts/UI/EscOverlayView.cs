@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Resonance.NetworkDespawner;
 using Resonance.Assemblies.UISystem;
+using UnityEngine.Events;
 
 namespace Resonance.UI
 {
@@ -23,6 +24,8 @@ namespace Resonance.UI
         [Header("Dependencies")]
         [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
 
+        private UnityAction resumeCallback = null;
+
         private void Awake()
         {
             Instance = this;
@@ -31,7 +34,7 @@ namespace Resonance.UI
         private void Start()
         {
             if (despawnerSceneLoader == null)
-                despawnerSceneLoader = FindObjectOfType<NetworkDespawnerSceneLoader>();
+                despawnerSceneLoader = FindFirstObjectByType<NetworkDespawnerSceneLoader>();
 
             escMenuPanel.SetActive(false);
             quitConfirmationPanel.SetActive(false);
@@ -58,7 +61,10 @@ namespace Resonance.UI
             Cursor.visible = true;
 
             if (resumeButton != null)
-                resumeButton.onClick.AddListener(() => viewActions.Dismiss());
+            {
+                resumeCallback = () => viewActions.Dismiss();
+                resumeButton.onClick.AddListener(resumeCallback);
+            }
         }
 
         public void OnHide()
@@ -69,7 +75,11 @@ namespace Resonance.UI
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            resumeButton.onClick.RemoveAllListeners();
+            if (resumeCallback != null)
+            {
+                resumeButton.onClick.RemoveListener(resumeCallback);
+                resumeCallback = null;
+            }
         }
 
         private void OnLeaveGameClicked()
