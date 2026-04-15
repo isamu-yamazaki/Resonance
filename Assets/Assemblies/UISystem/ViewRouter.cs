@@ -32,6 +32,17 @@ namespace Resonance.Assemblies.UISystem
             return id;
         }
 
+        public void ToggleOverlay(int id)
+        {
+            if (activeOverlayIds.Contains(id))
+            {
+                HideOverlay(id);
+            } else
+            {
+                ShowOverlay(id);
+            }
+        }
+
         public void ShowOverlay(int id)
         {
             if (activeOverlayIds.Contains(id)) return;

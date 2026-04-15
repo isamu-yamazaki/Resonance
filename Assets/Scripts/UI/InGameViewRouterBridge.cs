@@ -61,26 +61,12 @@ namespace Resonance.UI
 
         public void ToggleShop()
         {
-            if (viewRouter.ActiveOverlayIds.Contains(shopOverlayId))
-            {
-                viewRouter.HideOverlay(shopOverlayId);
-            }
-            else
-            {
-                viewRouter.ShowOverlay(shopOverlayId);
-            }
+            viewRouter.ToggleOverlay(shopOverlayId);
         }
 
         public void ToggleEsc()
         {
-            if (viewRouter.ActiveOverlayIds.Contains(escOverlayId))
-            {
-                viewRouter.HideOverlay(escOverlayId);
-            }
-            else
-            {
-                viewRouter.ShowOverlay(escOverlayId);
-            }
+            viewRouter.ToggleOverlay(escOverlayId);
         }
     }
 }

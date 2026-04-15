@@ -60,6 +60,31 @@ public class ViewRouterTests
 
     #endregion
 
+    #region ToggleOverlay
+
+    [Test]
+    public void ToggleOverlay_ShowsOverlayIfOverlayHidden()
+    {
+        var view = new MockOverlayView();
+        int id = router.RegisterOverlay(new OverlayOptions { view = view });
+
+        router.ToggleOverlay(id);
+        Assert.AreEqual(1, view.ShowCallCount);
+    }
+
+    [Test]
+    public void ToggleOverlay_HidesOverlayIfOverlayShown()
+    {
+        var view = new MockOverlayView();
+        int id = router.RegisterOverlay(new OverlayOptions { view = view });
+
+        router.ToggleOverlay(id);
+        router.ToggleOverlay(id);
+        Assert.AreEqual(1, view.HideCallCount);
+    }
+
+    #endregion
+
     #region ShowOverlay
 
     [Test]
