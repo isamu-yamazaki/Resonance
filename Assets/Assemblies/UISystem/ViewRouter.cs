@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,6 +28,10 @@ namespace Resonance.Assemblies.UISystem
 
         public int RegisterOverlay(OverlayOptions options)
         {
+            if (options.view == null)
+            {
+                throw new ArgumentNullException("OverlayOptions is missing a view!");
+            }
             var id = GetNewOverlayId();
             overlays.Add(id, options);
             return id;
@@ -51,9 +56,9 @@ namespace Resonance.Assemblies.UISystem
                 throw new KeyNotFoundException("Overlay ID not registered");
             }
 
+            OverlayOptions overlayOptions = overlays[id];
             activeOverlayIds.Add(id);
 
-            OverlayOptions overlayOptions = overlays[id];
             OverlayViewActions viewActions = new()
             {
                 Dismiss = () =>

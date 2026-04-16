@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Resonance.Assemblies.UISystem;
 using System.Linq;
+using System;
 
 public class ViewRouterTests
 {
@@ -33,6 +34,12 @@ public class ViewRouterTests
     }
 
     #region RegisterOverlay
+
+    [Test]
+    public void RegisterOverlay_NullView_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => router.RegisterOverlay(new OverlayOptions { view = null }));
+    }
 
     [Test]
     public void RegisterOverlay_Once_AddsToOverlayDictionary()
@@ -92,6 +99,7 @@ public class ViewRouterTests
     {
         Assert.Throws<KeyNotFoundException>(() => router.ShowOverlay(999));
     }
+
 
     [Test]
     public void ShowOverlay_AlreadyShownOverlay_IsNoOp()
