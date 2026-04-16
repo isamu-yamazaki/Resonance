@@ -36,21 +36,21 @@ namespace Resonance.UI
 
         private void RegisterOverlays()
         {
-            var shopView = GetComponentInChildren<ShopOverlayView>();
+            var shopView = GetComponentInChildren<ShopOverlayView>(includeInactive: true);
             if (shopView == null)
             {
                 Debug.LogError("[InGameViewRouterBridge] ShopOverlayView not found in children.");
                 return;
             }
 
-            var escView = GetComponentInChildren<EscOverlayView>();
+            var escView = GetComponentInChildren<EscOverlayView>(includeInactive: true);
             if (escView == null)
             {
                 Debug.LogError("[InGameViewRouterBridge] EscOverlayView not found in children.");
                 return;
             }
 
-            var debugView = GetComponentInChildren<DebugOverlayView>();
+            var debugView = GetComponentInChildren<DebugOverlayView>(includeInactive: true);
             if (debugView == null)
             {
                 Debug.LogError("[InGameViewRouterBridge] DebugMenuManager not found in children.");
