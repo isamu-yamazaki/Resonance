@@ -407,6 +407,7 @@ GameObject:
   - component: {fileID: 7304100629892152196}
   - component: {fileID: 8505458450555133255}
   - component: {fileID: 884933758777301057}
+  - component: {fileID: 5726013517480229113}
   - component: {fileID: 22982227885916328}
   - component: {fileID: -3400458708190070123}
   - component: {fileID: -3222689995555833044}
@@ -970,6 +971,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56327ccb6bff56942bc369710b03ec1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerViewModel
+--- !u!114 &5726013517480229113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32c8040f067c5e547a8b0b106902a3e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerAudioEmitter
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
 --- !u!114 &22982227885916328
 MonoBehaviour:
   m_ObjectHideFlags: 0
