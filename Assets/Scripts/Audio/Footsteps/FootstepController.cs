@@ -86,13 +86,10 @@ namespace Resonance.Audio
             SetSurfaceSwitch();
 
             if (landingEvent != null && landingEvent.IsValid())
-            {
                 landingEvent.Post(gameObject);
-
-                if (AudioSourceTracker.Instance != null)
-                    AudioSourceTracker.Instance.RegisterSound(transform.position, 0.5f);
-            }
 #endif
+            if (PlayerAudioEmitter.Local != null)
+                PlayerAudioEmitter.Local.EmitSound("Play_Landing", transform.position, 0.5f);
         }
 
 #if !UNITY_SERVER

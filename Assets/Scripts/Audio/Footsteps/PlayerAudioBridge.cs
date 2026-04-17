@@ -12,15 +12,14 @@ namespace Resonance.PlayerController
 
         public void PlayFootstep()
         {
-            if (footstepController != null)
-            {
-                footstepController.PlayFootstep();
+            if (footstepController == null) return;
+
+            footstepController.PlayFootstep();
 
 #if !UNITY_SERVER
-                if (AudioSourceTracker.Instance != null)
-                    AudioSourceTracker.Instance.RegisterSound(transform.position, 0.3f);
+            if (PlayerAudioEmitter.Local != null)
+                PlayerAudioEmitter.Local.EmitSound("Play_Footstep", transform.position, 0.3f);
 #endif
-            }
         }
     }
 }
