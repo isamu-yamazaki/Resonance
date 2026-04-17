@@ -21,14 +21,16 @@ public class MatchStartCountdownUI : MonoBehaviour
 
     private void OnMatchLogicConfigured()
     {
-        if (ArenaRoundManagerBridge.Instance != null)
-            ArenaRoundManagerBridge.Instance.OnMatchCountdownStart += HandleCountdownStart;
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager != null)
+            arenaRoundManager.OnMatchCountdownStart += HandleCountdownStart;
     }
 
     private void OnDisable()
     {
-        if (ArenaRoundManagerBridge.Instance != null)
-            ArenaRoundManagerBridge.Instance.OnMatchCountdownStart -= HandleCountdownStart;
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager != null)
+            arenaRoundManager.OnMatchCountdownStart -= HandleCountdownStart;
 
         if (MatchLogicNetworkAdapter.Instance != null)
             MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;

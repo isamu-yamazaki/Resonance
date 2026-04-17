@@ -31,7 +31,7 @@ public class MatchStatsViewModel : MonoBehaviour
     {
         IsVisible.Value = true;
 
-        if (ArenaRoundManagerBridge.Instance == null)
+        if (ArenaRoundManagerBridge.GetTemporaryReference() == null)
             return;
 
         if (_refreshCoroutine != null)
@@ -61,7 +61,11 @@ public class MatchStatsViewModel : MonoBehaviour
     {
         while (IsVisible.Value)
         {
-            var fetch = ArenaRoundManagerBridge.Instance.GetLeaderboard();
+            var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+            if (arenaRoundManager == null)
+                yield break;
+
+            var fetch = arenaRoundManager.GetLeaderboard();
             yield return new WaitUntil(() => fetch.IsCompleted);
             Rankings.Value = fetch.Result;
 
