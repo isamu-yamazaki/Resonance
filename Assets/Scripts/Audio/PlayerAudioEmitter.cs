@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    // Centralized networked audio emitter. Plain MonoBehaviours call EmitSound() on the local instance and it handles ServerRpc -> ObserversRpc broadcast + audio reactive registration.
+    // Centralized networked audio emitter. Plain MonoBehaviours call EmitSound() on the
+    // local instance and it handles ObserversRpc broadcast + audio reactive registration.
     public class PlayerAudioEmitter : NetworkBehaviour
     {
         public static PlayerAudioEmitter Local { get; private set; }
@@ -13,7 +14,14 @@ namespace Resonance.PlayerController
         {
             base.OnSpawned();
             if (isOwner)
+            {
                 Local = this;
+                enabled = true;
+            }
+            else
+            {
+                enabled = false;
+            }
         }
 
         protected override void OnDespawned(bool asServer)
@@ -23,24 +31,32 @@ namespace Resonance.PlayerController
                 Local = null;
         }
 
-        // Call from any owner-side MonoBehaviour to broadcast a sound to all clients
         public void EmitSound(string wwiseEvent, Vector3 position, float duration = 1f)
         {
-            RequestSoundOnServer(wwiseEvent, position, duration);
+            BroadcastSound(wwiseEvent, position, duration);
         }
 
-        [ServerRpc]
-        private void RequestSoundOnServer(string wwiseEvent, Vector3 position, float duration)
+        public void RegisterSound(Vector3 position, float duration = 1f)
         {
-            BroadcastSound(wwiseEvent, position, duration);
+            BroadcastRegistration(position, duration);
         }
 
         [ObserversRpc(runLocally: true)]
         private void BroadcastSound(string wwiseEvent, Vector3 position, float duration)
         {
 #if !UNITY_SERVER
-            AkUnitySoundEngine.PostEvent(wwiseEvent, gameObject);
+            if (!string.IsNullOrEmpty(wwiseEvent))
+                AkUnitySoundEngine.PostEvent(wwiseEvent, gameObject);
 
+            if (AudioSourceTracker.Instance != null)
+                AudioSourceTracker.Instance.RegisterSound(position, duration);
+#endif
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastRegistration(Vector3 position, float duration)
+        {
+#if !UNITY_SERVER
             if (AudioSourceTracker.Instance != null)
                 AudioSourceTracker.Instance.RegisterSound(position, duration);
 #endif

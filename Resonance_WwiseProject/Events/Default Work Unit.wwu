@@ -519,6 +519,17 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Event Name="Play_HealthStim" ID="{FBF69A5F-935C-46AD-92B1-9D225AA01AE7}">
+					<ChildrenList>
+						<Action Name="" ID="{53617A84-E70F-4930-8D8C-D931D119905D}" ShortID="709176398">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_combat_healthstim_use" ID="{859C7303-ADC8-4EA1-9A77-AE484675DA97}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

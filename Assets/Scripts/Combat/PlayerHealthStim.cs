@@ -54,10 +54,7 @@ namespace Resonance.Combat
 
         private void UpdateCooldown()
         {
-            if (!IsRecharging)
-            {
-                return;
-            }
+            if (!IsRecharging) return;
 
             cooldownTimeRemaining -= Time.deltaTime;
 
@@ -65,9 +62,7 @@ namespace Resonance.Combat
             ChargeCooldownFill.Value = cooldownTimeRemaining / stimCooldown;
 
             if (cooldownTimeRemaining <= 0f)
-            {
                 RestoreCharge();
-            }
         }
         #endregion
 
@@ -81,6 +76,11 @@ namespace Resonance.Combat
             playerStats.Heal(healAmount);
 
             Debug.Log($"[HealthStim] Stim used. Healed {healAmount} HP. Charges remaining: {currentCharges}/{maxCharges}.");
+
+#if !UNITY_SERVER
+            if (PlayerAudioEmitter.Local != null)
+                PlayerAudioEmitter.Local.EmitSound("Play_HealthStim", transform.position, 1f);
+#endif
 
             if (IsRecharging && cooldownTimeRemaining <= 0f)
             {
@@ -110,13 +110,11 @@ namespace Resonance.Combat
             }
         }
         #endregion
-        
+
         public void ActivateStim()
         {
             if (HasCharges)
-            {
                 UseHealthStim();
-            }
         }
     }
 }

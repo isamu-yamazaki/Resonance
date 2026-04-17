@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{A0C42EDF-D836-5B0D-FBE9-2250147D9D31}",
+    "Hash": "{92ED7D75-A93E-7DF4-4570-0B31E0B4B23E}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -390,6 +390,14 @@
       "Location": "Memory",
       "ShortName": "sfx_combat_sonardisc_ping.wav",
       "CachePath": "5D/{5D340140-8EDB-8A86-B57E-5EBAD145FB33}.wem"
+     },
+     {
+      "Id": "711026935",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_healthstim_use.wav",
+      "CachePath": "08/{08F44185-B988-39D0-9950-D766876CF358}.wem"
      },
      {
       "Id": "714533334",
@@ -934,6 +942,21 @@
       "MediaRefs": [
        {
         "Id": "989939147"
+       }
+      ]
+     },
+     {
+      "Id": "3539971427",
+      "Name": "Play_HealthStim",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_HealthStim",
+      "GUID": "{FBF69A5F-935C-46AD-92B1-9D225AA01AE7}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "0.5410208",
+      "DurationMax": "0.5410208",
+      "MediaRefs": [
+       {
+        "Id": "711026935"
        }
       ]
      },
@@ -1553,6 +1576,6 @@
     ]
    }
   ],
-  "FileHash": "{82401805-1CB8-026B-BA05-CF205C372FCB}"
+  "FileHash": "{314B4701-97FE-52C8-FCD2-D380B97725E6}"
  }
 }

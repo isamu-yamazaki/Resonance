@@ -24,6 +24,7 @@ namespace AK
         static const AkUniqueID PLAY_GRAPPLER_RELEASE = 2981775873U;
         static const AkUniqueID PLAY_GRAPPLER_SHOOT = 1098674603U;
         static const AkUniqueID PLAY_GRAPPLER_TRAVEL = 1243736002U;
+        static const AkUniqueID PLAY_HEALTHSTIM = 3539971427U;
         static const AkUniqueID PLAY_INDOORAMBIENCE = 1529325343U;
         static const AkUniqueID PLAY_LANDING = 2323405115U;
         static const AkUniqueID PLAY_LMG_FIRE = 1166794921U;
