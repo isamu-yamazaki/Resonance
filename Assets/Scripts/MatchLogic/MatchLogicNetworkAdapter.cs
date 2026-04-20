@@ -51,10 +51,24 @@ namespace Resonance.Match
 
         #region Modules
         private MatchStatNetworkAdapter _matchStatAdapter;
-        public MatchStatNetworkAdapter MatchStats => _matchStatAdapter;
+
+        /// <summary>
+        /// Returns a transient reference to the match stats network module.
+        /// Do NOT store the returned reference in a field, especially on a NetworkBehaviour or NetworkModule:
+        /// PurrNet's codegen scans fields (including auto-property backing fields) on those types and
+        /// re-registers the module under the storing parent.
+        /// </summary>
+        public MatchStatNetworkAdapter GetTemporaryMatchStatsReference() => _matchStatAdapter;
 
         private BaseRoundManagerNetworkAdapter currentRoundManagerNetworkAdapter;
-        public BaseRoundManagerNetworkAdapter ActiveRoundManager => currentRoundManagerNetworkAdapter;
+
+        /// <summary>
+        /// Returns a transient reference to the active round manager network module.
+        /// Do NOT store the returned reference in a field, especially on a NetworkBehaviour or NetworkModule:
+        /// PurrNet's codegen scans fields (including auto-property backing fields) on those types and
+        /// re-registers the module under the storing parent.
+        /// </summary>
+        public BaseRoundManagerNetworkAdapter GetTemporaryActiveRoundManagerReference() => currentRoundManagerNetworkAdapter;
         #endregion
 
         #region Events

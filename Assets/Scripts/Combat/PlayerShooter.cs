@@ -392,8 +392,9 @@ namespace Resonance.Combat
         [ServerRpc]
         private void NotifyMissOnServer()
         {
-            if (MatchStatBridge.Instance != null && owner.HasValue)
-                MatchStatBridge.Instance.RecordMiss(gameObject);
+            var matchStats = MatchStatBridge.GetTemporaryReference();
+            if (matchStats != null && owner.HasValue)
+                matchStats.RecordMiss(gameObject);
         }
 
         private float ComputeDamageWithFalloff(float payloadDamage, float distance, WeaponProperties weapon)

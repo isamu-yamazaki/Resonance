@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using PurrNet;
 using Resonance.Assemblies.MatchStat;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Resonance.Match
 {
@@ -28,7 +27,7 @@ namespace Resonance.Match
         private MatchStatTracker _tracker;
         public MatchStatTracker Tracker_Server => _tracker;
 
-        public UnityEvent<MatchStatTracker> OnMatchStatTrackerCreated = new();
+        public event Action<MatchStatTracker> OnMatchStatTrackerCreated;
         #endregion
 
         #region Constructor

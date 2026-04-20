@@ -40,7 +40,7 @@ namespace Resonance.PlayerController
         {
             get
             {
-                var roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
+                var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
                 if (roundManager != null)
                 {
                     if (roundManager.IsMatchActive)
@@ -54,7 +54,7 @@ namespace Resonance.PlayerController
 
         public async Task<bool> ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState()
         {
-            var roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
+            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
             if (roundManager != null)
             {
                 var matchState = await roundManager.GetMatchState();
@@ -80,8 +80,9 @@ namespace Resonance.PlayerController
 
         private void HandleFinishedConfiguring()
         {
-            if (MatchLogicNetworkAdapter.Instance?.ActiveRoundManager != null)
-                MatchLogicNetworkAdapter.Instance.ActiveRoundManager.OnMatchStateChange += HandleOnMatchStateChange;
+            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
+            if (roundManager != null)
+                roundManager.OnMatchStateChange += HandleOnMatchStateChange;
         }
 
         protected override void OnDestroy()
@@ -89,8 +90,9 @@ namespace Resonance.PlayerController
             if (MatchLogicNetworkAdapter.Instance != null)
                 MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= HandleFinishedConfiguring;
 
-            if (MatchLogicNetworkAdapter.Instance?.ActiveRoundManager != null)
-                MatchLogicNetworkAdapter.Instance.ActiveRoundManager.OnMatchStateChange -= HandleOnMatchStateChange;
+            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
+            if (roundManager != null)
+                roundManager.OnMatchStateChange -= HandleOnMatchStateChange;
         }
 
         private void HandleOnMatchStateChange(BaseMatchState first, BaseMatchState second)

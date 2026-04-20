@@ -37,7 +37,7 @@ namespace Resonance.DebugTools
         {
             GUILayout.BeginVertical("box");
 
-            var roundManager = MatchLogicNetworkAdapter.Instance.ActiveRoundManager;
+            var roundManager = MatchLogicNetworkAdapter.Instance.GetTemporaryActiveRoundManagerReference();
             if (roundManager == null)
             {
                 GUI.color = Color.yellow;
@@ -64,7 +64,7 @@ namespace Resonance.DebugTools
 
         private void DrawArenaSection()
         {
-            if (ArenaRoundManagerBridge.Instance == null)
+            if (ArenaRoundManagerBridge.GetTemporaryReference() == null)
             {
                 return;
             }
@@ -87,7 +87,7 @@ namespace Resonance.DebugTools
             GUILayout.Label("Stats:");
             GUILayout.Space(5);
 
-            if (MatchStatBridge.Instance == null)
+            if (MatchStatBridge.GetTemporaryReference() == null)
             {
                 GUI.color = Color.yellow;
                 GUILayout.Label("MatchStatBridge not found!");
@@ -108,26 +108,28 @@ namespace Resonance.DebugTools
         #region Actions
         private void EndMatch()
         {
-            if (ArenaRoundManagerBridge.Instance == null)
+            var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+            if (arenaRoundManager == null)
             {
                 return;
             }
 
             Debug.Log("[MatchDebugPanel] Ending match with no winner via debug tools");
-            ArenaRoundManagerBridge.Instance.EndMatch(null);
+            arenaRoundManager.EndMatch(null);
 
             DebugOverlayView.Instance.Close();
         }
 
         private void ResetAllStats()
         {
-            if (MatchStatBridge.Instance == null)
+            var matchStats = MatchStatBridge.GetTemporaryReference();
+            if (matchStats == null)
             {
                 return;
             }
 
             Debug.Log("[MatchDebugPanel] Resetting all stats via debug tools");
-            MatchStatBridge.Instance.ResetAllStats();
+            matchStats.ResetAllStats();
         }
         #endregion
     }

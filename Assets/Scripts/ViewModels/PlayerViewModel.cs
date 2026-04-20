@@ -27,8 +27,8 @@ public class PlayerViewModel : MonoBehaviour
     // -----------------
     public ObservableValue<bool> GotKill { get; private set; }
     public ObservableValue<string> LastVictimName { get; private set; }
-    private MatchStatNetworkAdapter matchStats;
-    
+
+
     // -----------------
     // RATING
     // -----------------
@@ -48,16 +48,9 @@ public class PlayerViewModel : MonoBehaviour
         GotKill = new ObservableValue<bool>(false);
         LastVictimName = new ObservableValue<string>("");
 
-        matchStats = MatchLogicNetworkAdapter.Instance?.MatchStats;
-        
         Rating = new ObservableValue<float>(0f);
         Rank = new ObservableValue<int>(0);
         RatingDelta = new ObservableValue<float>(0f);
-    }
-    
-    private void Start()
-    {
-        matchStats = MatchLogicNetworkAdapter.Instance?.MatchStats;
     }
 
     public void InitializeHealth(float maxHealth)
@@ -111,15 +104,17 @@ public class PlayerViewModel : MonoBehaviour
 
     private void OnEnable()
     {
+        var matchStats = MatchStatBridge.GetTemporaryReference();
         if (matchStats != null)
         {
             matchStats.OnPlayerKill += HandlePlayerKill;
             matchStats.OnAllStatsUpdate += HandleAllStatsUpdate;
         }
-}
+    }
 
     private void OnDisable()
     {
+        var matchStats = MatchStatBridge.GetTemporaryReference();
         if (matchStats != null)
         {
             matchStats.OnPlayerKill -= HandlePlayerKill;
