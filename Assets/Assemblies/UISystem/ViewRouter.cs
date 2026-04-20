@@ -15,15 +15,23 @@ namespace Resonance.Assemblies.UISystem
         public IReadOnlyCollection<int> ActiveOverlayIds => activeOverlayIds;
         public IReadOnlyCollection<int> NonActiveOverlayIds => overlays.Keys.Except(activeOverlayIds).ToHashSet();
 
-        // note that because this just toggles on/off existing game objects,
-        // z-ordering is done in the Unity editor
+        private Dictionary<int, ScreenViewOptions> screenViews = new();
+        private List<int> history = new();
 
-        private int nextOverlayId = 0;
+        public IReadOnlyDictionary<int, ScreenViewOptions> ScreenViews => screenViews;
+        public IReadOnlyList<int> ScreenViewHistory => history;
+        public int? ActiveScreenViewId => history.Count > 0 ? history[history.Count - 1] : (int?)null;
 
-        private int GetNewOverlayId()
+        // overlays: because this just toggles on/off existing game objects, z-ordering
+        // is done in the Unity editor. screen views: exactly one is visible at a time
+        // (the top of the stack), so there is no z-ordering problem to solve.
+
+        private int nextId = 0;
+
+        private int GetNewId()
         {
-            nextOverlayId++;
-            return nextOverlayId;
+            nextId++;
+            return nextId;
         }
 
         public int RegisterOverlay(OverlayOptions options)
@@ -32,7 +40,7 @@ namespace Resonance.Assemblies.UISystem
             {
                 throw new ArgumentNullException("OverlayOptions is missing a view!");
             }
-            var id = GetNewOverlayId();
+            var id = GetNewId();
             overlays.Add(id, options);
             return id;
         }
@@ -88,6 +96,78 @@ namespace Resonance.Assemblies.UISystem
             RefreshInputMaps();
         }
 
+        public int RegisterScreenView(ScreenViewOptions options)
+        {
+            if (options.view == null)
+            {
+                throw new ArgumentNullException("ScreenViewOptions is missing a view!");
+            }
+            var id = GetNewId();
+            screenViews.Add(id, options);
+            return id;
+        }
+
+        public void PushScreenView(int id)
+        {
+            if (!screenViews.ContainsKey(id))
+            {
+                throw new KeyNotFoundException("Screen view ID not registered");
+            }
+            if (history.Count > 0 && history[history.Count - 1] == id) return;
+
+            if (history.Count > 0)
+            {
+                var prevId = history[history.Count - 1];
+                screenViews[prevId].view.OnHide();
+            }
+
+            history.Add(id);
+            InvokeOnShowForTop();
+
+            RefreshCursorUnlocks();
+            RefreshInputMaps();
+        }
+
+        public void PopScreenView()
+        {
+            if (history.Count == 0) return;
+
+            var topId = history[history.Count - 1];
+            screenViews[topId].view.OnHide();
+            history.RemoveAt(history.Count - 1);
+
+            if (history.Count > 0)
+            {
+                InvokeOnShowForTop();
+            }
+
+            RefreshCursorUnlocks();
+            RefreshInputMaps();
+        }
+
+        public void PopAllScreenViews()
+        {
+            if (history.Count == 0) return;
+
+            var topId = history[history.Count - 1];
+            screenViews[topId].view.OnHide();
+            history.Clear();
+
+            RefreshCursorUnlocks();
+            RefreshInputMaps();
+        }
+
+        private void InvokeOnShowForTop()
+        {
+            var topId = history[history.Count - 1];
+            ScreenViewActions actions = new()
+            {
+                Id = topId,
+                Back = history.Count > 1 ? () => PopScreenView() : null,
+            };
+            screenViews[topId].view.OnShow(actions);
+        }
+
         private void RefreshCursorUnlocks()
         {
             foreach (var id in activeOverlayIds)
@@ -100,9 +180,16 @@ namespace Resonance.Assemblies.UISystem
                 }
             }
 
-            // if view router gets extended to include a "primary view"
-            // underneath the overlay system, we may need to change
-            // cursor refresh behavior
+            if (ActiveScreenViewId.HasValue)
+            {
+                var topId = ActiveScreenViewId.Value;
+                if (screenViews.ContainsKey(topId) && screenViews[topId].unlockCursorWhenShown)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                    return;
+                }
+            }
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -110,11 +197,20 @@ namespace Resonance.Assemblies.UISystem
 
         private void RefreshInputMaps()
         {
-            // if disabled input map is shared among both active/non-active overlay,
-            // that input maps should still be disabled
+            // if a disabled input map is shared between any active source and any
+            // non-active source (overlay or screen), that input map should stay disabled
+
+            var activeScreenIds = ActiveScreenViewId.HasValue
+                ? new[] { ActiveScreenViewId.Value }
+                : Array.Empty<int>();
+            var nonActiveScreenIds = screenViews.Keys.Except(activeScreenIds).ToHashSet();
 
             var inputMapsToDisable = GetInputMapsForOverlays(activeOverlayIds);
-            var inputMapsToEnable = GetInputMapsForOverlays(NonActiveOverlayIds).Except(inputMapsToDisable);
+            inputMapsToDisable.UnionWith(GetInputMapsForScreenViews(activeScreenIds));
+
+            var inputMapsToEnable = GetInputMapsForOverlays(NonActiveOverlayIds);
+            inputMapsToEnable.UnionWith(GetInputMapsForScreenViews(nonActiveScreenIds));
+            inputMapsToEnable.ExceptWith(inputMapsToDisable);
 
             foreach (var inputMap in inputMapsToEnable)
             {
@@ -141,6 +237,23 @@ namespace Resonance.Assemblies.UISystem
             }
 
             return inputMapsToDisable;
+        }
+
+        private HashSet<InputActionMap> GetInputMapsForScreenViews(IReadOnlyCollection<int> screenViewIds)
+        {
+            HashSet<InputActionMap> result = new();
+            foreach (var id in screenViewIds)
+            {
+                if (screenViews.ContainsKey(id))
+                {
+                    foreach (var inputMap in screenViews[id].inputMapsToDisableWhenShown)
+                    {
+                        result.Add(inputMap);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
