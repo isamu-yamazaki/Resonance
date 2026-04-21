@@ -4128,6 +4128,18 @@ MonoBehaviour:
   joinButton: {fileID: 324813047}
   backButton: {fileID: 1321877447}
   lobbyManager: {fileID: 1097043115}
+  buttonClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  createClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  joinClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
 --- !u!1 &688981005
 GameObject:
   m_ObjectHideFlags: 0
@@ -4420,6 +4432,14 @@ MonoBehaviour:
   content: {fileID: 1640487266}
   entryButtonPrefab: {fileID: 7024649368418729665, guid: 7559c85cab2db41f7af6c9c21381ac74, type: 3}
   doneButton: {fileID: 628295573}
+  buttonClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  skinSelectEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
 --- !u!1 &749515027
 GameObject:
   m_ObjectHideFlags: 0
@@ -7363,6 +7383,10 @@ MonoBehaviour:
   doneButton: {fileID: 1749217860}
   slider: {fileID: 1259084013}
   displayText: {fileID: 863048743}
+  buttonClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
 --- !u!1 &1124587968
 GameObject:
   m_ObjectHideFlags: 0
@@ -12620,6 +12644,22 @@ MonoBehaviour:
   memberListContent: {fileID: 292214364}
   readyButton: {fileID: 1797293070}
   lobbyManager: {fileID: 1097043115}
+  buttonClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  readyClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  leaveClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  copyCodeClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
 --- !u!1 &2030392730
 GameObject:
   m_ObjectHideFlags: 0

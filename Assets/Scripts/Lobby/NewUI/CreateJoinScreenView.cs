@@ -1,3 +1,4 @@
+using System;
 using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.UISystem;
 using Resonance.LobbySystem;
@@ -17,6 +18,11 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Button joinButton;
         [SerializeField] private Button backButton;
         [SerializeField] private LobbyManager lobbyManager;
+
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event buttonClickEvent;
+        [SerializeField] private AK.Wwise.Event createClickEvent;
+        [SerializeField] private AK.Wwise.Event joinClickEvent;
 
         private ScreenViewActions _viewActions;
 
@@ -60,18 +66,27 @@ namespace Resonance.LobbySystem.NewUI
             lobbyManager.OnRoomJoinFailed.RemoveListener(OnRoomJoinFailed);
         }
 
+        private void PostClick(AK.Wwise.Event wwiseEvent)
+        {
+            if (wwiseEvent != null && wwiseEvent.IsValid())
+                wwiseEvent.Post(gameObject);
+        }
+
         private void OnCreateClicked()
         {
+            PostClick(createClickEvent);
             lobbyManager.CreateRoom();
         }
 
         private void OnJoinClicked()
         {
+            PostClick(joinClickEvent);
             lobbyManager.JoinLobby(codeInput.text);
         }
 
         private void OnBackClicked()
         {
+            PostClick(buttonClickEvent);
             _viewActions.Back?.Invoke();
         }
 

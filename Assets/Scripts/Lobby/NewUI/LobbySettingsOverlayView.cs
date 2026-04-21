@@ -16,6 +16,9 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Slider slider;
         [SerializeField] private TMP_Text displayText;
 
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event buttonClickEvent;
+
         public readonly static string Key = nameof(LobbySettingsOverlayView);
         string IOverlayView.Key => Key;
 
@@ -25,7 +28,7 @@ namespace Resonance.LobbySystem.NewUI
         {
             gameObject.SetActive(false);
             slider.onValueChanged.RemoveListener(SetValue);
-
+            doneButton.onClick.RemoveListener(HandleDoneClicked);
             dismiss = null;
         }
 
@@ -40,26 +43,29 @@ namespace Resonance.LobbySystem.NewUI
             doneButton.onClick.AddListener(HandleDoneClicked);
         }
 
+        private void PostClick(AK.Wwise.Event wwiseEvent)
+        {
+            if (wwiseEvent != null && wwiseEvent.IsValid())
+                wwiseEvent.Post(gameObject);
+        }
+
         private void HandleDoneClicked()
         {
+            PostClick(buttonClickEvent);
             dismiss?.Invoke();
         }
 
         private void SetValue(float newValue)
         {
             if (RenderScaleSetter.Instance != null)
-            {
                 RenderScaleSetter.Instance.ChangeRenderScale(newValue);
-            }
             SetDisplayValue(newValue);
         }
 
         private void UpdateRenderScaleDisplayValue()
         {
             if (RenderScaleSetter.Instance != null)
-            {
                 SetDisplayValue(RenderScaleSetter.Instance.RenderScale);
-            }
         }
 
         private void SetDisplayValue(float displayValue)
@@ -69,10 +75,7 @@ namespace Resonance.LobbySystem.NewUI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (eventData.pointerPressRaycast.gameObject != gameObject)
-            {
-                return;
-            }
+            if (eventData.pointerPressRaycast.gameObject != gameObject) return;
             dismiss?.Invoke();
         }
     }
