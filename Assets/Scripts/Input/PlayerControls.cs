@@ -608,6 +608,15 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleStatsOverlay"",
+                    ""type"": ""Button"",
+                    ""id"": ""e7f1a2b3-c4d5-e6f7-a8b9-c0d1e2f3a4b5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -643,6 +652,28 @@ namespace Resonance.PlayerController
                     ""action"": ""ToggleDebugMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f0a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleStatsOverlay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""01a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleStatsOverlay"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -675,6 +706,7 @@ namespace Resonance.PlayerController
             m_InGameUIActionMap_ToggleShop = m_InGameUIActionMap.FindAction("ToggleShop", throwIfNotFound: true);
             m_InGameUIActionMap_Escape = m_InGameUIActionMap.FindAction("Escape", throwIfNotFound: true);
             m_InGameUIActionMap_ToggleDebugMenu = m_InGameUIActionMap.FindAction("ToggleDebugMenu", throwIfNotFound: true);
+            m_InGameUIActionMap_ToggleStatsOverlay = m_InGameUIActionMap.FindAction("ToggleStatsOverlay", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -1117,6 +1149,7 @@ namespace Resonance.PlayerController
         private readonly InputAction m_InGameUIActionMap_ToggleShop;
         private readonly InputAction m_InGameUIActionMap_Escape;
         private readonly InputAction m_InGameUIActionMap_ToggleDebugMenu;
+        private readonly InputAction m_InGameUIActionMap_ToggleStatsOverlay;
         /// <summary>
         /// Provides access to input actions defined in input action map "InGameUIActionMap".
         /// </summary>
@@ -1140,6 +1173,10 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "InGameUIActionMap/ToggleDebugMenu".
             /// </summary>
             public InputAction @ToggleDebugMenu => m_Wrapper.m_InGameUIActionMap_ToggleDebugMenu;
+            /// <summary>
+            /// Provides access to the underlying input action "InGameUIActionMap/ToggleStatsOverlay".
+            /// </summary>
+            public InputAction @ToggleStatsOverlay => m_Wrapper.m_InGameUIActionMap_ToggleStatsOverlay;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1175,6 +1212,9 @@ namespace Resonance.PlayerController
                 @ToggleDebugMenu.started += instance.OnToggleDebugMenu;
                 @ToggleDebugMenu.performed += instance.OnToggleDebugMenu;
                 @ToggleDebugMenu.canceled += instance.OnToggleDebugMenu;
+                @ToggleStatsOverlay.started += instance.OnToggleStatsOverlay;
+                @ToggleStatsOverlay.performed += instance.OnToggleStatsOverlay;
+                @ToggleStatsOverlay.canceled += instance.OnToggleStatsOverlay;
             }
 
             /// <summary>
@@ -1195,6 +1235,9 @@ namespace Resonance.PlayerController
                 @ToggleDebugMenu.started -= instance.OnToggleDebugMenu;
                 @ToggleDebugMenu.performed -= instance.OnToggleDebugMenu;
                 @ToggleDebugMenu.canceled -= instance.OnToggleDebugMenu;
+                @ToggleStatsOverlay.started -= instance.OnToggleStatsOverlay;
+                @ToggleStatsOverlay.performed -= instance.OnToggleStatsOverlay;
+                @ToggleStatsOverlay.canceled -= instance.OnToggleStatsOverlay;
             }
 
             /// <summary>
@@ -1391,6 +1434,13 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnToggleDebugMenu(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ToggleStatsOverlay" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnToggleStatsOverlay(InputAction.CallbackContext context);
         }
     }
 }
