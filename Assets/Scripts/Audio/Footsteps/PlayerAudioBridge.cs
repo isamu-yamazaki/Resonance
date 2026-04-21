@@ -30,5 +30,13 @@ namespace Resonance.PlayerController
 #endif
             }
         }
+
+        public void PlayLanding()
+        {
+            lastFootstepTime = 0f;
+
+            if (footstepController != null)
+                footstepController.PlayLanding();
+        }
     }
 }

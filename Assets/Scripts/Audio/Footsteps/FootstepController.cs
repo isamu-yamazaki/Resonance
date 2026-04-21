@@ -10,7 +10,7 @@ namespace Resonance.Audio
         [Header("Wwise Events")]
         public AK.Wwise.Event footstepEvent;
 
-        [Header("Landing event (uses SurfaceType switch")]
+        [Header("Landing event (uses SurfaceType switch)")]
         public AK.Wwise.Event landingEvent;
 
         [Header("Surface Detection")]
@@ -26,6 +26,10 @@ namespace Resonance.Audio
         public AK.Wwise.Switch woodSurface;
         public AK.Wwise.Switch gravelSurface;
         public AK.Wwise.Switch grassSurface;
+
+        [Header("Movement Switches")]
+        public AK.Wwise.Switch walkSwitch;
+        public AK.Wwise.Switch sprintSwitch;
 #endif
 
         private CharacterController characterController;
@@ -70,11 +74,10 @@ namespace Resonance.Audio
 #if !UNITY_SERVER
             DetectSurface();
             SetSurfaceSwitch();
+            SetMovementSwitch();
 
             if (footstepEvent != null && footstepEvent.IsValid())
-            {
                 footstepEvent.Post(gameObject);
-            }
 #endif
         }
 
@@ -125,6 +128,17 @@ namespace Resonance.Audio
                 case "Gravel": gravelSurface?.SetValue(gameObject); break;
                 case "Grass": grassSurface?.SetValue(gameObject); break;
             }
+        }
+
+        void SetMovementSwitch()
+        {
+            bool isSprinting = playerState != null &&
+                               playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+
+            if (isSprinting)
+                sprintSwitch?.SetValue(gameObject);
+            else
+                walkSwitch?.SetValue(gameObject);
         }
 
         void OnDrawGizmosSelected()
