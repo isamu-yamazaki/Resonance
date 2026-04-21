@@ -15,7 +15,8 @@ namespace Resonance.LobbySystem.NewUI
         public static string Key => nameof(RoomScreenView);
         string IScreenView.Key => Key;
 
-        private static readonly string[] MapOptions = { "TB_RoughCut", "TB_PlaytestArena" };
+        [Header("Map Options")]
+        [SerializeField] private string[] mapOptions = { "TB_RoughCut", "TB_PlaytestArena" };
 
         [Header("Top Bar")]
         [SerializeField] private Button leaveButton;
@@ -120,7 +121,7 @@ namespace Resonance.LobbySystem.NewUI
             gameModeDropdown.AddOptions(new List<string>(Enum.GetNames(typeof(GameMode))));
 
             mapDropdown.ClearOptions();
-            mapDropdown.AddOptions(new List<string>(MapOptions));
+            mapDropdown.AddOptions(new List<string>(mapOptions));
 
             _isApplyingLobbyUpdate = false;
             _dropdownsPopulated = true;
@@ -151,7 +152,7 @@ namespace Resonance.LobbySystem.NewUI
 
             gameModeDropdown.value = (int)lobby.GameMode;
 
-            var mapIndex = Array.IndexOf(MapOptions, lobby.SceneName);
+            var mapIndex = Array.IndexOf(mapOptions, lobby.SceneName);
             mapDropdown.value = mapIndex >= 0 ? mapIndex : 0;
 
             _isApplyingLobbyUpdate = false;
@@ -305,11 +306,11 @@ namespace Resonance.LobbySystem.NewUI
             {
                 return;
             }
-            if (index < 0 || index >= MapOptions.Length)
+            if (index < 0 || index >= mapOptions.Length)
             {
                 return;
             }
-            lobbyManager.SetSceneNameOnLobby(MapOptions[index]);
+            lobbyManager.SetSceneNameOnLobby(mapOptions[index]);
         }
     }
 }
