@@ -10,8 +10,16 @@ namespace Resonance.PlayerController
         [Header("Audio Components")]
         [SerializeField] private FootstepController footstepController;
 
+        [Header("Tuning")]
+        [SerializeField] private float footstepCooldown = 0.2f;
+
+        private float lastFootstepTime;
+
         public void PlayFootstep()
         {
+            if (Time.time - lastFootstepTime < footstepCooldown) return;
+            lastFootstepTime = Time.time;
+
             if (footstepController != null)
             {
                 footstepController.PlayFootstep();
