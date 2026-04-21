@@ -16,8 +16,10 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Slider slider;
         [SerializeField] private TMP_Text displayText;
 
+#if !UNITY_SERVER
         [Header("Wwise Events")]
         [SerializeField] private AK.Wwise.Event buttonClickEvent;
+#endif
 
         public readonly static string Key = nameof(LobbySettingsOverlayView);
         string IOverlayView.Key => Key;
@@ -43,15 +45,19 @@ namespace Resonance.LobbySystem.NewUI
             doneButton.onClick.AddListener(HandleDoneClicked);
         }
 
+#if !UNITY_SERVER
         private void PostClick(AK.Wwise.Event wwiseEvent)
         {
             if (wwiseEvent != null && wwiseEvent.IsValid())
                 wwiseEvent.Post(gameObject);
         }
+#endif
 
         private void HandleDoneClicked()
         {
+#if !UNITY_SERVER
             PostClick(buttonClickEvent);
+#endif
             dismiss?.Invoke();
         }
 
