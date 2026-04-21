@@ -83,6 +83,8 @@ namespace Resonance.LobbySystem.NewUI
                 view = friendOverlayView,
                 unlockCursorWhenShown = true
             });
+
+            viewRouter.PushScreenView(LobbyPanelScreenView.Key);
         }
 
         private void OnDestroy()
