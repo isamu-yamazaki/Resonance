@@ -26,6 +26,11 @@ public class PlayerInteract : NetworkBehaviour
 
     private void Update()
     {
+        if (_playerState.IsDead())
+        {
+            _currentInteractable = null;
+        }
+
         if (_playerActionsInput.InteractPressed)
         {
             // Let Zipline.Update() consume the press while ziplining
