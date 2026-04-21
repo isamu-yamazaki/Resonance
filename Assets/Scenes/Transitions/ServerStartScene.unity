@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MockLobbyCreator
   orchestratorUrl: http://localhost:9000
-  lobbyCode: 12345
+  lobbyId: ABCD
   lobbyName: Test Lobby
   maxPlayers: 4
   gameMode: 0
@@ -571,7 +571,6 @@ MonoBehaviour:
     Name: 
     IsValid: 0
     LobbyId: 
-    LobbyCode: 
     MaxPlayers: 0
     Members: []
 --- !u!1 &2109274477

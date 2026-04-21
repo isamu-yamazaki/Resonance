@@ -13,13 +13,31 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Transform content;
         [SerializeField] private GameObject entryButtonPrefab;
         [SerializeField] private Button doneButton;
+
+#if !UNITY_SERVER
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event buttonClickEvent;
+        [SerializeField] private AK.Wwise.Event skinSelectEvent;
+#endif
+
         private Action back;
 
         public static string Key => nameof(SkinScreenView);
         string IScreenView.Key => Key;
 
+#if !UNITY_SERVER
+        private void PostClick(AK.Wwise.Event wwiseEvent)
+        {
+            if (wwiseEvent != null && wwiseEvent.IsValid())
+                wwiseEvent.Post(gameObject);
+        }
+#endif
+
         private void HandleDoneClicked()
         {
+#if !UNITY_SERVER
+            PostClick(buttonClickEvent);
+#endif
             back?.Invoke();
         }
 
@@ -44,9 +62,7 @@ namespace Resonance.LobbySystem.NewUI
         private void PopulateEntries()
         {
             foreach (Transform child in content)
-            {
                 Destroy(child.gameObject);
-            }
 
             for (int i = 0; i < skinCatalog.Count; i++)
             {
@@ -60,9 +76,15 @@ namespace Resonance.LobbySystem.NewUI
         private void OnSkinSelected(int selected)
         {
             var skinIndexProvider = SkinIndexProvider.Instance;
+
+#if !UNITY_SERVER
+            PostClick(skinSelectEvent);
+#endif
+
             if (!skinIndexProvider)
             {
                 Debug.LogError($"[{GetType()}] No SkinIndexProvider object, cannot update skin index");
+                return;
             }
             skinIndexProvider.SetSkinIndex(selected);
         }

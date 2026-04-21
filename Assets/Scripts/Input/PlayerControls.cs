@@ -432,6 +432,15 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ADS"",
+                    ""type"": ""Button"",
+                    ""id"": ""722d245c-d075-427d-bf53-a728135c7d74"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -553,6 +562,17 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""AbilityLower"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f1b609af-9368-4ec0-8b80-0faf70f78a77"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ADS"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -680,6 +700,7 @@ namespace Resonance.PlayerController
             m_PlayerActionMap_Stim = m_PlayerActionMap.FindAction("Stim", throwIfNotFound: true);
             m_PlayerActionMap_AbilityUpper = m_PlayerActionMap.FindAction("AbilityUpper", throwIfNotFound: true);
             m_PlayerActionMap_AbilityLower = m_PlayerActionMap.FindAction("AbilityLower", throwIfNotFound: true);
+            m_PlayerActionMap_ADS = m_PlayerActionMap.FindAction("ADS", throwIfNotFound: true);
             // InGameUIActionMap
             m_InGameUIActionMap = asset.FindActionMap("InGameUIActionMap", throwIfNotFound: true);
             m_InGameUIActionMap_ToggleShop = m_InGameUIActionMap.FindAction("ToggleShop", throwIfNotFound: true);
@@ -919,6 +940,7 @@ namespace Resonance.PlayerController
         private readonly InputAction m_PlayerActionMap_Stim;
         private readonly InputAction m_PlayerActionMap_AbilityUpper;
         private readonly InputAction m_PlayerActionMap_AbilityLower;
+        private readonly InputAction m_PlayerActionMap_ADS;
         /// <summary>
         /// Provides access to input actions defined in input action map "PlayerActionMap".
         /// </summary>
@@ -974,6 +996,10 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "PlayerActionMap/AbilityLower".
             /// </summary>
             public InputAction @AbilityLower => m_Wrapper.m_PlayerActionMap_AbilityLower;
+            /// <summary>
+            /// Provides access to the underlying input action "PlayerActionMap/ADS".
+            /// </summary>
+            public InputAction @ADS => m_Wrapper.m_PlayerActionMap_ADS;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1033,6 +1059,9 @@ namespace Resonance.PlayerController
                 @AbilityLower.started += instance.OnAbilityLower;
                 @AbilityLower.performed += instance.OnAbilityLower;
                 @AbilityLower.canceled += instance.OnAbilityLower;
+                @ADS.started += instance.OnADS;
+                @ADS.performed += instance.OnADS;
+                @ADS.canceled += instance.OnADS;
             }
 
             /// <summary>
@@ -1077,6 +1106,9 @@ namespace Resonance.PlayerController
                 @AbilityLower.started -= instance.OnAbilityLower;
                 @AbilityLower.performed -= instance.OnAbilityLower;
                 @AbilityLower.canceled -= instance.OnAbilityLower;
+                @ADS.started -= instance.OnADS;
+                @ADS.performed -= instance.OnADS;
+                @ADS.canceled -= instance.OnADS;
             }
 
             /// <summary>
@@ -1366,6 +1398,13 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnAbilityLower(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ADS" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnADS(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "InGameUIActionMap" which allows adding and removing callbacks.

@@ -10,27 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
-  m_Name: Human Turret
+  m_Name: Pistol_Revolver
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: mod_augment_humanTurret
-  modName: Human Turret
-  description: Stop and shoot
-  slot: 6
+  key: mod_barrel_revolver
+  modName: Revolver
+  description: 
+  slot: 0
   icon: {fileID: 0}
-  muzzleFlashOverride: {fileID: 0}
+  muzzleFlashOverride: {fileID: 11400000, guid: 06d58de9b83ec437196acadaed1957c6, type: 2}
+  audioOverride: {fileID: 11400000, guid: e918acc12eea39540a3388da86ec3635, type: 2}
   modifiers:
-  - stat: 1
-    type: 1
-    value: 1.5
+  - stat: 0
+    type: 0
+    value: 20
   - stat: 10
     type: 1
-    value: 2
-  - stat: 14
-    type: 1
-    value: 2
-  - stat: 13
+    value: 0.5
+  - stat: 1
     type: 1
     value: 0.5
+  - stat: 3
+    type: 1
+    value: 2
+  - stat: 12
+    type: 1
+    value: 1.5
   bulletPropertiesOverride: {fileID: 0}
-  compatibleWeaponClasses: 
+  compatibleWeaponClasses: 05000000
   modCost: 1

@@ -10,24 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
-  m_Name: All In
+  m_Name: Rifle_DMR
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: mod_barrel_allIn
-  modName: All In
+  key: mod_barrelDMR
+  modName: DMR
   description: 
   slot: 0
   icon: {fileID: 0}
   muzzleFlashOverride: {fileID: 0}
+  audioOverride: {fileID: 0}
   modifiers:
-  - stat: 1
-    type: 1
-    value: 10
-  - stat: 6
+  - stat: 0
     type: 1
     value: 2
-  - stat: 3
+  - stat: 1
+    type: 1
+    value: 0.5
+  - stat: 10
     type: 1
     value: 0.5
   bulletPropertiesOverride: {fileID: 0}
-  compatibleWeaponClasses: 01000000
+  compatibleWeaponClasses: 02000000
   modCost: 1

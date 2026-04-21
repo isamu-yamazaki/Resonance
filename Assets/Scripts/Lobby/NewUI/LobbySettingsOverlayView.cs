@@ -19,6 +19,11 @@ namespace Resonance.LobbySystem.NewUI
         [Header("FPS counter")]
         [SerializeField] private Toggle fpsCounterToggle;
 
+#if !UNITY_SERVER
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event buttonClickEvent;
+#endif
+
         public readonly static string Key = nameof(LobbySettingsOverlayView);
         string IOverlayView.Key => Key;
 
@@ -30,6 +35,7 @@ namespace Resonance.LobbySystem.NewUI
             slider.onValueChanged.RemoveListener(SetValue);
             fpsCounterToggle.onValueChanged.RemoveListener(HandleFpsToggleChanged);
 
+            doneButton.onClick.RemoveListener(HandleDoneClicked);
             dismiss = null;
         }
 
@@ -58,26 +64,33 @@ namespace Resonance.LobbySystem.NewUI
             }
         }
 
+#if !UNITY_SERVER
+        private void PostClick(AK.Wwise.Event wwiseEvent)
+        {
+            if (wwiseEvent != null && wwiseEvent.IsValid())
+                wwiseEvent.Post(gameObject);
+        }
+#endif
+
         private void HandleDoneClicked()
         {
+#if !UNITY_SERVER
+            PostClick(buttonClickEvent);
+#endif
             dismiss?.Invoke();
         }
 
         private void SetValue(float newValue)
         {
             if (RenderScaleSetter.Instance != null)
-            {
                 RenderScaleSetter.Instance.ChangeRenderScale(newValue);
-            }
             SetDisplayValue(newValue);
         }
 
         private void UpdateRenderScaleDisplayValue()
         {
             if (RenderScaleSetter.Instance != null)
-            {
                 SetDisplayValue(RenderScaleSetter.Instance.RenderScale);
-            }
         }
 
         private void SetDisplayValue(float displayValue)
@@ -87,10 +100,7 @@ namespace Resonance.LobbySystem.NewUI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (eventData.pointerPressRaycast.gameObject != gameObject)
-            {
-                return;
-            }
+            if (eventData.pointerPressRaycast.gameObject != gameObject) return;
             dismiss?.Invoke();
         }
     }

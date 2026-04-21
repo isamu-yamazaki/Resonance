@@ -344,6 +344,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ADS",
+                    "type": "Button",
+                    "id": "722d245c-d075-427d-bf53-a728135c7d74",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -465,6 +474,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "AbilityLower",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f1b609af-9368-4ec0-8b80-0faf70f78a77",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ADS",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

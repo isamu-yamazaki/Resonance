@@ -87,6 +87,12 @@ public class Zipline : MonoBehaviour, IInteractable
             return;
         }
 
+        if (playerState != null && playerState.IsDead())
+        {
+            ForceCleanup();
+            return;
+        }
+
         if (playerLocomotionInput.JumpPressed || Keyboard.current.spaceKey.wasPressedThisFrame)
             jumpLatch = true;
 

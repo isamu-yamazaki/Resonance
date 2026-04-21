@@ -85,24 +85,26 @@ namespace Resonance.Abilities.SonarDisc
         {
             for (int i = 0; i < snapshotCount; i++)
             {
-                GameObject[] shells = new GameObject[_meshRenderers.Length];
-                Material[] materials = new Material[_meshRenderers.Length];
+                GameObject source = _skinRenderer.CurrentMeshInstance;
+                if (source == null) yield break;
 
-                for (int j = 0; j < _meshRenderers.Length; j++)
+                GameObject snapshot = Instantiate(source, source.transform.parent);
+                snapshot.transform.localPosition = source.transform.localPosition;
+                snapshot.transform.localRotation = source.transform.localRotation;
+                snapshot.transform.localScale = source.transform.localScale;
+
+                Animator snapshotAnimator = snapshot.GetComponent<Animator>();
+                if (snapshotAnimator != null)
+                    snapshotAnimator.enabled = false;
+
+                Material mat = new Material(sonarRevealMaterial);
+                foreach (SkinnedMeshRenderer smr in snapshot.GetComponentsInChildren<SkinnedMeshRenderer>())
                 {
-                    Mesh bakedMesh = new Mesh();
-                    _meshRenderers[j].BakeMesh(bakedMesh);
-
-                    GameObject shell = new GameObject("SonarRevealShell");
-                    shell.transform.SetPositionAndRotation(_meshRenderers[j].transform.position, _meshRenderers[j].transform.rotation);
-                    shell.transform.localScale = _meshRenderers[j].transform.lossyScale;
-
-                    shell.AddComponent<MeshFilter>().mesh = bakedMesh;
-                    Material mat = new Material(sonarRevealMaterial);
-                    shell.AddComponent<MeshRenderer>().material = mat;
-
-                    shells[j] = shell;
-                    materials[j] = mat;
+                    if (!smr.gameObject.activeInHierarchy) continue;
+                    Material[] mats = new Material[smr.materials.Length];
+                    for (int k = 0; k < mats.Length; k++)
+                        mats[k] = mat;
+                    smr.materials = mats;
                 }
 
 #if !UNITY_SERVER
@@ -114,20 +116,12 @@ namespace Resonance.Abilities.SonarDisc
                 while (elapsed < snapshotDuration)
                 {
                     elapsed += Time.deltaTime;
-                    float normalizedTime = Mathf.Clamp01(elapsed / snapshotDuration);
-
-                    foreach (Material mat in materials)
-                        mat.SetFloat(RevealTimeID, normalizedTime);
-
+                    mat.SetFloat(RevealTimeID, Mathf.Clamp01(elapsed / snapshotDuration));
                     yield return null;
                 }
 
-                for (int j = 0; j < shells.Length; j++)
-                {
-                    Destroy(materials[j]);
-                    Destroy(shells[j].GetComponent<MeshFilter>().mesh);
-                    Destroy(shells[j]);
-                }
+                Destroy(mat);
+                Destroy(snapshot);
 
                 if (i < snapshotCount - 1)
                     yield return new WaitForSeconds(snapshotInterval);
