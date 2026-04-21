@@ -63,6 +63,17 @@ namespace AK
 
     namespace SWITCHES
     {
+        namespace MOVEMENTTYPE
+        {
+            static const AkUniqueID GROUP = 2833833666U;
+
+            namespace SWITCH
+            {
+                static const AkUniqueID RUN = 712161704U;
+                static const AkUniqueID SPRINT = 1296465089U;
+            } // namespace SWITCH
+        } // namespace MOVEMENTTYPE
+
         namespace SURFACETYPE
         {
             static const AkUniqueID GROUP = 63790334U;
