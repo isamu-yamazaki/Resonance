@@ -26,7 +26,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _EmissionStrength: 3
-    - _OutlineWidth: 0.03
+    - _OutlineWidth: 0.01
     - _RevealTime: 0
     m_Colors:
     - _OutlineColor: {r: 1, g: 0, b: 0.8, a: 1}

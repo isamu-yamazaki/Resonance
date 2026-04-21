@@ -18,7 +18,7 @@ namespace Resonance.VFX
         private PlayerState _playerState;
         private TargetDummy _targetDummy;
         private PlayerSkinRenderer _skinRenderer;
-        private SkinnedMeshRenderer[] _meshRenderers;
+        private SkinnedMeshRenderer[] _skinnedMeshRenderers;
 
         private void Awake()
         {
@@ -39,7 +39,7 @@ namespace Resonance.VFX
             }
             else
             {
-                _meshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+                _skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
             }
         }
 
@@ -100,11 +100,11 @@ namespace Resonance.VFX
                 }
 
                 if (activeArms != null)
-                    _meshRenderers = activeArms.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    _skinnedMeshRenderers = activeArms.GetComponentsInChildren<SkinnedMeshRenderer>();
             }
             else
             {
-                _meshRenderers = skinRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
+                _skinnedMeshRenderers = skinRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
             }
         }
 
@@ -121,23 +121,26 @@ namespace Resonance.VFX
 
         private void ResetEffect()
         {
-            if (_meshRenderers == null) return;
+            if (_skinRenderer?.CurrentMeshInstance != null)
+            {
+                foreach (SkinnedMeshRenderer smr in _skinRenderer.CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                {
+                    smr.enabled = true;
+                }
+            }
 
-            foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+            if (_skinnedMeshRenderers == null) return;
+            foreach (SkinnedMeshRenderer meshRenderer in _skinnedMeshRenderers)
             {
                 if (meshRenderer != null)
+                {
                     meshRenderer.enabled = true;
+                }
             }
         }
 
         private IEnumerator GlitchSequence()
         {
-            if (_meshRenderers == null || _meshRenderers.Length == 0)
-            {
-                Debug.LogWarning("[DeathEffect] No mesh renderers found, skipping effect.");
-                yield break;
-            }
-
             if (_skinRenderer != null && _skinRenderer.ShouldRenderArmsOnlyBasedOnCachedMatchState)
             {
                 GameObject activeArms = null;
@@ -151,20 +154,29 @@ namespace Resonance.VFX
                 }
 
                 if (activeArms != null)
-                    StartCoroutine(RunGlitchGhost(activeArms));
-
-                foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
                 {
-                    meshRenderer.enabled = false;
+                    _skinnedMeshRenderers = activeArms.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    StartCoroutine(RunGlitchGhost(activeArms));
+                    foreach (SkinnedMeshRenderer smr in _skinnedMeshRenderers)
+                    {
+                        smr.enabled = false;
+                    }
                 }
             }
             else
             {
+                if (_skinRenderer?.CurrentMeshInstance == null)
+                {
+                    Debug.LogWarning("[DeathEffect] No mesh instance found, skipping effect.");
+                    yield break;
+                }
+
+                _skinnedMeshRenderers = _skinRenderer.CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>();
                 StartCoroutine(RunGlitchGhost(_skinRenderer.CurrentMeshInstance));
 
-                foreach (SkinnedMeshRenderer meshRenderer in _meshRenderers)
+                foreach (SkinnedMeshRenderer smr in _skinnedMeshRenderers)
                 {
-                    meshRenderer.enabled = false;
+                    smr.enabled = false;
                 }
             }
 
@@ -187,12 +199,16 @@ namespace Resonance.VFX
 
             Animator ghostAnimator = ghost.GetComponent<Animator>();
             if (ghostAnimator != null)
+            {
                 ghostAnimator.enabled = false;
+            }
 
             Material material = new Material(deathGlitchMaterial);
 
-            foreach (SkinnedMeshRenderer smr in ghost.GetComponentsInChildren<SkinnedMeshRenderer>())
+            foreach (SkinnedMeshRenderer smr in ghost.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
+                if (!smr.gameObject.activeInHierarchy) continue;
+
                 Material[] mats = new Material[smr.materials.Length];
                 for (int i = 0; i < mats.Length; i++)
                 {

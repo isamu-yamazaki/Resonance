@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
-  m_Name: Sprint Burst Augment Mod
+  m_Name: Universal_ExtendedMag
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: mod_augment_sprintBurst
-  modName: Sprint Burst
-  description: Go fast shoot bad!
-  slot: 6
+  key: mod_magazine_extendedMag
+  modName: Extended Magazine
+  description: More bullets!
+  slot: 3
   icon: {fileID: 0}
   muzzleFlashOverride: {fileID: 0}
+  audioOverride: {fileID: 0}
   modifiers:
-  - stat: 6
+  - stat: 10
     type: 1
     value: 1.5
   bulletPropertiesOverride: {fileID: 0}

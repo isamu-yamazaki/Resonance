@@ -506,6 +506,23 @@ namespace Resonance.Combat
             if (debugAmmoLogs)
                 Debug.Log($"[Shooter] Reload complete. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
         }
+        
+        public void CancelReload()
+        {
+            if (!playerState.IsReloading) return;
+            playerState.SetWeaponState(WeaponState.Idle);
+            viewModel.SetReloadState(false);
+            viewModel.SetReloadProgress(0f);
+            reloadEndTime = 0f;
+        }
+        
+        public void CancelReloadAndRefill()
+        {
+            CancelReload();
+            if (playerEquip?.EquippedWeapon != null)
+                ammoByWeapon[playerEquip.EquippedWeapon] = weaponStatManager.MagazineSize;
+            viewModel.SetAmmo(currentAmmo, MagazineSize);
+        }
 
         #endregion
 
