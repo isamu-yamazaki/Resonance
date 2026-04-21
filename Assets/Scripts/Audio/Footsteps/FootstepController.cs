@@ -28,7 +28,7 @@ namespace Resonance.Audio
         public AK.Wwise.Switch grassSurface;
 
         [Header("Movement Switches")]
-        public AK.Wwise.Switch walkSwitch;
+        public AK.Wwise.Switch runSwitch;
         public AK.Wwise.Switch sprintSwitch;
 #endif
 
@@ -138,7 +138,7 @@ namespace Resonance.Audio
             if (isSprinting)
                 sprintSwitch?.SetValue(gameObject);
             else
-                walkSwitch?.SetValue(gameObject);
+                runSwitch?.SetValue(gameObject);
         }
 
         void OnDrawGizmosSelected()

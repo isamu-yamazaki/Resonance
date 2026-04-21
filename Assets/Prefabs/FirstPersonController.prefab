@@ -121,6 +121,18 @@ MonoBehaviour:
     groupIdInternal: 0
     groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: d48893ac1a8654d0e95d9b7e8d503412, type: 2}
+  runSwitch:
+    idInternal: 0
+    valueGuidInternal: 
+    groupIdInternal: 0
+    groupGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 5b5af89d392f5db409347cdfbfa7f77e, type: 2}
+  sprintSwitch:
+    idInternal: 0
+    valueGuidInternal: 
+    groupIdInternal: 0
+    groupGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 942aaf7dc06e71f41b4c1dbf17b8db7f, type: 2}
 --- !u!114 &8375709091427389756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -983,6 +995,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerAudioBridge
   footstepController: {fileID: 4736762120235980275}
+  footstepCooldown: 0.2
 --- !u!114 &-3400458708190070123
 MonoBehaviour:
   m_ObjectHideFlags: 0

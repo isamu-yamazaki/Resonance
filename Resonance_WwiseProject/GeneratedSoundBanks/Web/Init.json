@@ -282,10 +282,30 @@
         "GUID": "{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"
        }
       ]
+     },
+     {
+      "Id": "2833833666",
+      "Name": "MovementType",
+      "ObjectPath": "\\Switches\\Default Work Unit\\MovementType",
+      "GUID": "{5010C8BF-48E9-4365-9670-DF9AED9EFA6C}",
+      "Switches": [
+       {
+        "Id": "712161704",
+        "Name": "Run",
+        "ObjectPath": "\\Switches\\Default Work Unit\\MovementType\\Run",
+        "GUID": "{5F0D6E33-23BB-4E20-B900-3314BD72D940}"
+       },
+       {
+        "Id": "1296465089",
+        "Name": "Sprint",
+        "ObjectPath": "\\Switches\\Default Work Unit\\MovementType\\Sprint",
+        "GUID": "{D113E90D-5EE8-40D2-84AA-4D93FECCCE37}"
+       }
+      ]
      }
     ]
    }
   ],
-  "FileHash": "{3EA1EBD6-01CB-ED07-7FC3-FDE8B9D87D85}"
+  "FileHash": "{E2DE6F0D-5911-9449-C66E-FDC27AB86064}"
  }
 }
