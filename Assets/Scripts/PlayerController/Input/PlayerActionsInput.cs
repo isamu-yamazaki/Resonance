@@ -262,5 +262,18 @@ namespace Resonance.PlayerController
 
             ReloadPressed = true;
         }
+        
+        public void ResetAllInputs()
+        {
+            AttackPressed = false;
+            AttackHeld = false;
+            ReloadPressed = false;
+            SwapWeaponPressed = false;
+            SwapSlotOnePressed = false;
+            SwapSlotTwoPressed = false;
+            HealPressed = false;
+            AbilityUpperPressed = false;
+            AbilityLowerPressed = false;
+        }
     }
 }

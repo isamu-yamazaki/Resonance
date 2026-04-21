@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PurrNet;
+using Resonance.Combat;
 using Resonance.Helper;
 using UnityEngine.Serialization;
 
@@ -292,6 +293,8 @@ namespace Resonance.Player
                 _playerState.SetPlayerMovementState(PlayerMovementState.Dead);
                 _playerState.SetWeaponState(WeaponState.Idle);
             }
+            
+            GetComponent<PlayerShooter>().CancelReloadAndRefill();
 
             if (_playerController != null)
             {
@@ -307,6 +310,8 @@ namespace Resonance.Player
             {
                 _animator.enabled = false;
             }
+            
+            GetComponent<PlayerActionsInput>()?.ResetAllInputs();
 
             OnPlayerDeath?.Invoke();
         }
@@ -333,6 +338,7 @@ namespace Resonance.Player
         [ObserversRpc]
         private void ApplyRespawnEffectsRpc()
         {
+            GetComponent<PlayerActionsInput>()?.ResetAllInputs();
             IsDead = false;
 
             // Clear damage tracking

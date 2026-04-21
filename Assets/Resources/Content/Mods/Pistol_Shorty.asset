@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65fd2ae2988737b4987f8ab3640699e6, type: 3}
-  m_Name: Revolver
+  m_Name: Pistol_Shorty
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Mods.WeaponModProperties
-  key: mod_barrel_revolver
-  modName: Revolver
+  key: mod_barrel_shorty
+  modName: Shorty
   description: 
   slot: 0
   icon: {fileID: 0}
@@ -22,19 +22,25 @@ MonoBehaviour:
   modifiers:
   - stat: 0
     type: 0
-    value: 20
+    value: -8
   - stat: 10
     type: 1
-    value: 0.5
-  - stat: 1
-    type: 1
-    value: 0.5
+    value: 0.25
   - stat: 3
     type: 1
-    value: 2
+    value: 0.25
   - stat: 12
     type: 1
     value: 1.5
+  - stat: 2
+    type: 0
+    value: 5
+  - stat: 6
+    type: 0
+    value: 3
+  - stat: 1
+    type: 1
+    value: 0.5
   bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 05000000
   modCost: 1
