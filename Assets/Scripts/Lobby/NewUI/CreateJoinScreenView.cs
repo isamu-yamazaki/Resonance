@@ -10,10 +10,12 @@ namespace Resonance.LobbySystem.NewUI
 
         public void OnShow(ScreenViewActions viewActions)
         {
+            gameObject.SetActive(true);
         }
 
         public void OnHide()
         {
+            gameObject.SetActive(false);
         }
     }
 }

@@ -19,19 +19,34 @@ namespace Resonance.LobbySystem.NewUI
         public static string Key => nameof(LobbyPanelScreenView);
         string IScreenView.Key => Key;
 
-        private void Awake()
-        {
+        private ScreenViewActions _viewActions;
 
+        private void Start()
+        {
+            playButton.onClick.AddListener(OnPlayClicked);
+            friendsOverlayButton.onClick.AddListener(OnFriendsOverlayClicked);
+            skinSelectButton.onClick.AddListener(OnSkinSelectClicked);
         }
 
         public void OnHide()
         {
             gameObject.SetActive(false);
+            _viewActions = default;
         }
 
         public void OnShow(ScreenViewActions viewActions)
         {
+            _viewActions = viewActions;
             gameObject.SetActive(true);
         }
+
+        private void OnPlayClicked() =>
+            _viewActions.ShowScreen?.Invoke(CreateJoinScreenView.Key);
+
+        private void OnFriendsOverlayClicked() =>
+            _viewActions.ShowOverlay?.Invoke(FriendOverlayView.Key);
+
+        private void OnSkinSelectClicked() =>
+            _viewActions.ShowScreen?.Invoke(SkinScreenView.Key);
     }
 }
