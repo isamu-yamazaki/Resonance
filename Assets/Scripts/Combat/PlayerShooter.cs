@@ -502,6 +502,8 @@ namespace Resonance.Combat
             viewModel.SetReloadState(false);
             viewModel.SetReloadProgress(1f);
             viewModel.SetAmmo(currentAmmo, MagazineSize);
+            
+            currentSpread = weapon.Spread;
 
             if (debugAmmoLogs)
                 Debug.Log($"[Shooter] Reload complete. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);

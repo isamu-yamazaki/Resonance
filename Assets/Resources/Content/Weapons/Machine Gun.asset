@@ -19,7 +19,7 @@ MonoBehaviour:
   weaponClass: 3
   firingType: 1
   icon: {fileID: 0}
-  weaponMuzzleKey: baseRifle
+  weaponMuzzleKey: baseLMG
   audioProperties: {fileID: 11400000, guid: 6b6e8fae28bdccc40bc5f9675c206e90, type: 2}
   damage: 2
   fireRate: 20

@@ -1,6 +1,6 @@
 using System;
 using Resonance.Assemblies.UISystem;
-using Resonance.Helper;
+using Resonance.LobbySystem.DataProviders;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,8 +16,13 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Slider slider;
         [SerializeField] private TMP_Text displayText;
 
+        [Header("FPS counter")]
+        [SerializeField] private Toggle fpsCounterToggle;
+
+#if !UNITY_SERVER
         [Header("Wwise Events")]
         [SerializeField] private AK.Wwise.Event buttonClickEvent;
+#endif
 
         public readonly static string Key = nameof(LobbySettingsOverlayView);
         string IOverlayView.Key => Key;
@@ -28,6 +33,8 @@ namespace Resonance.LobbySystem.NewUI
         {
             gameObject.SetActive(false);
             slider.onValueChanged.RemoveListener(SetValue);
+            fpsCounterToggle.onValueChanged.RemoveListener(HandleFpsToggleChanged);
+
             doneButton.onClick.RemoveListener(HandleDoneClicked);
             dismiss = null;
         }
@@ -40,18 +47,36 @@ namespace Resonance.LobbySystem.NewUI
             slider.onValueChanged.AddListener(SetValue);
             UpdateRenderScaleDisplayValue();
 
+            if (PlayerFacingFPSCounterDisplaySetting.Instance != null)
+            {
+                fpsCounterToggle.isOn = PlayerFacingFPSCounterDisplaySetting.Instance.IsEnabled;
+            }
+            fpsCounterToggle.onValueChanged.AddListener(HandleFpsToggleChanged);
+
             doneButton.onClick.AddListener(HandleDoneClicked);
         }
 
+        private void HandleFpsToggleChanged(bool value)
+        {
+            if (PlayerFacingFPSCounterDisplaySetting.Instance != null)
+            {
+                PlayerFacingFPSCounterDisplaySetting.Instance.SetEnabled(value);
+            }
+        }
+
+#if !UNITY_SERVER
         private void PostClick(AK.Wwise.Event wwiseEvent)
         {
             if (wwiseEvent != null && wwiseEvent.IsValid())
                 wwiseEvent.Post(gameObject);
         }
+#endif
 
         private void HandleDoneClicked()
         {
+#if !UNITY_SERVER
             PostClick(buttonClickEvent);
+#endif
             dismiss?.Invoke();
         }
 

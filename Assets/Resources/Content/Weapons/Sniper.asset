@@ -23,7 +23,7 @@ MonoBehaviour:
   weaponMuzzleKey: baseRile
   audioProperties: {fileID: 11400000, guid: 34528873aa7e23541af0cf97fda2ba5a, type: 2}
   damage: 100
-  fireRate: 0.5
+  fireRate: 1
   projectilesPerShot: 1
   range: 100
   accuracy: 0
@@ -35,10 +35,10 @@ MonoBehaviour:
   spreadRecoveryRate: 1
   mobility: 0.75
   handling: 0
-  reloadClip: {fileID: 7400000, guid: 986c1e91d76b4894d97fafcd41276d0b, type: 2}
-  emptyReloadClip: {fileID: 7400000, guid: e89ba42b475b07a44bc8320568b5a96b, type: 2}
-  fireClip: {fileID: 7400000, guid: 97dd8e7f9ab253f4381514fa160e2a57, type: 2}
-  magazineSize: 2
+  reloadClip: {fileID: 7400000, guid: fe1843adf6451744a975d3f144909a39, type: 2}
+  emptyReloadClip: {fileID: 7400000, guid: a6828608ace1fa84a812f4093080cca4, type: 2}
+  fireClip: {fileID: 7400000, guid: b94d22415c294f74aa4e79f5d348d4be, type: 2}
+  magazineSize: 1
   reloadTime: 2.3
   bulletProperties: {fileID: 11400000, guid: efa6dd70ff966ac409b9d07883c05ff2, type: 2}
   modList: []

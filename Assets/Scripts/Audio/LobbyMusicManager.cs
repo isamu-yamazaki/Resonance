@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class LobbyMusicManager : MonoBehaviour
 {
+#if !UNITY_SERVER
     [Header("Wwise Events")]
     [SerializeField] private AK.Wwise.Event lobbyMusicStartEvent;
     [SerializeField] private AK.Wwise.Event lobbyMusicStopEvent;
@@ -17,4 +18,5 @@ public class LobbyMusicManager : MonoBehaviour
     {
         lobbyMusicStopEvent.Post(gameObject);
     }
+#endif
 }

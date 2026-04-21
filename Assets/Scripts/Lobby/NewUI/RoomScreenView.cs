@@ -16,7 +16,7 @@ namespace Resonance.LobbySystem.NewUI
         string IScreenView.Key => Key;
 
         [Header("Map Options")]
-        [SerializeField] private string[] mapOptions = { "TB_RoughCut", "TB_PlaytestArena" };
+        [SerializeField] private string[] mapOptions = { "NightCity", "TB_PlaytestArena" };
 
         [Header("Top Bar")]
         [SerializeField] private Button leaveButton;
@@ -42,11 +42,13 @@ namespace Resonance.LobbySystem.NewUI
         [Header("Dependencies")]
         [SerializeField] private LobbyManager lobbyManager;
 
+#if !UNITY_SERVER
         [Header("Wwise Events")]
         [SerializeField] private AK.Wwise.Event buttonClickEvent;
         [SerializeField] private AK.Wwise.Event readyClickEvent;
         [SerializeField] private AK.Wwise.Event leaveClickEvent;
         [SerializeField] private AK.Wwise.Event copyCodeClickEvent;
+#endif
 
         private ScreenViewActions _viewActions;
         private bool _isApplyingLobbyUpdate;
@@ -108,11 +110,13 @@ namespace Resonance.LobbySystem.NewUI
             lobbyManager.OnRoomLeft.RemoveListener(OnRoomLeft);
         }
 
+#if !UNITY_SERVER
         private void PostClick(AK.Wwise.Event wwiseEvent)
         {
             if (wwiseEvent != null && wwiseEvent.IsValid())
                 wwiseEvent.Post(gameObject);
         }
+#endif
 
         private void PopulateDropdowns()
         {
@@ -217,31 +221,41 @@ namespace Resonance.LobbySystem.NewUI
 
         private void OnLeaveClicked()
         {
+#if !UNITY_SERVER
             PostClick(leaveClickEvent);
+#endif
             lobbyManager.LeaveLobby();
         }
 
         private void OnFriendsClicked()
         {
+#if !UNITY_SERVER
             PostClick(buttonClickEvent);
+#endif
             _viewActions.ShowOverlay?.Invoke(FriendOverlayView.Key);
         }
 
         private void OnSettingsClicked()
         {
+#if !UNITY_SERVER
             PostClick(buttonClickEvent);
+#endif
             _viewActions.ShowOverlay?.Invoke(LobbySettingsOverlayView.Key);
         }
 
         private void OnSkinSelectClicked()
         {
+#if !UNITY_SERVER
             PostClick(buttonClickEvent);
+#endif
             _viewActions.ShowScreen?.Invoke(SkinScreenView.Key);
         }
 
         private void OnReadyClicked()
         {
+#if !UNITY_SERVER
             PostClick(readyClickEvent);
+#endif
             lobbyManager.ToggleLocalReady();
         }
 
@@ -250,7 +264,9 @@ namespace Resonance.LobbySystem.NewUI
             var lobby = lobbyManager.CurrentLobby;
             if (!lobby.IsValid || string.IsNullOrEmpty(lobby.LobbyCode)) return;
 
+#if !UNITY_SERVER
             PostClick(copyCodeClickEvent);
+#endif
             GUIUtility.systemCopyBuffer = lobby.LobbyCode;
 
             if (_copyEffectCoroutine != null)
@@ -270,7 +286,9 @@ namespace Resonance.LobbySystem.NewUI
         private void OnGameModeDropdownChanged(int index)
         {
             if (_isApplyingLobbyUpdate) return;
+#if !UNITY_SERVER
             PostClick(buttonClickEvent);
+#endif
             lobbyManager.SetGameModeOnLobby((GameMode)index);
         }
 
@@ -278,7 +296,9 @@ namespace Resonance.LobbySystem.NewUI
         {
             if (_isApplyingLobbyUpdate) return;
             if (index < 0 || index >= mapOptions.Length) return;
+#if !UNITY_SERVER
             PostClick(buttonClickEvent);
+#endif
             lobbyManager.SetSceneNameOnLobby(mapOptions[index]);
         }
     }
