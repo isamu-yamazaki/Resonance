@@ -5362,6 +5362,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
+--- !u!1 &2733966820951196331
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5184196857380891751}
+  - component: {fileID: 881627720659756491}
+  m_Layer: 5
+  m_Name: FPSOverlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5184196857380891751
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2733966820951196331}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6524516648922902759}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &881627720659756491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2733966820951196331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29cf5570cf3df406d8ee461e2a15b279, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.FPSOverlayView
+  fontSize: 20
+  rightMargin: 10
+  topMargin: 10
+  goodColor: {r: 0.2, g: 1, b: 0.2, a: 1}
+  warningColor: {r: 1, g: 1, b: 0.2, a: 1}
+  badColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  goodFPS: 60
+  warningFPS: 30
+  updateInterval: 0.5
 --- !u!1 &2762835915549528640
 GameObject:
   m_ObjectHideFlags: 0
@@ -9147,6 +9204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2878321669456898750}
   - component: {fileID: 4141131493183228018}
+  - component: {fileID: 2366704387248002684}
   m_Layer: 0
   m_Name: UIPrefab
   m_TagString: Untagged
@@ -9188,6 +9246,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c01159fe26114540955ac62f0832b87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.InGameViewRouterBridge
+--- !u!114 &2366704387248002684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5457436812598143677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5420d7b726cb84eb08187fe0bea1ad42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.FPSOverlayApplicator
 --- !u!1 &5480201575521567377
 GameObject:
   m_ObjectHideFlags: 0
@@ -12487,6 +12557,7 @@ RectTransform:
   m_Children:
   - {fileID: 7178577195391531575}
   - {fileID: 1270331508757964332}
+  - {fileID: 5184196857380891751}
   - {fileID: 6449399217281192336}
   - {fileID: 6614106275645850519}
   - {fileID: 4770906001809435210}
