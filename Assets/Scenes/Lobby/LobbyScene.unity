@@ -3278,7 +3278,6 @@ GameObject:
   - component: {fileID: 324813046}
   - component: {fileID: 324813050}
   - component: {fileID: 324813049}
-  - component: {fileID: 324813048}
   - component: {fileID: 324813047}
   m_Layer: 5
   m_Name: Join
@@ -3350,35 +3349,6 @@ MonoBehaviour:
   m_Interactable: 1
   m_TargetGraphic: {fileID: 324813049}
   m_OnClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 324813048}
-        m_TargetAssemblyTypeName: PurrLobby.JoinButton, PurrNetLobbySetup
-        m_MethodName: JoinRoom
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &324813048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 324813045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0591e32fc18ffda4e954af1fc71e1a7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomIdInput: {fileID: 1639605042}
-  lobbyManager: {fileID: 0}
-  onStartJoin:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &324813049
