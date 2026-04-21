@@ -8,6 +8,10 @@ namespace Resonance.LobbySystem.NewUI
         public static string Key => nameof(FriendOverlayView);
         string IOverlayView.Key => Key;
 
+        
+
+        [SerializeField] private Transform friendsListContent;
+
         public void OnShow(OverlayViewActions viewActions)
         {
             gameObject.SetActive(true);

@@ -26,6 +26,19 @@ namespace Resonance.LobbySystem.NewUI
             playButton.onClick.AddListener(OnPlayClicked);
             friendsOverlayButton.onClick.AddListener(OnFriendsOverlayClicked);
             skinSelectButton.onClick.AddListener(OnSkinSelectClicked);
+
+            if (lobbyManager != null)
+            {
+                lobbyManager.onInitialized.AddListener(RefreshLocalUser);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (lobbyManager != null)
+            {
+                lobbyManager.onInitialized.RemoveListener(RefreshLocalUser);
+            }
         }
 
         public void OnHide()
@@ -38,6 +51,30 @@ namespace Resonance.LobbySystem.NewUI
         {
             _viewActions = viewActions;
             gameObject.SetActive(true);
+            RefreshLocalUser();
+        }
+
+        private async void RefreshLocalUser()
+        {
+            if (lobbyManager == null || lobbyManager.CurrentProvider == null)
+            {
+                return;
+            }
+
+            var displayName = await lobbyManager.GetLocalDisplayName();
+            if (username != null)
+            {
+                username.text = displayName ?? string.Empty;
+            }
+
+            var avatar = await lobbyManager.GetLocalAvatar();
+            if (avatar != null && userAvatar != null)
+            {
+                userAvatar.sprite = Sprite.Create(
+                    avatar,
+                    new Rect(0f, 0f, avatar.width, avatar.height),
+                    new Vector2(0.5f, 0.5f));
+            }
         }
 
         private void OnPlayClicked() =>
