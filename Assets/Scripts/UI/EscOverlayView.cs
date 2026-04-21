@@ -27,6 +27,13 @@ namespace Resonance.UI
         [Header("Dependencies")]
         [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
 
+#if !UNITY_SERVER
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event buttonClickEvent;
+        [SerializeField] private AK.Wwise.Event resumeClickEvent;
+        [SerializeField] private AK.Wwise.Event leaveClickEvent;
+#endif
+
         private Action dismiss;
 
         private void Awake()
@@ -72,23 +79,43 @@ namespace Resonance.UI
             dismiss = null;
         }
 
+#if !UNITY_SERVER
+        private void PostClick(AK.Wwise.Event wwiseEvent)
+        {
+            if (wwiseEvent != null && wwiseEvent.IsValid())
+                wwiseEvent.Post(gameObject);
+        }
+#endif
+
         private void OnResumeClicked()
         {
+#if !UNITY_SERVER
+            PostClick(resumeClickEvent);
+#endif
             dismiss?.Invoke();
         }
 
         private void OnLeaveGameClicked()
         {
+#if !UNITY_SERVER
+            PostClick(leaveClickEvent);
+#endif
             despawnerSceneLoader.LoadNetworkDespawnerSceneForEveryone();
         }
 
         private void OnQuitGameClicked()
         {
+#if !UNITY_SERVER
+            PostClick(buttonClickEvent);
+#endif
             quitConfirmationPanel.SetActive(true);
         }
 
         private void OnQuitConfirmed()
         {
+#if !UNITY_SERVER
+            PostClick(buttonClickEvent);
+#endif
             Application.Quit();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -97,8 +124,10 @@ namespace Resonance.UI
 
         private void OnQuitCancelled()
         {
+#if !UNITY_SERVER
+            PostClick(buttonClickEvent);
+#endif
             quitConfirmationPanel.SetActive(false);
         }
-
     }
 }

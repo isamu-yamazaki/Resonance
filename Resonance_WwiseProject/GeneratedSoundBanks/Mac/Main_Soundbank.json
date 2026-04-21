@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{A0C42EDF-D836-5B0D-FBE9-2250147D9D31}",
+    "Hash": "{2B538CE8-B566-B2C9-91F0-711369700B17}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -222,6 +222,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_gravel_run_05.wav",
       "CachePath": "81/{81BFFE35-2A1E-6D2F-1D5B-FCDF30A30CF3}.wem"
+     },
+     {
+      "Id": "521833349",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "mx_orbit.wav",
+      "CachePath": "F9/{F9405A26-8C62-9FCA-6753-C7BC45EEE939}.wem"
      },
      {
       "Id": "522480143",
@@ -1058,6 +1066,18 @@
       ]
      },
      {
+      "Id": "2102729959",
+      "Name": "Play_LobbyMusic",
+      "ObjectPath": "\\Events\\Default Work Unit\\MX_Lobby\\Play_LobbyMusic",
+      "GUID": "{5B38352C-58E5-40C5-9F68-82F035C517B0}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "521833349"
+       }
+      ]
+     },
+     {
       "Id": "3267244670",
       "Name": "Play_OutdoorAmbience",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_OutdoorAmbience",
@@ -1447,6 +1467,16 @@
       "DurationMax": "0"
      },
      {
+      "Id": "1857802577",
+      "Name": "Stop_LobbyMusic",
+      "ObjectPath": "\\Events\\Default Work Unit\\MX_Lobby\\Stop_LobbyMusic",
+      "GUID": "{DA159BCF-44BD-42ED-B8AF-A1A86036AB0B}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
       "Id": "3211783545",
       "Name": "Stop_Reactive_Feedback",
       "ObjectPath": "\\Events\\Default Work Unit\\Stop_Reactive_Feedback",
@@ -1553,6 +1583,6 @@
     ]
    }
   ],
-  "FileHash": "{82401805-1CB8-026B-BA05-CF205C372FCB}"
+  "FileHash": "{BCC8259A-FA61-9CDB-708E-7BE24B56B26B}"
  }
 }

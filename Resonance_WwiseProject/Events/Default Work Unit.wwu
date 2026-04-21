@@ -519,6 +519,35 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="MX_Lobby" ID="{1D93D73E-4E41-4161-91FC-83210CB015C2}" ShortID="833480708">
+					<ChildrenList>
+						<Event Name="Play_LobbyMusic" ID="{5B38352C-58E5-40C5-9F68-82F035C517B0}">
+							<ChildrenList>
+								<Action Name="" ID="{BF8D0723-25D4-4F91-8EC0-AEB9C6E99EC5}" ShortID="973880163">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="mx_orbit" ID="{9CD0B3FA-7DF4-4552-AA42-7C7087C3D0EE}" WorkUnitID="{09B8AA5D-0535-4D97-ABD5-002ABB389575}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Stop_LobbyMusic" ID="{DA159BCF-44BD-42ED-B8AF-A1A86036AB0B}">
+							<ChildrenList>
+								<Action Name="" ID="{C13B5F6E-8DF7-403E-82D8-466B28C78588}" ShortID="998489583">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="mx_orbit" ID="{9CD0B3FA-7DF4-4552-AA42-7C7087C3D0EE}" WorkUnitID="{09B8AA5D-0535-4D97-ABD5-002ABB389575}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
