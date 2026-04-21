@@ -16,7 +16,7 @@ namespace Resonance.LobbySystem.NewUI
         string IScreenView.Key => Key;
 
         [Header("Map Options")]
-        [SerializeField] private string[] mapOptions = { "TB_RoughCut", "TB_PlaytestArena" };
+        [SerializeField] private string[] mapOptions = { "NightCity", "TB_PlaytestArena" };
 
         [Header("Top Bar")]
         [SerializeField] private Button leaveButton;
