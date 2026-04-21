@@ -12231,6 +12231,9 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 74b2c5077b066064f9c9681d644cb628, type: 2}
+  matchSceneNames:
+  - TB_PlaytestArena
+  - TB_RoughCut
 --- !u!4 &1934866797
 Transform:
   m_ObjectHideFlags: 0
