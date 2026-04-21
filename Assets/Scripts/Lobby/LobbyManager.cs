@@ -350,6 +350,14 @@ namespace Resonance.LobbySystem
             var nextGameMode = _currentLobby.GameMode.CycleNext();
             SetLobbyData(LobbyMetadataKeys.GameMode.ToString(), nextGameMode.ToString());
         }
+
+        /// <summary>
+        /// Set the selected game mode on the current lobby directly.
+        /// </summary>
+        public void SetGameModeOnLobby(GameMode gameMode)
+        {
+            SetLobbyData(LobbyMetadataKeys.GameMode.ToString(), gameMode.ToString());
+        }
         
         /// <summary>
         /// Sets meta data on the current lobby we're in
