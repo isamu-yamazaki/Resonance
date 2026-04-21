@@ -41,9 +41,9 @@ namespace Resonance.LobbySystem.NewUI
             slider.onValueChanged.AddListener(SetValue);
             UpdateRenderScaleDisplayValue();
 
-            if (FPSCounterDisplaySetting.Instance != null)
+            if (PlayerFacingFPSCounterDisplaySetting.Instance != null)
             {
-                fpsCounterToggle.isOn = FPSCounterDisplaySetting.Instance.IsEnabled;
+                fpsCounterToggle.isOn = PlayerFacingFPSCounterDisplaySetting.Instance.IsEnabled;
             }
             fpsCounterToggle.onValueChanged.AddListener(HandleFpsToggleChanged);
 
@@ -52,9 +52,9 @@ namespace Resonance.LobbySystem.NewUI
 
         private void HandleFpsToggleChanged(bool value)
         {
-            if (FPSCounterDisplaySetting.Instance != null)
+            if (PlayerFacingFPSCounterDisplaySetting.Instance != null)
             {
-                FPSCounterDisplaySetting.Instance.SetEnabled(value);
+                PlayerFacingFPSCounterDisplaySetting.Instance.SetEnabled(value);
             }
         }
 

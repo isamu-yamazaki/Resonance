@@ -3,9 +3,9 @@ using UnityEngine.Events;
 
 namespace Resonance.LobbySystem.DataProviders
 {
-    public class FPSCounterDisplaySetting : MonoBehaviour
+    public class PlayerFacingFPSCounterDisplaySetting : MonoBehaviour
     {
-        public static FPSCounterDisplaySetting Instance { get; private set; }
+        public static PlayerFacingFPSCounterDisplaySetting Instance { get; private set; }
 
         [SerializeField] private bool isEnabled;
 

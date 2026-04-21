@@ -18,7 +18,7 @@ namespace Resonance.UI
         public bool IsEscOpen => viewRouter.ActiveOverlayKeys.Contains(EscOverlayView.Key);
         public bool IsDebugMenuOpen => viewRouter.ActiveOverlayKeys.Contains(DebugOverlayView.Key);
         public bool IsPerformanceStatsOpen => viewRouter.ActiveOverlayKeys.Contains(PerformanceStatsOverlay.Key);
-        public bool IsFPSOverlayOpen => viewRouter.ActiveOverlayKeys.Contains(FPSOverlayView.Key);
+        public bool IsPlayerFacingFPSOverlayOpen => viewRouter.ActiveOverlayKeys.Contains(PlayerFacingFPSOverlayView.Key);
 
         private void Awake()
         {
@@ -62,10 +62,10 @@ namespace Resonance.UI
                 return;
             }
 
-            var fpsView = GetComponentInChildren<FPSOverlayView>(includeInactive: true);
+            var fpsView = GetComponentInChildren<PlayerFacingFPSOverlayView>(includeInactive: true);
             if (fpsView == null)
             {
-                Debug.LogError("[InGameViewRouterBridge] FPSOverlayView not found in children.");
+                Debug.LogError("[InGameViewRouterBridge] PlayerFacingFPSOverlayView not found in children.");
                 return;
             }
 
@@ -132,19 +132,19 @@ namespace Resonance.UI
             viewRouter.ToggleOverlay(PerformanceStatsOverlay.Key);
         }
 
-        public void ShowFPSOverlay()
+        public void ShowPlayerFacingFPSOverlay()
         {
-            if (!IsFPSOverlayOpen)
+            if (!IsPlayerFacingFPSOverlayOpen)
             {
-                viewRouter.ToggleOverlay(FPSOverlayView.Key);
+                viewRouter.ToggleOverlay(PlayerFacingFPSOverlayView.Key);
             }
         }
 
-        public void HideFPSOverlay()
+        public void HidePlayerFacingFPSOverlay()
         {
-            if (IsFPSOverlayOpen)
+            if (IsPlayerFacingFPSOverlayOpen)
             {
-                viewRouter.ToggleOverlay(FPSOverlayView.Key);
+                viewRouter.ToggleOverlay(PlayerFacingFPSOverlayView.Key);
             }
         }
     }

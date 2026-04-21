@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Resonance.UI
 {
-    public class FPSOverlayApplicator : MonoBehaviour
+    public class PlayerFacingFPSOverlayApplicator : MonoBehaviour
     {
-        private FPSCounterDisplaySetting _setting;
+        private PlayerFacingFPSCounterDisplaySetting _setting;
 
         private void Start()
         {
-            _setting = FPSCounterDisplaySetting.Instance;
+            _setting = PlayerFacingFPSCounterDisplaySetting.Instance;
             if (_setting == null) { return; }
 
             ApplyState(_setting.IsEnabled);
@@ -30,11 +30,11 @@ namespace Resonance.UI
 
             if (enabled)
             {
-                InGameViewRouterBridge.Instance.ShowFPSOverlay();
+                InGameViewRouterBridge.Instance.ShowPlayerFacingFPSOverlay();
             }
             else
             {
-                InGameViewRouterBridge.Instance.HideFPSOverlay();
+                InGameViewRouterBridge.Instance.HidePlayerFacingFPSOverlay();
             }
         }
     }

@@ -3,22 +3,18 @@ using UnityEngine;
 
 namespace Resonance.UI
 {
-    public class FPSOverlayView : MonoBehaviour, IOverlayView
+    public class PlayerFacingFPSOverlayView : MonoBehaviour, IOverlayView
     {
-        public static string Key => nameof(FPSOverlayView);
+        public static string Key => nameof(PlayerFacingFPSOverlayView);
         string IOverlayView.Key => Key;
 
         [Header("Display Settings")]
         [SerializeField] private int fontSize = 20;
         [SerializeField] private float rightMargin = 10f;
         [SerializeField] private float topMargin = 10f;
-        [SerializeField] private Color goodColor = new Color(0.2f, 1f, 0.2f);
-        [SerializeField] private Color warningColor = new Color(1f, 1f, 0.2f);
-        [SerializeField] private Color badColor = new Color(1f, 0.2f, 0.2f);
+        [SerializeField] private Color textColor = new Color(0.6f, 0.6f, 0.6f);
 
-        [Header("Performance Thresholds")]
-        [SerializeField] private float goodFPS = 60f;
-        [SerializeField] private float warningFPS = 30f;
+        [Header("Update")]
         [SerializeField] private float updateInterval = 0.5f;
 
         private const float BOX_WIDTH = 150f;
@@ -45,7 +41,7 @@ namespace Resonance.UI
                 fontSize = fontSize,
                 fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.UpperRight,
-                normal = { textColor = Color.white }
+                normal = { textColor = textColor }
             };
         }
 
@@ -91,16 +87,8 @@ namespace Resonance.UI
         {
             if (!_isVisible) return;
 
-            UpdateTextColor();
-
             float xPos = Screen.width - BOX_WIDTH - rightMargin;
             GUI.Label(new Rect(xPos, topMargin, BOX_WIDTH, _lineHeight), $"{_currentFPS:0.} FPS", _fpsStyle);
-        }
-
-        private void UpdateTextColor()
-        {
-            _fpsStyle.normal.textColor = _currentFPS >= goodFPS ? goodColor :
-                                         _currentFPS >= warningFPS ? warningColor : badColor;
         }
     }
 }
