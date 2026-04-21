@@ -1,6 +1,4 @@
 using Resonance.Assemblies.UISystem;
-using UnityEditor.Formats.Fbx.Exporter;
-using UnityEditor.Overlays;
 using UnityEngine;
 
 namespace Resonance.LobbySystem.NewUI
