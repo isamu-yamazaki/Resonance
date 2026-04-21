@@ -522,6 +522,76 @@ public class ViewRouterTests
     }
 
     [Test]
+    public void PushScreenView_InjectsShowScreenAction()
+    {
+        var view = new MockScreenViewA();
+        router.RegisterScreenView(new ScreenViewOptions { view = view });
+
+        router.PushScreenView(view.Key);
+
+        Assert.IsNotNull(view.AssignedViewActions.ShowScreen);
+    }
+
+    [Test]
+    public void PushScreenView_InjectedShowScreen_PushesAnotherScreen()
+    {
+        var viewA = new MockScreenViewA();
+        var viewB = new MockScreenViewB();
+        router.RegisterScreenView(new ScreenViewOptions { view = viewA });
+        router.RegisterScreenView(new ScreenViewOptions { view = viewB });
+        router.PushScreenView(viewA.Key);
+
+        viewA.AssignedViewActions.ShowScreen(viewB.Key);
+
+        Assert.AreEqual(viewB.Key, router.ActiveScreenViewKey);
+        Assert.AreEqual(2, router.ScreenViewHistory.Count);
+        Assert.AreEqual(1, viewA.HideCallCount);
+        Assert.AreEqual(1, viewB.ShowCallCount);
+    }
+
+    [Test]
+    public void PushScreenView_InjectsShowOverlayAction()
+    {
+        var view = new MockScreenViewA();
+        router.RegisterScreenView(new ScreenViewOptions { view = view });
+
+        router.PushScreenView(view.Key);
+
+        Assert.IsNotNull(view.AssignedViewActions.ShowOverlay);
+    }
+
+    [Test]
+    public void PushScreenView_InjectedShowOverlay_ShowsOverlay()
+    {
+        var screen = new MockScreenViewA();
+        var overlay = new MockOverlayViewA();
+        router.RegisterScreenView(new ScreenViewOptions { view = screen });
+        router.RegisterOverlay(new OverlayOptions { view = overlay });
+        router.PushScreenView(screen.Key);
+
+        screen.AssignedViewActions.ShowOverlay(overlay.Key);
+
+        Assert.AreEqual(1, overlay.ShowCallCount);
+        Assert.IsTrue(router.ActiveOverlayKeys.Contains(overlay.Key));
+    }
+
+    [Test]
+    public void PopScreenView_ReshowsPrevious_InjectsNonNullShowScreenAndShowOverlay()
+    {
+        var viewA = new MockScreenViewA();
+        var viewB = new MockScreenViewB();
+        router.RegisterScreenView(new ScreenViewOptions { view = viewA });
+        router.RegisterScreenView(new ScreenViewOptions { view = viewB });
+        router.PushScreenView(viewA.Key);
+        router.PushScreenView(viewB.Key);
+
+        router.PopScreenView();
+
+        Assert.IsNotNull(viewA.AssignedViewActions.ShowScreen);
+        Assert.IsNotNull(viewA.AssignedViewActions.ShowOverlay);
+    }
+
+    [Test]
     public void PushScreenView_InjectedBack_PopsToPreviousScreen()
     {
         var viewA = new MockScreenViewA();

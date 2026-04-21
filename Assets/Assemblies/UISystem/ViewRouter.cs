@@ -160,6 +160,8 @@ namespace Resonance.Assemblies.UISystem
             ScreenViewActions actions = new()
             {
                 Back = history.Count > 1 ? () => PopScreenView() : null,
+                ShowScreen = key => PushScreenView(key),
+                ShowOverlay = key => ShowOverlay(key),
             };
             screenViews[topKey].view.OnShow(actions);
         }
