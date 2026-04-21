@@ -1,4 +1,6 @@
 using Resonance.Assemblies.UISystem;
+using UnityEditor.Formats.Fbx.Exporter;
+using UnityEditor.Overlays;
 using UnityEngine;
 
 namespace Resonance.LobbySystem.NewUI
@@ -57,6 +59,13 @@ namespace Resonance.LobbySystem.NewUI
                 Debug.LogError("[LobbyViewRouterBridge] FriendOverlayView not found in children.");
                 return;
             }
+            var lobbySettingsOverlayView = GetComponentInChildren<LobbySettingsOverlayView>(includeInactive: true);
+            if (lobbySettingsOverlayView == null)
+            {
+                Debug.LogError("[LobbyViewRouterBridge] LobbySettingsOverlayView not found in children.");
+                return;
+            }
+
 
             viewRouter.RegisterScreenView(new ScreenViewOptions
             {
@@ -81,6 +90,11 @@ namespace Resonance.LobbySystem.NewUI
             viewRouter.RegisterOverlay(new OverlayOptions
             {
                 view = friendOverlayView,
+                unlockCursorWhenShown = true
+            });
+            viewRouter.RegisterOverlay(new OverlayOptions
+            {
+                view = lobbySettingsOverlayView,
                 unlockCursorWhenShown = true
             });
 
