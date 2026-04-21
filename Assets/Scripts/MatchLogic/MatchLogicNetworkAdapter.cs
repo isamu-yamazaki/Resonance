@@ -43,6 +43,9 @@ namespace Resonance.Match
         [SerializeField] private bool autoStartNextMatch = false;
         [SerializeField] private float matchDurationSeconds = 300f;
 
+        [Header("Arena Short Settings")]
+        [SerializeField] private float arenaShortMatchDurationSeconds = 150f;
+
 
         [Header("Polarity Settings")]
         [SerializeField] private int teamEliminationsToWin = 10;
@@ -137,6 +140,18 @@ namespace Resonance.Match
                     matchStartCountdownSeconds = matchStartCountdownSeconds,
                 };
                 currentRoundManagerNetworkAdapter = new PolarityRoundManagerNetworkAdapter(_matchStatAdapter, polarityConfig);
+            }
+            else if (gameMode == GameMode.ArenaShort)
+            {
+                var arenaConfig = new ArenaRoundManager.ArenaRoundManagerConfig
+                {
+                    ratingToWin = ratingToWin,
+                    autoStartNextMatch = autoStartNextMatch,
+                    autoStartDelaySeconds = autoStartDelaySeconds,
+                    matchStartCountdownSeconds = matchStartCountdownSeconds,
+                    matchDurationSeconds = arenaShortMatchDurationSeconds,
+                };
+                currentRoundManagerNetworkAdapter = new ArenaRoundManagerNetworkAdapter(_matchStatAdapter, arenaConfig);
             }
 
             OnFinishedConfiguring?.Invoke();

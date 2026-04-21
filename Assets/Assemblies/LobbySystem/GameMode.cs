@@ -4,6 +4,7 @@ namespace Resonance.Assemblies.LobbySystem
     {
         Arena = 0,  // default
         Polarity = 1,
+        ArenaShort = 2,
     }
 
     public static class Extensions
@@ -13,6 +14,10 @@ namespace Resonance.Assemblies.LobbySystem
             if (gameMode == GameMode.Arena)
             {
                 return GameMode.Polarity;
+            }
+            if (gameMode == GameMode.Polarity)
+            {
+                return GameMode.ArenaShort;
             }
             return GameMode.Arena;
         }
