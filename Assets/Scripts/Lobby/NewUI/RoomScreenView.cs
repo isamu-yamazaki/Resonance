@@ -42,6 +42,12 @@ namespace Resonance.LobbySystem.NewUI
         [Header("Dependencies")]
         [SerializeField] private LobbyManager lobbyManager;
 
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event buttonClickEvent;
+        [SerializeField] private AK.Wwise.Event readyClickEvent;
+        [SerializeField] private AK.Wwise.Event leaveClickEvent;
+        [SerializeField] private AK.Wwise.Event copyCodeClickEvent;
+
         private ScreenViewActions _viewActions;
         private bool _isApplyingLobbyUpdate;
         private bool _dropdownsPopulated;
@@ -90,30 +96,27 @@ namespace Resonance.LobbySystem.NewUI
 
         private void SubscribeLobbyEvents()
         {
-            if (lobbyManager == null)
-            {
-                return;
-            }
+            if (lobbyManager == null) return;
             lobbyManager.OnRoomUpdated.AddListener(OnRoomUpdated);
             lobbyManager.OnRoomLeft.AddListener(OnRoomLeft);
         }
 
         private void UnsubscribeLobbyEvents()
         {
-            if (lobbyManager == null)
-            {
-                return;
-            }
+            if (lobbyManager == null) return;
             lobbyManager.OnRoomUpdated.RemoveListener(OnRoomUpdated);
             lobbyManager.OnRoomLeft.RemoveListener(OnRoomLeft);
         }
 
+        private void PostClick(AK.Wwise.Event wwiseEvent)
+        {
+            if (wwiseEvent != null && wwiseEvent.IsValid())
+                wwiseEvent.Post(gameObject);
+        }
+
         private void PopulateDropdowns()
         {
-            if (_dropdownsPopulated)
-            {
-                return;
-            }
+            if (_dropdownsPopulated) return;
 
             _isApplyingLobbyUpdate = true;
 
@@ -141,10 +144,7 @@ namespace Resonance.LobbySystem.NewUI
 
         private void ApplyLobbyState(Lobby lobby)
         {
-            if (!lobby.IsValid)
-            {
-                return;
-            }
+            if (!lobby.IsValid) return;
 
             copyCodeText.text = "Copy room code";
 
@@ -160,10 +160,7 @@ namespace Resonance.LobbySystem.NewUI
 
         private void RefreshMembers(Lobby lobby)
         {
-            if (!lobby.IsValid)
-            {
-                return;
-            }
+            if (!lobby.IsValid) return;
 
             UpdateExistingMembers(lobby);
             AddNewMembers(lobby);
@@ -174,16 +171,11 @@ namespace Resonance.LobbySystem.NewUI
         {
             foreach (Transform child in memberListContent)
             {
-                if (!child.TryGetComponent(out MemberEntry member))
-                {
-                    continue;
-                }
+                if (!child.TryGetComponent(out MemberEntry member)) continue;
 
                 var matchingMember = lobby.Members.Find(x => x.Id == member.MemberId);
                 if (!string.IsNullOrEmpty(matchingMember.Id))
-                {
                     member.SetReady(matchingMember.IsReady);
-                }
             }
         }
 
@@ -193,10 +185,7 @@ namespace Resonance.LobbySystem.NewUI
 
             foreach (var member in lobby.Members)
             {
-                if (Array.Exists(existingMembers, x => x.MemberId == member.Id))
-                {
-                    continue;
-                }
+                if (Array.Exists(existingMembers, x => x.MemberId == member.Id)) continue;
 
                 var entry = Instantiate(memberEntryPrefab, memberListContent);
                 entry.Init(member);
@@ -210,70 +199,62 @@ namespace Resonance.LobbySystem.NewUI
             for (int i = 0; i < memberListContent.childCount; i++)
             {
                 var child = memberListContent.GetChild(i);
-                if (!child.TryGetComponent(out MemberEntry member))
-                {
-                    continue;
-                }
+                if (!child.TryGetComponent(out MemberEntry member)) continue;
 
                 if (!lobby.Members.Exists(x => x.Id == member.MemberId))
-                {
                     toRemove.Add(child);
-                }
             }
 
             foreach (var child in toRemove)
-            {
                 Destroy(child.gameObject);
-            }
         }
 
         private void ClearMembers()
         {
             foreach (Transform child in memberListContent)
-            {
                 Destroy(child.gameObject);
-            }
         }
 
         private void OnLeaveClicked()
         {
+            PostClick(leaveClickEvent);
             lobbyManager.LeaveLobby();
         }
 
         private void OnFriendsClicked()
         {
+            PostClick(buttonClickEvent);
             _viewActions.ShowOverlay?.Invoke(FriendOverlayView.Key);
         }
 
         private void OnSettingsClicked()
         {
+            PostClick(buttonClickEvent);
             _viewActions.ShowOverlay?.Invoke(LobbySettingsOverlayView.Key);
         }
 
         private void OnSkinSelectClicked()
         {
+            PostClick(buttonClickEvent);
             _viewActions.ShowScreen?.Invoke(SkinScreenView.Key);
         }
 
         private void OnReadyClicked()
         {
+            PostClick(readyClickEvent);
             lobbyManager.ToggleLocalReady();
         }
 
         private void OnCopyCodeClicked()
         {
             var lobby = lobbyManager.CurrentLobby;
-            if (!lobby.IsValid || string.IsNullOrEmpty(lobby.LobbyCode))
-            {
-                return;
-            }
+            if (!lobby.IsValid || string.IsNullOrEmpty(lobby.LobbyCode)) return;
 
+            PostClick(copyCodeClickEvent);
             GUIUtility.systemCopyBuffer = lobby.LobbyCode;
 
             if (_copyEffectCoroutine != null)
-            {
                 StopCoroutine(_copyEffectCoroutine);
-            }
             _copyEffectCoroutine = StartCoroutine(CopyCodeEffect());
         }
 
@@ -288,23 +269,16 @@ namespace Resonance.LobbySystem.NewUI
 
         private void OnGameModeDropdownChanged(int index)
         {
-            if (_isApplyingLobbyUpdate)
-            {
-                return;
-            }
+            if (_isApplyingLobbyUpdate) return;
+            PostClick(buttonClickEvent);
             lobbyManager.SetGameModeOnLobby((GameMode)index);
         }
 
         private void OnMapDropdownChanged(int index)
         {
-            if (_isApplyingLobbyUpdate)
-            {
-                return;
-            }
-            if (index < 0 || index >= mapOptions.Length)
-            {
-                return;
-            }
+            if (_isApplyingLobbyUpdate) return;
+            if (index < 0 || index >= mapOptions.Length) return;
+            PostClick(buttonClickEvent);
             lobbyManager.SetSceneNameOnLobby(mapOptions[index]);
         }
     }

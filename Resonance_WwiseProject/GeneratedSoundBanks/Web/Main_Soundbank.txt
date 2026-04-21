@@ -19,6 +19,8 @@ Event	ID	Name			Wwise Object Path	Notes
 	1681007094	Play_UI_Shop_Page_Switch			\Default Work Unit\UI\Shop\Play_UI_Shop_Page_Switch	
 	1716612626	Play_Rifle_Empty			\Default Work Unit\Firearms\Rifle\Play_Rifle_Empty	
 	1816346010	Play_UI_Shop_Insufficient_Funds			\Default Work Unit\UI\Shop\Play_UI_Shop_Insufficient_Funds	
+	1857802577	Stop_LobbyMusic			\Default Work Unit\MX_Lobby\Stop_LobbyMusic	
+	2102729959	Play_LobbyMusic			\Default Work Unit\MX_Lobby\Play_LobbyMusic	
 	2277071487	Play_SD_Distortion			\Default Work Unit\SonarDisc\Play_SD_Distortion	
 	2295785721	Play_BaseHandgun_Equip			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Equip	
 	2305398106	Play_Train_Arrival			\Default Work Unit\Play_Train_Arrival	
@@ -90,6 +92,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	479978637	sfx_combat_revolver_reload	.cache\48\{48052FB3-9C61-2CFA-C9FA-2F57F2AC8699}.wem		\Containers\Default Work Unit\Firearms\Revolver\sfx_combat_revolver_reload		484832
 	496429034	sfx_foley_footstep_concrete_run_01	.cache\53\{536EC870-2348-9BED-3E33-55218C0CFEA1}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Concrete\sfx_foley_footstep_concrete_run_01		44768
 	498119391	sfx_foley_footstep_gravel_run_05	.cache\81\{81BFFE35-2A1E-6D2F-1D5B-FCDF30A30CF3}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Gravel\sfx_foley_footstep_gravel_run_05		68080
+	521833349	mx_orbit	.cache\F9\{F9405A26-8C62-9FCA-6753-C7BC45EEE939}.wem		\Containers\Music (Migrated)\Default Work Unit\mx_orbit		11340096
 	522480143	sfx_foley_footstep_concrete_land_02	.cache\AC\{AC546118-D92E-A071-DA48-38846D638CEA}.wem		\Containers\Default Work Unit\Locomotion\Landing\Concrete\sfx_foley_footstep_concrete_land_02		87440
 	522615953	amb_indoor_loop	.cache\7D\{7D3B5EBB-1E5C-8081-CBAD-0FE4BD5295C1}.wem		\Containers\Default Work Unit\Ambience\amb_indoor_loop		3552096
 	529592339	sfx_combat_pistol_fire	.cache\E8\{E8300D91-E97B-1778-0EF5-DB1ACBCD0836}.wem		\Containers\Default Work Unit\Firearms\BaseHandgun\sfx_combat_pistol_fire		42144

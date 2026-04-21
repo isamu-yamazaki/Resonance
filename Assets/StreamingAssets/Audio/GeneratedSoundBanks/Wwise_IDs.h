@@ -27,6 +27,7 @@ namespace AK
         static const AkUniqueID PLAY_INDOORAMBIENCE = 1529325343U;
         static const AkUniqueID PLAY_LANDING = 2323405115U;
         static const AkUniqueID PLAY_LMG_FIRE = 1166794921U;
+        static const AkUniqueID PLAY_LOBBYMUSIC = 2102729959U;
         static const AkUniqueID PLAY_OUTDOORAMBIENCE = 3267244670U;
         static const AkUniqueID PLAY_OVERDRIVE_ACTIVATE = 920319972U;
         static const AkUniqueID PLAY_OVERDRIVE_ACTIVATE_WORLD = 103387701U;
@@ -55,6 +56,7 @@ namespace AK
         static const AkUniqueID PLAY_UI_SHOP_OPEN = 2720966806U;
         static const AkUniqueID PLAY_UI_SHOP_PAGE_SWITCH = 1681007094U;
         static const AkUniqueID STOP_GRAPPLER_TRAVEL = 2526375596U;
+        static const AkUniqueID STOP_LOBBYMUSIC = 1857802577U;
         static const AkUniqueID STOP_REACTIVE_FEEDBACK = 3211783545U;
         static const AkUniqueID STOP_TRAIN_MOVING = 130138219U;
     } // namespace EVENTS

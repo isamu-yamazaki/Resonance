@@ -10130,6 +10130,7 @@ GameObject:
   - component: {fileID: 5294563221004673575}
   - component: {fileID: 3446928608233166696}
   - component: {fileID: 7076538888928033051}
+  - component: {fileID: 8027476151118774596}
   m_Layer: 5
   m_Name: YesButton
   m_TagString: Untagged
@@ -10239,6 +10240,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8027476151118774596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5851763571145460011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
 --- !u!1 &5874310930586486849
 GameObject:
   m_ObjectHideFlags: 0
@@ -12288,6 +12301,7 @@ GameObject:
   - component: {fileID: 6426958920625807488}
   - component: {fileID: 3491764761549738861}
   - component: {fileID: 4300799665849273495}
+  - component: {fileID: 8630271594996664689}
   m_Layer: 5
   m_Name: ResumeButton
   m_TagString: Untagged
@@ -12397,6 +12411,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8630271594996664689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6888037485246046914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
 --- !u!1 &6914708883177024214
 GameObject:
   m_ObjectHideFlags: 0
@@ -13426,6 +13452,7 @@ GameObject:
   - component: {fileID: 7876751188184187662}
   - component: {fileID: 8982717019531035412}
   - component: {fileID: 8675943967020829603}
+  - component: {fileID: 6976259236407420256}
   m_Layer: 5
   m_Name: LeaveButton
   m_TagString: Untagged
@@ -13535,6 +13562,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6976259236407420256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7568276624490519204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
 --- !u!1 &7599237176313734115
 GameObject:
   m_ObjectHideFlags: 0
@@ -14561,6 +14600,7 @@ GameObject:
   - component: {fileID: 8233536662021475005}
   - component: {fileID: 792278250390039716}
   - component: {fileID: 1495751710833290630}
+  - component: {fileID: 5973317070705567046}
   m_Layer: 5
   m_Name: NoButton
   m_TagString: Untagged
@@ -14670,6 +14710,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5973317070705567046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7914959667820939839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
 --- !u!1 &7920944130956108450
 GameObject:
   m_ObjectHideFlags: 0
@@ -14789,6 +14841,7 @@ GameObject:
   - component: {fileID: 6240390035365784012}
   - component: {fileID: 2769548455202723214}
   - component: {fileID: 8071644058812528964}
+  - component: {fileID: 5203154992047048723}
   m_Layer: 5
   m_Name: QuitConfirmationPanel
   m_TagString: Untagged
@@ -14856,6 +14909,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5203154992047048723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8024177865257869988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f53a1be52e38984a9f7ecaeb59edd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Shop.ButtonHoverSound
 --- !u!1 &8039649465437069949
 GameObject:
   m_ObjectHideFlags: 0
@@ -16142,6 +16207,18 @@ MonoBehaviour:
   quitYesButton: {fileID: 7076538888928033051}
   quitNoButton: {fileID: 1495751710833290630}
   despawnerSceneLoader: {fileID: 0}
+  buttonClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  resumeClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  leaveClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
 --- !u!1 &8662877568143083801
 GameObject:
   m_ObjectHideFlags: 0

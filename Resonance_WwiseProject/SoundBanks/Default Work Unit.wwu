@@ -6,6 +6,7 @@
 				<SoundBank Name="Main_Soundbank" ID="{95F38882-910E-47AF-A1A2-7B0E207EEBA0}">
 					<ObjectInclusionList>
 						<ObjectRef Name="Play_Revolver_Equip" ID="{DB37FDD7-37CB-40B1-8796-8675D4DC5F7A}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_LobbyMusic" ID="{5B38352C-58E5-40C5-9F68-82F035C517B0}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Stop_Grappler_Travel" ID="{6B7C0CD9-4727-4169-AB1A-7A06339CCE88}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Revolver_Fire" ID="{0CDD1FD2-CE56-417E-AE61-0671C3176504}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Shop_Close" ID="{C7428F7C-B78A-4184-839D-F24204314D95}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
@@ -15,6 +16,7 @@
 						<ObjectRef Name="Play_SD_Ping" ID="{760F0763-1573-41FF-B3EE-17EEB5CB049B}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Shop_Item_Buy" ID="{4DB16980-3E51-420E-9638-94E8C95325A1}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_SD_PulseActivate" ID="{BA656AA4-42E7-42B4-B54E-A4E939C157BA}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_LobbyMusic" ID="{DA159BCF-44BD-42ED-B8AF-A1A86036AB0B}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_BaseHandgun_Empty" ID="{D41740C2-2EDF-42F7-8EAD-2B9261B4D253}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_LMG_Fire" ID="{E12CFF74-10E0-433D-887D-F7C554635EE9}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Landing" ID="{3F483C2B-4AA2-43B3-B2A7-A916FFF59C74}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
