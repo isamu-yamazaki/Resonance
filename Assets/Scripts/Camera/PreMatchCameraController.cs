@@ -79,14 +79,16 @@ public class PreMatchCameraController : MonoBehaviour
     private void OnMatchLogicConfigured()
     {
         _configured = true;
-        if (ArenaRoundManagerBridge.Instance != null)
-            ArenaRoundManagerBridge.Instance.OnMatchCountdownStart += HandleCountdownStart;
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager != null)
+            arenaRoundManager.OnMatchCountdownStart += HandleCountdownStart;
     }
 
     private void OnDisable()
     {
-        if (ArenaRoundManagerBridge.Instance != null)
-            ArenaRoundManagerBridge.Instance.OnMatchCountdownStart -= HandleCountdownStart;
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager != null)
+            arenaRoundManager.OnMatchCountdownStart -= HandleCountdownStart;
 
         if (MatchLogicNetworkAdapter.Instance != null)
             MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;
@@ -108,7 +110,7 @@ public class PreMatchCameraController : MonoBehaviour
         target = PlayerController.LocalPlayer.transform;
         playerCamera = PlayerController.LocalPlayer.GetComponentInChildren<Camera>(true);
 
-        Task<int> matchStateTask = ArenaRoundManagerBridge.Instance?.GetMatchState();
+        Task<int> matchStateTask = ArenaRoundManagerBridge.GetTemporaryReference()?.GetMatchState();
         if (matchStateTask == null)
         {
             StartCoroutine(EndSequence());
@@ -159,8 +161,9 @@ public class PreMatchCameraController : MonoBehaviour
         if (!_configured)
             return;
 
-        if (ArenaRoundManagerBridge.Instance?.MatchState != BaseMatchState.Waiting
-            && ArenaRoundManagerBridge.Instance?.MatchState != BaseMatchState.Countdown)
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager?.MatchState != BaseMatchState.Waiting
+            && arenaRoundManager?.MatchState != BaseMatchState.Countdown)
         {
             StartCoroutine(EndSequence());
         }
@@ -171,7 +174,7 @@ public class PreMatchCameraController : MonoBehaviour
         int waypointCount = waypointOffsets.Length;
         int currentWaypoint = 0;
 
-        while (ArenaRoundManagerBridge.Instance?.MatchState == BaseMatchState.Waiting)
+        while (ArenaRoundManagerBridge.GetTemporaryReference()?.MatchState == BaseMatchState.Waiting)
         {
             int nextWaypoint = (currentWaypoint + 1) % waypointCount;
 
@@ -184,7 +187,7 @@ public class PreMatchCameraController : MonoBehaviour
             float duration = segmentLength / flightSpeed;
             float elapsed = 0f;
 
-            while (elapsed < duration && ArenaRoundManagerBridge.Instance?.MatchState == BaseMatchState.Waiting)
+            while (elapsed < duration && ArenaRoundManagerBridge.GetTemporaryReference()?.MatchState == BaseMatchState.Waiting)
             {
                 elapsed += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsed / duration);

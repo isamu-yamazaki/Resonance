@@ -25,8 +25,9 @@ public class MatchTimerUI : MonoBehaviour
 
     private void OnMatchLogicConfigured()
     {
-        if (ArenaRoundManagerBridge.Instance != null)
-            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed += viewModel.SetTime;
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager != null)
+            arenaRoundManager.OnMatchTimerElapsed += viewModel.SetTime;
     }
 
     private void OnDestroy()
@@ -36,8 +37,9 @@ public class MatchTimerUI : MonoBehaviour
         if (MatchLogicNetworkAdapter.Instance != null)
             MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;
 
-        if (ArenaRoundManagerBridge.Instance != null)
-            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed -= viewModel.SetTime;
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager != null)
+            arenaRoundManager.OnMatchTimerElapsed -= viewModel.SetTime;
     }
 
     private void UpdateText(string time)

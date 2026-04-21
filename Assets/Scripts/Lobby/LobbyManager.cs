@@ -326,6 +326,25 @@ namespace Resonance.LobbySystem
             return await _currentProvider.GetLocalUserIdAsync();
         }
 
+        /// <summary>
+        /// Gets the local user's display name from the current provider.
+        /// </summary>
+        public async Task<string> GetLocalDisplayName()
+        {
+            EnsureProviderSet();
+            return await _currentProvider.GetLocalDisplayNameAsync();
+        }
+
+        /// <summary>
+        /// Gets the local user's avatar texture from the current provider.
+        /// May return null if the provider cannot resolve one yet.
+        /// </summary>
+        public async Task<Texture2D> GetLocalAvatar()
+        {
+            EnsureProviderSet();
+            return await _currentProvider.GetLocalAvatarAsync();
+        }
+
         private async Task CacheLocalUserId()
         {
             var userId = await _currentProvider.GetLocalUserIdAsync();
@@ -349,6 +368,14 @@ namespace Resonance.LobbySystem
         {
             var nextGameMode = _currentLobby.GameMode.CycleNext();
             SetLobbyData(LobbyMetadataKeys.GameMode.ToString(), nextGameMode.ToString());
+        }
+
+        /// <summary>
+        /// Set the selected game mode on the current lobby directly.
+        /// </summary>
+        public void SetGameModeOnLobby(GameMode gameMode)
+        {
+            SetLobbyData(LobbyMetadataKeys.GameMode.ToString(), gameMode.ToString());
         }
         
         /// <summary>

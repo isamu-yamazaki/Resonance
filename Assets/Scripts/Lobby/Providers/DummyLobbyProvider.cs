@@ -276,6 +276,16 @@ namespace Resonance.LobbySystem
             return Task.FromResult(localUserId);
         }
 
+        public Task<string> GetLocalDisplayNameAsync()
+        {
+            return Task.FromResult("Player " + localUserId);
+        }
+
+        public Task<Texture2D> GetLocalAvatarAsync()
+        {
+            return Task.FromResult<Texture2D>(null);
+        }
+
         public Task InitializeAsync()
         {
             return Task.CompletedTask;

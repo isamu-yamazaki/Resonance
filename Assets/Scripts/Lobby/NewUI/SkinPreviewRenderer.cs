@@ -2,7 +2,7 @@ using Resonance.PlayerController;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Resonance.LobbySystem.TemporaryUI
+namespace Resonance.LobbySystem.NewUI
 {
     public class SkinPreviewRenderer : MonoBehaviour
     {

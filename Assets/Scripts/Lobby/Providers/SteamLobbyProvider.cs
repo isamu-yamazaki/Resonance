@@ -193,6 +193,30 @@ namespace Resonance.LobbySystem.Providers
 #endif
         }
 
+        public Task<string> GetLocalDisplayNameAsync()
+        {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
+            if (!IsSteamClientAvailable)
+                return Task.FromResult(string.Empty);
+
+            return Task.FromResult(Steamworks.SteamFriends.GetPersonaName());
+#else
+            return Task.FromResult(string.Empty);
+#endif
+        }
+
+        public Task<Texture2D> GetLocalAvatarAsync()
+        {
+#if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
+            if (!IsSteamClientAvailable)
+                return Task.FromResult<Texture2D>(null);
+
+            return Task.FromResult(LoadAvatarTexture(Steamworks.SteamUser.GetSteamID()));
+#else
+            return Task.FromResult<Texture2D>(null);
+#endif
+        }
+
         public Task InitializeAsync()
         {
 #if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
@@ -527,29 +551,32 @@ namespace Resonance.LobbySystem.Providers
 
         private FriendUser CreateFriendUser(Steamworks.CSteamID steamId)
         {
-            var displayName = Steamworks.SteamFriends.GetFriendPersonaName(steamId);
-
-            var avatarHandle = Steamworks.SteamFriends.GetLargeFriendAvatar(steamId);
-            Texture2D avatar = null;
-
-            if (avatarHandle != -1 && Steamworks.SteamUtils.GetImageSize(avatarHandle, out uint width, out uint height))
-            {
-                byte[] imageBuffer = new byte[width * height * 4];
-                if (Steamworks.SteamUtils.GetImageRGBA(avatarHandle, imageBuffer, imageBuffer.Length))
-                {
-                    avatar = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
-                    avatar.LoadRawTextureData(imageBuffer);
-                    FlipTextureVertically(avatar);
-                    avatar.Apply();
-                }
-            }
-
             return new FriendUser()
             {
                 Id = steamId.m_SteamID.ToString(),
-                DisplayName = displayName,
-                Avatar = avatar
+                DisplayName = Steamworks.SteamFriends.GetFriendPersonaName(steamId),
+                Avatar = LoadAvatarTexture(steamId)
             };
+        }
+
+        private Texture2D LoadAvatarTexture(Steamworks.CSteamID steamId)
+        {
+            var avatarHandle = Steamworks.SteamFriends.GetLargeFriendAvatar(steamId);
+            if (avatarHandle == -1)
+                return null;
+
+            if (!Steamworks.SteamUtils.GetImageSize(avatarHandle, out uint width, out uint height))
+                return null;
+
+            byte[] imageBuffer = new byte[width * height * 4];
+            if (!Steamworks.SteamUtils.GetImageRGBA(avatarHandle, imageBuffer, imageBuffer.Length))
+                return null;
+
+            var avatar = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
+            avatar.LoadRawTextureData(imageBuffer);
+            FlipTextureVertically(avatar);
+            avatar.Apply();
+            return avatar;
         }
 
         private void OnAvatarImageLoaded(Steamworks.AvatarImageLoaded_t callback)

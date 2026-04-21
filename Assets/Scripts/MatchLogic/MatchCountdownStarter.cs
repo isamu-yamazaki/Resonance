@@ -78,7 +78,7 @@ namespace Resonance.Match
 
         private void StartMatchCountdown()
         {
-            var activeRoundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
+            var activeRoundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
             if (activeRoundManager != null)
             {
                 activeRoundManager.StartMatchCountdown();
@@ -86,7 +86,7 @@ namespace Resonance.Match
             }
             else
             {
-                Debug.LogError("[MatchStarter] MatchLogicNetworkAdapter.Instance.ActiveRoundManager is null! Make sure MatchLogicNetworkAdapter is in the scene.");
+                Debug.LogError("[MatchStarter] Active round manager is null! Make sure MatchLogicNetworkAdapter is in the scene.");
             }
         }
 
