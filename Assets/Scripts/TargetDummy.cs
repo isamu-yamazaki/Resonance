@@ -38,9 +38,10 @@ namespace Resonance.Entities
             if (IsDead) return;
             
             // Track damage for assists
-            if (attacker != null && MatchStatBridge.Instance != null && countsAsKill)
+            var matchStats = MatchStatBridge.GetTemporaryReference();
+            if (attacker != null && matchStats != null && countsAsKill)
             {
-                MatchStatBridge.Instance.RecordDamage(attacker, gameObject, amount);
+                matchStats.RecordDamage(attacker, gameObject, amount);
                 _lastAttacker = attacker;
             }
             
@@ -58,9 +59,10 @@ namespace Resonance.Entities
             IsDead = true;
             
             // Record kill in match stats
-            if (_lastAttacker != null && MatchStatBridge.Instance != null && countsAsKill)
+            var matchStats = MatchStatBridge.GetTemporaryReference();
+            if (_lastAttacker != null && matchStats != null && countsAsKill)
             {
-                MatchStatBridge.Instance.RecordKill(_lastAttacker, gameObject);
+                matchStats.RecordKill(_lastAttacker, gameObject);
                 Debug.Log($"[TargetDummy] {gameObject.name} killed by {_lastAttacker.name}");
             }
             

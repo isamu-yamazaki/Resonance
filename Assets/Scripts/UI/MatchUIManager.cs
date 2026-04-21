@@ -74,8 +74,9 @@ namespace Resonance.UI
 
         private void HandleFinishedConfiguring()
         {
-            if (ArenaRoundManagerBridge.Instance != null)
-                ArenaRoundManagerBridge.Instance.OnMatchEnd += OnMatchEnd;
+            var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+            if (arenaRoundManager != null)
+                arenaRoundManager.OnMatchEnd += OnMatchEnd;
         }
 
         private void UnsubscribeFromEvents()
@@ -83,8 +84,9 @@ namespace Resonance.UI
             if (MatchLogicNetworkAdapter.Instance != null)
                 MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= HandleFinishedConfiguring;
 
-            if (ArenaRoundManagerBridge.Instance != null)
-                ArenaRoundManagerBridge.Instance.OnMatchEnd -= OnMatchEnd;
+            var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+            if (arenaRoundManager != null)
+                arenaRoundManager.OnMatchEnd -= OnMatchEnd;
         }
         #endregion
 
@@ -119,9 +121,10 @@ namespace Resonance.UI
             // Reset time scale in case it was paused
             Time.timeScale = 1f;
 
-            if (ArenaRoundManagerBridge.Instance != null)
+            var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+            if (arenaRoundManager != null)
             {
-                ArenaRoundManagerBridge.Instance.StartMatchCountdown();
+                arenaRoundManager.StartMatchCountdown();
             }
         }
 
@@ -135,9 +138,10 @@ namespace Resonance.UI
         #region HUD Updates
         private async void UpdateHUD()
         {
-            if (playerObject == null || MatchStatBridge.Instance == null) return;
+            var matchStats = MatchStatBridge.GetTemporaryReference();
+            if (playerObject == null || matchStats == null) return;
 
-            PlayerMatchStats? stats = await MatchStatBridge.Instance.GetStats(playerObject);
+            PlayerMatchStats? stats = await matchStats.GetStats(playerObject);
             if (stats == null) return;
 
             // Update KDA
@@ -154,9 +158,10 @@ namespace Resonance.UI
             }
 
             // Update eliminations progress
-            if (eliminationsText != null && ArenaRoundManagerBridge.Instance != null)
+            var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+            if (eliminationsText != null && arenaRoundManager != null)
             {
-                float target = ArenaRoundManagerBridge.Instance.RatingToWin;
+                float target = arenaRoundManager.RatingToWin;
                 eliminationsText.text = $"Rating: {stats?.rating:F0}/{target}";
             }
         }
@@ -200,9 +205,10 @@ namespace Resonance.UI
             }
 
             // Optionally show basic stats in winner text
-            if (winner is PlayerID id && MatchStatBridge.Instance != null)
+            var matchStats = MatchStatBridge.GetTemporaryReference();
+            if (winner is PlayerID id && matchStats != null)
             {
-                PlayerMatchStats? stats = await MatchStatBridge.Instance.GetStats(id);
+                PlayerMatchStats? stats = await matchStats.GetStats(id);
                 if (stats != null && finalStatsText != null)
                 {
                     finalStatsText.text = $"Final Score: {stats?.kills} Kills";

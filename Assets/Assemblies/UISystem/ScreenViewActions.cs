@@ -2,8 +2,8 @@ using System;
 
 namespace Resonance.Assemblies.UISystem
 {
-    public struct OverlayViewActions
+    public struct ScreenViewActions
     {
-        public Action Dismiss;
+        public Action Back;
     }
 }

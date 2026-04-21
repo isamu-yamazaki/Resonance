@@ -6,6 +6,9 @@ namespace Resonance.DebugTools
 {
     public class DebugOverlayView : MonoBehaviour, IOverlayView
     {
+        public static string Key => nameof(DebugOverlayView);
+        string IOverlayView.Key => Key;
+
         #region Singleton
         public static DebugOverlayView Instance { get; private set; }
         #endregion

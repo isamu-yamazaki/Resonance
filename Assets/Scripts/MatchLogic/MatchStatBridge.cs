@@ -1,11 +1,16 @@
 namespace Resonance.Match
 {
     /// <summary>
-    /// Backward compatibility facade for MatchStatNetworkAdapter.
-    /// New code should use NetworkingBridge.Instance.MatchStats directly.
+    /// Static facade for accessing MatchStatNetworkAdapter via the MatchLogicNetworkAdapter singleton.
     /// </summary>
     public static class MatchStatBridge
     {
-        public static MatchStatNetworkAdapter Instance => MatchLogicNetworkAdapter.Instance?.MatchStats;
+        /// <summary>
+        /// Returns a transient reference to the match stats network module.
+        /// Do NOT store the returned reference in a field on a NetworkBehaviour or NetworkModule;
+        /// PurrNet's codegen will re-register the module under the storing parent and cause undefined behavior.
+        /// </summary>
+        public static MatchStatNetworkAdapter GetTemporaryReference() =>
+            MatchLogicNetworkAdapter.Instance?.GetTemporaryMatchStatsReference();
     }
 }
