@@ -18433,7 +18433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 282c5d30f173b4996a031ccab931f1d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.BuildTools.ClientBuildConfigReceiver
-  config: {fileID: 11400000, guid: 8a85ec5fc56fd4ce79486d1cb20a0b52, type: 2}
+  config: {fileID: 11400000, guid: a77065c5640e0414690255b15709e104, type: 2}
 --- !u!1 &1877926902
 GameObject:
   m_ObjectHideFlags: 0

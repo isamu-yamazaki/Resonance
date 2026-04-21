@@ -146,7 +146,7 @@ namespace Resonance.LobbySystem.NewUI
                 return;
             }
 
-            copyCodeText.text = lobby.LobbyCode;
+            copyCodeText.text = "Copy code";
 
             _isApplyingLobbyUpdate = true;
 
@@ -274,20 +274,15 @@ namespace Resonance.LobbySystem.NewUI
             {
                 StopCoroutine(_copyEffectCoroutine);
             }
-            _copyEffectCoroutine = StartCoroutine(CopyCodeEffect(lobby.LobbyCode));
+            _copyEffectCoroutine = StartCoroutine(CopyCodeEffect());
         }
 
-        private IEnumerator CopyCodeEffect(string code)
+        private IEnumerator CopyCodeEffect()
         {
             copyCodeText.text = "Copied!";
             yield return CopyReturnDelay;
 
-            copyCodeText.text = string.Empty;
-            for (int i = 0; i < code.Length; i++)
-            {
-                copyCodeText.text += code[i];
-                yield return CopyTypeDelay;
-            }
+            copyCodeText.text = "Copy code";
             _copyEffectCoroutine = null;
         }
 
