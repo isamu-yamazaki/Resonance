@@ -16,6 +16,7 @@ namespace Resonance.LobbySystem.NewUI
 
         [SerializeField] private LobbyManager lobbyManager;
         [SerializeField] private GameObject friendEntryPrefab;
+        [SerializeField] private GameObject listEmptyMessage;
         [SerializeField] private Transform friendsListContent;
         [SerializeField] private LobbyManager.FriendFilter filter = LobbyManager.FriendFilter.Online;
 
@@ -82,6 +83,14 @@ namespace Resonance.LobbySystem.NewUI
                     continue;
                 }
                 _entries[friend.Id] = CreateEntry(friend);
+            }
+
+            if (_entries.Count == 0 && listEmptyMessage != null)
+            {
+                listEmptyMessage.SetActive(true);
+            } else if (listEmptyMessage != null)
+            {
+                listEmptyMessage.SetActive(false);
             }
         }
 
