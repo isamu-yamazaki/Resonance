@@ -6843,6 +6843,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c0caaec1ec9479183ea34c66634392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.SkinScreenView
+  skinCatalog: {fileID: 0}
+  content: {fileID: 0}
 --- !u!1 &748201826
 GameObject:
   m_ObjectHideFlags: 0
@@ -11639,7 +11641,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dad4ac3e02194eae943187c1a86e01e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.FriendOverlayView
-  friendsListContent: {fileID: 0}
+  lobbyManager: {fileID: 1097043115}
+  friendEntryPrefab: {fileID: 365240269389628560, guid: 701273401acb61842af8f9ea5bd0871b, type: 3}
+  friendsListContent: {fileID: 1048265652}
+  filter: 0
 --- !u!1 &1137537745
 GameObject:
   m_ObjectHideFlags: 0
