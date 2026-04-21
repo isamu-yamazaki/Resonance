@@ -17,6 +17,10 @@ namespace Resonance.LobbySystem.NewUI
 
         [SerializeField] private LobbyManager lobbyManager;
 
+        [Header("Wwise Events")]
+        [SerializeField] private AK.Wwise.Event buttonClickEvent;
+        [SerializeField] private AK.Wwise.Event playClickEvent;
+
         public static string Key => nameof(LobbyPanelScreenView);
         string IScreenView.Key => Key;
 
@@ -79,16 +83,34 @@ namespace Resonance.LobbySystem.NewUI
             }
         }
 
-        private void OnPlayClicked() =>
+        private void PostClick(AK.Wwise.Event wwiseEvent)
+        {
+            if (wwiseEvent != null && wwiseEvent.IsValid())
+                wwiseEvent.Post(gameObject);
+        }
+
+        private void OnPlayClicked()
+        {
+            PostClick(playClickEvent);
             _viewActions.ShowScreen?.Invoke(CreateJoinScreenView.Key);
+        }
 
-        private void OnFriendsOverlayClicked() =>
+        private void OnFriendsOverlayClicked()
+        {
+            PostClick(buttonClickEvent);
             _viewActions.ShowOverlay?.Invoke(FriendOverlayView.Key);
+        }
 
-        private void OnSkinSelectClicked() =>
+        private void OnSkinSelectClicked()
+        {
+            PostClick(buttonClickEvent);
             _viewActions.ShowScreen?.Invoke(SkinScreenView.Key);
+        }
 
-        private void OnSettingsClicked() =>
+        private void OnSettingsClicked()
+        {
+            PostClick(buttonClickEvent);
             _viewActions.ShowOverlay?.Invoke(LobbySettingsOverlayView.Key);
+        }
     }
 }
