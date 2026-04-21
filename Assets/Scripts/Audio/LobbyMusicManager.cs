@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class LobbyMusicManager : MonoBehaviour
@@ -8,6 +9,12 @@ public class LobbyMusicManager : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(PostMusicDelayed());
+    }
+
+    private IEnumerator PostMusicDelayed()
+    {
+        yield return null; // wait one frame for Wwise to finish initializing
         lobbyMusicStartEvent.Post(gameObject);
     }
 
