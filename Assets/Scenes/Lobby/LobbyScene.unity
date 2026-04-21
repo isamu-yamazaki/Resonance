@@ -13201,7 +13201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.RoomScreenView
   mapOptions:
-  - TB_RoughCut
+  - NightCity
   - TB_PlaytestArena
   leaveButton: {fileID: 269725911}
   friendsButton: {fileID: 1512393149}
