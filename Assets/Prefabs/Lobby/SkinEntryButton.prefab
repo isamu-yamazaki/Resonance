@@ -148,9 +148,8 @@ GameObject:
   - component: {fileID: 9191369499800029146}
   - component: {fileID: 7111833539132700965}
   - component: {fileID: 8384571530689981476}
-  - component: {fileID: -2510906113608023777}
   m_Layer: 5
-  m_Name: Skin Entry Button
+  m_Name: SkinEntryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -257,30 +256,4 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7111833539132700965}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Resonance.LobbySystem.TemporaryUI.SkinSelectionView,
-          Assembly-CSharp
-        m_MethodName: Show
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &-2510906113608023777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7024649368418729665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fef64f1c7db94b27876ef5870b998f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.TemporaryUI.SkinEntryButton
-  skinNameText: {fileID: 8683834361584848594}
+      m_Calls: []

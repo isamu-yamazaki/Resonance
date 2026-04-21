@@ -1596,7 +1596,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &106672229
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4088,7 +4088,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 379580397}
-  - component: {fileID: 379580398}
   m_Layer: 5
   m_Name: SkinSelect
   m_TagString: Untagged
@@ -4116,50 +4115,6 @@ RectTransform:
   m_AnchoredPosition: {x: -50, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &379580398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 379580396}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &395666970
 GameObject:
   m_ObjectHideFlags: 0
@@ -5341,7 +5296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.LobbyPanelScreen
   playButton: {fileID: 994508994}
   friendsOverlayButton: {fileID: 581875027}
-  skinSelectButton: {fileID: 379580398}
+  skinSelectButton: {fileID: 1024143874}
   username: {fileID: 878619309}
   userAvatar: {fileID: 1486233402}
   lobbyManager: {fileID: 1097043115}
@@ -5971,7 +5926,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2057356664}
-  m_Father: {fileID: 778749877}
+  m_Father: {fileID: 746012229}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6021,20 +5976,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 628295574}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 778749878}
-        m_TargetAssemblyTypeName: Resonance.LobbySystem.TemporaryUI.SkinSelectionView,
-          Assembly-CSharp
-        m_MethodName: Hide
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &628295574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6773,7 +6715,10 @@ RectTransform:
   m_Children:
   - {fileID: 1198942431}
   - {fileID: 989960629}
-  - {fileID: 778749877}
+  - {fileID: 628295572}
+  - {fileID: 1045788025}
+  - {fileID: 947812945}
+  - {fileID: 1513129671}
   m_Father: {fileID: 1108437044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6843,8 +6788,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c0caaec1ec9479183ea34c66634392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.SkinScreenView
-  skinCatalog: {fileID: 0}
-  content: {fileID: 0}
+  skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
+  content: {fileID: 1640487266}
+  entryButtonPrefab: {fileID: 7024649368418729665, guid: 7559c85cab2db41f7af6c9c21381ac74, type: 3}
+  doneButton: {fileID: 628295573}
 --- !u!1 &748201826
 GameObject:
   m_ObjectHideFlags: 0
@@ -7511,80 +7458,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   memberEntryPrefab: {fileID: 1132880664040779526, guid: 028e89ef3472d6b46b953456b578c5f6, type: 3}
   content: {fileID: 1137537746}
---- !u!1 &778749876
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 778749877}
-  - component: {fileID: 778749879}
-  - component: {fileID: 778749878}
-  m_Layer: 5
-  m_Name: SkinSelectionScreen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &778749877
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 778749876}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 628295572}
-  - {fileID: 1045788025}
-  - {fileID: 947812945}
-  - {fileID: 1513129671}
-  m_Father: {fileID: 746012229}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &778749878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 778749876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 735afbf43a96a45b9a8c374c1484dfed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.TemporaryUI.SkinSelectionView
-  OnViewShow:
-    m_PersistentCalls:
-      m_Calls: []
-  OnViewHide:
-    m_PersistentCalls:
-      m_Calls: []
-  content: {fileID: 1640487266}
-  entryButtonPrefab: {fileID: -2510906113608023777, guid: 7559c85cab2db41f7af6c9c21381ac74, type: 3}
-  skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
---- !u!225 &778749879
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 778749876}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
 --- !u!1 &786738911
 GameObject:
   m_ObjectHideFlags: 0
@@ -8920,7 +8793,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 778749877}
+  m_Father: {fileID: 746012229}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -10574,7 +10447,7 @@ RectTransform:
   - {fileID: 786738912}
   - {fileID: 1489215044}
   - {fileID: 83343708}
-  m_Father: {fileID: 778749877}
+  m_Father: {fileID: 746012229}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -15160,31 +15033,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1439807821}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PurrLobby.LobbyManager, PurrNetLobbySetup
-        m_MethodName: CreateRoom
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PurrLobby.ViewManager, PurrNetLobbySetup
-        m_MethodName: OnRoomCreateClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1439807821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15777,7 +15626,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 778749877}
+  m_Father: {fileID: 746012229}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -15796,8 +15645,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea099815049064ff9a9f8a36545f0076, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.TemporaryUI.SkinPreviewRenderer
-  previewCamera: {fileID: 0}
-  spawnPoint: {fileID: 0}
+  previewCamera: {fileID: 2136755043}
+  spawnPoint: {fileID: 688981006}
   displayImage: {fileID: 947812943}
   skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
   renderSize: {x: 256, y: 256}
