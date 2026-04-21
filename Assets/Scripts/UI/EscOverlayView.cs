@@ -8,6 +8,9 @@ namespace Resonance.UI
 {
     public class EscOverlayView : MonoBehaviour, IOverlayView
     {
+        public static string Key => nameof(EscOverlayView);
+        string IOverlayView.Key => Key;
+
         public static EscOverlayView Instance { get; private set; }
 
         [Header("ESC Menu UI")]

@@ -16,6 +16,9 @@ namespace Resonance.Shop
 {
     public class ShopOverlayView : MonoBehaviour, IOverlayView
     {
+        public static string Key => nameof(ShopOverlayView);
+        string IOverlayView.Key => Key;
+
         public static ShopOverlayView Instance { get; private set; }
 
         [SerializeField] private GameObject shopMenu;

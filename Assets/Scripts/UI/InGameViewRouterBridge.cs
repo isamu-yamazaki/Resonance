@@ -14,13 +14,9 @@ namespace Resonance.UI
 
         public ViewRouter viewRouter { get; private set; }
 
-        private int shopOverlayId;
-        private int escOverlayId;
-        private int debugOverlayId;
-
-        public bool IsShopOpen => viewRouter.ActiveOverlayIds.Contains(shopOverlayId);
-        public bool IsEscOpen => viewRouter.ActiveOverlayIds.Contains(escOverlayId);
-        public bool IsDebugMenuOpen => viewRouter.ActiveOverlayIds.Contains(debugOverlayId);
+        public bool IsShopOpen => viewRouter.ActiveOverlayKeys.Contains(ShopOverlayView.Key);
+        public bool IsEscOpen => viewRouter.ActiveOverlayKeys.Contains(EscOverlayView.Key);
+        public bool IsDebugMenuOpen => viewRouter.ActiveOverlayKeys.Contains(DebugOverlayView.Key);
 
         private void Awake()
         {
@@ -63,19 +59,19 @@ namespace Resonance.UI
                 PlayerInputManager.Instance.PlayerControls.PlayerActionMap,
             };
 
-            shopOverlayId = viewRouter.RegisterOverlay(new OverlayOptions
+            viewRouter.RegisterOverlay(new OverlayOptions
             {
                 view = shopView,
                 inputMapsToDisableWhenShown = playerLocomotionAndActions,
                 unlockCursorWhenShown = true
             });
-            escOverlayId = viewRouter.RegisterOverlay(new OverlayOptions
+            viewRouter.RegisterOverlay(new OverlayOptions
             {
                 view = escView,
                 inputMapsToDisableWhenShown = playerLocomotionAndActions,
                 unlockCursorWhenShown = true
             });
-            debugOverlayId = viewRouter.RegisterOverlay(new OverlayOptions
+            viewRouter.RegisterOverlay(new OverlayOptions
             {
                 view = debugView,
                 unlockCursorWhenShown = true
@@ -92,17 +88,17 @@ namespace Resonance.UI
 
         public void ToggleShop()
         {
-            viewRouter.ToggleOverlay(shopOverlayId);
+            viewRouter.ToggleOverlay(ShopOverlayView.Key);
         }
 
         public void ToggleEsc()
         {
-            viewRouter.ToggleOverlay(escOverlayId);
+            viewRouter.ToggleOverlay(EscOverlayView.Key);
         }
 
         public void ToggleDebugMenu()
         {
-            viewRouter.ToggleOverlay(debugOverlayId);
+            viewRouter.ToggleOverlay(DebugOverlayView.Key);
         }
     }
 }
