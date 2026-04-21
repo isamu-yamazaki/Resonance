@@ -146,7 +146,7 @@ namespace Resonance.LobbySystem.NewUI
                 return;
             }
 
-            copyCodeText.text = "Copy code";
+            copyCodeText.text = "Copy room code";
 
             _isApplyingLobbyUpdate = true;
 
@@ -282,7 +282,7 @@ namespace Resonance.LobbySystem.NewUI
             copyCodeText.text = "Copied!";
             yield return CopyReturnDelay;
 
-            copyCodeText.text = "Copy code";
+            copyCodeText.text = "Copy room code";
             _copyEffectCoroutine = null;
         }
 
