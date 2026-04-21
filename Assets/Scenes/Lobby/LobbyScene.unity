@@ -6207,6 +6207,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be29839d056174a75976356b37e0b7e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.CreateJoinScreenView
+  createButton: {fileID: 1439807820}
+  codeInput: {fileID: 1639605042}
+  joinButton: {fileID: 324813047}
+  backButton: {fileID: 1321877447}
+  lobbyManager: {fileID: 1097043115}
 --- !u!1 &688981005
 GameObject:
   m_ObjectHideFlags: 0
@@ -11108,161 +11113,28 @@ MonoBehaviour:
     stringValues: []
   OnRoomJoined:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1267779088}
-        m_TargetAssemblyTypeName: Resonance.LobbySystem.ViewManager, Assembly-CSharp
-        m_MethodName: OnRoomJoined
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnRoomJoinFailed:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LobbySceneNavigator, Assembly-CSharp
-        m_MethodName: NavigateToNextScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnRoomLeft:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1267779088}
-        m_TargetAssemblyTypeName: Resonance.LobbySystem.ViewManager, Assembly-CSharp
-        m_MethodName: OnRoomLeft
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 777771659}
-        m_TargetAssemblyTypeName: Resonance.LobbySystem.LobbyMemberList, Assembly-CSharp
-        m_MethodName: OnLobbyLeave
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnRoomUpdated:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 777771659}
-        m_TargetAssemblyTypeName: Resonance.LobbySystem.LobbyMemberList, Assembly-CSharp
-        m_MethodName: LobbyDataUpdate
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1093237117}
-        m_TargetAssemblyTypeName: Resonance.LobbySystem.ModeButton, Assembly-CSharp
-        m_MethodName: UpdateModeText
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1377126694}
-        m_TargetAssemblyTypeName: CurrentSceneName, Assembly-CSharp
-        m_MethodName: UpdateName
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnPlayerListUpdated:
     m_PersistentCalls:
       m_Calls: []
   OnRoomSearchResults:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PurrLobby.LobbyList, PurrNetLobbySetup
-        m_MethodName: Populate
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnFriendListPulled:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PurrLobby.FriendsList, PurrNetLobbySetup
-        m_MethodName: Populate
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnAllReady:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1097043116}
-        m_TargetAssemblyTypeName: PurrLobby.SceneSwitcher, PurrNetLobbySetup
-        m_MethodName: SwitchScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1097043117}
-        m_TargetAssemblyTypeName: Resonance.Server.ServerOrchestratorLobbyCreator,
-          Assembly-CSharp
-        m_MethodName: CreateAndSendCurrentLobbyIfClientModeAndLobbyHost
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnError:
     m_PersistentCalls:
       m_Calls: []
