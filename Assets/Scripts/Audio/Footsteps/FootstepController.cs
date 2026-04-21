@@ -40,7 +40,6 @@ namespace Resonance.Audio
         protected override void OnSpawned()
         {
             base.OnSpawned();
-            enabled = isOwner;
         }
 
         void Awake()
@@ -57,6 +56,8 @@ namespace Resonance.Audio
 
         void Update()
         {
+            if (!isOwner) return;
+
             bool isInAir = !playerState.InGroundedState();
             bool canLand = playerState.InGroundedState() ||
                            playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping ||
@@ -70,6 +71,19 @@ namespace Resonance.Audio
 
         public void PlayFootstep()
         {
+            if (!isOwner) return;
+            PlayFootstepRpc();
+        }
+
+        public void PlayLanding()
+        {
+            if (!isOwner) return;
+            PlayLandingRpc();
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void PlayFootstepRpc()
+        {
 #if !UNITY_SERVER
             DetectSurface();
             SetSurfaceSwitch();
@@ -80,7 +94,8 @@ namespace Resonance.Audio
 #endif
         }
 
-        public void PlayLanding()
+        [ObserversRpc(runLocally: true)]
+        private void PlayLandingRpc()
         {
 #if !UNITY_SERVER
             DetectSurface();
