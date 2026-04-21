@@ -68,7 +68,6 @@ namespace Resonance.Audio
             wasInAir = isInAir && canLand;
         }
 
-        [ObserversRpc(runLocally: true)]
         public void PlayFootstep()
         {
 #if !UNITY_SERVER
@@ -81,7 +80,6 @@ namespace Resonance.Audio
 #endif
         }
 
-        [ObserversRpc(runLocally: true)]
         public void PlayLanding()
         {
 #if !UNITY_SERVER
