@@ -3,11 +3,12 @@ using Resonance.Assemblies.UISystem;
 using Resonance.Helper;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Resonance.LobbySystem.NewUI
 {
-    public class LobbySettingsOverlayView : MonoBehaviour, IOverlayView
+    public class LobbySettingsOverlayView : MonoBehaviour, IOverlayView, IPointerClickHandler
     {
         [SerializeField] private Button doneButton;
 
@@ -64,6 +65,15 @@ namespace Resonance.LobbySystem.NewUI
         private void SetDisplayValue(float displayValue)
         {
             displayText.text = $"{Math.Round(displayValue, 3)}";
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.pointerPressRaycast.gameObject != gameObject)
+            {
+                return;
+            }
+            dismiss?.Invoke();
         }
     }
 }
