@@ -3307,6 +3307,14 @@ MonoBehaviour:
   username: {fileID: 878619309}
   userAvatar: {fileID: 1486233402}
   lobbyManager: {fileID: 1097043115}
+  buttonClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+  playClickEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
 --- !u!1 &576315177
 GameObject:
   m_ObjectHideFlags: 0
@@ -5471,6 +5479,7 @@ GameObject:
   m_Component:
   - component: {fileID: 938520291}
   - component: {fileID: 938520290}
+  - component: {fileID: 938520292}
   m_Layer: 0
   m_Name: WwiseGlobal
   m_TagString: Untagged
@@ -5518,6 +5527,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &938520292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938520289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcaea63d94d86124cb2ad3580a16127d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkBank
+  triggerList: f7e1664c
+  useOtherObject: 0
+  data:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 584fcd24c2f0a554993d3eed12ee4122, type: 2}
+  decodeBank: 0
+  overrideLoadSetting: 0
+  loadAsynchronous: 0
+  saveDecodedBank: 0
+  unloadTriggerList: 958ca0ea
+  bankNameInternal: 
+  valueGuidInternal: 
 --- !u!1 &947803332
 GameObject:
   m_ObjectHideFlags: 0
@@ -12231,9 +12265,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 74b2c5077b066064f9c9681d644cb628, type: 2}
-  matchSceneNames:
-  - TB_PlaytestArena
-  - TB_RoughCut
 --- !u!4 &1934866797
 Transform:
   m_ObjectHideFlags: 0
