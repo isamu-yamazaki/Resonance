@@ -19,7 +19,7 @@ MonoBehaviour:
   slot: 1
   weaponClass: 5
   firingType: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 705b8437e5acac34ab5e51efd281b216, type: 3}
   weaponMuzzleKey: basePistol
   audioProperties: {fileID: 11400000, guid: 34528873aa7e23541af0cf97fda2ba5a, type: 2}
   damage: 10

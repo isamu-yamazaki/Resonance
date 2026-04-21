@@ -29,6 +29,7 @@ namespace Resonance.Shop
             itemNameText.text = weapon.WeaponName;
             itemCostText.text = $"₢ {weapon.WeaponCost:0}";
             iconImage.sprite = weapon.Icon;
+            iconImage.enabled = weapon.Icon != null;
             button.onClick.AddListener(() => ShopOverlayView.Instance.Buy(weapon));
             RefreshAffordability();
         }
@@ -40,6 +41,7 @@ namespace Resonance.Shop
             itemNameText.text = augment.AugmentName;
             itemCostText.text = $"₢ {augment.AugmentCost:0}";
             iconImage.sprite = augment.Icon;
+            iconImage.enabled = augment.Icon != null;
             button.onClick.AddListener(() => ShopOverlayView.Instance.Buy(augment));
             RefreshAffordability();
         }
@@ -51,6 +53,7 @@ namespace Resonance.Shop
             itemNameText.text = mod.ModName;
             itemCostText.text = $"₢ {mod.ModCost:0}";
             iconImage.sprite = mod.Icon;
+            iconImage.enabled = mod.Icon != null;
             button.onClick.AddListener(() => ShopOverlayView.Instance.Buy(mod));
             RefreshAffordability();
         }
