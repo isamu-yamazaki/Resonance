@@ -6,6 +6,11 @@
 				<Sound Name="mx_orbit" ID="{9CD0B3FA-7DF4-4552-AA42-7C7087C3D0EE}" ShortID="771944785">
 					<PropertyList>
 						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-2</Value>
+							</ValueList>
+						</Property>
 					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Conversion">

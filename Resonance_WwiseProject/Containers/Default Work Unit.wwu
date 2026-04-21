@@ -5505,7 +5505,7 @@
 								<Property Name="AttenuationDistanceScaling" Type="Real32" Value="0.5"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-3</Value>
+										<Value>-1</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -7319,6 +7319,13 @@
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="sfx_UI_shop_item_buy" ID="{60175233-E2FB-4776-96C8-1686FF9B5FE8}" ShortID="365367292">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
@@ -7341,6 +7348,13 @@
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="sfx_UI_shop_item_sell" ID="{E2AEA770-599D-4260-A1ED-005DB66AB745}" ShortID="841834211">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
@@ -7363,6 +7377,13 @@
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="sfx_UI_shop_open" ID="{C2AB21E5-8167-47AB-A052-622AD8E0D8B5}" ShortID="126211514">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-8</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
@@ -7385,6 +7406,13 @@
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="sfx_UI_shop_page_switch" ID="{EC42CC3C-5CA8-40E6-AD05-28F770DEA13F}" ShortID="557764670">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-8</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
@@ -7409,6 +7437,13 @@
 							</ChildrenList>
 						</Folder>
 						<Sound Name="sfx_UI_button_click" ID="{3C8735DE-62D9-4857-BC91-21E49D616A72}" ShortID="1029871749">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-2</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
@@ -7431,6 +7466,13 @@
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="sfx_UI_button_hover" ID="{C6254FD4-3372-4A34-BB0D-0656DDB003D2}" ShortID="618498468">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-14</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
@@ -7714,7 +7756,7 @@
 								<Property Name="3DSpatialization" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-5</Value>
+										<Value>-1</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -7967,7 +8009,7 @@
 								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-4</Value>
+										<Value>-3</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
