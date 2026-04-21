@@ -7,14 +7,9 @@ public class LobbyMusicManager : MonoBehaviour
     [SerializeField] private AK.Wwise.Event lobbyMusicStartEvent;
     [SerializeField] private AK.Wwise.Event lobbyMusicStopEvent;
 
-    private void Start()
+    private IEnumerator Start()
     {
-        StartCoroutine(PostMusicDelayed());
-    }
-
-    private IEnumerator PostMusicDelayed()
-    {
-        yield return null; // wait one frame for Wwise to finish initializing
+        yield return new WaitForSeconds(0.5f);
         lobbyMusicStartEvent.Post(gameObject);
     }
 
