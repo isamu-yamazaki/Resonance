@@ -247,7 +247,7 @@ namespace Resonance.LobbySystem.NewUI
 
         private void OnSettingsClicked()
         {
-            Debug.Log("[RoomScreenView] Settings button clicked — no settings screen wired yet.");
+            _viewActions.ShowOverlay?.Invoke(LobbySettingsOverlayView.Key);
         }
 
         private void OnSkinSelectClicked()

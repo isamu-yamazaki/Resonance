@@ -10,6 +10,7 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Button playButton;
         [SerializeField] private Button friendsOverlayButton;
         [SerializeField] private Button skinSelectButton;
+        [SerializeField] private Button settingsButton;
 
         [SerializeField] private TMP_Text username;
         [SerializeField] private Image userAvatar;
@@ -26,6 +27,7 @@ namespace Resonance.LobbySystem.NewUI
             playButton.onClick.AddListener(OnPlayClicked);
             friendsOverlayButton.onClick.AddListener(OnFriendsOverlayClicked);
             skinSelectButton.onClick.AddListener(OnSkinSelectClicked);
+            settingsButton.onClick.AddListener(OnSettingsClicked);
 
             if (lobbyManager != null)
             {
@@ -85,5 +87,8 @@ namespace Resonance.LobbySystem.NewUI
 
         private void OnSkinSelectClicked() =>
             _viewActions.ShowScreen?.Invoke(SkinScreenView.Key);
+
+        private void OnSettingsClicked() =>
+            _viewActions.ShowOverlay?.Invoke(LobbySettingsOverlayView.Key);
     }
 }
