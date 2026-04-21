@@ -23,7 +23,7 @@ MonoBehaviour:
   weaponMuzzleKey: baseRifle
   audioProperties: {fileID: 11400000, guid: e918acc12eea39540a3388da86ec3635, type: 2}
   damage: 5
-  fireRate: 3
+  fireRate: 2
   projectilesPerShot: 10
   range: 20
   accuracy: 0
