@@ -446,6 +446,7 @@ GameObject:
   - component: {fileID: 8062843662524459022}
   - component: {fileID: 1942585291339358380}
   - component: {fileID: 5684997356607948869}
+  - component: {fileID: 573185485124298836}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -1597,6 +1598,30 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   startingBalance: 5000
+--- !u!114 &573185485124298836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6320e42972dfea84c818925e2de1831b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerADS
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  normalFOV: 80
+  zoomedFOV: 20
+  zoomSpeed: 10
 --- !u!1 &9074476893389208830
 GameObject:
   m_ObjectHideFlags: 0
