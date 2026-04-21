@@ -1,5 +1,6 @@
 using System;
 using Resonance.Assemblies.UISystem;
+using Resonance.LobbySystem.DataProviders;
 using Resonance.PlayerController;
 using UnityEngine;
 using UnityEngine.UI;
@@ -58,7 +59,7 @@ namespace Resonance.LobbySystem.NewUI
 
         private void OnSkinSelected(int selected)
         {
-            var skinIndexProvider = FindFirstObjectByType<SkinIndexProvider>();
+            var skinIndexProvider = SkinIndexProvider.Instance;
             if (!skinIndexProvider)
             {
                 Debug.LogError($"[{GetType()}] No SkinIndexProvider object, cannot update skin index");

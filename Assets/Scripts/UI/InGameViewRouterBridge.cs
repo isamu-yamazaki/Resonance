@@ -18,6 +18,7 @@ namespace Resonance.UI
         public bool IsEscOpen => viewRouter.ActiveOverlayKeys.Contains(EscOverlayView.Key);
         public bool IsDebugMenuOpen => viewRouter.ActiveOverlayKeys.Contains(DebugOverlayView.Key);
         public bool IsPerformanceStatsOpen => viewRouter.ActiveOverlayKeys.Contains(PerformanceStatsOverlay.Key);
+        public bool IsFPSOverlayOpen => viewRouter.ActiveOverlayKeys.Contains(FPSOverlayView.Key);
 
         private void Awake()
         {
@@ -61,6 +62,13 @@ namespace Resonance.UI
                 return;
             }
 
+            var fpsView = GetComponentInChildren<FPSOverlayView>(includeInactive: true);
+            if (fpsView == null)
+            {
+                Debug.LogError("[InGameViewRouterBridge] FPSOverlayView not found in children.");
+                return;
+            }
+
             var playerLocomotionAndActions = new InputActionMap[]
             {
                 PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
@@ -87,6 +95,11 @@ namespace Resonance.UI
             viewRouter.RegisterOverlay(new OverlayOptions
             {
                 view = perfStatsView,
+                // intentionally: no inputMapsToDisableWhenShown, unlockCursorWhenShown = false
+            });
+            viewRouter.RegisterOverlay(new OverlayOptions
+            {
+                view = fpsView,
                 // intentionally: no inputMapsToDisableWhenShown, unlockCursorWhenShown = false
             });
         }
@@ -117,6 +130,22 @@ namespace Resonance.UI
         public void TogglePerformanceStats()
         {
             viewRouter.ToggleOverlay(PerformanceStatsOverlay.Key);
+        }
+
+        public void ShowFPSOverlay()
+        {
+            if (!IsFPSOverlayOpen)
+            {
+                viewRouter.ToggleOverlay(FPSOverlayView.Key);
+            }
+        }
+
+        public void HideFPSOverlay()
+        {
+            if (IsFPSOverlayOpen)
+            {
+                viewRouter.ToggleOverlay(FPSOverlayView.Key);
+            }
         }
     }
 }

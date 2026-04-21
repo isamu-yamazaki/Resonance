@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Resonance.Helper
+namespace Resonance.LobbySystem.DataProviders
 {
     // may get replaced with a full-on settings script later
 

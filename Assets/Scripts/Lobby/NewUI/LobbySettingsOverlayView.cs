@@ -1,6 +1,6 @@
 using System;
 using Resonance.Assemblies.UISystem;
-using Resonance.Helper;
+using Resonance.LobbySystem.DataProviders;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,6 +16,9 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Slider slider;
         [SerializeField] private TMP_Text displayText;
 
+        [Header("FPS counter")]
+        [SerializeField] private Toggle fpsCounterToggle;
+
         public readonly static string Key = nameof(LobbySettingsOverlayView);
         string IOverlayView.Key => Key;
 
@@ -25,6 +28,7 @@ namespace Resonance.LobbySystem.NewUI
         {
             gameObject.SetActive(false);
             slider.onValueChanged.RemoveListener(SetValue);
+            fpsCounterToggle.onValueChanged.RemoveListener(HandleFpsToggleChanged);
 
             dismiss = null;
         }
@@ -37,7 +41,21 @@ namespace Resonance.LobbySystem.NewUI
             slider.onValueChanged.AddListener(SetValue);
             UpdateRenderScaleDisplayValue();
 
+            if (FPSCounterDisplaySetting.Instance != null)
+            {
+                fpsCounterToggle.isOn = FPSCounterDisplaySetting.Instance.IsEnabled;
+            }
+            fpsCounterToggle.onValueChanged.AddListener(HandleFpsToggleChanged);
+
             doneButton.onClick.AddListener(HandleDoneClicked);
+        }
+
+        private void HandleFpsToggleChanged(bool value)
+        {
+            if (FPSCounterDisplaySetting.Instance != null)
+            {
+                FPSCounterDisplaySetting.Instance.SetEnabled(value);
+            }
         }
 
         private void HandleDoneClicked()
