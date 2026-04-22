@@ -40,6 +40,12 @@ namespace Resonance.GameBootstrap
 
         private void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
         {
+            // PurrNet raises onPlayerJoined twice on a host (once per perspective)
+            // only act on the server-perspective invocation so the UnityEvent fires once
+            if (!asServer)
+            {
+                return;
+            }
             ConditionallyFireAllPlayersEvent();
         }
 
