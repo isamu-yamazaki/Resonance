@@ -1,3 +1,4 @@
+using Resonance.Assemblies.Train;
 using Resonance.Audio;
 using System.Collections.Generic;
 using UnityEngine;

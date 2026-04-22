@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Resonance.Train
+namespace Resonance.Assemblies.Train
 {
     public class TrainStation : MonoBehaviour
     {

@@ -1,5 +1,6 @@
 #if !UNITY_SERVER
 using System.Collections;
+using Resonance.Assemblies.Train;
 using UnityEngine;
 
 namespace Resonance.Train

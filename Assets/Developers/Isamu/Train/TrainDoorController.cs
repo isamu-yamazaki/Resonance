@@ -1,3 +1,4 @@
+using Resonance.Assemblies.Train;
 using UnityEngine;
 
 namespace Resonance.Train
