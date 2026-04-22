@@ -50,6 +50,12 @@ namespace Resonance.PlayerController
             if (InGameViewRouterBridge.Instance == null)
                 return;
 
+            if (InGameViewRouterBridge.Instance.IsShopOpen)
+            {
+                InGameViewRouterBridge.Instance.ToggleShop();
+                return;
+            }
+
             InGameViewRouterBridge.Instance.ToggleEsc();
         }
 
