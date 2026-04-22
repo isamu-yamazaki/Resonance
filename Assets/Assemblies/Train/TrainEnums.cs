@@ -1,6 +1,6 @@
-namespace Resonance.Train
+namespace Resonance.Assemblies.Train
 {
-    public enum TrainState
+    public enum TrainMovementState
     {
         StoppedAtStation,
         Accelerating,
