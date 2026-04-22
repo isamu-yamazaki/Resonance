@@ -102,11 +102,12 @@ namespace Resonance.Assemblies.Train
         {
             transform.position = viewState.position;
 
-            float tickDelta = predictionManager != null ? predictionManager.tickDelta : 0f;
-            if (_hasLastViewPosition && tickDelta > 0f)
+            // UpdateView runs once per frame, so use Time.deltaTime — NOT tickDelta.
+            float frameDelta = Time.deltaTime;
+            if (_hasLastViewPosition && frameDelta > 0f)
             {
                 Vector3 displacement = viewState.position - _lastViewPosition;
-                Velocity = displacement / tickDelta;
+                Velocity = displacement / frameDelta;
                 MoveDirection = Velocity.sqrMagnitude > 1e-6f ? Velocity.normalized : Vector3.zero;
             }
             _lastViewPosition = viewState.position;
