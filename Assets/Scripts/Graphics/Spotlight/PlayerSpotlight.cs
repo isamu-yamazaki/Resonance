@@ -39,8 +39,9 @@ namespace Resonance
 
         private void OnMatchLogicConfigured()
         {
-            if (ArenaRoundManagerBridge.Instance != null)
-                ArenaRoundManagerBridge.Instance.OnLeaderChanged += OnLeaderChanged;
+            var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+            if (arenaRoundManager != null)
+                arenaRoundManager.OnLeaderChanged += OnLeaderChanged;
         }
 
         protected override void OnDespawned(bool asServer)
@@ -53,8 +54,9 @@ namespace Resonance
             if (MatchLogicNetworkAdapter.Instance != null)
                 MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;
 
-            if (ArenaRoundManagerBridge.Instance != null)
-                ArenaRoundManagerBridge.Instance.OnLeaderChanged -= OnLeaderChanged;
+            var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+            if (arenaRoundManager != null)
+                arenaRoundManager.OnLeaderChanged -= OnLeaderChanged;
         }
 
         private void SpawnLightObj()

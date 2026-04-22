@@ -392,8 +392,9 @@ namespace Resonance.Combat
         [ServerRpc]
         private void NotifyMissOnServer()
         {
-            if (MatchStatBridge.Instance != null && owner.HasValue)
-                MatchStatBridge.Instance.RecordMiss(gameObject);
+            var matchStats = MatchStatBridge.GetTemporaryReference();
+            if (matchStats != null && owner.HasValue)
+                matchStats.RecordMiss(gameObject);
         }
 
         private float ComputeDamageWithFalloff(float payloadDamage, float distance, WeaponProperties weapon)
@@ -501,9 +502,28 @@ namespace Resonance.Combat
             viewModel.SetReloadState(false);
             viewModel.SetReloadProgress(1f);
             viewModel.SetAmmo(currentAmmo, MagazineSize);
+            
+            currentSpread = weapon.Spread;
 
             if (debugAmmoLogs)
                 Debug.Log($"[Shooter] Reload complete. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
+        }
+        
+        public void CancelReload()
+        {
+            if (!playerState.IsReloading) return;
+            playerState.SetWeaponState(WeaponState.Idle);
+            viewModel.SetReloadState(false);
+            viewModel.SetReloadProgress(0f);
+            reloadEndTime = 0f;
+        }
+        
+        public void CancelReloadAndRefill()
+        {
+            CancelReload();
+            if (playerEquip?.EquippedWeapon != null)
+                ammoByWeapon[playerEquip.EquippedWeapon] = weaponStatManager.MagazineSize;
+            viewModel.SetAmmo(currentAmmo, MagazineSize);
         }
 
         #endregion

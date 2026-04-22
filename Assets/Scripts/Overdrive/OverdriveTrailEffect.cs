@@ -170,6 +170,9 @@ namespace Resonance.PlayerController
             if (Vector3.Distance(transform.position, _lastGhostPosition) < minGhostSpawnDistance) return;
             _lastGhostPosition = transform.position;
 
+            SkinnedMeshRenderer[] currentMeshes = _playerSkinRenderer.CurrentMeshInstance
+                .GetComponentsInChildren<SkinnedMeshRenderer>();
+
             GhostInstance ghost = GetGhostFromPool();
             if (ghost == null) return;
 
@@ -178,10 +181,10 @@ namespace Resonance.PlayerController
             ghost.transform.rotation = transform.rotation;
             ghost.lifetime = 0f;
 
-            for (int i = 0; i < _meshesToCopy.Length && i < ghost.meshFilters.Length; i++)
+            for (int i = 0; i < currentMeshes.Length && i < ghost.meshFilters.Length; i++)
             {
                 Mesh mesh = new Mesh();
-                _meshesToCopy[i].BakeMesh(mesh);
+                currentMeshes[i].BakeMesh(mesh);
                 ghost.meshFilters[i].mesh = mesh;
             }
 

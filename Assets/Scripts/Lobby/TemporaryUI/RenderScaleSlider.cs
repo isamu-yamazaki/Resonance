@@ -1,5 +1,5 @@
 using System;
-using Resonance.Helper;
+using Resonance.LobbySystem.DataProviders;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

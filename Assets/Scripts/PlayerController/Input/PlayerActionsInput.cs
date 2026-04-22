@@ -24,6 +24,8 @@ namespace Resonance.PlayerController
         public bool ShowStatsHeld { get; private set; }
 
         public bool ToggleShopPressed { get; private set; }
+        
+        public bool AdsHeld { get; private set; }
 
         private PlayerLocomotionInput _playerLocomotionInput;
         private OverdriveAbility _overdriveAbility;
@@ -253,6 +255,14 @@ namespace Resonance.PlayerController
                 MatchStatsViewModel.Instance.Hide();
             }
         }
+        
+        public void OnADS(InputAction.CallbackContext context)
+        {
+            if (context.started)
+                AdsHeld = true;
+            else if (context.canceled)
+                AdsHeld = false;
+        }
 
         #endregion
         public void RequestReload()
@@ -261,6 +271,20 @@ namespace Resonance.PlayerController
                 return;
 
             ReloadPressed = true;
+        }
+        
+        public void ResetAllInputs()
+        {
+            AttackPressed = false;
+            AttackHeld = false;
+            ReloadPressed = false;
+            SwapWeaponPressed = false;
+            SwapSlotOnePressed = false;
+            SwapSlotTwoPressed = false;
+            HealPressed = false;
+            AbilityUpperPressed = false;
+            AbilityLowerPressed = false;
+            AdsHeld = false;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Resonance.Assemblies.LobbySystem;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Resonance.LobbySystem {
@@ -25,6 +26,8 @@ namespace Resonance.LobbySystem {
         Task<string> GetLobbyDataAsync(string key);
         Task<List<LobbyUser>> GetLobbyMembersAsync();
         Task<string> GetLocalUserIdAsync();
+        Task<string> GetLocalDisplayNameAsync();
+        Task<Texture2D> GetLocalAvatarAsync();
         Task SetAllReadyAsync();
         Task SetLobbyStartedAsync();
 

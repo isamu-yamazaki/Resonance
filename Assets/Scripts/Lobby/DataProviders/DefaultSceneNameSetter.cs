@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 
-namespace Resonance.LobbySystem
+namespace Resonance.LobbySystem.DataProviders
 {
     public class DefaultSceneNameSetter : MonoBehaviour
     {

@@ -121,6 +121,18 @@ MonoBehaviour:
     groupIdInternal: 0
     groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: d48893ac1a8654d0e95d9b7e8d503412, type: 2}
+  runSwitch:
+    idInternal: 0
+    valueGuidInternal: 
+    groupIdInternal: 0
+    groupGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 5b5af89d392f5db409347cdfbfa7f77e, type: 2}
+  sprintSwitch:
+    idInternal: 0
+    valueGuidInternal: 
+    groupIdInternal: 0
+    groupGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 942aaf7dc06e71f41b4c1dbf17b8db7f, type: 2}
 --- !u!114 &8375709091427389756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,6 +446,7 @@ GameObject:
   - component: {fileID: 8062843662524459022}
   - component: {fileID: 1942585291339358380}
   - component: {fileID: 5684997356607948869}
+  - component: {fileID: 573185485124298836}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -983,6 +996,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerAudioBridge
   footstepController: {fileID: 4736762120235980275}
+  footstepCooldown: 0.2
 --- !u!114 &-3400458708190070123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1584,6 +1598,30 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   startingBalance: 5000
+--- !u!114 &573185485124298836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6320e42972dfea84c818925e2de1831b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerADS
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  normalFOV: 80
+  zoomedFOV: 20
+  zoomSpeed: 10
 --- !u!1 &9074476893389208830
 GameObject:
   m_ObjectHideFlags: 0

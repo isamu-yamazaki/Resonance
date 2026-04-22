@@ -23,7 +23,7 @@ namespace Resonance.PlayerController
 
         private void Update()
         {
-            var roundManager = MatchLogicNetworkAdapter.Instance?.ActiveRoundManager;
+            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
             if (roundManager == null) return;
 
             if (roundManager.IsMatchEnded)

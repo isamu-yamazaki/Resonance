@@ -1,5 +1,5 @@
 using PurrNet;
-using Resonance.LobbySystem;
+using Resonance.LobbySystem.DataProviders;
 using UnityEngine;
 
 namespace Resonance.PlayerController
@@ -15,7 +15,7 @@ namespace Resonance.PlayerController
             base.OnSpawned();
             if (!isOwner) { return; }
 
-            _skinIndexProvider = FindFirstObjectByType<SkinIndexProvider>();
+            _skinIndexProvider = SkinIndexProvider.Instance;
             if (_skinIndexProvider == null) { return; }
 
             skinRenderer.RequestSkin(_skinIndexProvider.SkinIndex);

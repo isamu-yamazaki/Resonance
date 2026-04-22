@@ -16,10 +16,11 @@ public class SampleMatchTimerListener : MonoBehaviour
 
     private void OnMatchLogicConfigured()
     {
-        if (ArenaRoundManagerBridge.Instance != null)
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager != null)
         {
             Debug.Log("[MatchTimerListener] Subscribing to match timer events");
-            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed += OnMatchTimerElapsed;
+            arenaRoundManager.OnMatchTimerElapsed += OnMatchTimerElapsed;
         }
     }
 
@@ -28,8 +29,9 @@ public class SampleMatchTimerListener : MonoBehaviour
         if (MatchLogicNetworkAdapter.Instance != null)
             MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= OnMatchLogicConfigured;
 
-        if (ArenaRoundManagerBridge.Instance != null)
-            ArenaRoundManagerBridge.Instance.OnMatchTimerElapsed -= OnMatchTimerElapsed;
+        var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
+        if (arenaRoundManager != null)
+            arenaRoundManager.OnMatchTimerElapsed -= OnMatchTimerElapsed;
     }
 
     private void OnMatchTimerElapsed(double secondsRemaining)

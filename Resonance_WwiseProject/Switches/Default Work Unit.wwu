@@ -12,6 +12,12 @@
 						<Switch Name="Grass" ID="{3DC3BD82-6FC3-40D5-93BD-AAA8C54C5E63}"/>
 					</ChildrenList>
 				</SwitchGroup>
+				<SwitchGroup Name="MovementType" ID="{5010C8BF-48E9-4365-9670-DF9AED9EFA6C}">
+					<ChildrenList>
+						<Switch Name="Run" ID="{5F0D6E33-23BB-4E20-B900-3314BD72D940}"/>
+						<Switch Name="Sprint" ID="{D113E90D-5EE8-40D2-84AA-4D93FECCCE37}"/>
+					</ChildrenList>
+				</SwitchGroup>
 			</ChildrenList>
 		</WorkUnit>
 	</Switches>
