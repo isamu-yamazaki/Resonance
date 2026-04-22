@@ -53395,6 +53395,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 1785730340630332140, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2861628563016785268, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -53523,7 +53527,8 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1785730340630332140, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -67509,7 +67514,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _physicsProvider: 0
+  _physicsProvider: 1
   _updateViewMode: 1
   _builtInSystems: 63
   _predictedPrefabs: {fileID: 11400000, guid: b2db137b52a504943a517db6ada60ee5, type: 2}
