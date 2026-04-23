@@ -4026,7 +4026,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1860048893267941267}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4035,7 +4035,7 @@ RectTransform:
   - {fileID: 3264422580332967671}
   - {fileID: 375443383613714591}
   - {fileID: 2037840180649761788}
-  m_Father: {fileID: 6524516648922902759}
+  m_Father: {fileID: 6402730132638311221}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8915,6 +8915,62 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &4826482073275709956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6402730132638311221}
+  - component: {fileID: 8549935022012714960}
+  m_Layer: 5
+  m_Name: MatchEndPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6402730132638311221
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4826482073275709956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5901605092637294919}
+  m_Father: {fileID: 6524516648922902759}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8549935022012714960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4826482073275709956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855a83bb484364758b918c646c4cf3be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.MatchEndOverlayView
+  matchEndPanel: {fileID: 1860048893267941267}
+  winnerText: {fileID: 2349386715846889219}
+  finalStatsText: {fileID: 7859502736524158531}
+  waitingForHostText: {fileID: 8754169209598443563}
+  playAgainButton: {fileID: 0}
+  returnToLobbyButton: {fileID: 5916702868616532967}
+  despawnerSceneLoader: {fileID: 0}
 --- !u!1 &4888869790501103848
 GameObject:
   m_ObjectHideFlags: 0
@@ -10211,6 +10267,7 @@ GameObject:
   - component: {fileID: 2878321669456898750}
   - component: {fileID: 4141131493183228018}
   - component: {fileID: 2366704387248002684}
+  - component: {fileID: 6876731785976717004}
   m_Layer: 0
   m_Name: UIPrefab
   m_TagString: Untagged
@@ -10264,6 +10321,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5420d7b726cb84eb08187fe0bea1ad42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.FPSOverlayApplicator
+--- !u!114 &6876731785976717004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5457436812598143677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aedc1f0af9ad94344a09365f26b621a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.UI.MatchEndOverlayListener
 --- !u!1 &5480201575521567377
 GameObject:
   m_ObjectHideFlags: 0
@@ -13878,7 +13947,7 @@ RectTransform:
   - {fileID: 5330347303127815433}
   - {fileID: 9112444936674389239}
   - {fileID: 8314920821706558082}
-  - {fileID: 5901605092637294919}
+  - {fileID: 6402730132638311221}
   m_Father: {fileID: 2878321669456898750}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -14315,13 +14384,6 @@ MonoBehaviour:
   kdaText: {fileID: 0}
   killStreakText: {fileID: 0}
   eliminationsText: {fileID: 0}
-  matchEndPanel: {fileID: 1860048893267941267}
-  winnerText: {fileID: 2349386715846889219}
-  finalStatsText: {fileID: 7859502736524158531}
-  waitingForHostText: {fileID: 8754169209598443563}
-  playAgainButton: {fileID: 0}
-  returnToLobbyButton: {fileID: 5916702868616532967}
-  despawnerSceneLoader: {fileID: 0}
   playerObject: {fileID: 0}
   showKillStreak: 1
 --- !u!1 &7079782838256005516

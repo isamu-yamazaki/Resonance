@@ -70651,6 +70651,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8549935022012714960, guid: 6864f8c258a2f4748800f171d3215bce, type: 3}
+      propertyPath: despawnerSceneLoader
+      value: 
+      objectReference: {fileID: 463464439}
     - target: {fileID: 9114985503168820602, guid: 6864f8c258a2f4748800f171d3215bce, type: 3}
       propertyPath: despawnerSceneLoader
       value: 
