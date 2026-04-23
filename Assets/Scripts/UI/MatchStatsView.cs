@@ -1,9 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Resonance.Assemblies.MatchStat;
+using Resonance.Assemblies.UISystem;
 
-public class MatchStatsView : MonoBehaviour
+public class MatchStatsView : MonoBehaviour, IOverlayView
 {
+    public static string Key => nameof(MatchStatsView);
+    string IOverlayView.Key => Key;
+
     [SerializeField] private GameObject root;
     [SerializeField] private Transform contentRoot;
     [SerializeField] private LeaderboardRow rowPrefab;
@@ -16,7 +20,7 @@ public class MatchStatsView : MonoBehaviour
         _vm = MatchStatsViewModel.Instance;
 
         if (_vm == null)
-            _vm = FindObjectOfType<MatchStatsViewModel>();
+            _vm = FindFirstObjectByType<MatchStatsViewModel>();
 
         if (_vm == null)
         {
@@ -24,23 +28,27 @@ public class MatchStatsView : MonoBehaviour
             return;
         }
 
-        _vm.IsVisible.ChangeEvent += OnVisibilityChanged;
+        root.SetActive(false);
         _vm.Rankings.ChangeEvent += OnRankingsChanged;
-
-        OnVisibilityChanged(_vm.IsVisible.Value);
     }
 
     private void OnDestroy()
     {
         if (_vm == null) return;
 
-        _vm.IsVisible.ChangeEvent -= OnVisibilityChanged;
         _vm.Rankings.ChangeEvent -= OnRankingsChanged;
     }
 
-    private void OnVisibilityChanged(bool visible)
+    public void OnShow(OverlayViewActions viewActions)
     {
-        root.SetActive(visible);
+        root.SetActive(true);
+        _vm?.StartRefreshing();
+    }
+
+    public void OnHide()
+    {
+        root.SetActive(false);
+        _vm?.StopRefreshing();
     }
 
     private void OnRankingsChanged(List<PlayerRanking> rankings)

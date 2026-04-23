@@ -243,16 +243,17 @@ namespace Resonance.PlayerController
             if (_playerState != null && _playerState.IsDead())
                 return;
 
-            if (MatchStatsViewModel.Instance == null)
+            var bridge = UI.InGameViewRouterBridge.Instance;
+            if (bridge == null)
                 return;
 
             if (context.started)
             {
-                MatchStatsViewModel.Instance.Show();
+                bridge.ShowMatchStats();
             }
             else if (context.canceled)
             {
-                MatchStatsViewModel.Instance.Hide();
+                bridge.HideMatchStats();
             }
         }
         

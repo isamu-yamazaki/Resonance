@@ -9,11 +9,11 @@ public class MatchStatsViewModel : MonoBehaviour
 {
     public static MatchStatsViewModel Instance { get; private set; }
 
-    public ObservableValue<bool> IsVisible = new(false);
     public ObservableValue<List<PlayerRanking>> Rankings =
         new(new List<PlayerRanking>());
 
     private Coroutine _refreshCoroutine;
+    private bool _isRefreshing;
 
     private void Awake()
     {
@@ -27,22 +27,20 @@ public class MatchStatsViewModel : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Show()
+    public void StartRefreshing()
     {
-        IsVisible.Value = true;
+        if (_isRefreshing) return;
 
         if (ArenaRoundManagerBridge.GetTemporaryReference() == null)
             return;
 
-        if (_refreshCoroutine != null)
-            StopCoroutine(_refreshCoroutine);
-
+        _isRefreshing = true;
         _refreshCoroutine = StartCoroutine(RefreshLoop());
     }
 
-    public void Hide()
+    public void StopRefreshing()
     {
-        IsVisible.Value = false;
+        _isRefreshing = false;
 
         if (_refreshCoroutine != null)
         {
@@ -51,15 +49,9 @@ public class MatchStatsViewModel : MonoBehaviour
         }
     }
 
-    public void Toggle()
-    {
-        if (IsVisible.Value) Hide();
-        else Show();
-    }
-
     private IEnumerator RefreshLoop()
     {
-        while (IsVisible.Value)
+        while (_isRefreshing)
         {
             var arenaRoundManager = ArenaRoundManagerBridge.GetTemporaryReference();
             if (arenaRoundManager == null)
