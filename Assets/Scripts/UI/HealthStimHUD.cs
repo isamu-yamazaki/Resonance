@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Resonance.Combat;
 using Resonance.PlayerController;
+using UnityEngine.InputSystem;
 
 public class HealthStimHUD : MonoBehaviour
 {
@@ -46,6 +47,12 @@ public class HealthStimHUD : MonoBehaviour
         }
 
         RegisterHealthStim(healthStim);
+        
+        if (keybindText != null)
+        {
+            var controls = Resonance.PlayerController.PlayerInputManager.Instance.PlayerControls;
+            keybindText.text = controls.PlayerActionMap.Stim.GetBindingDisplayString().ToUpper();
+        }
     }
 
     private void RegisterHealthStim(PlayerHealthStim stim)
