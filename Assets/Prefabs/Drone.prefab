@@ -395,6 +395,10 @@ MonoBehaviour:
   maxSpeed: 22
   rotationOffset: {x: -90, y: 180, z: 0}
   positionOffset: {x: 0, y: 0, z: -1.5}
+  droneLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 5b48c54db6d7ea14894f4ab5dceaaea5, type: 2}
 --- !u!4 &5664418643249186389 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7bec7005cce36af4992860f8a2b1ea35, type: 3}

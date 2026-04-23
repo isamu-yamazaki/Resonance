@@ -39,6 +39,7 @@
 						<ObjectRef Name="Play_Grappler_Shoot" ID="{FF2E59E3-A78E-4903-A04A-64489E7253DC}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Rifle_Equip" ID="{454E30A8-A4E6-49BC-94DD-08451189A30A}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Grappler_Travel" ID="{A9A9C1B3-DDE3-49F7-B544-B5248929DCA0}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_DroneLoop" ID="{D27C6C76-1791-4A03-B239-A76143C6E906}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Rifle_Reload" ID="{E4D4F1E2-0952-4A2B-9ED5-7326B4FA20E1}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Stop_Train_Moving" ID="{5C6A69E7-5734-4A59-9855-DB5FEB581542}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_UI_Button_Hover" ID="{85C07B17-A696-4AB1-8279-F3DB39B26133}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
