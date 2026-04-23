@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{0CBA57E7-D354-1440-96DF-D48AD0CBFEFA}",
+    "Hash": "{200DD9AA-A110-233D-CF32-A879200122A9}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -190,6 +190,14 @@
       "Location": "Memory",
       "ShortName": "sfx_UI_shop_insufficient_funds.wav",
       "CachePath": "3D/{3D12E468-5E6F-E378-1FCE-BF5980231C29}.wem"
+     },
+     {
+      "Id": "309251540",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_props_drone_loop.wav",
+      "CachePath": "AD/{ADAB4508-CB9A-3850-0793-FE01C86B627E}.wem"
      },
      {
       "Id": "311624981",
@@ -913,6 +921,19 @@
       "MediaRefs": [
        {
         "Id": "209026899"
+       }
+      ]
+     },
+     {
+      "Id": "1361308986",
+      "Name": "Play_DroneLoop",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_DroneLoop",
+      "GUID": "{D27C6C76-1791-4A03-B239-A76143C6E906}",
+      "MaxAttenuation": "40",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "309251540"
        }
       ]
      },
@@ -1978,6 +1999,6 @@
     ]
    }
   ],
-  "FileHash": "{EF131FE2-7759-B871-C2C4-BED777D5D2FD}"
+  "FileHash": "{752EAE39-C5EE-6130-DD06-E8F2F26DA5C9}"
  }
 }

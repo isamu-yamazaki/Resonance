@@ -548,6 +548,17 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Event Name="Play_DroneLoop" ID="{D27C6C76-1791-4A03-B239-A76143C6E906}">
+					<ChildrenList>
+						<Action Name="" ID="{AADBBA65-804D-4389-8B64-99E48C837659}" ShortID="160499812">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_props_drone_loop" ID="{E29B3221-87F8-42DA-B071-E48E50FC4099}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

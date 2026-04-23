@@ -5522,7 +5522,7 @@
 								<Property Name="AttenuationDistanceScaling" Type="Real32" Value="0.5"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-1</Value>
+										<Value>-8</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -6130,7 +6130,7 @@
 								<Property Name="3DSpatialization" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-3</Value>
+										<Value>-12</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -6253,6 +6253,11 @@
 								<SwitchContainer Name="Footstep_Concrete" ID="{B8F32D30-3E6A-4028-815B-82A0B49F04E6}" ShortID="1018917569">
 									<PropertyList>
 										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
@@ -10166,6 +10171,260 @@
 						</Sound>
 					</ChildrenList>
 				</Folder>
+				<Sound Name="sfx_props_drone_loop" ID="{E29B3221-87F8-42DA-B071-E48E50FC4099}" ShortID="688133700">
+					<PropertyList>
+						<Property Name="3DSpatialization" Type="int16" Value="1"/>
+						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-35</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Attenuation">
+							<Custom>
+								<Attenuation Name="Attenuation (Custom)" ID="{6D2DE9EC-CB58-4ADC-9BF1-58707EB62F50}" ShortID="147135472">
+									<PropertyList>
+										<Property Name="RadiusMax" Type="Real64" Value="40"/>
+									</PropertyList>
+									<CurveUsageInfoList>
+										<VolumeDryUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+												<Curve Name="VolumeDry" ID="{CED3AC6C-6638-4011-A815-FE1A6553592C}">
+													<PropertyList>
+														<Property Name="Flags" Type="int32" Value="3"/>
+													</PropertyList>
+													<PointList>
+														<Point>
+															<XPos>0</XPos>
+															<YPos>0</YPos>
+															<Flags>5</Flags>
+														</Point>
+														<Point>
+															<XPos>40</XPos>
+															<YPos>-200</YPos>
+															<Flags>37</Flags>
+														</Point>
+													</PointList>
+												</Curve>
+											</CurveUsageInfo>
+										</VolumeDryUsage>
+										<VolumeWetGameUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+										</VolumeWetGameUsage>
+										<VolumeWetUserUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+										</VolumeWetUserUsage>
+										<LowPassFilterUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</LowPassFilterUsage>
+										<HighPassFilterUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</HighPassFilterUsage>
+										<DualShelfUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</DualShelfUsage>
+										<SpreadUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</SpreadUsage>
+										<FocusUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</FocusUsage>
+										<ObstructionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionVolumeUsage>
+										<ObstructionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionLPFUsage>
+										<ObstructionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionHPFUsage>
+										<ObstructionDSFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionDSFUsage>
+										<OcclusionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionVolumeUsage>
+										<OcclusionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionLPFUsage>
+										<OcclusionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionHPFUsage>
+										<OcclusionDSFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionDSFUsage>
+										<DiffractionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionVolumeUsage>
+										<DiffractionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionLPFUsage>
+										<DiffractionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionHPFUsage>
+										<DiffractionDSFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionDSFUsage>
+										<TransmissionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionVolumeUsage>
+										<TransmissionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionLPFUsage>
+										<TransmissionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionHPFUsage>
+										<TransmissionDSFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionDSFUsage>
+									</CurveUsageInfoList>
+								</Attenuation>
+							</Custom>
+						</Reference>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{3FA30067-E09E-4D0A-8A49-BFEFA48E7471}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="SFX" ID="{C22677A5-D637-423D-8AED-F11F0D85B4DE}" WorkUnitID="{8E92042C-463A-45D0-84F5-C286F09FBBA8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="sfx_props_drone_loop" ID="{66ADF88C-D00B-4E3E-8EEF-BC564B925E31}">
+							<Language>SFX</Language>
+							<AudioFile>sfx_props_drone_loop.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="309251540"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="RTPC">
+							<RTPC Name="" ID="{881CD8D4-9F87-4FE3-ADE6-69AE457FCE6C}" ShortID="660923816">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="Volume"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="WallThickness" ID="{6C5C6DB0-5FC8-4BFA-9EB7-623CF2A85D93}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{19D32FD6-9323-46A7-9384-09CD76303CF4}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="3"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>0</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>9.76283</XPos>
+														<YPos>-26.56588</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>9.87264</XPos>
+														<YPos>-29.57916</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>10</XPos>
+														<YPos>-30</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+							<RTPC Name="" ID="{3D58BDBE-78BE-4019-A5D2-280F89A9E355}" ShortID="40123172">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="Lowpass"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="Occlusion" ID="{DAAB43F5-A1A7-46AA-9E41-1AB0ABCD0152}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{DFB4BCBA-3D71-447A-806E-4FE72CDD462F}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="65537"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>0</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>0.57219</XPos>
+														<YPos>49</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>0.71028</XPos>
+														<YPos>60</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>1</XPos>
+														<YPos>90</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+							<RTPC Name="" ID="{2953622A-830A-43A8-980A-7E3CBB585325}" ShortID="109029243">
+								<PropertyList>
+									<Property Name="PropertyName" Type="string" Value="UserAuxSendVolume0"/>
+								</PropertyList>
+								<ReferenceList>
+									<Reference Name="ControlInput">
+										<ObjectRef Name="Diffraction" ID="{3AD53E5D-776D-45D4-B11B-3D1F723DD2F1}" WorkUnitID="{3149AB3E-0016-412A-853E-1F21A63C0A57}"/>
+									</Reference>
+									<Reference Name="Curve">
+										<Custom>
+											<Curve Name="" ID="{79DB4DA5-EBE7-4126-9EE1-555131128AEA}">
+												<PropertyList>
+													<Property Name="Flags" Type="int32" Value="3"/>
+												</PropertyList>
+												<PointList>
+													<Point>
+														<XPos>0</XPos>
+														<YPos>-96</YPos>
+														<Flags>5</Flags>
+													</Point>
+													<Point>
+														<XPos>0.5</XPos>
+														<YPos>-18</YPos>
+														<Flags>0</Flags>
+													</Point>
+													<Point>
+														<XPos>1</XPos>
+														<YPos>-6</YPos>
+														<Flags>37</Flags>
+													</Point>
+												</PointList>
+											</Curve>
+										</Custom>
+									</Reference>
+								</ReferenceList>
+							</RTPC>
+						</ObjectList>
+					</ObjectLists>
+					<ActiveSourceList>
+						<ActiveSource Name="sfx_props_drone_loop" ID="{66ADF88C-D00B-4E3E-8EEF-BC564B925E31}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
 			</ChildrenList>
 		</WorkUnit>
 	</Containers>

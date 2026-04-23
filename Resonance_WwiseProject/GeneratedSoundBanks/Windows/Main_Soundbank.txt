@@ -13,6 +13,7 @@ Event	ID	Name			Wwise Object Path	Notes
 	1098674603	Play_Grappler_Shoot			\Default Work Unit\Grappler\Play_Grappler_Shoot	
 	1166794921	Play_LMG_Fire			\Default Work Unit\Firearms\LMG\Play_LMG_Fire	
 	1243736002	Play_Grappler_Travel			\Default Work Unit\Grappler\Play_Grappler_Travel	
+	1361308986	Play_DroneLoop			\Default Work Unit\Play_DroneLoop	
 	1529325343	Play_IndoorAmbience			\Default Work Unit\Play_IndoorAmbience	
 	1602358412	Play_Footstep			\Default Work Unit\Play_Footstep	
 	1661558166	Play_UI_Button_Click			\Default Work Unit\UI\Play_UI_Button_Click	
@@ -91,6 +92,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	265624677	sfx_combat_pistol_casing	.cache\0A\{0AC13B9D-6A30-D178-15A6-07B13CF2F8F5}.wem		\Containers\Default Work Unit\Firearms\BaseHandgun\sfx_combat_pistol_casing		164716
 	300811234	sfx_foley_footstep_grass_run_01	.cache\30\{30B3827D-58AB-B81C-6D5D-561BAE1D3A42}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Footstep_Grass\Footstep_Grass_Sprint\sfx_foley_footstep_grass_run_01		73116
 	309165836	sfx_UI_shop_insufficient_funds	.cache\3D\{3D12E468-5E6F-E378-1FCE-BF5980231C29}.wem		\Containers\Default Work Unit\UI\Shop\sfx_UI_shop_insufficient_funds		19552
+	309251540	sfx_props_drone_loop	.cache\AD\{ADAB4508-CB9A-3850-0793-FE01C86B627E}.wem		\Containers\Default Work Unit\sfx_props_drone_loop		1920096
 	311624981	sfx_props_glass_land_03	.cache\E4\{E4A78C98-054B-C357-44FF-136019D1D519}.wem		\Containers\Default Work Unit\GlassShard_Land\sfx_props_glass_land_03		60096
 	345534459	sfx_UI_shop_item_sell	.cache\50\{50A52BF4-F9C4-CA31-239C-EA72BF368628}.wem		\Containers\Default Work Unit\UI\Shop\sfx_UI_shop_item_sell		36576
 	350734022	sfx_foley_footstep_metal_run_05	.cache\17\{176714DE-5172-DB84-CD39-E7468B57F46E}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Footstep_Metal\Footstep_Metal_Sprint\sfx_foley_footstep_metal_run_05		48488
