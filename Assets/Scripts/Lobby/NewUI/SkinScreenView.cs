@@ -13,6 +13,8 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Transform content;
         [SerializeField] private GameObject entryButtonPrefab;
         [SerializeField] private Button doneButton;
+        [SerializeField] private SkinPreviewModel previewModel;
+        [SerializeField] private RawImage previewImage;
 
 #if !UNITY_SERVER
         [Header("Wwise Events")]
@@ -47,6 +49,11 @@ namespace Resonance.LobbySystem.NewUI
             PopulateEntries();
 
             doneButton.onClick.AddListener(HandleDoneClicked);
+
+            if (previewModel != null && previewImage != null)
+            {
+                previewImage.texture = previewModel.PreviewTexture;
+            }
 
             back = viewActions.Back;
         }

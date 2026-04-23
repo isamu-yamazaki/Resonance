@@ -1,28 +1,32 @@
 using Resonance.LobbySystem.DataProviders;
 using Resonance.PlayerController;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Resonance.LobbySystem.NewUI
 {
-    public class SkinPreviewRenderer : MonoBehaviour
+    public class SkinPreviewModel : MonoBehaviour
     {
+        private enum MsaaSamples { None = 1, X2 = 2, X4 = 4 }
+
         [SerializeField] private Camera previewCamera;
         [SerializeField] private Transform spawnPoint;
-        [SerializeField] private RawImage displayImage;
         [SerializeField] private SkinCatalog skinCatalog;
-        [SerializeField] private Vector2Int renderSize = new(256, 256);
+        [SerializeField, Range(0.1f, 1f)] private float resolutionScale = 1f;
+        [SerializeField] private MsaaSamples msaa = MsaaSamples.X4;
 
         private SkinIndexProvider skinIndexProvider;
 
         private RenderTexture _rt;
         private GameObject _currentMesh;
 
+        public RenderTexture PreviewTexture => _rt;
+
         private void Awake()
         {
-            _rt = new RenderTexture(renderSize.x, renderSize.y, 16);
+            var width = Mathf.Max(1, Mathf.RoundToInt(Screen.width * resolutionScale));
+            var height = Mathf.Max(1, Mathf.RoundToInt(Screen.height * resolutionScale));
+            _rt = new RenderTexture(width, height, 16) { antiAliasing = (int)msaa };
             previewCamera.targetTexture = _rt;
-            displayImage.texture = _rt;
         }
 
         private void Start()
