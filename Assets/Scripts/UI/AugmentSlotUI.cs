@@ -15,6 +15,7 @@ namespace Resonance.Combat.Augments.UI
         [SerializeField] private GameObject cooldownOverlay;
         [SerializeField] private TMPro.TextMeshProUGUI cooldownText;
         [SerializeField] private GameObject emptyState;
+        [SerializeField] private TMPro.TextMeshProUGUI keybindText;
 
         private IAugmentAbility _ability;
         private Coroutine _cdCoroutine;
@@ -64,6 +65,12 @@ namespace Resonance.Combat.Augments.UI
 
             cooldownRadial.fillAmount = 0f;
             cooldownOverlay.SetActive(false);
+        }
+        
+        public void SetKeybindLabel(string label)
+        {
+            if (keybindText != null)
+                keybindText.text = label.ToUpper();
         }
     }
 }

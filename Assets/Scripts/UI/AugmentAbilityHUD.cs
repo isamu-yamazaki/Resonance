@@ -1,3 +1,5 @@
+using Resonance.PlayerController;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 namespace Resonance.Combat.Augments.UI
@@ -12,6 +14,10 @@ namespace Resonance.Combat.Augments.UI
         private void Awake()
         {
             Instance = this;
+
+            var controls = Resonance.PlayerController.PlayerInputManager.Instance.PlayerControls;
+            upperSlotUI.SetKeybindLabel(controls.PlayerActionMap.AbilityUpper.GetBindingDisplayString());
+            lowerSlotUI.SetKeybindLabel(controls.PlayerActionMap.AbilityLower.GetBindingDisplayString());
         }
 
         public void OnAugmentEquipped(AugmentProperties augment, IAugmentAbility ability)
