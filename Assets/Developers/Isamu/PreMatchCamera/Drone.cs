@@ -18,7 +18,9 @@ namespace Resonance
         public Vector3 positionOffset = new Vector3(0f, 0f, -1.5f);
 
         [Header("Audio")]
+#if !UNITY_SERVER
         public AK.Wwise.Event droneLoopEvent;
+#endif
 
         private Transform _followTarget;
         private bool _flying = false;
