@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using PurrNet;
+using Resonance.Combat.Weapons;
 using UnityEngine;
 
 namespace Resonance.PlayerController
@@ -183,9 +184,16 @@ namespace Resonance.PlayerController
 
             for (int i = 0; i < currentMeshes.Length && i < ghost.meshFilters.Length; i++)
             {
+                if (currentMeshes[i].GetComponent<TPWeaponMesh>() != null)
+                {
+                    ghost.meshRenderers[i].enabled = false;
+                    continue;
+                }
+
                 Mesh mesh = new Mesh();
                 currentMeshes[i].BakeMesh(mesh);
                 ghost.meshFilters[i].mesh = mesh;
+                ghost.meshRenderers[i].enabled = true;
             }
 
             foreach (MeshRenderer meshRenderer in ghost.meshRenderers)

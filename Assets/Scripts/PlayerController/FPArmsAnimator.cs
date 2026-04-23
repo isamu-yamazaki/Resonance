@@ -20,7 +20,7 @@ namespace Resonance.Combat
         private PlayerHealthStim _playerHealthStim;
         private GameObject _activeSkillArms;
         private AbilityGrappleHook _grappleHook;
-
+        
         private static readonly int IsRunningHash = Animator.StringToHash("isRunning");
         private static readonly int IsFireHash = Animator.StringToHash("isShooting");
         private static readonly int IsReloadingHash = Animator.StringToHash("isReloading");
@@ -99,8 +99,8 @@ namespace Resonance.Combat
             Animator active = GetActiveAnimator();
             if (active == null) return;
 
-            bool isMoving = _playerState.CurrentPlayerMovementState == PlayerMovementState.Running ||
-                            _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+            
+            bool isMoving = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
 
             active.SetBool(IsRunningHash, isMoving);
             active.SetBool(IsReloadingHash, _playerState.IsReloading && _playerShooter.CurrentAmmo > 0);

@@ -16,6 +16,7 @@ TagManager:
   - Grass
   - GrappleOrigin
   - HUDCanvas
+  - WeaponBone
   layers:
   - Default
   - TransparentFX

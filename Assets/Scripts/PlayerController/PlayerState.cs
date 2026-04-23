@@ -23,8 +23,37 @@ namespace Resonance.PlayerController
         public void SetWeaponState(WeaponState state)
         {
             if (CurrentWeaponState == state) return;
+            if (!IsValidTransition(CurrentWeaponState, state)) return;
+            
             CurrentWeaponState = state;
             OnWeaponStateChanged?.Invoke(state);
+        }
+
+        private bool IsValidTransition(WeaponState from, WeaponState to)
+        {
+            switch (from)
+            {
+                case WeaponState.Idle:
+                    return true;
+                case WeaponState.Shooting:
+                    return to == WeaponState.Idle || 
+                           to == WeaponState.Reloading || 
+                           to == WeaponState.EmptyReloading || 
+                           to == WeaponState.Holstering;
+                case WeaponState.Holstering:
+                    return to == WeaponState.Casting || to == WeaponState.Stimming || to == WeaponState.Grappling || to == WeaponState.Drawing || to == WeaponState.Idle;
+                case WeaponState.Drawing:
+                    return to == WeaponState.Idle;
+                case WeaponState.Reloading:
+                case WeaponState.EmptyReloading:
+                    return to == WeaponState.Idle;
+                case WeaponState.Casting:
+                case WeaponState.Stimming:
+                case WeaponState.Grappling:
+                    return to == WeaponState.Drawing;
+                default:
+                    return true;
+            }
         }
 
         public void SetPlayerMovementState(PlayerMovementState playerMovementState)
