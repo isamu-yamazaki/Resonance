@@ -837,5 +837,14 @@ namespace Resonance.Shop
 #endif
         }
         #endregion
+
+        #region Demo
+
+        public void SetModWeaponSlot(WeaponSlot slot)
+        {
+            selectedModWeaponSlot = slot;
+        }
+
+        #endregion
     }
 }

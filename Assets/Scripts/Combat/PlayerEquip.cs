@@ -181,23 +181,19 @@ namespace Resonance.Combat
         private void EquipFromSlot(int slotIndex)
         {
             if (slotIndex < 0 || slotIndex >= playerInventory.weaponInventory.Length) return;
-            
+
             WeaponProperties weapon = playerInventory.weaponInventory[slotIndex];
             if (weapon == null) return;
             if (weapon.Key == EquippedWeapon?.Key) return;
 
+            GetComponent<PlayerShooter>().CancelReload();
+
             if (playerState.CurrentWeaponState != WeaponState.Idle) return;
 
-            GetComponent<PlayerShooter>().CancelReload();
-            
             if (isOwner && fpArmsAnimator != null)
-            {
                 fpArmsAnimator.RequestWeaponSwap(weapon);
-            }
             else
-            {
                 EquipWeapon(weapon);
-            }
         }
 
         public void ExecuteWeaponSwap(WeaponProperties weapon)
