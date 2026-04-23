@@ -5522,7 +5522,7 @@
 								<Property Name="AttenuationDistanceScaling" Type="Real32" Value="0.5"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-1</Value>
+										<Value>-8</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -6130,7 +6130,7 @@
 								<Property Name="3DSpatialization" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-3</Value>
+										<Value>-12</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -6253,6 +6253,11 @@
 								<SwitchContainer Name="Footstep_Concrete" ID="{B8F32D30-3E6A-4028-815B-82A0B49F04E6}" ShortID="1018917569">
 									<PropertyList>
 										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
@@ -10172,7 +10177,7 @@
 						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
-								<Value>-10</Value>
+								<Value>-30</Value>
 							</ValueList>
 						</Property>
 					</PropertyList>
