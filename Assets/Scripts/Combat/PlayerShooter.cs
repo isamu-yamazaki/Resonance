@@ -116,15 +116,15 @@ namespace Resonance.Combat
             RefreshAmmoFromEquippedWeapon(false);
             TickReload();
 
+            if (playerState.CurrentWeaponState == WeaponState.Shooting &&
+                !playerActionsInput.AttackHeld &&
+                !playerActionsInput.AttackPressed)
+            {
+                playerState.SetWeaponState(WeaponState.Idle);
+            }
+
             if (!playerActionsInput.AttackHeld && !playerActionsInput.AttackPressed)
             {
-                if (!playerState.IsReloading &&
-                    playerState.CurrentWeaponState != WeaponState.Drawing &&
-                    playerState.CurrentWeaponState != WeaponState.Holstering)
-                {
-                    playerState.SetWeaponState(WeaponState.Idle);
-                }
-
                 currentSpread = Mathf.Max(
                     weaponStatManager.Spread,
                     currentSpread - weaponStatManager.SpreadRecoveryRate * Time.deltaTime
@@ -520,6 +520,8 @@ namespace Resonance.Combat
         
         public void CancelReloadAndRefill()
         {
+            if (!isOwner) return;
+            if (playerEquip == null) return;
             CancelReload();
             if (playerEquip?.EquippedWeapon != null)
                 ammoByWeapon[playerEquip.EquippedWeapon] = weaponStatManager.MagazineSize;
@@ -539,12 +541,6 @@ namespace Resonance.Combat
             if (!force && weapon == lastWeapon) return;
 
             lastWeapon = weapon;
-            if (!playerState.IsReloading && 
-                playerState.CurrentWeaponState != WeaponState.Drawing &&
-                playerState.CurrentWeaponState != WeaponState.Holstering)
-            {
-                playerState.SetWeaponState(WeaponState.Idle);
-            }
             currentSpread = weaponStatManager.Spread;
 
             viewModel.SetReloadState(false);

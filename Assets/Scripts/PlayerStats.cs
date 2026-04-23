@@ -283,6 +283,7 @@ namespace Resonance.Player
         [ObserversRpc]
         private void ApplyDeathEffectsRpc()
         {
+            Debug.Log($"[PlayerStats] ApplyDeathEffectsRpc - isOwner: {isOwner}");
             if (_playerController != null)
             {
                 _playerController.IsPlayerDead = true;
