@@ -44,7 +44,7 @@ namespace Resonance.Match
         [SerializeField] private float matchDurationSeconds = 300f;
 
         [Header("Arena Short Settings")]
-        [SerializeField] private float arenaShortMatchDurationSeconds = 150f;
+        [SerializeField] private float arenaShortMatchDurationSeconds = 180f;
 
 
         [Header("Polarity Settings")]
