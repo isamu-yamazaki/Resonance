@@ -13,42 +13,40 @@ public class MatchStatsView : MonoBehaviour, IOverlayView
     [SerializeField] private LeaderboardRow rowPrefab;
 
     private readonly List<LeaderboardRow> _spawnedRows = new();
-    private MatchStatsViewModel _vm;
+    private MatchStatsModel _model;
 
     private void Start()
     {
-        _vm = MatchStatsViewModel.Instance;
+        _model = MatchStatsModel.Instance;
 
-        if (_vm == null)
-            _vm = FindFirstObjectByType<MatchStatsViewModel>();
+        if (_model == null)
+            _model = FindFirstObjectByType<MatchStatsModel>();
 
-        if (_vm == null)
+        if (_model == null)
         {
-            Debug.LogError("MatchStatsViewModel not found in scene");
+            Debug.LogError("MatchStatsModel not found in scene");
             return;
         }
 
         root.SetActive(false);
-        _vm.Rankings.ChangeEvent += OnRankingsChanged;
+        _model.Rankings.ChangeEvent += OnRankingsChanged;
     }
 
     private void OnDestroy()
     {
-        if (_vm == null) return;
+        if (_model == null) return;
 
-        _vm.Rankings.ChangeEvent -= OnRankingsChanged;
+        _model.Rankings.ChangeEvent -= OnRankingsChanged;
     }
 
     public void OnShow(OverlayViewActions viewActions)
     {
         root.SetActive(true);
-        _vm?.StartRefreshing();
     }
 
     public void OnHide()
     {
         root.SetActive(false);
-        _vm?.StopRefreshing();
     }
 
     private void OnRankingsChanged(List<PlayerRanking> rankings)
