@@ -45,7 +45,7 @@ Light:
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 10
+  m_Intensity: 5
   m_Range: 80
   m_SpotAngle: 85
   m_InnerSpotAngle: 0
@@ -191,7 +191,7 @@ Light:
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 10
+  m_Intensity: 5
   m_Range: 80
   m_SpotAngle: 85
   m_InnerSpotAngle: 0
@@ -302,15 +302,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7bec7005cce36af4992860f8a2b1ea35, type: 3}
       propertyPath: m_LocalScale.x
-      value: 50
+      value: 30.000002
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7bec7005cce36af4992860f8a2b1ea35, type: 3}
       propertyPath: m_LocalScale.y
-      value: 50
+      value: 30.000002
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7bec7005cce36af4992860f8a2b1ea35, type: 3}
       propertyPath: m_LocalScale.z
-      value: 32.75457
+      value: 19.652742
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7bec7005cce36af4992860f8a2b1ea35, type: 3}
       propertyPath: m_LocalPosition.x
@@ -322,7 +322,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7bec7005cce36af4992860f8a2b1ea35, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7bec7005cce36af4992860f8a2b1ea35, type: 3}
       propertyPath: m_LocalRotation.w
@@ -394,7 +394,7 @@ MonoBehaviour:
   acceleration: 12
   maxSpeed: 22
   rotationOffset: {x: -90, y: 180, z: 0}
-  pitchInfluence: 0.25
+  positionOffset: {x: 0, y: 0, z: -1.5}
 --- !u!4 &5664418643249186389 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7bec7005cce36af4992860f8a2b1ea35, type: 3}

@@ -14,10 +14,8 @@ namespace Resonance
                  "Adjust if the drone model's local forward doesn't match its mesh's nose direction.")]
         public Vector3 rotationOffset = Vector3.zero;
 
-        [Tooltip("How much of the spline node's pitch the drone inherits while circling. " +
-                 "0 = fully flat, 1 = full node pitch.")]
-        [Range(0f, 1f)]
-        public float pitchInfluence = 0.25f;
+        [Tooltip("Local-space offset from the follow target. Use Z to push the drone behind the camera.")]
+        public Vector3 positionOffset = new Vector3(0f, 0f, -1.5f);
 
         private Transform _followTarget;
         private bool _flying = false;
@@ -30,19 +28,13 @@ namespace Resonance
 
         private void SnapToTarget()
         {
-            transform.position = _followTarget.position;
+            transform.position = _followTarget.position + _followTarget.TransformDirection(positionOffset);
 
             Vector3 forward = _followTarget.forward;
             if (forward.sqrMagnitude < 0.001f)
                 forward = _followTarget.right;
-            forward.Normalize();
 
-            Vector3 flatForward = new Vector3(forward.x, 0f, forward.z);
-            if (flatForward.sqrMagnitude < 0.001f) flatForward = Vector3.forward;
-            Quaternion flatRot = Quaternion.LookRotation(flatForward.normalized, Vector3.up);
-            Quaternion fullRot = Quaternion.LookRotation(forward, Vector3.up);
-
-            Quaternion look = Quaternion.Slerp(flatRot, fullRot, pitchInfluence);
+            Quaternion look = Quaternion.LookRotation(forward.normalized, Vector3.up);
 
             if (rotationOffset != Vector3.zero)
                 look *= Quaternion.Euler(rotationOffset);
@@ -53,6 +45,12 @@ namespace Resonance
         public void SetFollowTarget(Transform target)
         {
             _followTarget = target;
+        }
+
+        public void SetVisible(bool visible)
+        {
+            foreach (var r in GetComponentsInChildren<Renderer>())
+                r.enabled = visible;
         }
 
         public void FlyAway(Vector3 direction)
@@ -67,7 +65,6 @@ namespace Resonance
             float speed = 0f;
             float elapsed = 0f;
 
-            // Lock rotation to whatever it was at cinematic end — no turning at all.
             Quaternion lockedRotation = transform.rotation;
 
             while (elapsed < 3f)
@@ -81,14 +78,6 @@ namespace Resonance
             }
 
             Destroy(gameObject);
-        }
-
-        private static Quaternion FlattenToYaw(Quaternion q)
-        {
-            Vector3 flat = q * Vector3.forward;
-            flat.y = 0f;
-            if (flat.sqrMagnitude < 0.001f) flat = Vector3.forward;
-            return Quaternion.LookRotation(flat.normalized, Vector3.up);
         }
     }
 }
