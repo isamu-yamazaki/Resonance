@@ -19,6 +19,8 @@ namespace Resonance.UI
         public bool IsDebugMenuOpen => viewRouter.ActiveOverlayKeys.Contains(DebugOverlayView.Key);
         public bool IsPerformanceStatsOpen => viewRouter.ActiveOverlayKeys.Contains(PerformanceStatsOverlay.Key);
         public bool IsPlayerFacingFPSOverlayOpen => viewRouter.ActiveOverlayKeys.Contains(PlayerFacingFPSOverlayView.Key);
+        public bool IsMatchEndOpen => viewRouter.ActiveOverlayKeys.Contains(MatchEndOverlayView.Key);
+        public bool IsMatchStatsOpen => viewRouter.ActiveOverlayKeys.Contains(MatchStatsView.Key);
 
         private void Awake()
         {
@@ -69,6 +71,20 @@ namespace Resonance.UI
                 return;
             }
 
+            var matchEndView = GetComponentInChildren<MatchEndOverlayView>(includeInactive: true);
+            if (matchEndView == null)
+            {
+                Debug.LogError("[InGameViewRouterBridge] MatchEndOverlayView not found in children.");
+                return;
+            }
+
+            var matchStatsView = GetComponentInChildren<MatchStatsView>(includeInactive: true);
+            if (matchStatsView == null)
+            {
+                Debug.LogError("[InGameViewRouterBridge] MatchStatsView not found in children.");
+                return;
+            }
+
             var playerLocomotionAndActions = new InputActionMap[]
             {
                 PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
@@ -100,6 +116,17 @@ namespace Resonance.UI
             viewRouter.RegisterOverlay(new OverlayOptions
             {
                 view = fpsView,
+                // intentionally: no inputMapsToDisableWhenShown, unlockCursorWhenShown = false
+            });
+            viewRouter.RegisterOverlay(new OverlayOptions
+            {
+                view = matchEndView,
+                inputMapsToDisableWhenShown = playerLocomotionAndActions,
+                unlockCursorWhenShown = true
+            });
+            viewRouter.RegisterOverlay(new OverlayOptions
+            {
+                view = matchStatsView,
                 // intentionally: no inputMapsToDisableWhenShown, unlockCursorWhenShown = false
             });
         }
@@ -145,6 +172,38 @@ namespace Resonance.UI
             if (IsPlayerFacingFPSOverlayOpen)
             {
                 viewRouter.ToggleOverlay(PlayerFacingFPSOverlayView.Key);
+            }
+        }
+
+        public void ShowMatchEnd()
+        {
+            if (!IsMatchEndOpen)
+            {
+                viewRouter.ToggleOverlay(MatchEndOverlayView.Key);
+            }
+        }
+
+        public void HideMatchEnd()
+        {
+            if (IsMatchEndOpen)
+            {
+                viewRouter.ToggleOverlay(MatchEndOverlayView.Key);
+            }
+        }
+
+        public void ShowMatchStats()
+        {
+            if (!IsMatchStatsOpen)
+            {
+                viewRouter.ToggleOverlay(MatchStatsView.Key);
+            }
+        }
+
+        public void HideMatchStats()
+        {
+            if (IsMatchStatsOpen)
+            {
+                viewRouter.ToggleOverlay(MatchStatsView.Key);
             }
         }
     }
