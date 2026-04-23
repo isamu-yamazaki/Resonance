@@ -15185,6 +15185,7 @@ GameObject:
   - component: {fileID: 6389681794156036081}
   - component: {fileID: 3536633491357894829}
   - component: {fileID: 1486004674923868405}
+  - component: {fileID: 629174781450187593}
   m_Layer: 5
   m_Name: ShopUI
   m_TagString: Untagged
@@ -15316,6 +15317,47 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: fddd338db2839d249926288e3b01c952, type: 2}
+--- !u!114 &629174781450187593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7655533952200099438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18ef86d06618dd14d9675bedc25cc869, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DemoPresetLoadouts
+  Loadouts:
+  - Primary: {fileID: 11400000, guid: 5b3c96565628d1d498ddc4376703e2f6, type: 2}
+    Secondary: {fileID: 11400000, guid: 28cadf78b26d3a1489c2a936a55f1575, type: 2}
+    Upper: {fileID: 11400000, guid: 2bf6ca1e3406fd947b83099bc244024b, type: 2}
+    Lower: {fileID: 11400000, guid: a7b0e3950e622144481612a381d0c8d1, type: 2}
+    PrimaryMods:
+    - {fileID: 11400000, guid: 5a10812a552370647a4b5eb685f2b77e, type: 2}
+    - {fileID: 11400000, guid: 2bd73f864a11db148b7f8adc9834fe5d, type: 2}
+    SecondaryMods:
+    - {fileID: 0}
+  - Primary: {fileID: 11400000, guid: f972d8a300e00e54ebad004976cae5f4, type: 2}
+    Secondary: {fileID: 11400000, guid: 28cadf78b26d3a1489c2a936a55f1575, type: 2}
+    Upper: {fileID: 11400000, guid: 2bf6ca1e3406fd947b83099bc244024b, type: 2}
+    Lower: {fileID: 11400000, guid: 7ccee1832ce824258abe079e5d607225, type: 2}
+    PrimaryMods:
+    - {fileID: 11400000, guid: 00325568d7c319d4ca27ecc12eb1235b, type: 2}
+    SecondaryMods:
+    - {fileID: 11400000, guid: 25c5f5a59320cc14999bececc15c3a1f, type: 2}
+    - {fileID: 11400000, guid: 2bd73f864a11db148b7f8adc9834fe5d, type: 2}
+  - Primary: {fileID: 11400000, guid: f972d8a300e00e54ebad004976cae5f4, type: 2}
+    Secondary: {fileID: 11400000, guid: 28cadf78b26d3a1489c2a936a55f1575, type: 2}
+    Upper: {fileID: 11400000, guid: 2bf6ca1e3406fd947b83099bc244024b, type: 2}
+    Lower: {fileID: 11400000, guid: 94d3447169219db4297c6f8fd5ac18ac, type: 2}
+    PrimaryMods:
+    - {fileID: 11400000, guid: 461834cae6f5efa4280a22d9b3d5fe7c, type: 2}
+    - {fileID: 11400000, guid: 374e4f45d2e6a084ab665ce53ac7cb3b, type: 2}
+    SecondaryMods:
+    - {fileID: 11400000, guid: 639a8fd18811d6f4b8370bed25a0486a, type: 2}
+  inputActions: {fileID: -944628639613478452, guid: 9fb1bdfd7a717e743bcf15dae882b1c0, type: 3}
 --- !u!1 &7710703076033452880
 GameObject:
   m_ObjectHideFlags: 0
