@@ -96,7 +96,10 @@ namespace Resonance.UI
         {
             if (winnerText != null)
             {
-                winnerText.text = $"{winner} Wins!";
+                if (winner == null)
+                    winnerText.text = "No Winner.";
+                else
+                    winnerText.text = $"{winner} Wins!";
             }
 
             if (waitingForHostText != null)
