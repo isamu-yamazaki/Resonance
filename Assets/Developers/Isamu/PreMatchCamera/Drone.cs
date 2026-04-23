@@ -17,8 +17,19 @@ namespace Resonance
         [Tooltip("Local-space offset from the follow target. Use Z to push the drone behind the camera.")]
         public Vector3 positionOffset = new Vector3(0f, 0f, -1.5f);
 
+        [Header("Audio")]
+        public AK.Wwise.Event droneLoopEvent;
+
         private Transform _followTarget;
         private bool _flying = false;
+
+        private void Awake()
+        {
+#if !UNITY_SERVER
+            if (droneLoopEvent != null && droneLoopEvent.IsValid())
+                droneLoopEvent.Post(gameObject);
+#endif
+        }
 
         private void Update()
         {
