@@ -19,6 +19,7 @@ namespace Resonance.UI
         public bool IsDebugMenuOpen => viewRouter.ActiveOverlayKeys.Contains(DebugOverlayView.Key);
         public bool IsPerformanceStatsOpen => viewRouter.ActiveOverlayKeys.Contains(PerformanceStatsOverlay.Key);
         public bool IsPlayerFacingFPSOverlayOpen => viewRouter.ActiveOverlayKeys.Contains(PlayerFacingFPSOverlayView.Key);
+        public bool IsMatchEndOpen => viewRouter.ActiveOverlayKeys.Contains(MatchEndOverlayView.Key);
 
         private void Awake()
         {
@@ -69,6 +70,13 @@ namespace Resonance.UI
                 return;
             }
 
+            var matchEndView = GetComponentInChildren<MatchEndOverlayView>(includeInactive: true);
+            if (matchEndView == null)
+            {
+                Debug.LogError("[InGameViewRouterBridge] MatchEndOverlayView not found in children.");
+                return;
+            }
+
             var playerLocomotionAndActions = new InputActionMap[]
             {
                 PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap,
@@ -101,6 +109,12 @@ namespace Resonance.UI
             {
                 view = fpsView,
                 // intentionally: no inputMapsToDisableWhenShown, unlockCursorWhenShown = false
+            });
+            viewRouter.RegisterOverlay(new OverlayOptions
+            {
+                view = matchEndView,
+                inputMapsToDisableWhenShown = playerLocomotionAndActions,
+                unlockCursorWhenShown = true
             });
         }
 
@@ -145,6 +159,22 @@ namespace Resonance.UI
             if (IsPlayerFacingFPSOverlayOpen)
             {
                 viewRouter.ToggleOverlay(PlayerFacingFPSOverlayView.Key);
+            }
+        }
+
+        public void ShowMatchEnd()
+        {
+            if (!IsMatchEndOpen)
+            {
+                viewRouter.ToggleOverlay(MatchEndOverlayView.Key);
+            }
+        }
+
+        public void HideMatchEnd()
+        {
+            if (IsMatchEndOpen)
+            {
+                viewRouter.ToggleOverlay(MatchEndOverlayView.Key);
             }
         }
     }
