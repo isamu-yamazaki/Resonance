@@ -6,10 +6,13 @@ namespace Resonance.LobbySystem.NewUI
 {
     public class SkinPreviewModel : MonoBehaviour
     {
+        private enum MsaaSamples { None = 1, X2 = 2, X4 = 4 }
+
         [SerializeField] private Camera previewCamera;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private SkinCatalog skinCatalog;
-        [SerializeField, Range(0.1f, 1f)] private float resolutionScale = 0.5f;
+        [SerializeField, Range(0.1f, 1f)] private float resolutionScale = 1f;
+        [SerializeField] private MsaaSamples msaa = MsaaSamples.X4;
 
         private SkinIndexProvider skinIndexProvider;
 
@@ -22,7 +25,7 @@ namespace Resonance.LobbySystem.NewUI
         {
             var width = Mathf.Max(1, Mathf.RoundToInt(Screen.width * resolutionScale));
             var height = Mathf.Max(1, Mathf.RoundToInt(Screen.height * resolutionScale));
-            _rt = new RenderTexture(width, height, 16);
+            _rt = new RenderTexture(width, height, 16) { antiAliasing = (int)msaa };
             previewCamera.targetTexture = _rt;
         }
 
