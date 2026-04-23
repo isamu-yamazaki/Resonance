@@ -479,7 +479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.DefaultSceneNameSetter
   lobbyManager: {fileID: 1097043115}
-  sceneName: TB_PlaytestArena
+  sceneName: NightCity
 --- !u!1 &36700662
 GameObject:
   m_ObjectHideFlags: 0
