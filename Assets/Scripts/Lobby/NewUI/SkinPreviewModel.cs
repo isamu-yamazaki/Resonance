@@ -9,7 +9,7 @@ namespace Resonance.LobbySystem.NewUI
         [SerializeField] private Camera previewCamera;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private SkinCatalog skinCatalog;
-        [SerializeField] private Vector2Int renderSize = new(1920, 1080);
+        [SerializeField, Range(0.1f, 1f)] private float resolutionScale = 0.5f;
 
         private SkinIndexProvider skinIndexProvider;
 
@@ -20,7 +20,9 @@ namespace Resonance.LobbySystem.NewUI
 
         private void Awake()
         {
-            _rt = new RenderTexture(renderSize.x, renderSize.y, 16);
+            var width = Mathf.Max(1, Mathf.RoundToInt(Screen.width * resolutionScale));
+            var height = Mathf.Max(1, Mathf.RoundToInt(Screen.height * resolutionScale));
+            _rt = new RenderTexture(width, height, 16);
             previewCamera.targetTexture = _rt;
         }
 
