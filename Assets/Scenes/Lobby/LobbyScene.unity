@@ -4636,6 +4636,8 @@ MonoBehaviour:
   content: {fileID: 1640487266}
   entryButtonPrefab: {fileID: 7024649368418729665, guid: 7559c85cab2db41f7af6c9c21381ac74, type: 3}
   doneButton: {fileID: 628295573}
+  previewModel: {fileID: 1977315078}
+  previewImage: {fileID: 947812943}
   buttonClickEvent:
     idInternal: 0
     valueGuidInternal: 
@@ -10513,7 +10515,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.TemporaryUI.SkinPreviewRenderer
   previewCamera: {fileID: 2136755043}
   spawnPoint: {fileID: 688981006}
-  displayImage: {fileID: 947812943}
   skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
   renderSize: {x: 256, y: 256}
 --- !u!1 &1521422974
@@ -13104,6 +13105,102 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1954734291}
   m_CullTransparentMesh: 1
+--- !u!1 &1977315076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1977315077}
+  - component: {fileID: 1977315078}
+  m_Layer: 0
+  m_Name: SkinPreviewModel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1977315077
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977315076}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.84683, y: 0, z: -10.31035}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1977315078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977315076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea099815049064ff9a9f8a36545f0076, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.SkinPreviewModel
+  previewCamera: {fileID: 2136755043}
+  spawnPoint: {fileID: 688981006}
+  skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
+  renderSize: {x: 256, y: 256}
+--- !u!1 &1988403585
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1988403586}
+  - component: {fileID: 1988403587}
+  m_Layer: 0
+  m_Name: SkinIndexProvider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1988403586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988403585}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1988403587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988403585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b789c79642284b118fd14e162490e4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.DataProviders.SkinIndexProvider
+  skinIndex: 0
+  OnSkinIndexChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2007688715
 GameObject:
   m_ObjectHideFlags: 0
@@ -14362,6 +14459,8 @@ SceneRoots:
   - {fileID: 197424294}
   - {fileID: 2136755044}
   - {fileID: 688981006}
+  - {fileID: 1977315077}
+  - {fileID: 1988403586}
   - {fileID: 938520291}
   - {fileID: 1829748894}
   - {fileID: 1163111806}
