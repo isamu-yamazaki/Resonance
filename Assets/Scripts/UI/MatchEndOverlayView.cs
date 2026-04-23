@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,10 +26,15 @@ namespace Resonance.UI
         [SerializeField] private Button playAgainButton;
         [SerializeField] private Button returnToLobbyButton;
 
+        [Header("Leaderboard")]
+        [SerializeField] private Transform leaderboardContentRoot;
+        [SerializeField] private LeaderboardRow leaderboardRowPrefab;
+
         [Header("Dependencies")]
         [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
 
         private Action dismiss;
+        private readonly List<LeaderboardRow> _spawnedRows = new();
 
         private void Awake()
         {
@@ -73,6 +79,8 @@ namespace Resonance.UI
                 matchEndPanel.SetActive(true);
             }
             dismiss = viewActions.Dismiss;
+
+            RenderLeaderboard();
         }
 
         public void OnHide()
@@ -123,6 +131,39 @@ namespace Resonance.UI
             if (despawnerSceneLoader != null)
             {
                 despawnerSceneLoader.LoadNetworkDespawnerSceneForEveryone();
+            }
+        }
+
+        private void RenderLeaderboard()
+        {
+            if (leaderboardContentRoot == null || leaderboardRowPrefab == null) return;
+
+            var model = MatchStatsModel.Instance;
+            if (model == null)
+            {
+                Debug.LogError("MatchStatsModel not found");
+                return;
+            }
+
+            var rankings = model.Rankings.Value;
+
+            while (_spawnedRows.Count < rankings.Count)
+            {
+                var row = Instantiate(leaderboardRowPrefab, leaderboardContentRoot);
+                _spawnedRows.Add(row);
+            }
+
+            for (int i = 0; i < _spawnedRows.Count; i++)
+            {
+                if (i < rankings.Count)
+                {
+                    _spawnedRows[i].gameObject.SetActive(true);
+                    _spawnedRows[i].Setup(i + 1, rankings[i]);
+                }
+                else
+                {
+                    _spawnedRows[i].gameObject.SetActive(false);
+                }
             }
         }
     }

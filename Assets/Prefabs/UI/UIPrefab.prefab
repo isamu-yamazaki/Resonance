@@ -4090,7 +4090,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7884,7 +7884,6 @@ GameObject:
   - component: {fileID: 3003814639312337784}
   - component: {fileID: 1302996388874601401}
   - component: {fileID: 3606453393637478594}
-  - component: {fileID: 5300646059388624386}
   m_Layer: 5
   m_Name: MatchStats
   m_TagString: Untagged
@@ -7950,21 +7949,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5300646059388624386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4281035549757620308}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17e230205a6434f4d9084a3f8804fba6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MatchStatsView
-  root: {fileID: 4281035549757620308}
-  contentRoot: {fileID: 28481684837192647}
-  rowPrefab: {fileID: 6982708135518944863, guid: eb29f0fc59708a646b53d614385052c0, type: 3}
 --- !u!1 &4287820591748393061
 GameObject:
   m_ObjectHideFlags: 0
@@ -9306,6 +9290,8 @@ MonoBehaviour:
   waitingForHostText: {fileID: 8754169209598443563}
   playAgainButton: {fileID: 0}
   returnToLobbyButton: {fileID: 5916702868616532967}
+  leaderboardContentRoot: {fileID: 28481684837192647}
+  leaderboardRowPrefab: {fileID: 6982708135518944863, guid: eb29f0fc59708a646b53d614385052c0, type: 3}
   despawnerSceneLoader: {fileID: 0}
 --- !u!1 &4888869790501103848
 GameObject:
