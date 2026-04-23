@@ -84,9 +84,11 @@ namespace Resonance.Combat
 
         private void TryUseUpperActiveAbility()
         {
-            playerActionsInput.SetAbilityUpperPressedFalse();
             IAugmentAbility ability = GetAbility(inventory.augmentInventory[0]?.AbilityKey);
-            if (ability == null || !ability.AbilityReady) return;
+            if (ability == null) return;
+            if (!ability.AbilityReady) return;
+
+            playerActionsInput.SetAbilityUpperPressedFalse();
 
             if (ability is AbilityGrappleHook)
             {
