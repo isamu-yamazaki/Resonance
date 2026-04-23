@@ -1505,7 +1505,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197424294}
   m_Layer: 0
-  m_Name: '------SKIN PREVIEW------'
+  m_Name: ------SKIN PREVIEW------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3229,7 +3229,7 @@ GameObject:
   m_Component:
   - component: {fileID: 461439340}
   m_Layer: 0
-  m_Name: '------DATA PROVIDERS------'
+  m_Name: ------DATA PROVIDERS------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7362,7 +7362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentProvider: {fileID: 1542312765}
   createRoomArgs:
-    maxPlayers: 5
+    maxPlayers: 12
     roomProperties:
       keys: []
       values: []
@@ -7672,11 +7672,11 @@ MonoBehaviour:
   doneButton: {fileID: 1749217860}
   slider: {fileID: 1259084013}
   displayText: {fileID: 863048743}
+  fpsCounterToggle: {fileID: 961766206}
   buttonClickEvent:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
-  fpsCounterToggle: {fileID: 961766206}
 --- !u!1 &1124587968
 GameObject:
   m_ObjectHideFlags: 0
@@ -12714,7 +12714,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1829748894}
   m_Layer: 0
-  m_Name: '------BUILD CONFIG------'
+  m_Name: ------BUILD CONFIG------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
