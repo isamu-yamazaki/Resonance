@@ -125960,7 +125960,6 @@ MonoBehaviour:
   skinScreenCameraPose: {fileID: 2008665000}
   skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
   resolutionScale: 1
-  msaa: 4
   cameraPoseTransitionDuration: 3
 --- !u!1 &1986009645
 GameObject:
@@ -144254,7 +144253,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 366230968}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 0
+  m_Antialiasing: 3
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
