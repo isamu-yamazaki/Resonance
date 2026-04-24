@@ -58616,6 +58616,37 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &857817642
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 857817643}
+  m_Layer: 0
+  m_Name: RoomScreenCameraPose
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &857817643
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857817642}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.009857914, y: -0.8250719, z: -0.024495805, w: 0.56441057}
+  m_LocalPosition: {x: -44.81, y: 1.26, z: 73.529}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1874315201}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &863048740
 GameObject:
   m_ObjectHideFlags: 0
@@ -119265,6 +119296,39 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &1874315200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1874315201}
+  m_Layer: 0
+  m_Name: SkinPreviewCameraPositions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1874315201
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874315200}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2008665000}
+  - {fileID: 857817643}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1877926902
 GameObject:
   m_ObjectHideFlags: 0
@@ -121422,9 +121486,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.SkinPreviewModel
   previewCamera: {fileID: 2136755043}
   spawnPoint: {fileID: 688981006}
+  roomScreenCameraPose: {fileID: 857817643}
+  skinScreenCameraPose: {fileID: 2008665000}
   skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
   resolutionScale: 0.5
   msaa: 4
+  cameraPoseTransitionDuration: 3
 --- !u!1 &1986009645
 GameObject:
   m_ObjectHideFlags: 0
@@ -122668,6 +122735,37 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 594a04cc5fe404c48a68b86928b5407d, type: 2}
+--- !u!1 &2008664999
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2008665000}
+  m_Layer: 0
+  m_Name: SkinScreenCameraPose
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2008665000
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008664999}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.009857914, y: -0.8250719, z: -0.024495805, w: 0.56441057}
+  m_LocalPosition: {x: -44.81, y: 1.26, z: 72.78}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1874315201}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2009631309
 GameObject:
   m_ObjectHideFlags: 0
@@ -139650,6 +139748,7 @@ SceneRoots:
   - {fileID: 29351275}
   - {fileID: 1802798224}
   - {fileID: 197424294}
+  - {fileID: 1874315201}
   - {fileID: 2136755044}
   - {fileID: 688981006}
   - {fileID: 1239930478}

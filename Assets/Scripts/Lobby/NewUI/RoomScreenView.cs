@@ -80,9 +80,13 @@ namespace Resonance.LobbySystem.NewUI
             _viewActions = viewActions;
             gameObject.SetActive(true);
 
-            if (skinPreviewModel != null && skinPreviewImage != null)
+            if (skinPreviewModel != null)
             {
-                skinPreviewImage.texture = skinPreviewModel.PreviewTexture;
+                if (skinPreviewImage != null)
+                {
+                    skinPreviewImage.texture = skinPreviewModel.PreviewTexture;
+                }
+                skinPreviewModel.ApplyRoomScreenCameraPose();
             }
 
             PopulateDropdowns();
