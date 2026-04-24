@@ -28,6 +28,7 @@ namespace Resonance.LobbySystem
         public UnityEvent<List<LobbyUser>> OnPlayerListUpdated = new UnityEvent<List<LobbyUser>>();
         public UnityEvent<List<Lobby>> OnRoomSearchResults = new UnityEvent<List<Lobby>>();
         public UnityEvent<List<FriendUser>> OnFriendListPulled = new UnityEvent<List<FriendUser>>();
+        public UnityEvent<string> OnFriendInviteAccepted = new UnityEvent<string>();
         public UnityEvent OnAllReady = new UnityEvent();
         public UnityEvent<string> OnError = new UnityEvent<string>();
 
@@ -134,16 +135,47 @@ namespace Resonance.LobbySystem
         // Subscribe to provider events
         private void SubscribeToProviderEvents()
         {
-            _currentProvider.OnLobbyJoinFailed += message => InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
-            _currentProvider.OnLobbyLeft += () => InvokeDelayed(() =>
+            _currentProvider.OnLobbyJoinFailed += HandleLobbyJoinFailed;
+            _currentProvider.OnLobbyLeft += HandleLobbyLeft;
+            _currentProvider.OnLobbyUpdated += HandleLobbyUpdated;
+            _currentProvider.OnLobbyPlayerListUpdated += HandleLobbyPlayerListUpdated;
+            _currentProvider.OnFriendInviteAccepted += HandleFriendInviteAccepted;
+            _currentProvider.OnError += HandleError;
+        }
+
+        // Unsubscribe from provider events
+        private void UnsubscribeFromProviderEvents()
+        {
+            _currentProvider.OnLobbyJoinFailed -= HandleLobbyJoinFailed;
+            _currentProvider.OnLobbyLeft -= HandleLobbyLeft;
+            _currentProvider.OnLobbyUpdated -= HandleLobbyUpdated;
+            _currentProvider.OnLobbyPlayerListUpdated -= HandleLobbyPlayerListUpdated;
+            _currentProvider.OnFriendInviteAccepted -= HandleFriendInviteAccepted;
+            _currentProvider.OnError -= HandleError;
+        }
+
+        private void HandleLobbyJoinFailed(string message)
+        {
+            InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
+        }
+
+        private void HandleLobbyLeft()
+        {
+            InvokeDelayed(() =>
             {
                 _currentLobby = default;
                 OnRoomLeft?.Invoke();
             });
-            
-            _currentProvider.OnLobbyUpdated += room => InvokeDelayed(() =>
+        }
+
+        private void HandleLobbyUpdated(Lobby room)
+        {
+            InvokeDelayed(() =>
             {
-                if(!_lastKnownState.HasChanged(room) || room.Members.Count <= 0 || !room.IsValid) return;
+                if (!_lastKnownState.HasChanged(room) || room.Members.Count <= 0 || !room.IsValid)
+                {
+                    return;
+                }
 
                 _lastKnownState = room;
                 _currentLobby = room;
@@ -155,19 +187,21 @@ namespace Resonance.LobbySystem
                     CallOnAllReady();
                 }
             });
-
-            _currentProvider.OnLobbyPlayerListUpdated += players => InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
-            _currentProvider.OnError += error => InvokeDelayed(() => OnError.Invoke(error));
         }
 
-        // Unsubscribe from provider events
-        private void UnsubscribeFromProviderEvents()
+        private void HandleLobbyPlayerListUpdated(List<LobbyUser> players)
         {
-            _currentProvider.OnLobbyJoinFailed -= message => InvokeDelayed(() => OnRoomJoinFailed.Invoke(message));
-            _currentProvider.OnLobbyLeft -= () => InvokeDelayed(() => OnRoomLeft.Invoke());
-            _currentProvider.OnLobbyUpdated -= room => InvokeDelayed(() => OnRoomUpdated.Invoke(room));
-            _currentProvider.OnLobbyPlayerListUpdated -= players => InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
-            _currentProvider.OnError -= error => InvokeDelayed(() => OnError.Invoke(error));
+            InvokeDelayed(() => OnPlayerListUpdated.Invoke(players));
+        }
+
+        private void HandleFriendInviteAccepted(string lobbyId)
+        {
+            InvokeDelayed(() => OnFriendInviteAccepted.Invoke(lobbyId));
+        }
+
+        private void HandleError(string error)
+        {
+            InvokeDelayed(() => OnError.Invoke(error));
         }
 
         /// <summary>

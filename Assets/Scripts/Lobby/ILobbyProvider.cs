@@ -40,6 +40,7 @@ namespace Resonance.LobbySystem {
         event UnityAction<Lobby> OnLobbyUpdated;
         event UnityAction<List<LobbyUser>> OnLobbyPlayerListUpdated;
         event UnityAction<List<FriendUser>> OnFriendListPulled;
+        event UnityAction<string> OnFriendInviteAccepted;
 
         // Error Handling
         event UnityAction<string> OnError;
