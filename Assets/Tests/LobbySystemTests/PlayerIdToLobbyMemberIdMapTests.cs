@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using PurrNet;
 using PurrNet.Modules;
@@ -53,6 +54,34 @@ public class PlayerIdToLobbyMemberIdMapTests
         var localPlayerId = networkManager.localPlayer;
         var lobbyMemberId = map.GetLobbyMemberId(localPlayerId);
         Assert.AreEqual(localLobbyMemberId, lobbyMemberId);
+
+        Object.DestroyImmediate(map.gameObject);
+        Object.DestroyImmediate(lobbyDataHolder.gameObject);
+    }
+
+    [UnityTest]
+    public IEnumerator GetDisplayName_WithLocalLobbyDataHolderAndMember_ReturnsDisplayName()
+    {
+        var lobbyDataHolderGameObject = new GameObject("LobbyDataHolder");
+        var lobbyDataHolder = lobbyDataHolderGameObject.AddComponent<LobbyDataHolder>();
+
+        string localLobbyMemberId = "1";
+        string localDisplayName = "TestUser";
+        lobbyDataHolder.SetLocalUserId(localLobbyMemberId);
+        lobbyDataHolder.SetCurrentLobby(new Lobby
+        {
+            Members = new List<LobbyUser>
+            {
+                new LobbyUser { Id = localLobbyMemberId, DisplayName = localDisplayName }
+            }
+        });
+
+        PlayerIdToLobbyMemberIdMap map = null;
+        yield return NetworkTestHelpers.SetupNetworkIdentityOnNewGameObject<PlayerIdToLobbyMemberIdMap>(networkManager, c => map = c);
+
+        var localPlayerId = networkManager.localPlayer;
+        var displayName = map.GetDisplayName(localPlayerId);
+        Assert.AreEqual(localDisplayName, displayName);
 
         Object.DestroyImmediate(map.gameObject);
         Object.DestroyImmediate(lobbyDataHolder.gameObject);

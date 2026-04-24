@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using PurrNet;
+using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.UISystem;
 using Resonance.Match;
@@ -97,9 +98,14 @@ namespace Resonance.UI
             if (winnerText != null)
             {
                 if (winner == null)
+                {
                     winnerText.text = "No Winner.";
+                }
                 else
-                    winnerText.text = $"{winner} Wins!";
+                {
+                    var displayName = PlayerIdToLobbyMemberIdMap.Instance?.GetDisplayName(winner.Value);
+                    winnerText.text = $"{displayName ?? winner.ToString()} Wins!";
+                }
             }
 
             if (waitingForHostText != null)
@@ -156,12 +162,18 @@ namespace Resonance.UI
                 _spawnedRows.Add(row);
             }
 
+            var playerIdMap = PlayerIdToLobbyMemberIdMap.Instance;
+
             for (int i = 0; i < _spawnedRows.Count; i++)
             {
                 if (i < rankings.Count)
                 {
+                    var ranking = rankings[i];
+                    var playerId = OwnerIDExtractor.UlongToPlayerId(ranking.player);
+                    var displayName = playerIdMap?.GetDisplayName(playerId);
+
                     _spawnedRows[i].gameObject.SetActive(true);
-                    _spawnedRows[i].Setup(i + 1, rankings[i]);
+                    _spawnedRows[i].Setup(i + 1, ranking, displayName);
                 }
                 else
                 {
