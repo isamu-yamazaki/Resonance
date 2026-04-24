@@ -37,6 +37,7 @@ namespace Resonance.LobbySystem.Providers
         public event UnityAction<Lobby> OnLobbyUpdated;
         public event UnityAction<List<LobbyUser>> OnLobbyPlayerListUpdated;
         public event UnityAction<List<FriendUser>> OnFriendListPulled;
+        public event UnityAction<string> OnFriendInviteAccepted;
         public event UnityAction<string> OnError;
 
 #if STEAMWORKS_NET_PACKAGE && !DISABLESTEAMWORKS
@@ -722,12 +723,16 @@ namespace Resonance.LobbySystem.Providers
             OnLobbyUpdated?.Invoke(updatedLobby);
         }
 
-        private void OnGameLobbyJoinRequested(Steamworks.GameLobbyJoinRequested_t callback)
+        private async void OnGameLobbyJoinRequested(Steamworks.GameLobbyJoinRequested_t callback)
         {
-            var lobbyId = callback.m_steamIDLobby;
-            //PurrLogger.Log($"Invite accepted. Joining lobby {lobbyId.m_SteamID}");
+            var lobbyId = callback.m_steamIDLobby.m_SteamID.ToString();
+            //PurrLogger.Log($"Invite accepted. Joining lobby {lobbyId}");
 
-            _ = JoinLobbyAsync(lobbyId.m_SteamID.ToString());
+            var lobby = await JoinLobbyAsync(lobbyId);
+            if (lobby.IsValid)
+            {
+                OnFriendInviteAccepted?.Invoke(lobbyId);
+            }
         }
 #endif
     }

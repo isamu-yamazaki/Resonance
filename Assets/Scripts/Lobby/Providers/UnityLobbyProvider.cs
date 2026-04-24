@@ -39,6 +39,7 @@ namespace Resonance.LobbySystem.Providers {
         public event UnityAction<string> OnError;
 #pragma warning disable CS0067
         public event UnityAction<List<FriendUser>> OnFriendListPulled;
+        public event UnityAction<string> OnFriendInviteAccepted;
 #pragma warning restore CS0067
 
         [Header("Lobby")]
