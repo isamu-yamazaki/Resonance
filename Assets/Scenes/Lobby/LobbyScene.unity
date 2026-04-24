@@ -11626,7 +11626,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 628232536}
   m_HandleRect: {fileID: 628232535}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -67013,7 +67013,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -121352,6 +121352,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 688981006}
   skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
   resolutionScale: 0.5
+  msaa: 4
 --- !u!1 &1986009645
 GameObject:
   m_ObjectHideFlags: 0
