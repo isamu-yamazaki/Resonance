@@ -16,10 +16,10 @@ MonoBehaviour:
   augmentName: Sonar Disc
   description: 
   icon: {fileID: 21300000, guid: e0d975e1924bfe34cac20bb8935204ef, type: 3}
-  slot: 0
+  slot: 1
   speed: 0
   regen: 0
   damageReduction: 0
   modProperties: {fileID: 0}
-  abilityKey: augment_upper_sonarDisc
+  abilityKey: augment_lower_sonarDisc
   augmentCost: 1

@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{0CBA57E7-D354-1440-96DF-D48AD0CBFEFA}",
+    "Hash": "{398A0E6C-56BF-0B5C-CD5C-86730A3ED001}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -192,6 +192,14 @@
       "CachePath": "3D/{3D12E468-5E6F-E378-1FCE-BF5980231C29}.wem"
      },
      {
+      "Id": "309251540",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_props_drone_loop.wav",
+      "CachePath": "AD/{ADAB4508-CB9A-3850-0793-FE01C86B627E}.wem"
+     },
+     {
       "Id": "311624981",
       "Language": "SFX",
       "Streaming": "false",
@@ -270,6 +278,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_wood_walk_01.wav",
       "CachePath": "CC/{CC3A5C7A-C392-BB17-AE0C-8DFE49355E27}.wem"
+     },
+     {
+      "Id": "417899234",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_world_spotlight.wav",
+      "CachePath": "56/{569F3163-0476-17BE-B431-F9B49EB9DF63}.wem"
      },
      {
       "Id": "479978637",
@@ -913,6 +929,19 @@
       "MediaRefs": [
        {
         "Id": "209026899"
+       }
+      ]
+     },
+     {
+      "Id": "1361308986",
+      "Name": "Play_DroneLoop",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_DroneLoop",
+      "GUID": "{D27C6C76-1791-4A03-B239-A76143C6E906}",
+      "MaxAttenuation": "40",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "309251540"
        }
       ]
      },
@@ -1687,6 +1716,21 @@
       ]
      },
      {
+      "Id": "1951773134",
+      "Name": "Play_Spotlight",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Spotlight",
+      "GUID": "{CEF5DC8C-27C1-4E2B-86E8-41511EF98681}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "3.080901",
+      "DurationMax": "3.080901",
+      "MediaRefs": [
+       {
+        "Id": "417899234"
+       }
+      ]
+     },
+     {
       "Id": "2305398106",
       "Name": "Play_Train_Arrival",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Arrival",
@@ -1978,6 +2022,6 @@
     ]
    }
   ],
-  "FileHash": "{6140702B-6048-110B-EF89-F51ABFAF0FE0}"
+  "FileHash": "{1CFDC2D5-46FD-0092-E3FE-7389C7654AB6}"
  }
 }

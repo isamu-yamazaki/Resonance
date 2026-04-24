@@ -18,16 +18,20 @@ MonoBehaviour:
   slot: 0
   icon: {fileID: 0}
   muzzleFlashOverride: {fileID: 0}
+  audioOverride: {fileID: 0}
   modifiers:
-  - stat: 1
+  - stat: 2
     type: 1
-    value: 10
+    value: 4
   - stat: 6
     type: 1
     value: 2
   - stat: 3
     type: 1
     value: 0.5
+  - stat: 10
+    type: 0
+    value: -3
   bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 01000000
   modCost: 1

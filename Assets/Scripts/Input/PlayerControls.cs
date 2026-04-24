@@ -575,6 +575,17 @@ namespace Resonance.PlayerController
                     ""action"": ""ADS"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6eb24ecf-19f8-43e3-896a-8254029f10c0"",
+                    ""path"": ""<Keyboard>/equals"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ADS"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -676,6 +687,74 @@ namespace Resonance.PlayerController
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""DemoActionMap"",
+            ""id"": ""1e0eb60b-0afc-478e-9040-060a24c2068a"",
+            ""actions"": [
+                {
+                    ""name"": ""Load1"",
+                    ""type"": ""Button"",
+                    ""id"": ""1f70c586-7bfc-4c03-b669-14c0af18ddfd"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Load2"",
+                    ""type"": ""Button"",
+                    ""id"": ""78aec4c5-2cdc-4fb3-82f0-5b5db8bb2c36"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Load3"",
+                    ""type"": ""Button"",
+                    ""id"": ""bef3db68-b4d7-4b15-82ac-ddfbf3b5cefe"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6acfb2ea-0356-432e-9bba-1fb79001548b"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Load1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1a218c9-a3d5-4257-80d0-8dd897f77771"",
+                    ""path"": ""<Keyboard>/9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Load2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f72d0e49-e967-4aac-938b-7d4447f7d3e4"",
+                    ""path"": ""<Keyboard>/0"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Load3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -707,6 +786,11 @@ namespace Resonance.PlayerController
             m_InGameUIActionMap_Escape = m_InGameUIActionMap.FindAction("Escape", throwIfNotFound: true);
             m_InGameUIActionMap_ToggleDebugMenu = m_InGameUIActionMap.FindAction("ToggleDebugMenu", throwIfNotFound: true);
             m_InGameUIActionMap_ToggleStatsOverlay = m_InGameUIActionMap.FindAction("ToggleStatsOverlay", throwIfNotFound: true);
+            // DemoActionMap
+            m_DemoActionMap = asset.FindActionMap("DemoActionMap", throwIfNotFound: true);
+            m_DemoActionMap_Load1 = m_DemoActionMap.FindAction("Load1", throwIfNotFound: true);
+            m_DemoActionMap_Load2 = m_DemoActionMap.FindAction("Load2", throwIfNotFound: true);
+            m_DemoActionMap_Load3 = m_DemoActionMap.FindAction("Load3", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -714,6 +798,7 @@ namespace Resonance.PlayerController
             UnityEngine.Debug.Assert(!m_PlayerLocomotionMap.enabled, "This will cause a leak and performance issues, PlayerControls.PlayerLocomotionMap.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_PlayerActionMap.enabled, "This will cause a leak and performance issues, PlayerControls.PlayerActionMap.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_InGameUIActionMap.enabled, "This will cause a leak and performance issues, PlayerControls.InGameUIActionMap.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_DemoActionMap.enabled, "This will cause a leak and performance issues, PlayerControls.DemoActionMap.Disable() has not been called.");
         }
 
         /// <summary>
@@ -1271,6 +1356,124 @@ namespace Resonance.PlayerController
         /// Provides a new <see cref="InGameUIActionMapActions" /> instance referencing this action map.
         /// </summary>
         public InGameUIActionMapActions @InGameUIActionMap => new InGameUIActionMapActions(this);
+
+        // DemoActionMap
+        private readonly InputActionMap m_DemoActionMap;
+        private List<IDemoActionMapActions> m_DemoActionMapActionsCallbackInterfaces = new List<IDemoActionMapActions>();
+        private readonly InputAction m_DemoActionMap_Load1;
+        private readonly InputAction m_DemoActionMap_Load2;
+        private readonly InputAction m_DemoActionMap_Load3;
+        /// <summary>
+        /// Provides access to input actions defined in input action map "DemoActionMap".
+        /// </summary>
+        public struct DemoActionMapActions
+        {
+            private @PlayerControls m_Wrapper;
+
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public DemoActionMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+            /// <summary>
+            /// Provides access to the underlying input action "DemoActionMap/Load1".
+            /// </summary>
+            public InputAction @Load1 => m_Wrapper.m_DemoActionMap_Load1;
+            /// <summary>
+            /// Provides access to the underlying input action "DemoActionMap/Load2".
+            /// </summary>
+            public InputAction @Load2 => m_Wrapper.m_DemoActionMap_Load2;
+            /// <summary>
+            /// Provides access to the underlying input action "DemoActionMap/Load3".
+            /// </summary>
+            public InputAction @Load3 => m_Wrapper.m_DemoActionMap_Load3;
+            /// <summary>
+            /// Provides access to the underlying input action map instance.
+            /// </summary>
+            public InputActionMap Get() { return m_Wrapper.m_DemoActionMap; }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+            public void Enable() { Get().Enable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+            public void Disable() { Get().Disable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
+            /// <summary>
+            /// Implicitly converts an <see ref="DemoActionMapActions" /> to an <see ref="InputActionMap" /> instance.
+            /// </summary>
+            public static implicit operator InputActionMap(DemoActionMapActions set) { return set.Get(); }
+            /// <summary>
+            /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <param name="instance">Callback instance.</param>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+            /// </remarks>
+            /// <seealso cref="DemoActionMapActions" />
+            public void AddCallbacks(IDemoActionMapActions instance)
+            {
+                if (instance == null || m_Wrapper.m_DemoActionMapActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_DemoActionMapActionsCallbackInterfaces.Add(instance);
+                @Load1.started += instance.OnLoad1;
+                @Load1.performed += instance.OnLoad1;
+                @Load1.canceled += instance.OnLoad1;
+                @Load2.started += instance.OnLoad2;
+                @Load2.performed += instance.OnLoad2;
+                @Load2.canceled += instance.OnLoad2;
+                @Load3.started += instance.OnLoad3;
+                @Load3.performed += instance.OnLoad3;
+                @Load3.canceled += instance.OnLoad3;
+            }
+
+            /// <summary>
+            /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <remarks>
+            /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+            /// </remarks>
+            /// <seealso cref="DemoActionMapActions" />
+            private void UnregisterCallbacks(IDemoActionMapActions instance)
+            {
+                @Load1.started -= instance.OnLoad1;
+                @Load1.performed -= instance.OnLoad1;
+                @Load1.canceled -= instance.OnLoad1;
+                @Load2.started -= instance.OnLoad2;
+                @Load2.performed -= instance.OnLoad2;
+                @Load2.canceled -= instance.OnLoad2;
+                @Load3.started -= instance.OnLoad3;
+                @Load3.performed -= instance.OnLoad3;
+                @Load3.canceled -= instance.OnLoad3;
+            }
+
+            /// <summary>
+            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="DemoActionMapActions.UnregisterCallbacks(IDemoActionMapActions)" />.
+            /// </summary>
+            /// <seealso cref="DemoActionMapActions.UnregisterCallbacks(IDemoActionMapActions)" />
+            public void RemoveCallbacks(IDemoActionMapActions instance)
+            {
+                if (m_Wrapper.m_DemoActionMapActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            /// <summary>
+            /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+            /// </summary>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+            /// </remarks>
+            /// <seealso cref="DemoActionMapActions.AddCallbacks(IDemoActionMapActions)" />
+            /// <seealso cref="DemoActionMapActions.RemoveCallbacks(IDemoActionMapActions)" />
+            /// <seealso cref="DemoActionMapActions.UnregisterCallbacks(IDemoActionMapActions)" />
+            public void SetCallbacks(IDemoActionMapActions instance)
+            {
+                foreach (var item in m_Wrapper.m_DemoActionMapActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_DemoActionMapActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        /// <summary>
+        /// Provides a new <see cref="DemoActionMapActions" /> instance referencing this action map.
+        /// </summary>
+        public DemoActionMapActions @DemoActionMap => new DemoActionMapActions(this);
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerLocomotionMap" which allows adding and removing callbacks.
         /// </summary>
@@ -1441,6 +1644,35 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnToggleStatsOverlay(InputAction.CallbackContext context);
+        }
+        /// <summary>
+        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "DemoActionMap" which allows adding and removing callbacks.
+        /// </summary>
+        /// <seealso cref="DemoActionMapActions.AddCallbacks(IDemoActionMapActions)" />
+        /// <seealso cref="DemoActionMapActions.RemoveCallbacks(IDemoActionMapActions)" />
+        public interface IDemoActionMapActions
+        {
+            /// <summary>
+            /// Method invoked when associated input action "Load1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLoad1(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Load2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLoad2(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Load3" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLoad3(InputAction.CallbackContext context);
         }
     }
 }

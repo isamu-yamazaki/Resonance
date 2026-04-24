@@ -15,7 +15,6 @@ public class AmmoUI : MonoBehaviour
     [Header("Thresholds")]
     [SerializeField] private float lowPercent = 0.5f;
     [SerializeField] private float criticalPercent = 0.25f;
-    [SerializeField] private int criticalMinBullets = 1;
 
     private int reloadStartAmmo;
     private Coroutine flashRoutine;
@@ -71,15 +70,18 @@ public class AmmoUI : MonoBehaviour
     private AmmoState GetAmmoState(int current, int max)
     {
         if (current == 0)
-            return AmmoState.Empty;
+            return AmmoState.Critical; // red + flash at empty, always
 
         float percent = (float)current / max;
 
-        if (percent <= criticalPercent || current <= criticalMinBullets)
-            return AmmoState.Critical;
+        if (current == 1 && max > 1)
+            return AmmoState.Danger; // last bullet on a multi-round gun → red, no flash
+
+        if (percent <= criticalPercent)
+            return AmmoState.Danger; // red, no flash
 
         if (percent <= lowPercent)
-            return AmmoState.Low;
+            return AmmoState.Low; // orange
 
         return AmmoState.Normal;
     }
@@ -99,15 +101,14 @@ public class AmmoUI : MonoBehaviour
                 ammoText.color = lowColor;
                 break;
 
+            case AmmoState.Danger:
+                ammoText.color = criticalColor;
+                break;
+
             case AmmoState.Critical:
                 ammoText.color = criticalColor;
                 if (flashRoutine == null)
                     flashRoutine = StartCoroutine(FlashText());
-                break;
-
-            case AmmoState.Empty:
-                StopFlash();
-                ammoText.color = criticalColor;
                 break;
         }
     }
@@ -157,5 +158,5 @@ public class AmmoUI : MonoBehaviour
         flashRoutine = null;
     }
 
-    private enum AmmoState { Normal, Low, Critical, Empty }
+    private enum AmmoState { Normal, Low, Danger, Critical }
 }

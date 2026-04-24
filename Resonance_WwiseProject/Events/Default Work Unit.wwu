@@ -548,6 +548,28 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Event Name="Play_DroneLoop" ID="{D27C6C76-1791-4A03-B239-A76143C6E906}">
+					<ChildrenList>
+						<Action Name="" ID="{AADBBA65-804D-4389-8B64-99E48C837659}" ShortID="160499812">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_props_drone_loop" ID="{E29B3221-87F8-42DA-B071-E48E50FC4099}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Spotlight" ID="{CEF5DC8C-27C1-4E2B-86E8-41511EF98681}">
+					<ChildrenList>
+						<Action Name="" ID="{F74AAFC8-4F0C-4B59-BC16-CACB6D4E0279}" ShortID="482199833">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_world_spotlight" ID="{B69BBC74-207D-4EBA-8397-F5A60A0C09D1}" WorkUnitID="{A0953ED0-0717-4C8C-B006-DE01ACC1580F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
