@@ -50,9 +50,13 @@ namespace Resonance.LobbySystem.NewUI
 
             doneButton.onClick.AddListener(HandleDoneClicked);
 
-            if (previewModel != null && previewImage != null)
+            if (previewModel != null)
             {
-                previewImage.texture = previewModel.PreviewTexture;
+                if (previewImage != null)
+                {
+                    previewImage.texture = previewModel.PreviewTexture;
+                }
+                previewModel.ApplySkinScreenCameraPose();
             }
 
             back = viewActions.Back;
