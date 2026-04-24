@@ -69760,6 +69760,9 @@ MonoBehaviour:
   OnFriendListPulled:
     m_PersistentCalls:
       m_Calls: []
+  OnFriendInviteAccepted:
+    m_PersistentCalls:
+      m_Calls: []
   OnAllReady:
     m_PersistentCalls:
       m_Calls:
@@ -69837,6 +69840,7 @@ GameObject:
   - component: {fileID: 1108437042}
   - component: {fileID: 1108437041}
   - component: {fileID: 1108437045}
+  - component: {fileID: 1108437046}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -69944,6 +69948,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09866b7ba97094edf87c870171364bc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.LobbyViewRouterBridge
+--- !u!114 &1108437046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108437040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a527532db60df43bf8bc5235deababe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.NewUI.FriendInviteScreenNavigator
+  lobbyManager: {fileID: 1097043115}
+  viewRouterBridge: {fileID: 1108437045}
 --- !u!43 &1110022605
 Mesh:
   m_ObjectHideFlags: 0
@@ -121352,6 +121370,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 688981006}
   skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
   resolutionScale: 0.5
+  msaa: 4
 --- !u!1 &1986009645
 GameObject:
   m_ObjectHideFlags: 0
