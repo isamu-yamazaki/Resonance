@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{200DD9AA-A110-233D-CF32-A879200122A9}",
+    "Hash": "{398A0E6C-56BF-0B5C-CD5C-86730A3ED001}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -278,6 +278,14 @@
       "Location": "Memory",
       "ShortName": "sfx_foley_footstep_wood_walk_01.wav",
       "CachePath": "CC/{CC3A5C7A-C392-BB17-AE0C-8DFE49355E27}.wem"
+     },
+     {
+      "Id": "417899234",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_world_spotlight.wav",
+      "CachePath": "56/{569F3163-0476-17BE-B431-F9B49EB9DF63}.wem"
      },
      {
       "Id": "479978637",
@@ -1708,6 +1716,21 @@
       ]
      },
      {
+      "Id": "1951773134",
+      "Name": "Play_Spotlight",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Spotlight",
+      "GUID": "{CEF5DC8C-27C1-4E2B-86E8-41511EF98681}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "3.080901",
+      "DurationMax": "3.080901",
+      "MediaRefs": [
+       {
+        "Id": "417899234"
+       }
+      ]
+     },
+     {
       "Id": "2305398106",
       "Name": "Play_Train_Arrival",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Arrival",
@@ -1999,6 +2022,6 @@
     ]
    }
   ],
-  "FileHash": "{7A74F249-A876-C7F4-7608-E6C102EF38A5}"
+  "FileHash": "{FA70F931-58FD-EBB3-725E-5ACEDDB9E19C}"
  }
 }

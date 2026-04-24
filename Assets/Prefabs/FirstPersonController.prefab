@@ -1315,6 +1315,11 @@ MonoBehaviour:
   heightAbovePlayer: 35
   smoothSpeed: 5
   lightRange: 200
+  switchOffDuration: 0.5
+  spotlightOnEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 954432cf6c73a634381e080288d69c7a, type: 2}
 --- !u!114 &4690382465625623557
 MonoBehaviour:
   m_ObjectHideFlags: 0

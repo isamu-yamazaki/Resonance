@@ -21,6 +21,7 @@ Event	ID	Name			Wwise Object Path	Notes
 	1716612626	Play_Rifle_Empty			\Default Work Unit\Firearms\Rifle\Play_Rifle_Empty	
 	1816346010	Play_UI_Shop_Insufficient_Funds			\Default Work Unit\UI\Shop\Play_UI_Shop_Insufficient_Funds	
 	1857802577	Stop_LobbyMusic			\Default Work Unit\MX_Lobby\Stop_LobbyMusic	
+	1951773134	Play_Spotlight			\Default Work Unit\Play_Spotlight	
 	2102729959	Play_LobbyMusic			\Default Work Unit\MX_Lobby\Play_LobbyMusic	
 	2277071487	Play_SD_Distortion			\Default Work Unit\SonarDisc\Play_SD_Distortion	
 	2295785721	Play_BaseHandgun_Equip			\Default Work Unit\Firearms\BaseHandgun\Play_BaseHandgun_Equip	
@@ -103,6 +104,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	396251886	sfx_UI_shop_item_buy	.cache\D9\{D94A74DF-BEEF-F105-0DCF-FB9B910699D4}.wem		\Containers\Default Work Unit\UI\Shop\sfx_UI_shop_item_buy		50832
 	404163806	amb_outdoor_loop	.cache\AC\{ACC48198-36C3-09FA-78F1-B0E4F36C2100}.wem		\Containers\Default Work Unit\Ambience\amb_outdoor_loop		2592096
 	409590093	sfx_foley_footstep_wood_walk_01	.cache\CC\{CC3A5C7A-C392-BB17-AE0C-8DFE49355E27}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Footstep_Wood\Footstep_Wood_Run\sfx_foley_footstep_wood_walk_01		88160
+	417899234	sfx_world_spotlight	.cache\56\{569F3163-0476-17BE-B431-F9B49EB9DF63}.wem		\Containers\Default Work Unit\sfx_world_spotlight		543568
 	479978637	sfx_combat_revolver_reload	.cache\48\{48052FB3-9C61-2CFA-C9FA-2F57F2AC8699}.wem		\Containers\Default Work Unit\Firearms\Revolver\sfx_combat_revolver_reload		484832
 	496429034	sfx_foley_footstep_concrete_run_01	.cache\53\{536EC870-2348-9BED-3E33-55218C0CFEA1}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Footstep_Concrete\Footstep_Concrete_Sprint\sfx_foley_footstep_concrete_run_01		44768
 	498119391	sfx_foley_footstep_gravel_run_05	.cache\81\{81BFFE35-2A1E-6D2F-1D5B-FCDF30A30CF3}.wem		\Containers\Default Work Unit\Locomotion\Footsteps\Footstep_Gravel\Footstep_Gravel_Sprint\sfx_foley_footstep_gravel_run_05		68080

@@ -49,6 +49,7 @@
 						<ObjectRef Name="Play_Rifle_Casing" ID="{256A430B-032B-4D25-8207-590B89BDBAC7}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_SD_Distortion" ID="{CA254BB4-30E7-4D33-94F7-745C22F42519}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_BaseHandgun_Equip" ID="{BE95C702-90F5-4D4C-8E89-1F8D8FF66C0C}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Spotlight" ID="{CEF5DC8C-27C1-4E2B-86E8-41511EF98681}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_OutdoorAmbience" ID="{87B2053E-F857-4EB2-B914-927C0FF52814}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_Reactive_Feedback" ID="{96722AA4-1038-4FBD-A751-61F7B5327803}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_IndoorAmbience" ID="{449CA8E9-EFB0-4FFF-951A-41E0653A4486}" WorkUnitID="{248B0F1E-BC76-4EE6-BF50-C70B54392B94}" Origin="Manual" Filter="7"/>
