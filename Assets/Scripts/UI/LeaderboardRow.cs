@@ -9,7 +9,6 @@ public class LeaderboardRow : MonoBehaviour
     [SerializeField] private TextMeshProUGUI killsText;
     [SerializeField] private TextMeshProUGUI deathsText;
     [SerializeField] private TextMeshProUGUI assistsText;
-    [SerializeField] private TextMeshProUGUI damageText;
     [SerializeField] private TextMeshProUGUI ratingText;
 
     public void Setup(int rank, PlayerRanking ranking, string displayName)
@@ -20,7 +19,6 @@ public class LeaderboardRow : MonoBehaviour
         killsText.text = ranking.stats.kills.ToString();
         deathsText.text = ranking.stats.deaths.ToString();
         assistsText.text = ranking.stats.assists.ToString();
-        damageText.text = ranking.stats.totalDamageDealt.ToString();
         ratingText.text = Mathf.RoundToInt(ranking.stats.rating).ToString();
     }
 }
