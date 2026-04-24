@@ -1,4 +1,6 @@
+using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
+using Resonance.Match;
 using TMPro;
 using UnityEngine;
 
@@ -15,7 +17,10 @@ public class LeaderboardRow : MonoBehaviour
     public void Setup(int rank, PlayerRanking ranking)
     {
         rankText.text = rank.ToString();
-        nameText.text = $"{ranking.player}";
+
+        var playerId = OwnerIDExtractor.UlongToPlayerId(ranking.player);
+        var displayName = PlayerIdToLobbyMemberIdMap.Instance?.GetDisplayName(playerId);
+        nameText.text = displayName ?? ranking.player.ToString();
 
         killsText.text = ranking.stats.kills.ToString();
         deathsText.text = ranking.stats.deaths.ToString();

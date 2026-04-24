@@ -53,6 +53,20 @@ namespace Resonance.Assemblies.LobbySystem
             return null;
         }
 
+        public string GetDisplayName(PlayerID playerId)
+        {
+            if (lobbyDataHolder == null)
+            {
+                return null;
+            }
+            var memberId = GetLobbyMemberId(playerId);
+            if (memberId == null)
+            {
+                return null;
+            }
+            return lobbyDataHolder.CurrentLobby.GetMemberById(memberId)?.DisplayName;
+        }
+
         private void Awake()
         {
             if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var _))

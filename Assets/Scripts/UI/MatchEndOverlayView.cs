@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using PurrNet;
+using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.UISystem;
 using Resonance.Match;
@@ -97,9 +98,14 @@ namespace Resonance.UI
             if (winnerText != null)
             {
                 if (winner == null)
+                {
                     winnerText.text = "No Winner.";
+                }
                 else
-                    winnerText.text = $"{winner} Wins!";
+                {
+                    var displayName = PlayerIdToLobbyMemberIdMap.Instance?.GetDisplayName(winner.Value);
+                    winnerText.text = $"{displayName ?? winner.ToString()} Wins!";
+                }
             }
 
             if (waitingForHostText != null)
