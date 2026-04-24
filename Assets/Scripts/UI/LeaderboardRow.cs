@@ -26,6 +26,6 @@ public class LeaderboardRow : MonoBehaviour
         deathsText.text = ranking.stats.deaths.ToString();
         assistsText.text = ranking.stats.assists.ToString();
         damageText.text = ranking.stats.totalDamageDealt.ToString();
-        ratingText.text = ranking.stats.rating.ToString();
+        ratingText.text = Mathf.RoundToInt(ranking.stats.rating).ToString();
     }
 }
