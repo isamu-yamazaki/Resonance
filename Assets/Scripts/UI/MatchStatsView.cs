@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.UISystem;
+using Resonance.Match;
 
 public class MatchStatsView : MonoBehaviour, IOverlayView
 {
@@ -14,6 +16,7 @@ public class MatchStatsView : MonoBehaviour, IOverlayView
 
     private readonly List<LeaderboardRow> _spawnedRows = new();
     private MatchStatsModel _model;
+    private PlayerIdToLobbyMemberIdMap _playerIdMap;
 
     private void Start()
     {
@@ -30,13 +33,25 @@ public class MatchStatsView : MonoBehaviour, IOverlayView
 
         root.SetActive(false);
         _model.Rankings.ChangeEvent += OnRankingsChanged;
+
+        _playerIdMap = PlayerIdToLobbyMemberIdMap.Instance;
+        if (_playerIdMap != null)
+        {
+            _playerIdMap.OnDictionaryChanged += OnLobbyMapChanged;
+        }
     }
 
     private void OnDestroy()
     {
-        if (_model == null) return;
+        if (_model != null)
+        {
+            _model.Rankings.ChangeEvent -= OnRankingsChanged;
+        }
 
-        _model.Rankings.ChangeEvent -= OnRankingsChanged;
+        if (_playerIdMap != null)
+        {
+            _playerIdMap.OnDictionaryChanged -= OnLobbyMapChanged;
+        }
     }
 
     public void OnShow(OverlayViewActions viewActions)
@@ -51,20 +66,33 @@ public class MatchStatsView : MonoBehaviour, IOverlayView
 
     private void OnRankingsChanged(List<PlayerRanking> rankings)
     {
-        // Spawn any missing rows
+        RenderRows(rankings);
+    }
+
+    private void OnLobbyMapChanged()
+    {
+        if (_model == null) return;
+        RenderRows(_model.Rankings.Value);
+    }
+
+    private void RenderRows(List<PlayerRanking> rankings)
+    {
         while (_spawnedRows.Count < rankings.Count)
         {
             var row = Instantiate(rowPrefab, contentRoot);
             _spawnedRows.Add(row);
         }
 
-        // Hide any extra rows
         for (int i = 0; i < _spawnedRows.Count; i++)
         {
             if (i < rankings.Count)
             {
+                var ranking = rankings[i];
+                var playerId = OwnerIDExtractor.UlongToPlayerId(ranking.player);
+                var displayName = _playerIdMap?.GetDisplayName(playerId);
+
                 _spawnedRows[i].gameObject.SetActive(true);
-                _spawnedRows[i].Setup(i + 1, rankings[i]);
+                _spawnedRows[i].Setup(i + 1, ranking, displayName);
             }
             else
             {

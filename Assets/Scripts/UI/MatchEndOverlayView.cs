@@ -162,12 +162,18 @@ namespace Resonance.UI
                 _spawnedRows.Add(row);
             }
 
+            var playerIdMap = PlayerIdToLobbyMemberIdMap.Instance;
+
             for (int i = 0; i < _spawnedRows.Count; i++)
             {
                 if (i < rankings.Count)
                 {
+                    var ranking = rankings[i];
+                    var playerId = OwnerIDExtractor.UlongToPlayerId(ranking.player);
+                    var displayName = playerIdMap?.GetDisplayName(playerId);
+
                     _spawnedRows[i].gameObject.SetActive(true);
-                    _spawnedRows[i].Setup(i + 1, rankings[i]);
+                    _spawnedRows[i].Setup(i + 1, ranking, displayName);
                 }
                 else
                 {

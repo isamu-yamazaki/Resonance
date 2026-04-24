@@ -1,3 +1,4 @@
+using System;
 using PurrNet;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ namespace Resonance.Assemblies.LobbySystem
         }
 
         [SerializeField] private SyncDictionary<PlayerID, string> lobbyMemberIdsByPlayerId = new();
+
+        public event Action OnDictionaryChanged;
 
         private LobbyDataHolder lobbyDataHolder;
 
@@ -89,6 +92,8 @@ namespace Resonance.Assemblies.LobbySystem
         {
             base.OnSpawned(asServer);
 
+            lobbyMemberIdsByPlayerId.onChanged += HandleSyncDictionaryChanged;
+
             if (!asServer && lobbyDataHolder != null)
             {
                 RegisterLobbyMemberIdWithPlayerId(networkManager.localPlayer, lobbyDataHolder.LocalUserId);
@@ -104,10 +109,17 @@ namespace Resonance.Assemblies.LobbySystem
         {
             base.OnDespawned(asServer);
 
+            lobbyMemberIdsByPlayerId.onChanged -= HandleSyncDictionaryChanged;
+
             if (asServer)
             {
                 networkManager.onPlayerLeft -= HandlePlayerLeft;
             }
+        }
+
+        private void HandleSyncDictionaryChanged(SyncDictionaryChange<PlayerID, string> _)
+        {
+            OnDictionaryChanged?.Invoke();
         }
 
         private void HandlePlayerLeft(PlayerID player, bool asServer)
