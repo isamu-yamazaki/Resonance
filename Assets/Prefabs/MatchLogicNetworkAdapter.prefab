@@ -61,6 +61,7 @@ MonoBehaviour:
   autoStartDelaySeconds: 5
   autoStartNextMatch: 0
   matchDurationSeconds: 600
+  arenaShortMatchDurationSeconds: 180
   teamEliminationsToWin: 10
   timeBetweenRoleSwitchSeconds: 90
 --- !u!114 &3145453344417943269
