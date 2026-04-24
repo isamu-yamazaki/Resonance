@@ -1,4 +1,6 @@
 using System.Collections;
+using Resonance.Combat.Weapons;
+using Resonance.Combat.Weapons.Enums;
 using Resonance.LobbySystem.DataProviders;
 using Resonance.PlayerController;
 using UnityEngine;
@@ -56,6 +58,16 @@ namespace Resonance.LobbySystem.NewUI
             if (data?.bodyMeshPrefab)
             {
                 _currentMesh = Instantiate(data.bodyMeshPrefab, spawnPoint);
+                ShowOnlyRifleWeaponMesh(_currentMesh);
+            }
+        }
+
+        private static void ShowOnlyRifleWeaponMesh(GameObject meshInstance)
+        {
+            var weaponMeshes = meshInstance.GetComponentsInChildren<TPWeaponMesh>(true);
+            foreach (var weaponMesh in weaponMeshes)
+            {
+                weaponMesh.gameObject.SetActive(weaponMesh.weaponClass == WeaponClass.Rifle);
             }
         }
 
