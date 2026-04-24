@@ -19,7 +19,9 @@ namespace Resonance
         [SerializeField] private float switchOffDuration = 0.5f;
 
         [Header("Audio")]
+#if !UNITY_SERVER
         [SerializeField] private AK.Wwise.Event spotlightOnEvent;
+#endif
 
         private Light _light;
         private GameObject _lightObj;
