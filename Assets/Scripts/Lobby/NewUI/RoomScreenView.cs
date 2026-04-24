@@ -39,6 +39,10 @@ namespace Resonance.LobbySystem.NewUI
         [Header("Ready")]
         [SerializeField] private Button readyButton;
 
+        [Header("Skin Preview")]
+        [SerializeField] private SkinPreviewModel skinPreviewModel;
+        [SerializeField] private RawImage skinPreviewImage;
+
         [Header("Dependencies")]
         [SerializeField] private LobbyManager lobbyManager;
 
@@ -75,6 +79,15 @@ namespace Resonance.LobbySystem.NewUI
         {
             _viewActions = viewActions;
             gameObject.SetActive(true);
+
+            if (skinPreviewModel != null)
+            {
+                if (skinPreviewImage != null)
+                {
+                    skinPreviewImage.texture = skinPreviewModel.PreviewTexture;
+                }
+                skinPreviewModel.ApplyRoomScreenCameraPose();
+            }
 
             PopulateDropdowns();
             SubscribeLobbyEvents();
