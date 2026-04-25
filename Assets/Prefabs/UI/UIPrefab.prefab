@@ -15675,7 +15675,7 @@ MonoBehaviour:
   - Primary: {fileID: 11400000, guid: f972d8a300e00e54ebad004976cae5f4, type: 2}
     Secondary: {fileID: 11400000, guid: 28cadf78b26d3a1489c2a936a55f1575, type: 2}
     Upper: {fileID: 11400000, guid: 2bf6ca1e3406fd947b83099bc244024b, type: 2}
-    Lower: {fileID: 11400000, guid: 94d3447169219db4297c6f8fd5ac18ac, type: 2}
+    Lower: {fileID: 11400000, guid: a7b0e3950e622144481612a381d0c8d1, type: 2}
     PrimaryMods:
     - {fileID: 11400000, guid: 461834cae6f5efa4280a22d9b3d5fe7c, type: 2}
     - {fileID: 11400000, guid: 374e4f45d2e6a084ab665ce53ac7cb3b, type: 2}
