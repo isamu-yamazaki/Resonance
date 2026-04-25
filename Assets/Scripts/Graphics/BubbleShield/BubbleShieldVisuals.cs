@@ -3,11 +3,6 @@ using UnityEngine;
 
 namespace Resonance.Abilities.BubbleShield
 {
-    /// <summary>
-    /// Drives the Resonance/BubbleShield shader via MaterialPropertyBlock.
-    /// Attach to the dome child GameObject that BubbleShieldProjectile activates.
-    /// Spawn dissolve plays automatically on OnEnable.
-    /// </summary>
     [RequireComponent(typeof(MeshRenderer))]
     public class BubbleShieldVisuals : MonoBehaviour
     {
@@ -15,12 +10,11 @@ namespace Resonance.Abilities.BubbleShield
         [SerializeField] private float dissolveInDuration  = 0.8f;
         [SerializeField] private float dissolveOutDuration = 0.5f;
         [SerializeField] private AnimationCurve spawnCurve   = AnimationCurve.EaseInOut(0, 0, 1, 1);
-        [SerializeField] private AnimationCurve despawnCurve  = AnimationCurve.EaseInOut(0, 1, 1, 0);
+        [SerializeField] private AnimationCurve despawnCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
         [Header("Hit Flash")]
         [SerializeField] private float hitFlashDuration = 0.18f;
 
-        // Shader property IDs
         private static readonly int PID_Dissolve = Shader.PropertyToID("_DissolveProgress");
         private static readonly int PID_HitFlash = Shader.PropertyToID("_HitFlash");
 
@@ -34,8 +28,6 @@ namespace Resonance.Abilities.BubbleShield
             _renderer = GetComponent<MeshRenderer>();
             _mpb      = new MaterialPropertyBlock();
 
-            // Unity ignores AnimationCurve inline defaults on serialized fields.
-            // Set fallbacks here if the inspector curves are empty.
             if (spawnCurve == null || spawnCurve.length == 0)
                 spawnCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
@@ -45,15 +37,10 @@ namespace Resonance.Abilities.BubbleShield
 
         private void OnEnable()
         {
-            // Re-enable renderer in case PlayDespawnDissolve hid it
             _renderer.enabled = true;
-            // Set to fully dissolved (invisible) immediately so there's no
-            // one-frame flash before the coroutine starts ticking up.
             SetDissolve(0f);
             PlaySpawnDissolve();
         }
-
-        // ── Public API ────────────────────────────────────────────────────────
 
         public void PlaySpawnDissolve()
         {
@@ -72,8 +59,6 @@ namespace Resonance.Abilities.BubbleShield
             if (_flashCoroutine != null) StopCoroutine(_flashCoroutine);
             _flashCoroutine = StartCoroutine(AnimateHitFlash());
         }
-
-        // ── Coroutines ────────────────────────────────────────────────────────
 
         private IEnumerator AnimateDissolve(AnimationCurve curve, float duration)
         {
@@ -115,8 +100,6 @@ namespace Resonance.Abilities.BubbleShield
             }
             SetFlash(0f);
         }
-
-        // ── Helpers ───────────────────────────────────────────────────────────
 
         private void SetDissolve(float value)
         {

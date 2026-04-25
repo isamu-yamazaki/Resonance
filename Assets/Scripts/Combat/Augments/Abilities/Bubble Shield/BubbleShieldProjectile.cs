@@ -22,6 +22,7 @@ namespace Resonance.Abilities.BubbleShield
         private Rigidbody _rigidbody;
         private SphereCollider _projectileCollider;
         private bool _isLanded;
+        private bool _isDespawning;
         private float _currentHealth;
         private float _aliveTime;
 
@@ -31,13 +32,11 @@ namespace Resonance.Abilities.BubbleShield
             _projectileCollider = GetComponent<SphereCollider>();
             _currentHealth = shieldHealth;
 
-            if (dome != null)
-            {
-                dome.SetActive(false);
+            if (dome != null && domeVisuals == null)
+                domeVisuals = dome.GetComponent<BubbleShieldVisuals>();
 
-                if (domeVisuals == null)
-                    domeVisuals = dome.GetComponent<BubbleShieldVisuals>();
-            }
+            if (dome != null)
+                dome.SetActive(false);
         }
 
         protected override void OnSpawned()
@@ -48,11 +47,11 @@ namespace Resonance.Abilities.BubbleShield
 
         private void Update()
         {
-            if (!isServer || !_isLanded) return;
+            if (!isServer || !_isLanded || _isDespawning) return;
 
             _aliveTime += Time.deltaTime;
 
-            if (_aliveTime >= shieldDuration)
+            if (_aliveTime >= shieldDuration - despawnAnimDuration)
                 DestroyShield();
         }
 
@@ -70,7 +69,6 @@ namespace Resonance.Abilities.BubbleShield
         private void Land()
         {
             _isLanded = true;
-
             _rigidbody.linearVelocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.isKinematic = true;
@@ -84,9 +82,8 @@ namespace Resonance.Abilities.BubbleShield
         [ObserversRpc(runLocally: true)]
         private void ActivateDomeObserversRpc()
         {
-            if (dome == null) return;
-            // OnEnable in BubbleShieldVisuals fires PlaySpawnDissolve automatically
-            dome.SetActive(true);
+            if (dome != null)
+                dome.SetActive(true);
         }
 
         public void TakeDamage(float damage, GameObject shooter)
@@ -96,13 +93,9 @@ namespace Resonance.Abilities.BubbleShield
             _currentHealth -= damage;
 
             if (_currentHealth > 0f)
-            {
                 PlayHitFlashObserversRpc();
-            }
             else
-            {
                 DestroyShield();
-            }
         }
 
         [ObserversRpc(runLocally: true)]
@@ -113,7 +106,8 @@ namespace Resonance.Abilities.BubbleShield
 
         private void DestroyShield()
         {
-            if (!isServer) return;
+            if (!isServer || _isDespawning) return;
+            _isDespawning = true;
             PlayDespawnObserversRpc();
             StartCoroutine(DestroyAfterDelay(despawnAnimDuration));
         }

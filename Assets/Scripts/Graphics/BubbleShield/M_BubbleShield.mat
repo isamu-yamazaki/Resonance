@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_BubbleShield
-  m_Shader: {fileID: 4800000, guid: 1e00af1f0a5ed6143b7f87bea0cda422, type: 3}
+  m_Shader: {fileID: 4800000, guid: d97d2c1525c998741aba83f2f9d48125, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []

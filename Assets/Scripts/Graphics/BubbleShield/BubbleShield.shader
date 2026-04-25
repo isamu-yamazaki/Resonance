@@ -165,7 +165,7 @@ Shader "Resonance/BubbleShield"
                 float noiseVal  = fbm(IN.uv * _DissolveNoiseScale
                                     + _Time.y * _DissolveNoiseSpeed);
                 float threshold = 1.0 - _DissolveProgress;
-                float dissolve  = IN.localY - threshold
+                float dissolve  = _DissolveProgress - IN.localY
                                 + (noiseVal - 0.5) * _DissolveEdgeWidth * 2.0;
                 clip(dissolve);
 

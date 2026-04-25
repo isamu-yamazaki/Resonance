@@ -266,7 +266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fab1fa17c0cfb504db4b0357abcb9149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.BubbleShield.BubbleShieldVisuals
-  dissolveInDuration: 0.8
+  dissolveInDuration: 0.5
   dissolveOutDuration: 0.5
   spawnCurve:
     serializedVersion: 2
