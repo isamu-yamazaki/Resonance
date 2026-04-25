@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ce7836e1165da94795069ad946c025a, type: 3}
   m_Name: SonarDisc
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AugmentProperties
-  key: augment_lower_sonarDisc
+  key: augment_upper_sonarDisc
   augmentName: Sonar Disc
   description: 
   icon: {fileID: 21300000, guid: e0d975e1924bfe34cac20bb8935204ef, type: 3}
-  slot: 1
+  slot: 0
   speed: 0
   regen: 0
   damageReduction: 0
   modProperties: {fileID: 0}
-  abilityKey: augment_lower_sonarDisc
+  abilityKey: augment_upper_sonarDisc
   augmentCost: 1
