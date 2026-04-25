@@ -22,7 +22,7 @@ MonoBehaviour:
   modifiers:
   - stat: 2
     type: 1
-    value: 4
+    value: 5
   - stat: 6
     type: 1
     value: 2
@@ -32,6 +32,9 @@ MonoBehaviour:
   - stat: 10
     type: 0
     value: -3
+  - stat: 0
+    type: 1
+    value: 2
   bulletPropertiesOverride: {fileID: 0}
   compatibleWeaponClasses: 01000000
   modCost: 1
