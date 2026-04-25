@@ -92,6 +92,10 @@ namespace Resonance.Assemblies.LobbySystem
 
             InstanceHandler.RegisterInstance(this);
 
+        }
+
+        private void Start()
+        {
             StartRegistrationCoroutine();
         }
 
