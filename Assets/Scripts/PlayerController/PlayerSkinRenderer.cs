@@ -122,7 +122,9 @@ namespace Resonance.PlayerController
         {
             var shouldRenderArmsOnly = await ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState();
 
+#if UNITY_EDITOR
             Debug.Log($"[SkinRenderer] ApplySkin called. _tpHidden: {_tpHidden}, ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState: {shouldRenderArmsOnly}");
+#endif
             if (skinCatalog == null || skinCatalog.Count == 0)
                 return;
 

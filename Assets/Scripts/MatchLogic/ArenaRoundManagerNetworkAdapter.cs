@@ -58,7 +58,9 @@ namespace Resonance.Match
         {
             if (arenaRoundManager == null)
             {
+#if UNITY_EDITOR
                 Debug.Log("[ArenaRoundManagerNetworkAdapter] MatchStatTracker instance received, creating ArenaRoundManager and attaching subscribers");
+#endif
                 arenaRoundManager = new ArenaRoundManager(tracker, config);
 
                 arenaRoundManager.OnMatchStart += OnArenaMatchStart;
@@ -73,7 +75,9 @@ namespace Resonance.Match
             }
             else
             {
+#if UNITY_EDITOR
                 Debug.Log("[ArenaRoundManagerNetworkAdapter] MatchStatTracker instance received but ArenaRoundManager is not null");
+#endif
             }
         }
 
@@ -134,7 +138,9 @@ namespace Resonance.Match
         [ObserversRpc]
         private void FireMatchEndObservers(ulong? winner)
         {
+#if UNITY_EDITOR
             Debug.Log($"[ArenaRoundManagerNetworkAdapter] Match ended, winner: {winner}");
+#endif
             PlayerID? winnerPlayerId = OwnerIDExtractor.UlongNullableToPlayerIdNullable(winner);
             OnMatchEnd?.Invoke(winnerPlayerId);
         }
@@ -142,7 +148,9 @@ namespace Resonance.Match
         [ObserversRpc]
         private void FireLeaderChangedObservers(ulong newLeader, float rating)
         {
+#if UNITY_EDITOR
             Debug.Log($"[ArenaRoundManagerNetworkAdapter] Leader changed: {newLeader} with {rating} rating");
+#endif
             OnLeaderChanged?.Invoke(
                 OwnerIDExtractor.UlongToPlayerId(newLeader),
                 rating
@@ -152,7 +160,9 @@ namespace Resonance.Match
         [ObserversRpc]
         private void FireFirstKillObservers()
         {
+#if UNITY_EDITOR
             Debug.Log("[ArenaRoundManagerNetworkAdapter] First kill happened");
+#endif
             OnFirstKill?.Invoke();
         }
 
@@ -172,7 +182,9 @@ namespace Resonance.Match
         public void EndMatch(PlayerID? winner)
         {
             ulong? winnerUlong = winner?.id.value;
+#if UNITY_EDITOR
             Debug.Log($"[ArenaRoundManagerNetworkAdapter] EndMatch requested, winner: {winnerUlong}");
+#endif
             EndMatch_Server(winnerUlong);
         }
 

@@ -163,7 +163,9 @@ namespace Resonance.PlayerController
         public void UpdateMeshesToRender(GameObject root)
         {
             _meshesToCopy = root.GetComponentsInChildren<SkinnedMeshRenderer>();
+#if UNITY_EDITOR
             Debug.Log("[OverdriveTrailEffect] Updating trail effect based on new skin");
+#endif
         }
 
         private void SpawnGhost()
