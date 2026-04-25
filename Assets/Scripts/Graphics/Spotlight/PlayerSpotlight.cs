@@ -92,8 +92,10 @@ namespace Resonance
         private void OnLeaderChanged(PlayerID id, float rating)
         {
             bool isLeader = owner == id;
+#if UNITY_EDITOR
             if (isLeader)
                 Debug.Log($"[PlayerSpotlight] {id} has the spotlight");
+#endif
 
             if (_switchCoroutine != null)
                 StopCoroutine(_switchCoroutine);

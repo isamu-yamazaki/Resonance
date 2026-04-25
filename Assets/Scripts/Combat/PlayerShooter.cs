@@ -194,8 +194,10 @@ namespace Resonance.Combat
                 currentSpread += weaponStatManager.SpreadPerShot;
                 currentSpread = Mathf.Min(currentSpread, weaponStatManager.MaxSpread);
 
+#if UNITY_EDITOR
                 if (debugAmmoLogs)
                     Debug.Log($"[Shooter] Fired. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
+#endif
             }
 
             int count = weaponStatManager.ProjectilesPerShot;
@@ -348,7 +350,9 @@ namespace Resonance.Combat
 
                 if (hitscanBullet?.BulletTrailPrefab != null)
                 {
+#if UNITY_EDITOR
                     Debug.Log($"[Shooter] Pellet {i} - trailPrefab: {hitscanBullet?.BulletTrailPrefab?.name ?? "NULL"}, key: {hitscanBullet?.Key ?? "NULL"}");
+#endif
                     SpawnTrailOnAllClients(fpMuzzlePos, tpMuzzlePos, endPoint, hitscanBullet.Key);
                 }
             }
@@ -361,8 +365,10 @@ namespace Resonance.Combat
         private void SpawnTrailOnAllClients(Vector3 fpStart, Vector3 tpStart, Vector3 end, string bulletPropertyKey)
         {
             BulletProperties properties = System.Array.Find(bulletProperties, w => w.Key == bulletPropertyKey);
+#if UNITY_EDITOR
             Debug.Log($"[Trail] key: {bulletPropertyKey}, found: {properties != null}, hasPrefab: {properties?.BulletTrailPrefab != null}");
             Debug.Log($"[Trail] RPC received. isOwner: {isOwner}, key: {bulletPropertyKey}, properties found: {properties != null}");
+#endif
             if (properties != null && properties.BulletTrailPrefab != null)
                 StartCoroutine(SpawnTrail(isOwner ? fpStart : tpStart, end, properties.BulletTrailPrefab));
         }
@@ -386,7 +392,9 @@ namespace Resonance.Combat
 
         private void SpawnImpactDecal(RaycastHit hitInfo)
         {
+#if UNITY_EDITOR
             Debug.Log($"Spawn decal at {hitInfo.point}");
+#endif
         }
 
         [ServerRpc]
@@ -480,8 +488,10 @@ namespace Resonance.Combat
             viewModel.SetReloadState(true);
             viewModel.SetReloadProgress(0f);
 
+#if UNITY_EDITOR
             if (debugAmmoLogs)
                 Debug.Log($"[Shooter] Reloading... {reloadTime:0.00}s", this);
+#endif
         }
 
         [ObserversRpc(runLocally: true)]
@@ -505,8 +515,10 @@ namespace Resonance.Combat
             
             currentSpread = weapon.Spread;
 
+#if UNITY_EDITOR
             if (debugAmmoLogs)
                 Debug.Log($"[Shooter] Reload complete. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
+#endif
         }
         
         public void CancelReload()
@@ -556,8 +568,10 @@ namespace Resonance.Combat
 
             viewModel.SetAmmo(currentAmmo, MagazineSize);
 
+#if UNITY_EDITOR
             if (debugAmmoLogs && weaponStatManager.MagazineSize > 0)
                 Debug.Log($"[Shooter] Equipped {weapon.name}. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
+#endif
         }
 
         public void RefreshWeaponStats()

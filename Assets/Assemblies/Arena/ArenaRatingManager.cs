@@ -32,7 +32,9 @@ namespace Resonance.Assemblies.Arena
             PopulatePointGains();
             SubscribeToEvents();
 
+#if UNITY_EDITOR
             Debug.Log($"[ArenaRatingManager] Initialized with {multipliers.Count} multiplier type(s) and {pointGains.Count} point gain(s)");
+#endif
         }
         #endregion
 
@@ -51,7 +53,9 @@ namespace Resonance.Assemblies.Arena
                     var instance = (BaseRatingMultiplier)Activator.CreateInstance(
                         type, matchStatTracker, arenaRoundManager);
                     multipliers.Add(instance);
+#if UNITY_EDITOR
                     Debug.Log($"[ArenaRatingManager] Registered multiplier: {type.Name} (key: {instance.Key})");
+#endif
                 }
                 catch (Exception e)
                 {
@@ -73,7 +77,9 @@ namespace Resonance.Assemblies.Arena
                 {
                     var instance = (BasePointGain)Activator.CreateInstance(type, matchStatTracker, arenaRoundManager, this);
                     pointGains.Add(instance);
+#if UNITY_EDITOR
                     Debug.Log($"[ArenaRatingManager] Registered point gain: {type.Name}");
+#endif
                 }
                 catch (Exception e)
                 {
@@ -127,7 +133,9 @@ namespace Resonance.Assemblies.Arena
             }
 
             playerMultipliers[playerId] = playerMultiplierMap;
+#if UNITY_EDITOR
             Debug.Log($"[ArenaRatingManager] Registered player {playerId} with {playerMultiplierMap.Count} multiplier(s)");
+#endif
         }
         #endregion
 
