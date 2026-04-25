@@ -1,3 +1,4 @@
+using System.Collections;
 using PurrNet;
 using Resonance.Helper;
 using UnityEngine;
@@ -9,14 +10,20 @@ namespace Resonance.Abilities.BubbleShield
     {
         [Header("Shield Settings")]
         [SerializeField] private float shieldHealth = 100f;
-        [SerializeField] private GameObject dome;
         [SerializeField] private float shieldDuration = 10f;
-        private float _aliveTime;
+
+        [Header("References")]
+        [SerializeField] private GameObject dome;
+        [SerializeField] private BubbleShieldVisuals domeVisuals;
+
+        [Header("Despawn Timing")]
+        [SerializeField] private float despawnAnimDuration = 0.6f;
 
         private Rigidbody _rigidbody;
         private SphereCollider _projectileCollider;
         private bool _isLanded;
         private float _currentHealth;
+        private float _aliveTime;
 
         private void Awake()
         {
@@ -27,21 +34,9 @@ namespace Resonance.Abilities.BubbleShield
             if (dome != null)
             {
                 dome.SetActive(false);
-            }
-        }
-        
-        private void Update()
-        {
-            if (!isServer || !_isLanded)
-            {
-                return;
-            }
 
-            _aliveTime += Time.deltaTime;
-
-            if (_aliveTime >= shieldDuration)
-            {
-                DestroyShield();
+                if (domeVisuals == null)
+                    domeVisuals = dome.GetComponent<BubbleShieldVisuals>();
             }
         }
 
@@ -51,6 +46,16 @@ namespace Resonance.Abilities.BubbleShield
             _rigidbody.isKinematic = !isServer;
         }
 
+        private void Update()
+        {
+            if (!isServer || !_isLanded) return;
+
+            _aliveTime += Time.deltaTime;
+
+            if (_aliveTime >= shieldDuration)
+                DestroyShield();
+        }
+
         public void Launch(Vector3 velocity)
         {
             _rigidbody.linearVelocity = velocity;
@@ -58,16 +63,7 @@ namespace Resonance.Abilities.BubbleShield
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (!isServer)
-            {
-                return;
-            }
-
-            if (_isLanded)
-            {
-                return;
-            }
-
+            if (!isServer || _isLanded) return;
             Land();
         }
 
@@ -80,9 +76,7 @@ namespace Resonance.Abilities.BubbleShield
             _rigidbody.isKinematic = true;
 
             if (_projectileCollider != null)
-            {
                 _projectileCollider.enabled = false;
-            }
 
             ActivateDomeObserversRpc();
         }
@@ -90,33 +84,50 @@ namespace Resonance.Abilities.BubbleShield
         [ObserversRpc(runLocally: true)]
         private void ActivateDomeObserversRpc()
         {
-            if (dome != null)
-            {
-                dome.SetActive(true);
-            }
+            if (dome == null) return;
+            // OnEnable in BubbleShieldVisuals fires PlaySpawnDissolve automatically
+            dome.SetActive(true);
         }
 
         public void TakeDamage(float damage, GameObject shooter)
         {
-            if (!isServer)
-            {
-                return;
-            }
+            if (!isServer) return;
 
             _currentHealth -= damage;
 
-            if (_currentHealth <= 0f)
+            if (_currentHealth > 0f)
+            {
+                PlayHitFlashObserversRpc();
+            }
+            else
             {
                 DestroyShield();
             }
         }
 
+        [ObserversRpc(runLocally: true)]
+        private void PlayHitFlashObserversRpc()
+        {
+            domeVisuals?.PlayHitFlash();
+        }
+
         private void DestroyShield()
         {
-            if (isServer)
-            {
-                Destroy(gameObject);
-            }
+            if (!isServer) return;
+            PlayDespawnObserversRpc();
+            StartCoroutine(DestroyAfterDelay(despawnAnimDuration));
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void PlayDespawnObserversRpc()
+        {
+            domeVisuals?.PlayDespawnDissolve();
+        }
+
+        private IEnumerator DestroyAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            Destroy(gameObject);
         }
     }
 }
