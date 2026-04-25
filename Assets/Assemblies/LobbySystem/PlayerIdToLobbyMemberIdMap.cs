@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using PurrNet;
 using UnityEngine;
 
@@ -24,6 +25,10 @@ namespace Resonance.Assemblies.LobbySystem
         public event Action OnDictionaryChanged;
 
         private LobbyDataHolder lobbyDataHolder;
+
+        private bool isRegistered => lobbyMemberIdsByPlayerId.ContainsKey(networkManager.localPlayer);
+
+        private Coroutine registerLoopCoroutine;
 
         [ServerRpc(requireOwnership: false)]
         private void RegisterLobbyMemberIdWithPlayerId(PlayerID playerId, string lobbyMemberId)
@@ -86,6 +91,24 @@ namespace Resonance.Assemblies.LobbySystem
             }
 
             InstanceHandler.RegisterInstance(this);
+
+            StartRegistrationCoroutine();
+        }
+
+        private void StartRegistrationCoroutine()
+        {
+            registerLoopCoroutine = StartCoroutine(RegisterLoop());
+        }
+
+        private IEnumerator RegisterLoop()
+        {
+            while (true)
+            {
+                if (!isRegistered && networkManager.localPlayer != null)
+                    RegisterLobbyMemberIdWithPlayerId(networkManager.localPlayer, lobbyDataHolder.LocalUserId);
+
+                yield return new WaitForSeconds(5);
+            }
         }
 
         protected override void OnSpawned(bool asServer)
@@ -135,6 +158,12 @@ namespace Resonance.Assemblies.LobbySystem
             if (InstanceHandler.TryGetInstance<PlayerIdToLobbyMemberIdMap>(out var instance) && instance == this)
             {
                 InstanceHandler.UnregisterInstance<PlayerIdToLobbyMemberIdMap>();
+            }
+
+            if (registerLoopCoroutine != null)
+            {
+                StopCoroutine(registerLoopCoroutine);
+                registerLoopCoroutine = null;
             }
         }
 
