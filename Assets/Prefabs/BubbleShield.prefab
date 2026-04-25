@@ -320,11 +320,11 @@ MonoBehaviour:
   shieldUpSoundEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: e6ba0e103efa92d40b5a13c015808807, type: 2}
   shieldDownSoundEvent:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: e236701a7b36f22459ff0da6a8789462, type: 2}
 --- !u!1 &7355341455037755798
 GameObject:
   m_ObjectHideFlags: 0

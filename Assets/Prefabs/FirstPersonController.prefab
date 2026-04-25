@@ -1555,6 +1555,10 @@ MonoBehaviour:
   upwardLobBias: 0.4
   cooldown: 20
   bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
+  throwSoundEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 7560fd83120d05e46ae5211711644808, type: 2}
 --- !u!114 &8062843662524459022
 MonoBehaviour:
   m_ObjectHideFlags: 0
