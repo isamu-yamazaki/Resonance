@@ -1,23 +1,23 @@
 using PurrNet;
 using Resonance.Combat.Augments;
+using Resonance.Combat.Weapons;
 using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
 {
-    // Fires the Sonar Disc projectile. TODO: Replace camera reference with muzzle point on the player's left arm.
     public class SonarDiscAbility : NetworkBehaviour, IAugmentAbility
     {
         [Header("References")]
         [SerializeField] private AugmentProperties augmentProperties;
         [SerializeField] private GameObject sonarDiscPrefab;
-        [SerializeField] private Camera playerCamera;
 
         [Header("Cooldown")]
         [SerializeField] private float cooldown = 12f;
         private float _cooldownTimeRemaining;
 
         private PlayerActionsInput _playerActionsInput;
+        private FPArmsManager _fpArmsManager;
 
         public const string AbilityKeyConst = "augment_upper_sonarDisc";
 
@@ -38,11 +38,11 @@ namespace Resonance.Abilities.SonarDisc
         {
             base.OnSpawned();
 
-            if (isOwner && playerCamera == null)
-                playerCamera = Camera.main;
-
             if (isOwner)
+            {
                 _playerActionsInput = GetComponent<PlayerActionsInput>();
+                _fpArmsManager = GetComponent<FPArmsManager>();
+            }
         }
 
         #endregion
@@ -53,6 +53,24 @@ namespace Resonance.Abilities.SonarDisc
 
             if (_cooldownTimeRemaining > 0f)
                 _cooldownTimeRemaining -= Time.deltaTime;
+        }
+
+        private Transform GetActiveMuzzle()
+        {
+            if (_fpArmsManager == null)
+            {
+                Debug.LogWarning("[SonarDiscAbility] No FPArmsManager found on this GameObject.");
+                return null;
+            }
+
+            WeaponView view = _fpArmsManager.GetActiveFPWeaponView();
+            if (view == null || view.Muzzle == null)
+            {
+                Debug.LogWarning("[SonarDiscAbility] No active FP weapon view or muzzle found.");
+                return null;
+            }
+
+            return view.Muzzle;
         }
 
         public void ActivateAbility()
@@ -66,15 +84,11 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            if (playerCamera == null)
-            {
-                Debug.LogWarning("[SonarDiscAbility] playerCamera is not assigned.");
-                return;
-            }
+            Transform muzzle = GetActiveMuzzle();
+            if (muzzle == null) return;
 
             _cooldownTimeRemaining = cooldown;
-            Transform cameraTransform = playerCamera.transform;
-            RequestFireDiscServerRpc(cameraTransform.position, cameraTransform.forward, NetworkManager.main.localPlayer);
+            RequestFireDiscServerRpc(muzzle.position, muzzle.forward, NetworkManager.main.localPlayer);
         }
 
         [ServerRpc]
