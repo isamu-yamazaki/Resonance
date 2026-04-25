@@ -18,6 +18,9 @@ namespace AK
         static const AkUniqueID PLAY_BASEHANDGUN_EQUIP = 2295785721U;
         static const AkUniqueID PLAY_BASEHANDGUN_FIRE = 1057815627U;
         static const AkUniqueID PLAY_BASEHANDGUN_RELOAD = 3366594044U;
+        static const AkUniqueID PLAY_BUBBLESHIELD_DOWN = 3400387534U;
+        static const AkUniqueID PLAY_BUBBLESHIELD_THROW = 2699283830U;
+        static const AkUniqueID PLAY_BUBBLESHIELD_UP = 1375343125U;
         static const AkUniqueID PLAY_DRONELOOP = 1361308986U;
         static const AkUniqueID PLAY_FOOTSTEP = 1602358412U;
         static const AkUniqueID PLAY_GLASSSHARDLAND = 278146749U;
