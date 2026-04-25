@@ -125,7 +125,7 @@ namespace Resonance.Match
         }
 
         [ServerRpc]
-        private void RecordDamage_Server(ulong attacker, ulong victim, float amount)
+        public void RecordDamage_Server(ulong attacker, ulong victim, float amount)
         {
             _tracker?.RecordDamage(attacker, victim, amount);
         }

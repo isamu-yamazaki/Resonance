@@ -718,6 +718,15 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AddPoints"",
+                    ""type"": ""Button"",
+                    ""id"": ""02cf691c-77f1-4653-bb1e-183d9a8a8b8c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -751,6 +760,17 @@ namespace Resonance.PlayerController
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Load3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6173a760-e427-43f6-93fa-24a43079d00d"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AddPoints"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -791,6 +811,7 @@ namespace Resonance.PlayerController
             m_DemoActionMap_Load1 = m_DemoActionMap.FindAction("Load1", throwIfNotFound: true);
             m_DemoActionMap_Load2 = m_DemoActionMap.FindAction("Load2", throwIfNotFound: true);
             m_DemoActionMap_Load3 = m_DemoActionMap.FindAction("Load3", throwIfNotFound: true);
+            m_DemoActionMap_AddPoints = m_DemoActionMap.FindAction("AddPoints", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -1363,6 +1384,7 @@ namespace Resonance.PlayerController
         private readonly InputAction m_DemoActionMap_Load1;
         private readonly InputAction m_DemoActionMap_Load2;
         private readonly InputAction m_DemoActionMap_Load3;
+        private readonly InputAction m_DemoActionMap_AddPoints;
         /// <summary>
         /// Provides access to input actions defined in input action map "DemoActionMap".
         /// </summary>
@@ -1386,6 +1408,10 @@ namespace Resonance.PlayerController
             /// Provides access to the underlying input action "DemoActionMap/Load3".
             /// </summary>
             public InputAction @Load3 => m_Wrapper.m_DemoActionMap_Load3;
+            /// <summary>
+            /// Provides access to the underlying input action "DemoActionMap/AddPoints".
+            /// </summary>
+            public InputAction @AddPoints => m_Wrapper.m_DemoActionMap_AddPoints;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1421,6 +1447,9 @@ namespace Resonance.PlayerController
                 @Load3.started += instance.OnLoad3;
                 @Load3.performed += instance.OnLoad3;
                 @Load3.canceled += instance.OnLoad3;
+                @AddPoints.started += instance.OnAddPoints;
+                @AddPoints.performed += instance.OnAddPoints;
+                @AddPoints.canceled += instance.OnAddPoints;
             }
 
             /// <summary>
@@ -1441,6 +1470,9 @@ namespace Resonance.PlayerController
                 @Load3.started -= instance.OnLoad3;
                 @Load3.performed -= instance.OnLoad3;
                 @Load3.canceled -= instance.OnLoad3;
+                @AddPoints.started -= instance.OnAddPoints;
+                @AddPoints.performed -= instance.OnAddPoints;
+                @AddPoints.canceled -= instance.OnAddPoints;
             }
 
             /// <summary>
@@ -1673,6 +1705,13 @@ namespace Resonance.PlayerController
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnLoad3(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "AddPoints" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnAddPoints(InputAction.CallbackContext context);
         }
     }
 }
