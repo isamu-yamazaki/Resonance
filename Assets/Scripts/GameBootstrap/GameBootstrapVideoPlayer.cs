@@ -5,7 +5,7 @@ using UnityEngine.Video;
 namespace Resonance.GameBootstrap
 {
     /// <summary>
-    /// Plays a looping video into a RawImage on the bootstrap canvas.
+    /// Plays a video into a RawImage on the bootstrap canvas.
     /// Configure aspect behavior on the RawImage's AspectRatioFitter directly.
     /// </summary>
     [RequireComponent(typeof(RawImage))]
@@ -17,8 +17,16 @@ namespace Resonance.GameBootstrap
         [Tooltip("Shown immediately on scene load while the video prepares. Should be the first frame of the clip.")]
         [SerializeField] private Texture posterFrame;
 
+        [Tooltip("If true, the video starts playing as soon as it's prepared. If false, call Play() to start it.")]
+        [SerializeField] private bool playAutomatically = true;
+
+        [Tooltip("If true, the video restarts when it reaches the end.")]
+        [SerializeField] private bool loop = true;
+
         private RawImage rawImage;
         private RenderTexture renderTexture;
+        private bool isPrepared;
+        private bool playRequested;
 
         private void Awake()
         {
@@ -42,7 +50,7 @@ namespace Resonance.GameBootstrap
             videoPlayer.clip = clip;
             videoPlayer.renderMode = VideoRenderMode.RenderTexture;
             videoPlayer.targetTexture = renderTexture;
-            videoPlayer.isLooping = true;
+            videoPlayer.isLooping = loop;
             videoPlayer.playOnAwake = false;
             videoPlayer.waitForFirstFrame = true;
 
@@ -61,11 +69,42 @@ namespace Resonance.GameBootstrap
             videoPlayer.Prepare();
         }
 
+        /// <summary>
+        /// Starts the video. Safe to call before Prepare() finishes —
+        /// playback will start as soon as the first frame is ready.
+        /// </summary>
+        public void Play()
+        {
+            if (videoPlayer == null)
+            {
+                return;
+            }
+
+            if (isPrepared)
+            {
+                StartPlayback();
+            }
+            else
+            {
+                playRequested = true;
+            }
+        }
+
         private void OnPrepared(VideoPlayer source)
+        {
+            isPrepared = true;
+
+            if (playAutomatically || playRequested)
+            {
+                StartPlayback();
+            }
+        }
+
+        private void StartPlayback()
         {
             rawImage.texture = renderTexture;
             rawImage.enabled = true;
-            source.Play();
+            videoPlayer.Play();
         }
 
         private void OnDestroy()

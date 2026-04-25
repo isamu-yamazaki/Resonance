@@ -90,6 +90,8 @@ MonoBehaviour:
   clip: {fileID: 32900000, guid: c05e649fdf938404197962aa347039a8, type: 3}
   videoPlayer: {fileID: 2285756496253541997}
   posterFrame: {fileID: 2800000, guid: 15f1cd6ab3fa749aca0b8d294195fde9, type: 3}
+  playAutomatically: 1
+  loop: 1
 --- !u!328 &2285756496253541997
 VideoPlayer:
   m_ObjectHideFlags: 0
