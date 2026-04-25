@@ -7,30 +7,32 @@ namespace Resonance.Abilities.BubbleShield
     public class BubbleShieldVisuals : MonoBehaviour
     {
         [Header("Dissolve Animation")]
-        [SerializeField] private float dissolveInDuration  = 0.8f;
+        [SerializeField] private float dissolveInDuration = 0.8f;
         [SerializeField] private float dissolveOutDuration = 0.5f;
-        [SerializeField] private AnimationCurve spawnCurve   = AnimationCurve.EaseInOut(0, 0, 1, 1);
+        [SerializeField] private AnimationCurve spawnCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
         [SerializeField] private AnimationCurve despawnCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
         [Header("Hit Flash")]
         [SerializeField] private float hitFlashDuration = 0.18f;
-        
+
+#if !UNITY_SERVER
         [Header("Audio")]
         [SerializeField] private AK.Wwise.Event shieldUpSoundEvent;
         [SerializeField] private AK.Wwise.Event shieldDownSoundEvent;
+#endif
 
         private static readonly int PID_Dissolve = Shader.PropertyToID("_DissolveProgress");
-        private static readonly int PID_HitFlash  = Shader.PropertyToID("_HitFlash");
+        private static readonly int PID_HitFlash = Shader.PropertyToID("_HitFlash");
 
-        private MeshRenderer          _renderer;
+        private MeshRenderer _renderer;
         private MaterialPropertyBlock _mpb;
-        private Coroutine             _dissolveCoroutine;
-        private Coroutine             _flashCoroutine;
+        private Coroutine _dissolveCoroutine;
+        private Coroutine _flashCoroutine;
 
         private void Awake()
         {
             _renderer = GetComponent<MeshRenderer>();
-            _mpb      = new MaterialPropertyBlock();
+            _mpb = new MaterialPropertyBlock();
 
             if (spawnCurve == null || spawnCurve.length == 0)
                 spawnCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
@@ -92,7 +94,7 @@ namespace Resonance.Abilities.BubbleShield
         {
             float riseTime = hitFlashDuration * 0.3f;
             float fadeTime = hitFlashDuration - riseTime;
-            float elapsed  = 0f;
+            float elapsed = 0f;
 
             while (elapsed < riseTime)
             {
