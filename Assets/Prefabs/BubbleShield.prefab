@@ -317,6 +317,14 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   hitFlashDuration: 0.15
+  shieldUpSoundEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  shieldDownSoundEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!1 &7355341455037755798
 GameObject:
   m_ObjectHideFlags: 0

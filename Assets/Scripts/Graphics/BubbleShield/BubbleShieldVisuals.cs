@@ -14,9 +14,13 @@ namespace Resonance.Abilities.BubbleShield
 
         [Header("Hit Flash")]
         [SerializeField] private float hitFlashDuration = 0.18f;
+        
+        [Header("Audio")]
+        [SerializeField] private AK.Wwise.Event shieldUpSoundEvent;
+        [SerializeField] private AK.Wwise.Event shieldDownSoundEvent;
 
         private static readonly int PID_Dissolve = Shader.PropertyToID("_DissolveProgress");
-        private static readonly int PID_HitFlash = Shader.PropertyToID("_HitFlash");
+        private static readonly int PID_HitFlash  = Shader.PropertyToID("_HitFlash");
 
         private MeshRenderer          _renderer;
         private MaterialPropertyBlock _mpb;
@@ -39,6 +43,9 @@ namespace Resonance.Abilities.BubbleShield
         {
             _renderer.enabled = true;
             SetDissolve(0f);
+#if !UNITY_SERVER
+            shieldUpSoundEvent?.Post(gameObject);
+#endif
             PlaySpawnDissolve();
         }
 
@@ -51,6 +58,9 @@ namespace Resonance.Abilities.BubbleShield
         public void PlayDespawnDissolve()
         {
             if (_dissolveCoroutine != null) StopCoroutine(_dissolveCoroutine);
+#if !UNITY_SERVER
+            shieldDownSoundEvent?.Post(gameObject);
+#endif
             _dissolveCoroutine = StartCoroutine(AnimateDespawn());
         }
 
