@@ -51,6 +51,9 @@ namespace Resonance.LobbySystem
         public event UnityAction<Lobby> OnLobbyUpdated;
         public event UnityAction<List<LobbyUser>> OnLobbyPlayerListUpdated;
         public event UnityAction<List<FriendUser>> OnFriendListPulled;
+#pragma warning disable CS0067
+        public event UnityAction<string> OnFriendInviteAccepted;
+#pragma warning restore CS0067
         public event UnityAction<string> OnError;
 
         [SerializeField] private string portNumber = "5001";

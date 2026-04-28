@@ -487,6 +487,17 @@
                     "action": "ADS",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6eb24ecf-19f8-43e3-896a-8254029f10c0",
+                    "path": "<Keyboard>/equals",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ADS",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -584,6 +595,94 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleStatsOverlay",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "DemoActionMap",
+            "id": "1e0eb60b-0afc-478e-9040-060a24c2068a",
+            "actions": [
+                {
+                    "name": "Load1",
+                    "type": "Button",
+                    "id": "1f70c586-7bfc-4c03-b669-14c0af18ddfd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Load2",
+                    "type": "Button",
+                    "id": "78aec4c5-2cdc-4fb3-82f0-5b5db8bb2c36",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Load3",
+                    "type": "Button",
+                    "id": "bef3db68-b4d7-4b15-82ac-ddfbf3b5cefe",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "AddPoints",
+                    "type": "Button",
+                    "id": "02cf691c-77f1-4653-bb1e-183d9a8a8b8c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6acfb2ea-0356-432e-9bba-1fb79001548b",
+                    "path": "<Keyboard>/8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Load1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a1a218c9-a3d5-4257-80d0-8dd897f77771",
+                    "path": "<Keyboard>/9",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Load2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f72d0e49-e967-4aac-938b-7d4447f7d3e4",
+                    "path": "<Keyboard>/0",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Load3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6173a760-e427-43f6-93fa-24a43079d00d",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AddPoints",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

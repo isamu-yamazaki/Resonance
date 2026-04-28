@@ -46,11 +46,15 @@ namespace Resonance.PlayerController
             if (classToShow != WeaponClass.Pistol && classToShow != WeaponClass.Sword)
                 classToShow = WeaponClass.Rifle;
             
+#if UNITY_EDITOR
             Debug.Log("Class to show" + classToShow.ToString());
-            
+#endif
+
             foreach (var kvp in _skinRenderer.FPArmsInstances)
             {
+#if UNITY_EDITOR
                 Debug.Log(kvp.Key);
+#endif
                 if (kvp.Value != null)
                     kvp.Value.SetActive(kvp.Key == classToShow);
             }

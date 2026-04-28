@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_BubbleShield
+  m_Shader: {fileID: 4800000, guid: 1d0feb41c8c125443bc2548babafde9e, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _DepthFadeDistance: 0.4
+    - _DissolveEdgeWidth: 0.06
+    - _DissolveNoiseScale: 2.5
+    - _DissolveNoiseSpeed: 0.15
+    - _DissolveProgress: 0
+    - _DistortionSpeed: 0.4
+    - _DistortionStrength: 0.015
+    - _DistortionTiling: 4
+    - _FresnelIntensity: 1.5
+    - _HexEdgeIntensity: 2.5
+    - _HexEdgeWidth: 0.08
+    - _HexScale: 8
+    - _HitFlash: 0
+    - _PulseIntensity: 0.12
+    - _PulseSpeed: 1.2
+    - _RimBias: 0.1
+    - _RimPower: 3
+    m_Colors:
+    - _DissolveEdgeColor: {r: 0.4, g: 1, b: 1, a: 1}
+    - _FillColor: {r: 0.05, g: 0.3, b: 0.6, a: 0.4}
+    - _HexColor: {r: 0.1, g: 0.6, b: 1, a: 1}
+    - _HitColor: {r: 1, g: 0.3, b: 0.1, a: 1}
+    - _RimColor: {r: 0.2, g: 0.8, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

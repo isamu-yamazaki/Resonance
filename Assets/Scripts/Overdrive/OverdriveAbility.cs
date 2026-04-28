@@ -69,7 +69,9 @@ namespace Resonance.PlayerController
             if (hud != null)
             {
                 hud.SetOverdriveAbility(this);
+#if UNITY_EDITOR
                 Debug.Log("[OverdriveAbility] Registered with OverdriveHUD");
+#endif
             }
         }
         
@@ -135,7 +137,9 @@ namespace Resonance.PlayerController
         {
             if (CurrentState != OverdriveState.Ready)
             {
+#if UNITY_EDITOR
                 Debug.Log("Overdrive not ready - currently in state: " +  CurrentState);
+#endif
                 return false;
             }
 
@@ -164,11 +168,15 @@ namespace Resonance.PlayerController
                 _playerStats.AddRegenModifier(overdriveRegenAmount);
                 _playerStats.AddDamageReductionModifier(overdriveDamageReductionAmount);
                 _playerStats.Heal(overdriveHealAmount);
+#if UNITY_EDITOR
                 Debug.Log($"Overdrive ACTIVATED! Healed {overdriveHealAmount} HP");
+#endif
             }
             else
             {
+#if UNITY_EDITOR
                 Debug.Log("Overdrive ACTIVATED!");
+#endif
             }
         }
 
@@ -180,7 +188,9 @@ namespace Resonance.PlayerController
             _playerStats.RemoveSpeedModifier(overdriveSpeedMultiplier);
             _playerStats.RemoveRegenModifier(overdriveRegenAmount);
             _playerStats.RemoveDamageReductionModifier(overdriveDamageReductionAmount);
+#if UNITY_EDITOR
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");
+#endif
 
 #if !UNITY_SERVER
             StartCoroutine(LerpLowPassOut(1f));
@@ -203,7 +213,9 @@ namespace Resonance.PlayerController
             if (CurrentState == OverdriveState.Active)
             {
                 DeactivateOverdrive();
+#if UNITY_EDITOR
                 Debug.Log("[OverdriveAbility] Overdrive interrupted by death");
+#endif
             }
             
             enabled = false;
@@ -212,7 +224,9 @@ namespace Resonance.PlayerController
         private void HandlePlayerRespawn()
         {
             enabled = true;
+#if UNITY_EDITOR
             Debug.Log("[OverdriveAbility] Component resumed after respawn");
+#endif
         }
         #endregion
 

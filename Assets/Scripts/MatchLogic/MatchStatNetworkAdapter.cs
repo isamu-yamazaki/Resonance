@@ -85,7 +85,9 @@ namespace Resonance.Match
         [ObserversRpc]
         private void FirePlayerStatObservers(Dictionary<PlayerID, PlayerMatchStats> allStats)
         {
+#if UNITY_EDITOR
             Debug.Log($"[MatchStatNetworkAdapter] Stats update received for {allStats.Count} players");
+#endif
             OnAllStatsUpdate?.Invoke(allStats);
         }
 
@@ -104,7 +106,9 @@ namespace Resonance.Match
         {
             if (OwnerIDExtractor.TryExtractPlayerIds(killer, victim, out ulong killerId, out ulong victimId))
             {
+#if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Logging kill: killer={killerId}, victim={victimId}");
+#endif
                 RecordKill_Server(killerId, victimId);
             }
         }
@@ -119,13 +123,15 @@ namespace Resonance.Match
         {
             if (OwnerIDExtractor.TryExtractPlayerIds(attacker, victim, out ulong attackerId, out ulong victimId))
             {
+#if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Logging damage: attacker={attackerId}, victim={victimId}, amount={amount}");
+#endif
                 RecordDamage_Server(attackerId, victimId, amount);
             }
         }
 
         [ServerRpc]
-        private void RecordDamage_Server(ulong attacker, ulong victim, float amount)
+        public void RecordDamage_Server(ulong attacker, ulong victim, float amount)
         {
             _tracker?.RecordDamage(attacker, victim, amount);
         }
@@ -134,7 +140,9 @@ namespace Resonance.Match
         {
             if (OwnerIDExtractor.TryExtractPlayerIds(victim, out ulong id))
             {
+#if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Logging death: id={id}");
+#endif
                 RecordDeath_Server(id);
             }
         }
@@ -149,7 +157,9 @@ namespace Resonance.Match
         {
             if (OwnerIDExtractor.TryExtractPlayerIds(player, out ulong id))
             {
+#if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Logging miss: id={id}");
+#endif
                 RecordMiss_Server(id);
             }
         }
@@ -164,7 +174,9 @@ namespace Resonance.Match
         {
             if (OwnerIDExtractor.TryExtractPlayerIds(player, out ulong id))
             {
+#if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Registering player: id={id}");
+#endif
                 RegisterPlayer_Server(id);
             }
         }
@@ -179,7 +191,9 @@ namespace Resonance.Match
         {
             if (OwnerIDExtractor.TryExtractPlayerIds(player, out ulong id))
             {
+#if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Unregistering player: id={id}");
+#endif
                 UnregisterPlayer_Server(id);
             }
         }
@@ -193,7 +207,9 @@ namespace Resonance.Match
         [ServerRpc]
         public void ResetAllStats()
         {
+#if UNITY_EDITOR
             Debug.Log("[MatchStatNetworkAdapter] Resetting all stats");
+#endif
             _tracker?.ResetAllStats();
         }
         #endregion

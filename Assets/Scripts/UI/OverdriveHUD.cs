@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Resonance.PlayerController;
+using UnityEngine.InputSystem;
 
 public class OverdriveHUD : MonoBehaviour
 {
@@ -46,6 +47,15 @@ public class OverdriveHUD : MonoBehaviour
             originalScale = icon.transform.localScale;
 
         // No player reference yet — will be set by OverdriveAbility
+    }
+    
+    private void Start()
+    {
+        if (keybindText != null)
+        {
+            var controls = Resonance.PlayerController.PlayerInputManager.Instance.PlayerControls;
+            keybindText.text = controls.PlayerActionMap.Overdrive.GetBindingDisplayString().ToUpper();
+        }
     }
 
     private void Update()

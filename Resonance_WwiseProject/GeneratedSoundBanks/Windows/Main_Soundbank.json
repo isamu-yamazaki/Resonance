@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{95F38882-910E-47AF-A1A2-7B0E207EEBA0}",
     "Language": "SFX",
-    "Hash": "{0CBA57E7-D354-1440-96DF-D48AD0CBFEFA}",
+    "Hash": "{051700E5-E57D-8F52-9C30-75DFDCD57A1E}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main_Soundbank",
     "ShortName": "Main_Soundbank",
     "Path": "Main_Soundbank.bnk",
@@ -46,6 +46,14 @@
       "Location": "Memory",
       "ShortName": "sfx_props_train_moving.wav",
       "CachePath": "E4/{E45A1232-B2F3-92CF-BA46-EB7D4A8DB354}.wem"
+     },
+     {
+      "Id": "112982758",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_bubbleshield_down.wav",
+      "CachePath": "A1/{A1F335CA-F5A1-EB9E-129A-BBDBD2867F02}.wem"
      },
      {
       "Id": "117358700",
@@ -192,6 +200,14 @@
       "CachePath": "3D/{3D12E468-5E6F-E378-1FCE-BF5980231C29}.wem"
      },
      {
+      "Id": "309251540",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_props_drone_loop.wav",
+      "CachePath": "AD/{ADAB4508-CB9A-3850-0793-FE01C86B627E}.wem"
+     },
+     {
       "Id": "311624981",
       "Language": "SFX",
       "Streaming": "false",
@@ -272,6 +288,14 @@
       "CachePath": "CC/{CC3A5C7A-C392-BB17-AE0C-8DFE49355E27}.wem"
      },
      {
+      "Id": "417899234",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_world_spotlight.wav",
+      "CachePath": "D1/{D10E0B28-704C-FA09-73A7-DBA7A3935199}.wem"
+     },
+     {
       "Id": "479978637",
       "Language": "SFX",
       "Streaming": "false",
@@ -326,6 +350,14 @@
       "Location": "Memory",
       "ShortName": "sfx_combat_pistol_fire.wav",
       "CachePath": "E8/{E8300D91-E97B-1778-0EF5-DB1ACBCD0836}.wem"
+     },
+     {
+      "Id": "549375951",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_bubbleshield_throw.wav",
+      "CachePath": "FC/{FC6DECA1-659F-C925-8AA3-CE91EE2D60F0}.wem"
      },
      {
       "Id": "554632944",
@@ -768,6 +800,14 @@
       "CachePath": "57/{572E1596-199B-8E0F-AEF3-F2DF1C721C08}.wem"
      },
      {
+      "Id": "968038982",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sfx_combat_bubbleshield_up.wav",
+      "CachePath": "FA/{FA66DD3C-FB0D-FC38-2857-1BA40F364FB5}.wem"
+     },
+     {
       "Id": "971085730",
       "Language": "SFX",
       "Streaming": "false",
@@ -913,6 +953,64 @@
       "MediaRefs": [
        {
         "Id": "209026899"
+       }
+      ]
+     },
+     {
+      "Id": "3400387534",
+      "Name": "Play_BubbleShield_Down",
+      "ObjectPath": "\\Events\\Default Work Unit\\BubbleShield\\Play_BubbleShield_Down",
+      "GUID": "{866F10AC-DBBB-4629-8796-1EFCC019D735}",
+      "MaxAttenuation": "25",
+      "DurationType": "OneShot",
+      "DurationMin": "0.4375",
+      "DurationMax": "0.4375",
+      "MediaRefs": [
+       {
+        "Id": "112982758"
+       }
+      ]
+     },
+     {
+      "Id": "2699283830",
+      "Name": "Play_BubbleShield_Throw",
+      "ObjectPath": "\\Events\\Default Work Unit\\BubbleShield\\Play_BubbleShield_Throw",
+      "GUID": "{42018285-032B-4C55-AB4C-EEB6A4200EC2}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "1",
+      "DurationMax": "1",
+      "MediaRefs": [
+       {
+        "Id": "549375951"
+       }
+      ]
+     },
+     {
+      "Id": "1375343125",
+      "Name": "Play_BubbleShield_Up",
+      "ObjectPath": "\\Events\\Default Work Unit\\BubbleShield\\Play_BubbleShield_Up",
+      "GUID": "{774F267B-0DB3-4918-850A-F4D38B172A8F}",
+      "MaxAttenuation": "25",
+      "DurationType": "OneShot",
+      "DurationMin": "0.625",
+      "DurationMax": "0.625",
+      "MediaRefs": [
+       {
+        "Id": "968038982"
+       }
+      ]
+     },
+     {
+      "Id": "1361308986",
+      "Name": "Play_DroneLoop",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_DroneLoop",
+      "GUID": "{D27C6C76-1791-4A03-B239-A76143C6E906}",
+      "MaxAttenuation": "40",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "309251540"
        }
       ]
      },
@@ -1687,6 +1785,21 @@
       ]
      },
      {
+      "Id": "1951773134",
+      "Name": "Play_Spotlight",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Spotlight",
+      "GUID": "{CEF5DC8C-27C1-4E2B-86E8-41511EF98681}",
+      "MaxAttenuation": "100",
+      "DurationType": "OneShot",
+      "DurationMin": "3.080901",
+      "DurationMax": "3.080901",
+      "MediaRefs": [
+       {
+        "Id": "417899234"
+       }
+      ]
+     },
+     {
       "Id": "2305398106",
       "Name": "Play_Train_Arrival",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Train_Arrival",
@@ -1978,6 +2091,6 @@
     ]
    }
   ],
-  "FileHash": "{6140702B-6048-110B-EF89-F51ABFAF0FE0}"
+  "FileHash": "{41AC0485-10DE-9B62-EE12-16A15B0A8C37}"
  }
 }

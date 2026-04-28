@@ -256,7 +256,9 @@ namespace Resonance.Player
 
             IsDead = true;
 
+#if UNITY_EDITOR
             Debug.Log($"[PlayerStats] {owner} died!");
+#endif
 
             // Record kill/death in match stats (server-only, runs once here)
             var matchStats = MatchStatBridge.GetTemporaryReference();
@@ -283,6 +285,9 @@ namespace Resonance.Player
         [ObserversRpc]
         private void ApplyDeathEffectsRpc()
         {
+#if UNITY_EDITOR
+            Debug.Log($"[PlayerStats] ApplyDeathEffectsRpc - isOwner: {isOwner}");
+#endif
             if (_playerController != null)
             {
                 _playerController.IsPlayerDead = true;
@@ -329,7 +334,9 @@ namespace Resonance.Player
             float respawnDelay = Respawn.Instance != null ?
                                  Respawn.Instance.RespawnDelay : 3f;
 
+#if UNITY_EDITOR
             Debug.Log($"[PlayerStats] {owner} respawning in {respawnDelay}s");
+#endif
             yield return new WaitForSeconds(respawnDelay);
 
             ApplyRespawnEffectsRpc();
@@ -400,7 +407,9 @@ namespace Resonance.Player
                 _playerController.IsPlayerDead = false;
             }
 
+#if UNITY_EDITOR
             Debug.Log($"[PlayerStats] {owner} respawned!");
+#endif
 
             OnPlayerRespawn?.Invoke();
         }
@@ -437,7 +446,9 @@ namespace Resonance.Player
 
         public void AddDamageReductionModifier(float modifier)
         {
+#if UNITY_EDITOR
             Debug.Log($"[PlayerStats] AddDamageReductionModifier called with: {modifier}");
+#endif
             damageReductionModifiers.Add(modifier);
             CalculateDamageReduction();
         }

@@ -1,64 +1,98 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
+using Resonance.Assemblies.UISystem;
+using Resonance.Match;
 
-public class MatchStatsView : MonoBehaviour
+public class MatchStatsView : MonoBehaviour, IOverlayView
 {
+    public static string Key => nameof(MatchStatsView);
+    string IOverlayView.Key => Key;
+
     [SerializeField] private GameObject root;
     [SerializeField] private Transform contentRoot;
     [SerializeField] private LeaderboardRow rowPrefab;
 
     private readonly List<LeaderboardRow> _spawnedRows = new();
-    private MatchStatsViewModel _vm;
+    private MatchStatsModel _model;
+    private PlayerIdToLobbyMemberIdMap _playerIdMap;
 
     private void Start()
     {
-        _vm = MatchStatsViewModel.Instance;
+        _model = MatchStatsModel.Instance;
 
-        if (_vm == null)
-            _vm = FindObjectOfType<MatchStatsViewModel>();
+        if (_model == null)
+            _model = FindFirstObjectByType<MatchStatsModel>();
 
-        if (_vm == null)
+        if (_model == null)
         {
-            Debug.LogError("MatchStatsViewModel not found in scene");
+            Debug.LogError("MatchStatsModel not found in scene");
             return;
         }
 
-        _vm.IsVisible.ChangeEvent += OnVisibilityChanged;
-        _vm.Rankings.ChangeEvent += OnRankingsChanged;
+        root.SetActive(false);
+        _model.Rankings.ChangeEvent += OnRankingsChanged;
 
-        OnVisibilityChanged(_vm.IsVisible.Value);
+        _playerIdMap = PlayerIdToLobbyMemberIdMap.Instance;
+        if (_playerIdMap != null)
+        {
+            _playerIdMap.OnDictionaryChanged += OnLobbyMapChanged;
+        }
     }
 
     private void OnDestroy()
     {
-        if (_vm == null) return;
+        if (_model != null)
+        {
+            _model.Rankings.ChangeEvent -= OnRankingsChanged;
+        }
 
-        _vm.IsVisible.ChangeEvent -= OnVisibilityChanged;
-        _vm.Rankings.ChangeEvent -= OnRankingsChanged;
+        if (_playerIdMap != null)
+        {
+            _playerIdMap.OnDictionaryChanged -= OnLobbyMapChanged;
+        }
     }
 
-    private void OnVisibilityChanged(bool visible)
+    public void OnShow(OverlayViewActions viewActions)
     {
-        root.SetActive(visible);
+        root.SetActive(true);
+    }
+
+    public void OnHide()
+    {
+        root.SetActive(false);
     }
 
     private void OnRankingsChanged(List<PlayerRanking> rankings)
     {
-        // Spawn any missing rows
+        RenderRows(rankings);
+    }
+
+    private void OnLobbyMapChanged()
+    {
+        if (_model == null) return;
+        RenderRows(_model.Rankings.Value);
+    }
+
+    private void RenderRows(List<PlayerRanking> rankings)
+    {
         while (_spawnedRows.Count < rankings.Count)
         {
             var row = Instantiate(rowPrefab, contentRoot);
             _spawnedRows.Add(row);
         }
 
-        // Hide any extra rows
         for (int i = 0; i < _spawnedRows.Count; i++)
         {
             if (i < rankings.Count)
             {
+                var ranking = rankings[i];
+                var playerId = OwnerIDExtractor.UlongToPlayerId(ranking.player);
+                var displayName = _playerIdMap?.GetDisplayName(playerId);
+
                 _spawnedRows[i].gameObject.SetActive(true);
-                _spawnedRows[i].Setup(i + 1, rankings[i]);
+                _spawnedRows[i].Setup(i + 1, ranking, displayName);
             }
             else
             {

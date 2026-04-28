@@ -15,6 +15,11 @@ namespace Resonance.Abilities.BubbleShield
         [Header("References")]
         [SerializeField] private GameObject bubbleShieldPrefab;
 
+#if !UNITY_SERVER
+        [Header("Audio")]
+        [SerializeField] private AK.Wwise.Event throwSoundEvent;
+#endif
+
         private Camera playerCamera;
         private float currentCooldown;
 
@@ -31,12 +36,13 @@ namespace Resonance.Abilities.BubbleShield
 
         public void ActivateAbility()
         {
-            if (!AbilityReady)
-            {
-                return;
-            }
+            if (!AbilityReady) return;
 
             currentCooldown = cooldown;
+
+#if !UNITY_SERVER
+            throwSoundEvent?.Post(gameObject);
+#endif
 
             Vector3 spawnPosition = playerCamera.transform.position;
             Vector3 lobDirection = Vector3.Lerp(playerCamera.transform.forward, Vector3.up, upwardLobBias).normalized;
@@ -54,22 +60,15 @@ namespace Resonance.Abilities.BubbleShield
             base.OnSpawned();
 
             if (isOwner)
-            {
                 playerCamera = Camera.main;
-            }
         }
 
         private void Update()
         {
-            if (!isOwner)
-            {
-                return;
-            }
+            if (!isOwner) return;
 
             if (currentCooldown > 0f)
-            {
                 currentCooldown -= Time.deltaTime;
-            }
         }
 
         [ServerRpc]

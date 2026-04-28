@@ -714,7 +714,7 @@ MonoBehaviour:
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 7d7f96cb21ef4204eb7d687c634973e6, type: 2}
   overdriveDuration: 8
-  overdriveCooldown: 30
+  overdriveCooldown: 1
   overdriveSpeedMultiplier: 1.5
   overdriveHealAmount: 50
   overdriveRegenAmount: 5
@@ -1315,6 +1315,11 @@ MonoBehaviour:
   heightAbovePlayer: 35
   smoothSpeed: 5
   lightRange: 200
+  switchOffDuration: 0.5
+  spotlightOnEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 954432cf6c73a634381e080288d69c7a, type: 2}
 --- !u!114 &4690382465625623557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1388,8 +1393,7 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   augmentProperties: {fileID: 11400000, guid: 7ccee1832ce824258abe079e5d607225, type: 2}
   sonarDiscPrefab: {fileID: 5617757003934067384, guid: ae6d8f4a902ef43b1820c02a8c4e6d36, type: 3}
-  playerCamera: {fileID: 0}
-  cooldown: 12
+  cooldown: 1
 --- !u!114 &-291350223014566401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1548,8 +1552,12 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   lobForce: 6
   upwardLobBias: 0.4
-  cooldown: 20
+  cooldown: 1
   bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
+  throwSoundEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 7560fd83120d05e46ae5211711644808, type: 2}
 --- !u!114 &8062843662524459022
 MonoBehaviour:
   m_ObjectHideFlags: 0

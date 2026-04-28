@@ -48,14 +48,16 @@ namespace Resonance.Combat
             fpArmsAnimator = GetComponent<FPArmsAnimator>();
         }
 
-        private void Start()
+        protected override void OnSpawned()
         {
+            base.OnSpawned();
             playerStats = GetComponent<PlayerStats>();
             playerAugmentEquipper = GetComponent<PlayerAugmentEquipper>();
             playerAbilityManager = GetComponent<PlayerAbilityManager>();
             weaponStatManager = GetComponent<WeaponStatManager>();
 
-            StartCoroutine(EquipStartingWeaponNextFrame());
+            if (isOwner)
+                StartCoroutine(EquipStartingWeaponNextFrame());
         }
 
         private System.Collections.IEnumerator EquipStartingWeaponNextFrame()
@@ -97,7 +99,8 @@ namespace Resonance.Combat
 
         private void OnNewSkinSpawned(GameObject skinInstance)
         {
-            RefreshTPWeaponView(skinInstance);
+            if (EquippedWeapon != null)
+                RefreshTPWeaponView(skinInstance);
         }
 
         private void RefreshTPWeaponView(GameObject skinInstance)
@@ -178,23 +181,19 @@ namespace Resonance.Combat
         private void EquipFromSlot(int slotIndex)
         {
             if (slotIndex < 0 || slotIndex >= playerInventory.weaponInventory.Length) return;
-            
+
             WeaponProperties weapon = playerInventory.weaponInventory[slotIndex];
             if (weapon == null) return;
             if (weapon.Key == EquippedWeapon?.Key) return;
 
+            GetComponent<PlayerShooter>().CancelReload();
+
             if (playerState.CurrentWeaponState != WeaponState.Idle) return;
 
-            GetComponent<PlayerShooter>().CancelReload();
-            
             if (isOwner && fpArmsAnimator != null)
-            {
                 fpArmsAnimator.RequestWeaponSwap(weapon);
-            }
             else
-            {
                 EquipWeapon(weapon);
-            }
         }
 
         public void ExecuteWeaponSwap(WeaponProperties weapon)
@@ -246,9 +245,14 @@ namespace Resonance.Combat
         [ObserversRpc(runLocally: true)]
         private void RefreshTPWeaponViewOnAllClients(string weaponKey)
         {
-            WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
-            if (weapon == null) return;
-            EquippedWeapon = weapon;
+            if (!isOwner)
+            {
+                WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
+                if (weapon == null) return;
+                EquippedWeapon = weapon;
+                weaponStatManager?.ManageWeapon(weapon);
+                playerState?.SetWeaponClass(weapon.Class);
+            }
             RefreshTPWeaponView(playerSkinRenderer.CurrentMeshInstance);
         }
 

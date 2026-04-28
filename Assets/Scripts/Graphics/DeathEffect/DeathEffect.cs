@@ -7,6 +7,7 @@ using Resonance.PlayerController;
 
 namespace Resonance.VFX
 {
+    [DefaultExecutionOrder(1)]
     public class DeathEffect : MonoBehaviour
     {
         [SerializeField] private Material deathGlitchMaterial;
@@ -22,28 +23,13 @@ namespace Resonance.VFX
 
         private void Awake()
         {
-            _playerStats = GetComponentInParent<PlayerStats>();
-            _playerState = GetComponentInParent<PlayerState>();
-            _targetDummy = GetComponentInParent<TargetDummy>();
-            _skinRenderer = GetComponentInParent<PlayerSkinRenderer>();
+            _playerStats = GetComponent<PlayerStats>();
+            _playerState = GetComponent<PlayerState>();
+            _targetDummy = GetComponent<TargetDummy>();
+            _skinRenderer = GetComponent<PlayerSkinRenderer>();
         }
 
         private void Start()
-        {
-            if (_skinRenderer != null)
-            {
-                _skinRenderer.OnNewSkinSpawned += OnSkinSpawned;
-
-                if (_skinRenderer.CurrentMeshInstance != null)
-                    OnSkinSpawned(_skinRenderer.CurrentMeshInstance);
-            }
-            else
-            {
-                _skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
-            }
-        }
-
-        private void OnEnable()
         {
             if (_playerStats != null)
             {
@@ -59,6 +45,18 @@ namespace Resonance.VFX
 
             if (_playerState != null)
                 _playerState.OnWeaponClassChanged += OnWeaponClassChanged;
+
+            if (_skinRenderer != null)
+            {
+                _skinRenderer.OnNewSkinSpawned += OnSkinSpawned;
+
+                if (_skinRenderer.CurrentMeshInstance != null)
+                    OnSkinSpawned(_skinRenderer.CurrentMeshInstance);
+            }
+            else
+            {
+                _skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+            }
         }
 
         private void OnDisable()
@@ -158,26 +156,32 @@ namespace Resonance.VFX
                     _skinnedMeshRenderers = activeArms.GetComponentsInChildren<SkinnedMeshRenderer>();
                     StartCoroutine(RunGlitchGhost(activeArms));
                     foreach (SkinnedMeshRenderer smr in _skinnedMeshRenderers)
-                    {
                         smr.enabled = false;
-                    }
                 }
             }
             else
             {
-                if (_skinRenderer?.CurrentMeshInstance == null)
+                GameObject tpBody = _skinRenderer?.CurrentMeshInstance;
+
+                if (tpBody == null)
                 {
-                    Debug.LogWarning("[DeathEffect] No mesh instance found, skipping effect.");
+                    if (_skinnedMeshRenderers == null || _skinnedMeshRenderers.Length == 0)
+                    {
+                        Debug.LogWarning("[DeathEffect] No mesh instance or renderers found for remote player.");
+                        yield break;
+                    }
+
+                    foreach (SkinnedMeshRenderer smr in _skinnedMeshRenderers)
+                        smr.enabled = false;
+
                     yield break;
                 }
 
-                _skinnedMeshRenderers = _skinRenderer.CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>();
-                StartCoroutine(RunGlitchGhost(_skinRenderer.CurrentMeshInstance));
+                _skinnedMeshRenderers = tpBody.GetComponentsInChildren<SkinnedMeshRenderer>();
+                StartCoroutine(RunGlitchGhost(tpBody));
 
                 foreach (SkinnedMeshRenderer smr in _skinnedMeshRenderers)
-                {
                     smr.enabled = false;
-                }
             }
 
             yield return null;
