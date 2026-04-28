@@ -15,5 +15,7 @@ namespace Resonance.Assemblies.Train
         public bool preDepartFired;
 
         public void Dispose() { }
+
+        public readonly bool IsMoving => movementState != TrainMovementState.StoppedAtStation;
     }
 }

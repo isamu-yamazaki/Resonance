@@ -36,6 +36,7 @@ namespace Resonance.Assemblies.Train
         private bool _hasPreviousViewState;
         private Vector3 _lastViewPosition;
         private bool _hasLastViewPosition;
+        private bool _hasFinishedReplayingOnceFromServerFrame;
 
         protected override void LateAwake()
         {
@@ -84,6 +85,36 @@ namespace Resonance.Assemblies.Train
         }
 
         protected override void Simulate(ref TrainState state, float delta)
+        {
+            if (!predictionManager.isReplaying && predictionManager.isVerified)
+            {
+                // run the simulation as the server
+                RunSimulation(ref state, delta);
+                return;
+            }
+
+            // should always replay from server frame exactly once on the client
+            if (!_hasFinishedReplayingOnceFromServerFrame)
+            {
+                RunSimulation(ref state, delta);
+
+                if (predictionManager.isReplaying && predictionManager.localTickInContext >= predictionManager.localTick - 1)
+                {
+                    _hasFinishedReplayingOnceFromServerFrame = true;
+                    Debug.Log("[TrainController] Finished replaying first frame from server");
+                }
+
+                return;
+            }
+
+            if ((state.IsMoving && !predictionManager.isReplaying) || !state.IsMoving)
+            {
+                // Debug.Log($"{state.movementState} {predictionManager.isReplaying}");
+                RunSimulation(ref state, delta);
+            }
+        }
+
+        private void RunSimulation(ref TrainState state, float delta)
         {
             TrainSimulation.Step(ref state, _config, _stationData, delta);
         }
