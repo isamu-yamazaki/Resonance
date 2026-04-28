@@ -32,8 +32,8 @@ namespace Resonance.Assemblies.Train
             : string.Empty;
 
         private TrainStationData[] _stationData = Array.Empty<TrainStationData>();
-        private TrainState _previousViewState;
-        private bool _hasPreviousViewState;
+        private TrainState _previousVerifiedViewState;
+        private bool _hasPreviousVerifiedViewState;
         private Vector3 _lastViewPosition;
         private bool _hasLastViewPosition;
 
@@ -113,12 +113,15 @@ namespace Resonance.Assemblies.Train
             _lastViewPosition = viewState.position;
             _hasLastViewPosition = true;
 
-            if (_hasPreviousViewState)
+            if (_hasPreviousVerifiedViewState && verified.HasValue)
             {
-                FireTransitionEvents(_previousViewState, viewState);
+                FireTransitionEvents(_previousVerifiedViewState, viewState);
             }
-            _previousViewState = viewState;
-            _hasPreviousViewState = true;
+            if (verified.HasValue)
+            {
+                _previousVerifiedViewState = viewState;
+                _hasPreviousVerifiedViewState = true;
+            }
         }
 
         private void FireTransitionEvents(TrainState prev, TrainState next)
