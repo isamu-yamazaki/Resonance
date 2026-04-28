@@ -33,6 +33,7 @@ namespace Resonance.Train
             if (_trainController == null) return;
             _trainController.OnArrivedAtStation += HandleArrived;
             _trainController.OnPreDepart += HandlePreDepart;
+            _trainController.OnFirstVerifiedViewStateIsAlreadyMoving += HandleFirstVerifiedViewStateIsAlreadyMoving;
         }
 
         private void OnDisable()
@@ -40,6 +41,7 @@ namespace Resonance.Train
             if (_trainController == null) return;
             _trainController.OnArrivedAtStation -= HandleArrived;
             _trainController.OnPreDepart -= HandlePreDepart;
+            _trainController.OnFirstVerifiedViewStateIsAlreadyMoving -= HandleFirstVerifiedViewStateIsAlreadyMoving;
         }
 
         private void HandleArrived(int stationIndex, TrainStation station)
@@ -49,6 +51,12 @@ namespace Resonance.Train
         }
 
         private void HandlePreDepart(int stationIndex, TrainStation station)
+        {
+            _doorAnimator.ResetTrigger(_openTriggerHash);
+            _doorAnimator.SetTrigger(_closeTriggerHash);
+        }
+
+        private void HandleFirstVerifiedViewStateIsAlreadyMoving()
         {
             _doorAnimator.ResetTrigger(_openTriggerHash);
             _doorAnimator.SetTrigger(_closeTriggerHash);

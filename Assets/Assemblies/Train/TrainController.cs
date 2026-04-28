@@ -18,6 +18,7 @@ namespace Resonance.Assemblies.Train
         public event Action<int, TrainStation> OnDepartedStation;
         public event Action<int, TrainStation> OnNextStationChanged;
         public event Action<TrainMovementState> OnStateChanged;
+        public event Action OnFirstVerifiedViewStateIsAlreadyMoving;
 
         public TrainMovementState CurrentState => viewState.movementState;
         public TrainDirection Direction => viewState.direction;
@@ -151,7 +152,19 @@ namespace Resonance.Assemblies.Train
             if (verified.HasValue)
             {
                 _previousVerifiedViewState = viewState;
+
+                if (!_hasPreviousVerifiedViewState)
+                    FireFirstVerifiedViewStateEvents(_previousVerifiedViewState);
+
                 _hasPreviousVerifiedViewState = true;
+            }
+        }
+
+        private void FireFirstVerifiedViewStateEvents(TrainState verified)
+        {
+            if (verified.IsMoving)
+            {
+                OnFirstVerifiedViewStateIsAlreadyMoving?.Invoke();
             }
         }
 
