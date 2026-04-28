@@ -44,11 +44,13 @@ namespace Resonance.Train
 
         private void HandleArrived(int stationIndex, TrainStation station)
         {
+            _doorAnimator.ResetTrigger(_closeTriggerHash);
             _doorAnimator.SetTrigger(_openTriggerHash);
         }
 
         private void HandlePreDepart(int stationIndex, TrainStation station)
         {
+            _doorAnimator.ResetTrigger(_openTriggerHash);
             _doorAnimator.SetTrigger(_closeTriggerHash);
         }
     }
