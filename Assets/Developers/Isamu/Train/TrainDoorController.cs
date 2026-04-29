@@ -6,7 +6,7 @@ namespace Resonance.Train
     public class TrainDoorController : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Animator _doorAnimator;
+        [SerializeField] private Animator[] _doorAnimators = { };
         [SerializeField] private TrainController _trainController;
 
         [Header("Animation Parameters")]
@@ -21,7 +21,7 @@ namespace Resonance.Train
             _openTriggerHash = Animator.StringToHash(_openTriggerName);
             _closeTriggerHash = Animator.StringToHash(_closeTriggerName);
 
-            if (_doorAnimator == null)
+            if (_doorAnimators.Length == 0)
                 Debug.LogError("[TrainDoorController] No Animator assigned.", this);
 
             if (_trainController == null)
@@ -46,20 +46,29 @@ namespace Resonance.Train
 
         private void HandleArrived(int stationIndex, TrainStation station)
         {
-            _doorAnimator.ResetTrigger(_closeTriggerHash);
-            _doorAnimator.SetTrigger(_openTriggerHash);
+            foreach (var doorAnimator in _doorAnimators)
+            {
+                doorAnimator.ResetTrigger(_closeTriggerHash);
+                doorAnimator.SetTrigger(_openTriggerHash);
+            }
         }
 
         private void HandlePreDepart(int stationIndex, TrainStation station)
         {
-            _doorAnimator.ResetTrigger(_openTriggerHash);
-            _doorAnimator.SetTrigger(_closeTriggerHash);
+            foreach (var doorAnimator in _doorAnimators)
+            {
+                doorAnimator.ResetTrigger(_openTriggerHash);
+                doorAnimator.SetTrigger(_closeTriggerHash);
+            }
         }
 
         private void HandleFirstVerifiedViewStateIsAlreadyMoving()
         {
-            _doorAnimator.ResetTrigger(_openTriggerHash);
-            _doorAnimator.SetTrigger(_closeTriggerHash);
+            foreach (var doorAnimator in _doorAnimators)
+            {
+                doorAnimator.ResetTrigger(_openTriggerHash);
+                doorAnimator.SetTrigger(_closeTriggerHash);
+            }
         }
     }
 }
