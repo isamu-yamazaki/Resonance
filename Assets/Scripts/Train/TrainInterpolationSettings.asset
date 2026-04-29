@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: PurrNet.Prediction::PurrNet.Prediction.TransformInterpolationSettings
   useInterpolation: 1
   positionInterpolation:
-    correctionRateMinMax: {x: 0.25, y: 10}
-    correctionBlendMinMax: {x: 0.25, y: 4}
-    teleportThresholdMinMax: {x: 10, y: 5}
+    correctionRateMinMax: {x: 0.05, y: 5}
+    correctionBlendMinMax: {x: 0.5, y: 8}
+    teleportThresholdMinMax: {x: 0.05, y: 50}
   rotationInterpolation:
-    correctionRateMinMax: {x: 3.3, y: 10}
-    correctionBlendMinMax: {x: 5, y: 30}
-    teleportThresholdMinMax: {x: 1.5, y: 52}
+    correctionRateMinMax: {x: 1.5, y: 5}
+    correctionBlendMinMax: {x: 5, y: 60}
+    teleportThresholdMinMax: {x: 1, y: 180}
