@@ -1,11 +1,11 @@
 using System;
-using PurrNet.Prediction;
+using PurrNet;
 using UnityEngine;
 
 namespace Resonance.Assemblies.Train
 {
     [DefaultExecutionOrder(-10)]
-    public class TrainController : PredictedIdentity<TrainState>
+    public class TrainController : NetworkBehaviour
     {
         [Header("Stations")]
         [SerializeField] private TrainStation[] _stations;
@@ -20,11 +20,11 @@ namespace Resonance.Assemblies.Train
         public event Action<TrainMovementState> OnStateChanged;
         public event Action OnFirstVerifiedViewStateIsAlreadyMoving;
 
-        public TrainMovementState CurrentState => viewState.movementState;
-        public TrainDirection Direction => viewState.direction;
-        public int CurrentStationIndex => viewState.currentStationIndex;
-        public int NextStationIndex => viewState.nextStationIndex;
-        public float CurrentSpeed => viewState.currentSpeed;
+        public TrainMovementState CurrentState => _state.movementState;
+        public TrainDirection Direction => _state.direction;
+        public int CurrentStationIndex => _state.currentStationIndex;
+        public int NextStationIndex => _state.nextStationIndex;
+        public float CurrentSpeed => isServer ? _state.currentSpeed : Velocity.magnitude;
         public float NormalizedSpeed => _config.maxSpeed > 0f ? CurrentSpeed / _config.maxSpeed : 0f;
         public Vector3 Velocity { get; private set; }
         public Vector3 MoveDirection { get; private set; }
@@ -32,20 +32,41 @@ namespace Resonance.Assemblies.Train
             ? _stations[NextStationIndex].DisplayName
             : string.Empty;
 
+        private TrainState _state;
         private TrainStationData[] _stationData = Array.Empty<TrainStationData>();
-        private TrainState _previousVerifiedViewState;
-        private bool _hasPreviousVerifiedViewState;
-        private Vector3 _lastViewPosition;
-        private bool _hasLastViewPosition;
-        private bool _hasFinishedReplayingOnceFromServerFrame;
+        private TrainState _prevTickState;
+        private bool _hasPrevTickState;
+        private Vector3 _lastFramePosition;
+        private bool _hasLastFramePosition;
+        private bool _hasReceivedFirstSnapshot;
 
-        protected override void LateAwake()
+        private void Awake()
         {
             if (_stations == null || _stations.Length < 2)
             {
                 Debug.LogWarning("[TrainController] Fewer than 2 stations assigned.", this);
             }
+
             BuildStationDataSnapshot();
+            _state = BuildInitialState();
+            transform.position = _state.position;
+        }
+
+        private TrainState BuildInitialState()
+        {
+            Vector3 startPos = IsValidIndex(0) ? _stations[0].StopPosition : transform.position;
+
+            return new TrainState
+            {
+                position = startPos,
+                currentSpeed = 0f,
+                movementState = TrainMovementState.StoppedAtStation,
+                direction = TrainDirection.Forward,
+                currentStationIndex = 0,
+                nextStationIndex = (_stations != null && _stations.Length > 1) ? 1 : 0,
+                stopTimer = _config.stationStopDuration + _config.preDepartWarningTime,
+                preDepartFired = false,
+            };
         }
 
         private void BuildStationDataSnapshot()
@@ -66,154 +87,131 @@ namespace Resonance.Assemblies.Train
             }
         }
 
-        protected override TrainState GetInitialState()
+        private void FixedUpdate()
         {
-            Vector3 startPos = IsValidIndex(0)
-                ? _stations[0].StopPosition
-                : transform.position;
+            if (!isServer) return;
 
-            return new TrainState
+            if (!_hasPrevTickState)
             {
-                position = startPos,
-                currentSpeed = 0f,
-                movementState = TrainMovementState.StoppedAtStation,
-                direction = TrainDirection.Forward,
-                currentStationIndex = 0,
-                nextStationIndex = (_stations != null && _stations.Length > 1) ? 1 : 0,
-                stopTimer = _config.stationStopDuration + _config.preDepartWarningTime,
-                preDepartFired = false,
-            };
-        }
-
-        protected override void Simulate(ref TrainState state, float delta)
-        {
-            if (!predictionManager.isReplaying && predictionManager.isVerified)
-            {
-                // run the simulation as the server
-                RunSimulation(ref state, delta);
-                return;
+                _prevTickState = _state;
+                _hasPrevTickState = true;
             }
 
-            // should always replay from server frame exactly once on the client
-            if (!_hasFinishedReplayingOnceFromServerFrame)
-            {
-                RunSimulation(ref state, delta);
+            TrainSimulation.Step(ref _state, _config, _stationData, Time.fixedDeltaTime);
+            transform.position = _state.position;
 
-                if (predictionManager.isReplaying && predictionManager.localTickInContext >= predictionManager.localTick - 1)
-                {
-                    _hasFinishedReplayingOnceFromServerFrame = true;
-                    Debug.Log("[TrainController] Finished replaying first frame from server");
-                }
-
-                return;
-            }
-
-            if ((state.IsMoving && !predictionManager.isReplaying) || !state.IsMoving)
-            {
-                // Debug.Log($"{state.movementState} {predictionManager.isReplaying}");
-                RunSimulation(ref state, delta);
-            }
+            DetectAndBroadcastTransitions(_prevTickState, _state);
+            _prevTickState = _state;
         }
 
-        private void RunSimulation(ref TrainState state, float delta)
+        private void Update()
         {
-            TrainSimulation.Step(ref state, _config, _stationData, delta);
-        }
-
-        // No GetUnityState override: the simulation is authoritative over state.position.
-        // Reading transform.position back into state every tick would undo Simulate's
-        // advance — the transform only catches up at frame rate via UpdateView, so it
-        // always lags the authoritative state.
-
-        protected override void SetUnityState(TrainState state)
-        {
-            transform.position = state.position;
-        }
-
-        protected override void UpdateView(TrainState viewState, TrainState? verified)
-        {
-            transform.position = viewState.position;
-
-            // UpdateView runs once per frame, so use Time.deltaTime — NOT tickDelta.
-            float frameDelta = Time.deltaTime;
-            if (_hasLastViewPosition && frameDelta > 0f)
+            float dt = Time.deltaTime;
+            if (_hasLastFramePosition && dt > 0f)
             {
-                Vector3 displacement = viewState.position - _lastViewPosition;
-                Velocity = displacement / frameDelta;
+                Vector3 displacement = transform.position - _lastFramePosition;
+                Velocity = displacement / dt;
                 MoveDirection = Velocity.sqrMagnitude > 1e-6f ? Velocity.normalized : Vector3.zero;
             }
-            _lastViewPosition = viewState.position;
-            _hasLastViewPosition = true;
-
-            if (_hasPreviousVerifiedViewState && verified.HasValue)
-            {
-                FireTransitionEvents(_previousVerifiedViewState, viewState);
-            }
-            if (verified.HasValue)
-            {
-                _previousVerifiedViewState = viewState;
-
-                if (!_hasPreviousVerifiedViewState)
-                    FireFirstVerifiedViewStateEvents(_previousVerifiedViewState);
-
-                _hasPreviousVerifiedViewState = true;
-            }
+            _lastFramePosition = transform.position;
+            _hasLastFramePosition = true;
         }
 
-        private void FireFirstVerifiedViewStateEvents(TrainState verified)
+        protected override void OnObserverAdded(PlayerID player)
         {
-            if (verified.IsMoving)
-            {
-                OnFirstVerifiedViewStateIsAlreadyMoving?.Invoke();
-            }
+            base.OnObserverAdded(player);
+            SendInitialSnapshotTargetRpc(
+                player,
+                _state.movementState,
+                _state.direction,
+                _state.currentStationIndex,
+                _state.nextStationIndex,
+                _state.preDepartFired);
         }
 
-        private void FireTransitionEvents(TrainState prev, TrainState next)
+        private void DetectAndBroadcastTransitions(in TrainState prev, in TrainState next)
         {
             if (next.movementState != prev.movementState)
-            {
-                OnStateChanged?.Invoke(next.movementState);
-            }
+                BroadcastStateChangedRpc(next.movementState);
 
             if (next.currentStationIndex != prev.currentStationIndex
                 && IsValidIndex(next.currentStationIndex))
-            {
-                OnArrivedAtStation?.Invoke(next.currentStationIndex, _stations[next.currentStationIndex]);
-            }
+                BroadcastArrivedRpc(next.currentStationIndex);
 
             if (prev.movementState == TrainMovementState.StoppedAtStation
                 && next.movementState == TrainMovementState.Accelerating
                 && IsValidIndex(next.currentStationIndex))
-            {
-                OnDepartedStation?.Invoke(next.currentStationIndex, _stations[next.currentStationIndex]);
-            }
+                BroadcastDepartedRpc(next.currentStationIndex);
 
             if (!prev.preDepartFired && next.preDepartFired
                 && IsValidIndex(next.currentStationIndex))
-            {
-                OnPreDepart?.Invoke(next.currentStationIndex, _stations[next.currentStationIndex]);
-            }
+                BroadcastPreDepartRpc(next.currentStationIndex);
 
             if (next.nextStationIndex != prev.nextStationIndex
                 && IsValidIndex(next.nextStationIndex))
-            {
-                OnNextStationChanged?.Invoke(next.nextStationIndex, _stations[next.nextStationIndex]);
-            }
+                BroadcastNextStationChangedRpc(next.nextStationIndex, next.direction);
         }
 
-        protected override TrainState Interpolate(TrainState from, TrainState to, float t)
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastStateChangedRpc(TrainMovementState movementState)
         {
-            return new TrainState
+            _state.movementState = movementState;
+            OnStateChanged?.Invoke(movementState);
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastArrivedRpc(int stationIndex)
+        {
+            if (!IsValidIndex(stationIndex)) return;
+            _state.currentStationIndex = stationIndex;
+            OnArrivedAtStation?.Invoke(stationIndex, _stations[stationIndex]);
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastDepartedRpc(int stationIndex)
+        {
+            if (!IsValidIndex(stationIndex)) return;
+            OnDepartedStation?.Invoke(stationIndex, _stations[stationIndex]);
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastPreDepartRpc(int stationIndex)
+        {
+            if (!IsValidIndex(stationIndex)) return;
+            OnPreDepart?.Invoke(stationIndex, _stations[stationIndex]);
+        }
+
+        [ObserversRpc(runLocally: true)]
+        private void BroadcastNextStationChangedRpc(int nextIndex, TrainDirection direction)
+        {
+            if (!IsValidIndex(nextIndex)) return;
+            _state.nextStationIndex = nextIndex;
+            _state.direction = direction;
+            OnNextStationChanged?.Invoke(nextIndex, _stations[nextIndex]);
+        }
+
+        [TargetRpc]
+        private void SendInitialSnapshotTargetRpc(
+            PlayerID target,
+            TrainMovementState movementState,
+            TrainDirection direction,
+            int currentStationIndex,
+            int nextStationIndex,
+            bool preDepartFired)
+        {
+            _state.movementState = movementState;
+            _state.direction = direction;
+            _state.currentStationIndex = currentStationIndex;
+            _state.nextStationIndex = nextStationIndex;
+            _state.preDepartFired = preDepartFired;
+
+            if (_hasReceivedFirstSnapshot) return;
+            _hasReceivedFirstSnapshot = true;
+
+            if (movementState != TrainMovementState.StoppedAtStation)
             {
-                position = Vector3.Lerp(from.position, to.position, t),
-                currentSpeed = Mathf.Lerp(from.currentSpeed, to.currentSpeed, t),
-                stopTimer = Mathf.Lerp(from.stopTimer, to.stopTimer, t),
-                movementState = to.movementState,
-                direction = to.direction,
-                currentStationIndex = to.currentStationIndex,
-                nextStationIndex = to.nextStationIndex,
-                preDepartFired = to.preDepartFired,
-            };
+                OnFirstVerifiedViewStateIsAlreadyMoving?.Invoke();
+            }
         }
 
         private bool IsValidIndex(int index)

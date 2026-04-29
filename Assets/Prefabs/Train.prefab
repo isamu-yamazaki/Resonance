@@ -476,6 +476,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3713895707255018345}
   - component: {fileID: 3448999368842045501}
+  - component: {fileID: 1920581439206452853}
   - component: {fileID: 7082317054524908845}
   - component: {fileID: 1707782010205254347}
   - component: {fileID: -4140189640091101283}
@@ -529,8 +530,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3565c5d737aa14038aaf6b25cae36c1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainController
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
   _stations:
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   _config:
@@ -538,8 +547,25 @@ MonoBehaviour:
     accelerationTime: 4
     decelerationTime: 3
     arrivalTolerance: 0.15
-    stationStopDuration: 15
-    preDepartWarningTime: 3
+    stationStopDuration: 10
+    preDepartWarningTime: 5
+--- !u!114 &1920581439206452853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3592926597777073106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98dbb08343eac044895b9b52872bcb49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PurrNet.Prediction::PurrNet.Prediction.PredictedTransform
+  _graphics: {fileID: 0}
+  _floatAccuracy: 1
+  _interpolationSettings: {fileID: 11400000, guid: 4a8aa8e44e23cfd4a8d4387ef3f36173, type: 2}
+  _unparentGraphics: 0
+  _characterControllerPatch: 0
 --- !u!114 &7082317054524908845
 MonoBehaviour:
   m_ObjectHideFlags: 0
