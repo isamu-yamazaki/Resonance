@@ -89,23 +89,21 @@ namespace Resonance.Assemblies.Train
 
         private void FixedUpdate()
         {
-            if (!isServer) return;
-
-            if (!_hasPrevTickState)
+            if (isServer)
             {
+                if (!_hasPrevTickState)
+                {
+                    _prevTickState = _state;
+                    _hasPrevTickState = true;
+                }
+
+                TrainSimulation.Step(ref _state, _config, _stationData, Time.fixedDeltaTime);
+                transform.position = _state.position;
+
+                DetectAndBroadcastTransitions(_prevTickState, _state);
                 _prevTickState = _state;
-                _hasPrevTickState = true;
             }
 
-            TrainSimulation.Step(ref _state, _config, _stationData, Time.fixedDeltaTime);
-            transform.position = _state.position;
-
-            DetectAndBroadcastTransitions(_prevTickState, _state);
-            _prevTickState = _state;
-        }
-
-        private void Update()
-        {
             float dt = Time.deltaTime;
             if (_hasLastFramePosition && dt > 0f)
             {
