@@ -1,10 +1,11 @@
+using PurrNet;
 using Resonance.Assemblies.Train;
 using UnityEngine;
 
 namespace Resonance.Train
 {
     [RequireComponent(typeof(CharacterController))]
-    public class TrainPassengerPhysics : MonoBehaviour
+    public class TrainPassengerPhysics : NetworkBehaviour
     {
         [Header("Train Reference")]
         [SerializeField] private TrainController _trainController;
@@ -53,6 +54,10 @@ namespace Resonance.Train
         {
             _characterController = GetComponent<CharacterController>();
 
+        }
+
+        protected override void OnSpawned()
+        {
             if (_trainController == null)
                 _trainController = FindFirstObjectByType<TrainController>();
         }
