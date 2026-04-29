@@ -24,20 +24,25 @@ namespace Resonance.Assemblies.Train
         public TrainDirection Direction => _state.direction;
         public int CurrentStationIndex => _state.currentStationIndex;
         public int NextStationIndex => _state.nextStationIndex;
-        public float CurrentSpeed => isServer ? _state.currentSpeed : Velocity.magnitude;
+        public float CurrentSpeed => Velocity.magnitude;
         public float NormalizedSpeed => _config.maxSpeed > 0f ? CurrentSpeed / _config.maxSpeed : 0f;
-        public Vector3 Velocity { get; private set; }
-        public Vector3 MoveDirection { get; private set; }
+        public Vector3 Velocity => _velocity.value;
+        public Vector3 MoveDirection => Velocity.sqrMagnitude > 1e-6f ? Velocity.normalized : Vector3.zero;
         public string NextStationDisplayName => IsValidIndex(NextStationIndex)
             ? _stations[NextStationIndex].DisplayName
             : string.Empty;
+
+        // TEMPORARY: server-replicated velocity, derived from authoritative state's per-tick position delta.
+        // Lags by network RTT + send interval, so consumers requiring frame-accurate predicted velocity
+        // (e.g. TrainPassengerPhysics) will see a small drift relative to the train's interpolated visual.
+        // Proper fix is to run velocity calculation in a PredictedIdentity<TrainState> so velocity runs locally
+        // each client tick.
+        private SyncVar<Vector3> _velocity = new SyncVar<Vector3>();
 
         private TrainState _state;
         private TrainStationData[] _stationData = Array.Empty<TrainStationData>();
         private TrainState _prevTickState;
         private bool _hasPrevTickState;
-        private Vector3 _lastFramePosition;
-        private bool _hasLastFramePosition;
         private bool _hasReceivedFirstSnapshot;
 
         private void Awake()
@@ -89,30 +94,27 @@ namespace Resonance.Assemblies.Train
 
         private void FixedUpdate()
         {
-            if (isServer)
+            if (!isServer)
             {
-                if (!_hasPrevTickState)
-                {
-                    _prevTickState = _state;
-                    _hasPrevTickState = true;
-                }
+                return;
+            }
 
-                TrainSimulation.Step(ref _state, _config, _stationData, Time.fixedDeltaTime);
-                transform.position = _state.position;
-
-                DetectAndBroadcastTransitions(_prevTickState, _state);
+            if (!_hasPrevTickState)
+            {
                 _prevTickState = _state;
+                _hasPrevTickState = true;
             }
 
-            float dt = Time.deltaTime;
-            if (_hasLastFramePosition && dt > 0f)
-            {
-                Vector3 displacement = transform.position - _lastFramePosition;
-                Velocity = displacement / dt;
-                MoveDirection = Velocity.sqrMagnitude > 1e-6f ? Velocity.normalized : Vector3.zero;
-            }
-            _lastFramePosition = transform.position;
-            _hasLastFramePosition = true;
+            TrainSimulation.Step(ref _state, _config, _stationData, Time.fixedDeltaTime);
+            transform.position = _state.position;
+
+            float dt = Time.fixedDeltaTime;
+            _velocity.value = dt > 0f
+                ? (_state.position - _prevTickState.position) / dt
+                : Vector3.zero;
+
+            DetectAndBroadcastTransitions(_prevTickState, _state);
+            _prevTickState = _state;
         }
 
         protected override void OnObserverAdded(PlayerID player)

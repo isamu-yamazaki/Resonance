@@ -38,7 +38,6 @@ namespace Resonance.Train
         private Vector3 _frameOffset = Vector3.zero;
         private Vector3 _inertiaVelocity = Vector3.zero;
         private Vector3 _knockbackVelocity = Vector3.zero;
-        private Vector3 _lastTrainPosition = Vector3.zero;
         private float _knockbackVertical = 0f;
         private bool _wasOnTrainLastFrame = false;
         private bool _isKnockedBack = false;
@@ -56,9 +55,6 @@ namespace Resonance.Train
 
             if (_trainController == null)
                 _trainController = FindFirstObjectByType<TrainController>();
-
-            if (_trainController != null)
-                _lastTrainPosition = _trainController.transform.position;
         }
 
         private void FixedUpdate()
@@ -107,17 +103,19 @@ namespace Resonance.Train
             }
             else if (IsOnTrain && _trainController != null)
             {
-                Vector3 trainDelta = _trainController.transform.position - _lastTrainPosition;
-                trainDelta.y = 0f;
-                _frameOffset = trainDelta / Time.fixedDeltaTime;
+                // TEMPORARY: reads server-replicated TrainController.Velocity (lags by RTT + send interval).
+                // Causes a small drift between the player and the train's interpolated visual during
+                // accel/brake transitions. Proper fix is to migrate velocity to a PredictedIdentity so
+                // velocity is locally predicted each tick.
+                Vector3 trainVelocity = _trainController.Velocity;
+                trainVelocity.y = 0f;
+                _frameOffset = trainVelocity;
             }
             else if (_inertiaVelocity.sqrMagnitude > 0.001f)
             {
                 _frameOffset = _inertiaVelocity;
                 _inertiaVelocity = Vector3.MoveTowards(_inertiaVelocity, Vector3.zero, _inertiaDecay * Time.fixedDeltaTime);
             }
-
-            _lastTrainPosition = _trainController != null ? _trainController.transform.position : Vector3.zero;
         }
     }
 }
