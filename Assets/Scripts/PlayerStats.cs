@@ -42,7 +42,7 @@ namespace Resonance.Player
         public float BaseDamageReduction { get => baseDamageReduction; set => baseDamageReduction = Mathf.Clamp(value, 0f, maxDamageReduction); }
 
         //Speed
-        public float PlayerSpeed => (currentSpeed);
+        public float PlayerSpeed => currentSpeed.value;
         public float BaseSpeed { get => playerBaseSpeed; set => playerBaseSpeed = value; }
         public bool IsDead { get; private set; }
 
@@ -418,7 +418,10 @@ namespace Resonance.Player
         #region Speed Management
         //Speed Properties
         private List<float> speedModifiers = new List<float>();
-        private float currentSpeed;
+
+        [field: SerializeField]
+        // TODO: validate this with other eventual server-side state
+        private ValidatedSyncVar<float> currentSpeed = new();
 
         public void AddSpeedModifier(float modifier)
         {
@@ -434,7 +437,7 @@ namespace Resonance.Player
 
         private void CalculateSpeed()
         {
-            currentSpeed = (playerBaseSpeed * speedModifiers.Aggregate(1f, (combinedModifier, nextModifier) => combinedModifier * nextModifier));
+            currentSpeed.value = playerBaseSpeed * speedModifiers.Aggregate(1f, (combinedModifier, nextModifier) => combinedModifier * nextModifier);
         }
 
         #endregion

@@ -8,7 +8,13 @@ namespace Resonance.PlayerController
     public class PlayerState : NetworkBehaviour
     {
         [field: SerializeField]
-        public PlayerMovementState CurrentPlayerMovementState { get; private set; } = PlayerMovementState.Idling;
+        // TODO: validate this with other eventual server-side state
+        private ValidatedSyncVar<int> playerMovementState = new();
+        public PlayerMovementState CurrentPlayerMovementState
+        {
+            get => (PlayerMovementState)playerMovementState.value;
+            private set => playerMovementState.value = (int)value;
+        }
         public WeaponClass CurrentWeaponClass { get; private set; }
         public bool WeaponClassInitialized { get; private set; }
 
