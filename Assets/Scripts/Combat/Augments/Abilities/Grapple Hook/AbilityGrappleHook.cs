@@ -1,4 +1,5 @@
 using PurrNet;
+using Resonance.Assemblies.Player;
 using Resonance.Audio;
 using Resonance.Player;
 using Resonance.PlayerController;

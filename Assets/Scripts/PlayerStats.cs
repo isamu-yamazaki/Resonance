@@ -1,4 +1,5 @@
 using System;
+using Resonance.Assemblies.Player;
 using Resonance.PlayerController;
 using Resonance.UI;
 using Resonance.Match;

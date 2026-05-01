@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using PurrNet;
+using Resonance.Assemblies.Player;
 using Resonance.Combat.Weapons;
 using UnityEngine;
 

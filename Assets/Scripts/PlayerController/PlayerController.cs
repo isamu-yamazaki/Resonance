@@ -1,5 +1,6 @@
 using System;
 using PurrNet;
+using Resonance.Assemblies.Player;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.Player;

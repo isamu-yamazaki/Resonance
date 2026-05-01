@@ -33,9 +33,9 @@ public class PlayerSimulationTests
         };
     }
 
-    private static PlayerInputData MakeInput(float multiplier)
+    private static PlayerDependencyData MakeDeps(float multiplier)
     {
-        return new PlayerInputData
+        return new PlayerDependencyData
         {
             MovementSpeedMultiplier = multiplier,
         };
@@ -47,9 +47,9 @@ public class PlayerSimulationTests
     public void CalculateDerivedStats_MultiplierOne_ReturnsBaseValues()
     {
         var config = MakeConfig();
-        var input = MakeInput(1f);
+        var deps = MakeDeps(1f);
 
-        var stats = PlayerSimulation.CalculateDerivedStats(input, config);
+        var stats = PlayerSimulation.CalculateDerivedStats(deps, config);
 
         Assert.AreEqual(config.baseCrouchSpeed, stats.crouchSpeed, Tolerance);
         Assert.AreEqual(config.baseRunSpeed, stats.runSpeed, Tolerance);
@@ -68,9 +68,9 @@ public class PlayerSimulationTests
     public void CalculateDerivedStats_MultiplierTwo_DoublesEveryField()
     {
         var config = MakeConfig();
-        var input = MakeInput(2f);
+        var deps = MakeDeps(2f);
 
-        var stats = PlayerSimulation.CalculateDerivedStats(input, config);
+        var stats = PlayerSimulation.CalculateDerivedStats(deps, config);
 
         Assert.AreEqual(config.baseCrouchSpeed * 2f, stats.crouchSpeed, Tolerance);
         Assert.AreEqual(config.baseRunSpeed * 2f, stats.runSpeed, Tolerance);
@@ -89,9 +89,9 @@ public class PlayerSimulationTests
     public void CalculateDerivedStats_MultiplierZero_ZerosEveryField()
     {
         var config = MakeConfig();
-        var input = MakeInput(0f);
+        var deps = MakeDeps(0f);
 
-        var stats = PlayerSimulation.CalculateDerivedStats(input, config);
+        var stats = PlayerSimulation.CalculateDerivedStats(deps, config);
 
         Assert.AreEqual(0f, stats.crouchSpeed, Tolerance);
         Assert.AreEqual(0f, stats.runSpeed, Tolerance);
@@ -112,9 +112,9 @@ public class PlayerSimulationTests
         // Use deliberately different baseSprintSpeed so a constant-of-config bug would
         // fail this even at multiplier=1.
         var config = MakeConfig(sprintSpeed: 13f);
-        var input = MakeInput(1.5f);
+        var deps = MakeDeps(1.5f);
 
-        var stats = PlayerSimulation.CalculateDerivedStats(input, config);
+        var stats = PlayerSimulation.CalculateDerivedStats(deps, config);
 
         Assert.AreEqual(stats.sprintSpeed, stats.antiBump, Tolerance);
         Assert.AreEqual(13f * 1.5f, stats.antiBump, Tolerance);
@@ -136,9 +136,9 @@ public class PlayerSimulationTests
             inAirAcc: 23f,
             drag: 29f
         );
-        var input = MakeInput(1f);
+        var deps = MakeDeps(1f);
 
-        var stats = PlayerSimulation.CalculateDerivedStats(input, config);
+        var stats = PlayerSimulation.CalculateDerivedStats(deps, config);
 
         Assert.AreEqual(2f, stats.crouchSpeed, Tolerance);
         Assert.AreEqual(3f, stats.runSpeed, Tolerance);
@@ -157,10 +157,10 @@ public class PlayerSimulationTests
     public void CalculateDerivedStats_IsPure_RepeatCallsReturnEqualResults()
     {
         var config = MakeConfig();
-        var input = MakeInput(1.25f);
+        var deps = MakeDeps(1.25f);
 
-        var first = PlayerSimulation.CalculateDerivedStats(input, config);
-        var second = PlayerSimulation.CalculateDerivedStats(input, config);
+        var first = PlayerSimulation.CalculateDerivedStats(deps, config);
+        var second = PlayerSimulation.CalculateDerivedStats(deps, config);
 
         Assert.AreEqual(first.crouchSpeed, second.crouchSpeed, Tolerance);
         Assert.AreEqual(first.runSpeed, second.runSpeed, Tolerance);

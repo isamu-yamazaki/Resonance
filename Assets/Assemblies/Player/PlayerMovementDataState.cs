@@ -2,6 +2,9 @@ using System.Numerics;
 
 namespace Resonance.Assemblies.Player
 {
+    /// <summary>
+    /// The simulated movement state of the player.
+    /// </summary>
     public struct PlayerMovementDataState
     {
         public Vector3 Velocity;

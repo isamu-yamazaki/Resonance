@@ -1,6 +1,7 @@
 using System.Linq;
-using UnityEngine;
 using PurrNet;
+using Resonance.Assemblies.Player;
+using UnityEngine;
 
 namespace Resonance.PlayerController
 {

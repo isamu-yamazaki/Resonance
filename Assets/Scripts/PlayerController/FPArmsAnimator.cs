@@ -1,4 +1,5 @@
 using System.Collections;
+using Resonance.Assemblies.Player;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.PlayerController;
 using System.Collections.Generic;

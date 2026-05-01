@@ -1,4 +1,5 @@
 using PurrNet;
+using Resonance.Assemblies.Player;
 using Resonance.Assemblies.SharedGameLogic;
 using Resonance.Match;
 using UnityEngine;

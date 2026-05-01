@@ -8,19 +8,21 @@ namespace Resonance.Assemblies.Player
         // TODO: add the other necessary dependencies
         public static void Step(
             in PlayerInputData inputData,
+            in PlayerDependencyData dependencyData,
             ref PlayerMovementDataState state,
             in PlayerConfig config,
             CharacterController characterController,
             float delta
         )
         {
-            TickCameraMovement(inputData, ref state, config, delta);
-            TickVerticalMovement(inputData, ref state, config, delta);
-            TickLateralMovement(inputData, ref state, config, characterController, delta);
+            TickCameraMovement(inputData, dependencyData, ref state, config, delta);
+            TickVerticalMovement(inputData, dependencyData, ref state, config, delta);
+            TickLateralMovement(inputData, dependencyData, ref state, config, characterController, delta);
         }
 
         public static void TickCameraMovement(
             in PlayerInputData inputData,
+            in PlayerDependencyData dependencyData,
             ref PlayerMovementDataState state,
             in PlayerConfig config,
             float delta
@@ -31,13 +33,14 @@ namespace Resonance.Assemblies.Player
 
         public static void TickLateralMovement(
             in PlayerInputData inputData,
+            in PlayerDependencyData dependencyData,
             ref PlayerMovementDataState state,
             in PlayerConfig config,
             CharacterController characterController,
             float delta
         )
         {
-            var stats = CalculateDerivedStats(inputData, config);
+            var stats = CalculateDerivedStats(dependencyData, config);
             // TODO: lateral movement math (sprint/run/crouch acc + drag + slide branch)
             //       will consume `stats` here.
             throw new NotImplementedException();
@@ -45,6 +48,7 @@ namespace Resonance.Assemblies.Player
 
         public static void TickVerticalMovement(
             in PlayerInputData inputData,
+            in PlayerDependencyData dependencyData,
             ref PlayerMovementDataState state,
             in PlayerConfig config,
             float delta
@@ -54,15 +58,15 @@ namespace Resonance.Assemblies.Player
         }
 
         /// <summary>
-        /// Derive per-tick movement stats from the input multiplier and the immutable config.
-        /// Mirrors legacy PlayerController.UpdateStats().
+        /// Derive per-tick movement stats from the synced dependency snapshot
+        /// and the immutable config. Mirrors legacy PlayerController.UpdateStats().
         /// </summary>
         public static PlayerDerivedStats CalculateDerivedStats(
-            in PlayerInputData inputData,
+            in PlayerDependencyData dependencyData,
             in PlayerConfig config
         )
         {
-            float m = inputData.MovementSpeedMultiplier;
+            float m = dependencyData.MovementSpeedMultiplier;
 
             var stats = new PlayerDerivedStats
             {
