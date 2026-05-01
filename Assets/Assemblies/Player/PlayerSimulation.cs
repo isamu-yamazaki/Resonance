@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Resonance.Assemblies.Player
 {
@@ -9,12 +10,13 @@ namespace Resonance.Assemblies.Player
             in PlayerInputData inputData,
             ref PlayerMovementDataState state,
             in PlayerConfig config,
+            CharacterController characterController,
             float delta
         )
         {
             TickCameraMovement(inputData, ref state, config, delta);
             TickVerticalMovement(inputData, ref state, config, delta);
-            TickLateralMovement(inputData, ref state, config, delta);
+            TickLateralMovement(inputData, ref state, config, characterController, delta);
         }
 
         public static void TickCameraMovement(
@@ -31,6 +33,7 @@ namespace Resonance.Assemblies.Player
             in PlayerInputData inputData,
             ref PlayerMovementDataState state,
             in PlayerConfig config,
+            CharacterController characterController,
             float delta
         )
         {
