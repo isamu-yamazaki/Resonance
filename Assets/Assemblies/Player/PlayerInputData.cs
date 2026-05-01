@@ -9,5 +9,10 @@ namespace Resonance.Assemblies.Player
         public bool JumpPressed { get; set; }
         public bool SprintToggledOn { get; set; }
         public bool CrouchToggledOn { get; set; }
+
+        /// <summary>
+        /// Speed multiplier as determined by PlayerStats.
+        /// </summary>
+        public float MovementSpeedMultiplier { get; set; }
     }
 }
