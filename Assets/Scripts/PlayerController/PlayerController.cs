@@ -309,7 +309,7 @@ namespace Resonance.PlayerController
                 _jumpedLastFrame = true;
             }
 
-            if (_playerState.IsStateGroundedState(_lastMovementState) && !isGrounded)
+            if (PlayerMovementStateUtils.IsStateGroundedState(_lastMovementState) && !isGrounded)
             {
                 _verticalVelocity += _antiBump;
             }

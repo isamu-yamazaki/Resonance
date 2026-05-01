@@ -1,4 +1,5 @@
-using System.Numerics;
+
+using UnityEngine;
 
 namespace Resonance.Assemblies.Player
 {
@@ -14,5 +15,10 @@ namespace Resonance.Assemblies.Player
         /// Modified deterministically each tick by PlayerInputData.LookInput.
         /// </summary>
         public float CameraYaw;
+
+        // Persistent values for deriving velocity later
+        public Vector3 grappleImpulse;
+        public bool jumpedLastSimulatedFrame;
+        public PlayerMovementState lastSimulatedMovementState;
     }
 }

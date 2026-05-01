@@ -54,7 +54,37 @@ namespace Resonance.Assemblies.Player
             float delta
         )
         {
-            throw new NotImplementedException();
+            var derived = CalculateDerivedStats(dependencyData, config);
+            var verticalVelocity = state.Velocity.y;
+
+            // TODO: forward predict PlayerState (aka run it as part of a forward predicted loop)
+            // Right now it relies on server propagation which causes a delay
+            var isGrounded = PlayerMovementStateUtils.IsStateGroundedState(dependencyData.CurrentPlayerMovementState);
+            verticalVelocity -= config.gravity * delta;
+
+            if (isGrounded && verticalVelocity < 0f)
+            {
+                verticalVelocity = -derived.antiBump;
+                state.grappleImpulse = Vector3.zero;
+            }
+
+            if (inputData.JumpPressed && isGrounded)
+            {
+                verticalVelocity += Mathf.Sqrt(config.jumpSpeed * 3 * config.gravity);
+                state.jumpedLastSimulatedFrame = true;
+            }
+
+            if (PlayerMovementStateUtils.IsStateGroundedState(state.lastSimulatedMovementState) && !isGrounded)
+            {
+                verticalVelocity += derived.antiBump;
+            }
+
+            if (Mathf.Abs(verticalVelocity) > Mathf.Abs(config.terminalVelocity))
+            {
+                verticalVelocity = -1f * Mathf.Abs(config.terminalVelocity);
+            }
+
+            state.Velocity.y = verticalVelocity;
         }
 
         /// <summary>

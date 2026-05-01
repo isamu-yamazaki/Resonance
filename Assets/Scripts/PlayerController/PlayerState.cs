@@ -71,16 +71,7 @@ namespace Resonance.PlayerController
 
         public bool InGroundedState()
         {
-            return IsStateGroundedState(CurrentPlayerMovementState);
-        }
-
-        public bool IsStateGroundedState(PlayerMovementState movementState)
-        {
-            return movementState == PlayerMovementState.Idling ||
-                   movementState == PlayerMovementState.Crouching ||
-                   movementState == PlayerMovementState.Running ||
-                   movementState == PlayerMovementState.Sprinting ||
-                   movementState == PlayerMovementState.Sliding;
+            return PlayerMovementStateUtils.IsStateGroundedState(CurrentPlayerMovementState);
         }
 
         public bool IsDead()
