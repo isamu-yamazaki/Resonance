@@ -18,6 +18,9 @@ namespace Resonance.Assemblies.Player
             TickCameraMovement(inputData, dependencyData, ref state, config, delta);
             TickVerticalMovement(inputData, dependencyData, ref state, config, delta);
             TickLateralMovement(inputData, dependencyData, ref state, config, characterController, delta);
+
+            state.lastSimulatedMovementState = dependencyData.CurrentPlayerMovementState;
+
         }
 
         public static void TickCameraMovement(
@@ -74,6 +77,7 @@ namespace Resonance.Assemblies.Player
                 state.jumpedLastSimulatedFrame = true;
             }
 
+            // TODO: need to double check if this is the correct behavior
             if (PlayerMovementStateUtils.IsStateGroundedState(state.lastSimulatedMovementState) && !isGrounded)
             {
                 verticalVelocity += derived.antiBump;
