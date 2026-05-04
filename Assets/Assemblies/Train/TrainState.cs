@@ -3,7 +3,10 @@ using UnityEngine;
 
 namespace Resonance.Assemblies.Train
 {
-    public struct TrainState : IPredictedData<TrainState>
+    /// <summary>
+    /// Non-predicted state governed by the server.
+    /// </summary>
+    public struct TrainState
     {
         public Vector3 position;
         public float currentSpeed;
