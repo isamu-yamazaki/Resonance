@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PurrNet;
+using PurrNet.Prediction;
 using Resonance.Assemblies.SharedGameLogic;
 using Resonance.Combat.Weapons.Enums;
+using Resonance.LobbySystem.DataProviders;
 using Resonance.Match;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -11,14 +12,13 @@ using UnityEngine.Rendering;
 namespace Resonance.PlayerController
 {
     [DefaultExecutionOrder(-2)]
-    public class PlayerSkinRenderer : NetworkBehaviour
+    public class PlayerSkinRenderer : PredictedIdentity<PlayerSkinRendererInputData, PlayerSkinRendererDataState>
     {
         [SerializeField] private SkinCatalog skinCatalog;
         [SerializeField] private Animator animator;
         [SerializeField] private Transform fpArmsRoot;
         public Action<GameObject> OnNewSkinSpawned;
 
-        public SyncVar<int> skinIndex = new SyncVar<int>();
         [SerializeField] private int testSkinIndexToRequest = 0;
 
         public GameObject CurrentMeshInstance { get; private set; }
@@ -35,6 +35,8 @@ namespace Resonance.PlayerController
 
         private bool _tpHidden;
         public bool IsTPHidden => _tpHidden;
+
+        private int _lastAppliedSkinIndex = -1;
 
         public bool ShouldRenderArmsOnlyBasedOnCachedMatchState
         {
@@ -78,13 +80,6 @@ namespace Resonance.PlayerController
             }
         }
 
-        private void HandleFinishedConfiguring()
-        {
-            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
-            if (roundManager != null)
-                roundManager.OnMatchStateChange += HandleOnMatchStateChange;
-        }
-
         protected override void OnDestroy()
         {
             if (MatchLogicNetworkAdapter.Instance != null)
@@ -95,28 +90,66 @@ namespace Resonance.PlayerController
                 roundManager.OnMatchStateChange -= HandleOnMatchStateChange;
         }
 
+        private void HandleFinishedConfiguring()
+        {
+            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
+            if (roundManager != null)
+                roundManager.OnMatchStateChange += HandleOnMatchStateChange;
+        }
+
         private void HandleOnMatchStateChange(BaseMatchState first, BaseMatchState second)
         {
-            ApplySkin(skinIndex.value);
+            // Match state changes switch between FP arms / TP model without changing the
+            // skin index, so bypass the dedup guard and reapply directly.
+            ApplySkin(currentState.SkinIndex);
         }
 
-        protected override void OnSpawned()
+        #region PredictedIdentity overrides
+
+        protected override PlayerSkinRendererDataState GetInitialState()
         {
-            base.OnSpawned();
-            skinIndex.onChanged += OnSkinChanged;
-            ApplySkin(skinIndex.value);
+            return new PlayerSkinRendererDataState { SkinIndex = 0 };
         }
 
-        protected override void OnDespawned()
+        protected override void GetFinalInput(ref PlayerSkinRendererInputData input)
         {
-            base.OnDespawned();
-            skinIndex.onChanged -= OnSkinChanged;
+            if (!isOwner || SkinIndexProvider.Instance == null) return;
+            input.HasSkinRequest = true;
+            input.SkinIndex = SkinIndexProvider.Instance.SkinIndex;
         }
 
-        private void OnSkinChanged(int newIndex)
+        protected override void Simulate(PlayerSkinRendererInputData input, ref PlayerSkinRendererDataState state, float delta)
         {
-            ApplySkin(newIndex);
+            if (input.HasSkinRequest && skinCatalog != null
+                && input.SkinIndex >= 0 && input.SkinIndex < skinCatalog.Count)
+            {
+                state.SkinIndex = input.SkinIndex;
+            }
         }
+
+        protected override PlayerSkinRendererDataState Interpolate(
+            PlayerSkinRendererDataState from,
+            PlayerSkinRendererDataState to,
+            float t)
+        {
+            return to;
+        }
+
+        protected override void UpdateView(PlayerSkinRendererDataState viewState, PlayerSkinRendererDataState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+            if (v.SkinIndex == _lastAppliedSkinIndex) return;
+            _lastAppliedSkinIndex = v.SkinIndex;
+            ApplySkin(v.SkinIndex);
+        }
+
+        #endregion
+
+        #region Skin application
+
+        [ContextMenu("Try request skin")]
+        public void TryRequestSkin() => SkinIndexProvider.Instance?.SetSkinIndex(testSkinIndexToRequest);
 
         private async void ApplySkin(int index)
         {
@@ -248,18 +281,6 @@ namespace Resonance.PlayerController
                 animator.avatar = avatar;
         }
 
-        [ContextMenu("Try request skin")]
-        public void TryRequestSkin() => RequestSkin(testSkinIndexToRequest);
-
-        public void RequestSkin(int index) => SetSkinServerRpc(index);
-
-        [ServerRpc]
-        private void SetSkinServerRpc(int index)
-        {
-            if (index >= 0 && index < skinCatalog.Count)
-                skinIndex.value = index;
-        }
-
         public void HideTPBody()
         {
             _tpHidden = true;
@@ -268,5 +289,7 @@ namespace Resonance.PlayerController
             foreach (var smr in CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
                 smr.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
         }
+
+        #endregion
     }
 }
