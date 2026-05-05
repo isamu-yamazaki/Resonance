@@ -1,4 +1,5 @@
 using PurrNet.Prediction;
+using UnityEngine;
 
 namespace Resonance.Assemblies.Train
 {
@@ -7,7 +8,11 @@ namespace Resonance.Assemblies.Train
     /// </summary>
     public struct TrainPredictedState : IPredictedData<TrainPredictedState>
     {
-        public float Velocity;
+        /// <summary>
+        /// Predicted velocity propagated to consumers for physics-related logic.
+        /// </summary>
+        public Vector3 Velocity;
+        public Vector3 lastTransformPosition;
 
         public void Dispose()
         {
