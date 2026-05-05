@@ -5,22 +5,35 @@ namespace Resonance.Assemblies.Player
 {
     public static class PlayerSimulation
     {
-        // TODO: add the other necessary dependencies
+        private const float GrappleImpulseDecay = 10f;
+
         public static void Step(
             in PlayerInputData inputData,
             in PlayerDependencyData dependencyData,
             ref PlayerMovementDataState state,
             in PlayerConfig config,
             CharacterController characterController,
+            LayerMask groundLayers,
+            Vector3 trainFrameVelocityOffset,
+            float trainKnockbackVertical,
             float delta
         )
         {
             TickCameraMovement(inputData, dependencyData, ref state, config, delta);
             TickVerticalMovement(inputData, dependencyData, ref state, config, delta);
-            TickLateralMovement(inputData, dependencyData, ref state, config, characterController, delta);
+            TickLateralMovement(
+                inputData,
+                dependencyData,
+                ref state,
+                config,
+                characterController,
+                groundLayers,
+                trainFrameVelocityOffset,
+                trainKnockbackVertical,
+                delta
+            );
 
             state.lastSimulatedMovementState = dependencyData.CurrentPlayerMovementState;
-
         }
 
         public static void TickCameraMovement(
@@ -31,7 +44,8 @@ namespace Resonance.Assemblies.Player
             float delta
         )
         {
-            throw new NotImplementedException();
+            // think this should be it?
+            state.CameraYaw += inputData.MovementInput.x;
         }
 
         public static void TickLateralMovement(
@@ -40,12 +54,60 @@ namespace Resonance.Assemblies.Player
             ref PlayerMovementDataState state,
             in PlayerConfig config,
             CharacterController characterController,
+            LayerMask groundLayers,
+            Vector3 trainFrameVelocityOffset,
+            float trainKnockbackVertical,
             float delta
         )
         {
             var stats = CalculateDerivedStats(dependencyData, config);
-            // TODO: lateral movement math (sprint/run/crouch acc + drag + slide branch)
-            //       will consume `stats` here.
+
+            bool isSliding = dependencyData.CurrentPlayerMovementState == PlayerMovementState.Sliding;
+
+            if (isSliding)
+            {
+                HandleSlideMovement();
+                return;
+            }
+
+            bool isSprinting = dependencyData.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+            bool isGrounded = PlayerMovementStateUtils.IsStateGroundedState(dependencyData.CurrentPlayerMovementState);
+            bool isCrouching = dependencyData.CurrentPlayerMovementState == PlayerMovementState.Crouching;
+
+            // State dependent acceleration and speed
+            float lateralAcceleration = !isGrounded ? stats.inAirAcceleration :
+                                        isCrouching ? stats.crouchAcceleration :
+                                        isSprinting ? stats.sprintAcceleration : stats.runAcceleration;
+            float clampLateralMagnitude = !isGrounded ? stats.sprintSpeed :
+                                          isCrouching ? stats.crouchSpeed :
+                                          isSprinting ? stats.sprintSpeed : stats.runSpeed;
+
+            float yawRad = state.CameraYaw * Mathf.Deg2Rad;
+            Vector3 cameraForwardXZ = new Vector3(Mathf.Sin(yawRad), 0f, Mathf.Cos(yawRad));
+            Vector3 cameraRightXZ = new Vector3(Mathf.Cos(yawRad), 0f, -Mathf.Sin(yawRad));
+            Vector3 movementDirection = cameraRightXZ * inputData.MovementInput.x + cameraForwardXZ * inputData.MovementInput.y;
+
+            Vector3 movementDelta = movementDirection * lateralAcceleration * delta;
+            Vector3 localVelocity = characterController.velocity - trainFrameVelocityOffset;
+            Vector3 newVelocity = localVelocity + movementDelta;
+
+            // Add drag to player
+            Vector3 currentDrag = newVelocity.normalized * stats.drag * delta;
+            newVelocity = (newVelocity.magnitude > stats.drag * delta) ? newVelocity - currentDrag : Vector3.zero;
+            newVelocity = Vector3.ClampMagnitude(new Vector3(newVelocity.x, 0f, newVelocity.z), clampLateralMagnitude);
+            newVelocity.y = state.Velocity.y;
+            newVelocity = !isGrounded ? HandleSteepWalls(newVelocity, state.Velocity.y, characterController, groundLayers) : newVelocity;
+
+            // Move character (Unity suggests only calling this once per tick)
+            state.Velocity.y += trainKnockbackVertical;
+            newVelocity.y = state.Velocity.y;
+            newVelocity += ConsumeImpulse(state);
+            TickImpulse(ref state, delta);
+            characterController.Move((newVelocity + trainFrameVelocityOffset) * delta);
+        }
+
+        private static void HandleSlideMovement()
+        {
             throw new NotImplementedException();
         }
 
@@ -119,6 +181,52 @@ namespace Resonance.Assemblies.Player
             };
             stats.antiBump = stats.sprintSpeed;
             return stats;
+        }
+
+        private static Vector3 HandleSteepWalls(
+            Vector3 velocity,
+            float verticalVelocity,
+            CharacterController characterController,
+            LayerMask groundLayers
+        )
+        {
+            Vector3 normal = GetGroundNormalWithSphereCast(characterController, groundLayers);
+            float angle = Vector3.Angle(normal, Vector3.up);
+            bool validAngle = angle <= characterController.slopeLimit;
+
+            if (!validAngle && verticalVelocity < 0f)
+                velocity = Vector3.ProjectOnPlane(velocity, normal);
+
+            return velocity;
+        }
+
+        private static Vector3 GetGroundNormalWithSphereCast(CharacterController characterController, LayerMask layerMask)
+        {
+            Vector3 normal = Vector3.up;
+            Vector3 center = characterController.transform.position + characterController.center;
+            float distance = characterController.height / 2f + characterController.stepOffset + 0.01f;
+
+            if (Physics.SphereCast(center, characterController.radius, Vector3.down, out RaycastHit hit, distance, layerMask))
+            {
+                normal = hit.normal;
+            }
+            return normal;
+        }
+
+        private static Vector3 ConsumeImpulse(in PlayerMovementDataState state)
+        {
+            return state.grappleImpulse;
+        }
+
+        private static void TickImpulse(ref PlayerMovementDataState state, float delta)
+        {
+            if (state.grappleImpulse.sqrMagnitude <= 0.001f)
+            {
+                state.grappleImpulse = Vector3.zero;
+                return;
+            }
+
+            state.grappleImpulse = Vector3.MoveTowards(state.grappleImpulse, Vector3.zero, GrappleImpulseDecay * delta);
         }
     }
 }
