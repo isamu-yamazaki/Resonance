@@ -52,7 +52,10 @@ namespace Resonance.Assemblies.Player
             Vector3 movementDirection = cameraRightXZ * ctx.Input.MovementInput.x + cameraForwardXZ * ctx.Input.MovementInput.y;
 
             Vector3 movementDelta = movementDirection * lateralAcceleration * ctx.Delta;
-            Vector3 localVelocity = ctx.CharacterController.velocity - ctx.Dependency.trainVelocityOffset;
+            Vector3 localVelocity = new Vector3(
+                state.Velocity.x - ctx.Dependency.trainVelocityOffset.x,
+                0f,
+                state.Velocity.z - ctx.Dependency.trainVelocityOffset.z);
             Vector3 newVelocity = localVelocity + movementDelta;
 
             // Add drag to player
