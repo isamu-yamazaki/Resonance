@@ -23,7 +23,7 @@ namespace Resonance.Assemblies.Player
 
         public static void TickLateralMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
-            bool isSliding = ctx.Dependency.CurrentPlayerMovementState == PlayerMovementState.Sliding;
+            bool isSliding = state.SlideTimer > 0f;
 
             if (isSliding)
             {
@@ -33,9 +33,12 @@ namespace Resonance.Assemblies.Player
 
             var derivedStats = CalculateDerivedStats(ctx.Dependency, ctx.Config);
 
-            bool isSprinting = ctx.Dependency.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
             bool isGrounded = ctx.CharacterController.isGrounded;
-            bool isCrouching = ctx.Dependency.CurrentPlayerMovementState == PlayerMovementState.Crouching;
+            bool isCrouching = ctx.Input.CrouchToggledOn && !ctx.Input.SprintToggledOn;
+            bool isSprinting = ctx.Input.SprintToggledOn
+                               && ctx.Input.MovementInput != Vector2.zero
+                               && !ctx.Input.CrouchToggledOn
+                               && isGrounded;
 
             // State dependent acceleration and speed
             float lateralAcceleration = !isGrounded ? derivedStats.inAirAcceleration :
