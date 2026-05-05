@@ -13,27 +13,34 @@ namespace Resonance.Inventory
 
         [SerializeField] WeaponProperties startingWeapon;
 
+        private WeaponProperties[] _weaponResources;
+
         // Pending operations queued by the public mutator API; drained by UpdateInput each frame.
-        private WeaponProperties _pendingWeaponAdd;
+        private string _pendingWeaponAddKey;
+        private WeaponSlot _pendingWeaponAddSlot;
         private bool _pendingRemoveWeaponPrimary;
         private bool _pendingRemoveWeaponSecondary;
         private AugmentProperties _pendingAugmentAdd;
         private bool _pendingRemoveAugmentUpper;
         private bool _pendingRemoveAugmentLower;
 
+        protected override void LateAwake()
+        {
+            _weaponResources = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+        }
+
         protected override PlayerInventoryDataState GetInitialState()
         {
             var state = new PlayerInventoryDataState();
             if (startingWeapon != null)
             {
-                WeaponProperties weapon = startingWeapon.Clone();
-                switch (weapon.Slot)
+                switch (startingWeapon.Slot)
                 {
                     case WeaponSlot.Primary:
-                        state.WeaponPrimary = weapon;
+                        state.WeaponPrimaryKey = startingWeapon.Key;
                         break;
                     case WeaponSlot.Secondary:
-                        state.WeaponSecondary = weapon;
+                        state.WeaponSecondaryKey = startingWeapon.Key;
                         break;
                 }
             }
@@ -43,7 +50,8 @@ namespace Resonance.Inventory
         public void AddWeapon(WeaponProperties weaponToAdd)
         {
             if (weaponToAdd == null) return;
-            _pendingWeaponAdd = weaponToAdd;
+            _pendingWeaponAddKey = weaponToAdd.Key;
+            _pendingWeaponAddSlot = weaponToAdd.Slot;
         }
 
         public void RemoveWeapon(WeaponSlot slot)
@@ -80,10 +88,11 @@ namespace Resonance.Inventory
 
         protected override void UpdateInput(ref PlayerInventoryInputData input)
         {
-            if (_pendingWeaponAdd != null)
+            if (_pendingWeaponAddKey != null)
             {
-                input.WeaponToAdd = _pendingWeaponAdd;
-                _pendingWeaponAdd = null;
+                input.WeaponToAddKey = _pendingWeaponAddKey;
+                input.WeaponToAddSlot = _pendingWeaponAddSlot;
+                _pendingWeaponAddKey = null;
             }
             if (_pendingRemoveWeaponPrimary)
             {
@@ -114,20 +123,20 @@ namespace Resonance.Inventory
 
         protected override void Simulate(PlayerInventoryInputData input, ref PlayerInventoryDataState state, float delta)
         {
-            if (input.WeaponToAdd != null)
+            if (input.WeaponToAddKey != null)
             {
-                switch (input.WeaponToAdd.Slot)
+                switch (input.WeaponToAddSlot)
                 {
                     case WeaponSlot.Primary:
-                        state.WeaponPrimary = input.WeaponToAdd;
+                        state.WeaponPrimaryKey = input.WeaponToAddKey;
                         break;
                     case WeaponSlot.Secondary:
-                        state.WeaponSecondary = input.WeaponToAdd;
+                        state.WeaponSecondaryKey = input.WeaponToAddKey;
                         break;
                 }
             }
-            if (input.RemoveWeaponPrimary) state.WeaponPrimary = null;
-            if (input.RemoveWeaponSecondary) state.WeaponSecondary = null;
+            if (input.RemoveWeaponPrimary) state.WeaponPrimaryKey = null;
+            if (input.RemoveWeaponSecondary) state.WeaponSecondaryKey = null;
 
             if (input.AugmentToAdd != null)
             {
@@ -150,16 +159,21 @@ namespace Resonance.Inventory
             PlayerInventoryDataState to,
             float t)
         {
-            // Reference-typed slots are discrete; snap to `to`.
             return to;
         }
 
         protected override void UpdateView(PlayerInventoryDataState viewState, PlayerInventoryDataState? verified)
         {
-            weaponInventory[0] = viewState.WeaponPrimary;
-            weaponInventory[1] = viewState.WeaponSecondary;
+            weaponInventory[0] = FindWeaponByKey(viewState.WeaponPrimaryKey);
+            weaponInventory[1] = FindWeaponByKey(viewState.WeaponSecondaryKey);
             augmentInventory[0] = viewState.AugmentUpper;
             augmentInventory[1] = viewState.AugmentLower;
+        }
+
+        private WeaponProperties FindWeaponByKey(string key)
+        {
+            if (string.IsNullOrEmpty(key) || _weaponResources == null) return null;
+            return System.Array.Find(_weaponResources, w => w.Key == key);
         }
     }
 }

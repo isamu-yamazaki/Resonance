@@ -1,13 +1,12 @@
 using PurrNet.Prediction;
 using Resonance.Combat.Augments;
-using Resonance.Combat.Weapons;
 
 namespace Resonance.Inventory
 {
     public struct PlayerInventoryDataState : IPredictedData<PlayerInventoryDataState>
     {
-        public WeaponProperties WeaponPrimary;
-        public WeaponProperties WeaponSecondary;
+        public string WeaponPrimaryKey;
+        public string WeaponSecondaryKey;
 
         public AugmentProperties AugmentUpper;
         public AugmentProperties AugmentLower;
