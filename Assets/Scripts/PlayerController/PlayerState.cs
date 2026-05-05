@@ -1,21 +1,13 @@
 using System;
-using PurrNet;
 using Resonance.Assemblies.Player;
 using Resonance.Combat.Weapons.Enums;
 using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    public class PlayerState : NetworkBehaviour
+    public class PlayerState : MonoBehaviour
     {
-        [field: SerializeField]
-        // TODO: validate this with other eventual server-side state
-        private ValidatedSyncVar<int> playerMovementState = new();
-        public PlayerMovementState CurrentPlayerMovementState
-        {
-            get => (PlayerMovementState)playerMovementState.value;
-            private set => playerMovementState.value = (int)value;
-        }
+        public PlayerMovementState CurrentPlayerMovementState { get; private set; }
         public WeaponClass CurrentWeaponClass { get; private set; }
         public bool WeaponClassInitialized { get; private set; }
 
@@ -65,7 +57,6 @@ namespace Resonance.PlayerController
 
         public void SetPlayerMovementState(PlayerMovementState playerMovementState)
         {
-            if (!isOwner) return;
             CurrentPlayerMovementState = playerMovementState;
         }
 
