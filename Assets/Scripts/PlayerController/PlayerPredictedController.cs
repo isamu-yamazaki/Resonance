@@ -42,6 +42,7 @@ namespace Resonance.PlayerController
         private PlayerStats _playerStats;
         private TrainPassengerPhysics _trainPassengerPhysics;
         private float _stepOffset;
+        private float _cameraPitch;
 
         #endregion
 
@@ -202,10 +203,29 @@ namespace Resonance.PlayerController
 
         protected override void UpdateView(PlayerMovementDataState viewState, PlayerMovementDataState? verified)
         {
-            // TODO: port PlayerController.LateUpdate logic — camera rotation from CameraYaw,
-            // FOV lerp (sprint/overdrive), rotate-player-to-target, RotationMismatch tracking.
-            // Transform position is already kept in sync by CharacterController.Move during
-            // Simulate; SetUnityState handles rollback restoration.
+            if (!isOwner || IsPlayerDead) return;
+            if (_virtualCamera == null || _playerLocomotionInput == null) return;
+
+            _cameraPitch = Mathf.Clamp(
+                _cameraPitch - _config.lookSensitivityV * _playerLocomotionInput.LookInput.y,
+                -_config.lookLimitV,
+                _config.lookLimitV);
+
+            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraPitch, viewState.CameraYaw, 0f);
+
+            Quaternion targetBodyRotation = Quaternion.Euler(0f, viewState.CameraYaw, 0f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetBodyRotation, _config.playerModelRotationSpeed * Time.deltaTime);
+
+            Vector3 camForwardXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
+            Vector3 cross = Vector3.Cross(transform.forward, camForwardXZ);
+            RotationMismatch = Mathf.Sign(Vector3.Dot(cross, transform.up)) * Vector3.Angle(transform.forward, camForwardXZ);
+
+            float targetFOV = _config.baseFOV;
+            if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
+                targetFOV = _config.overdriveFOV;
+            else if (viewState.LastSimulatedMovementState == PlayerMovementState.Sprinting)
+                targetFOV = _config.sprintFOV;
+            _virtualCamera.Lens.FieldOfView = Mathf.Lerp(_virtualCamera.Lens.FieldOfView, targetFOV, _config.fovTransitionSpeed * Time.deltaTime);
         }
 
         #endregion
