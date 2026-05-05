@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Resonance.Assemblies.Player
 {
     /// <summary>
@@ -13,5 +15,8 @@ namespace Resonance.Assemblies.Player
 
         /// <summary>From PlayerState.CurrentPlayerMovementState (ValidatedSyncVar&lt;int&gt;).</summary>
         public PlayerMovementState CurrentPlayerMovementState;
+        public Vector3 trainVelocityOffset;
+        public float trainKnockbackVertical;
+        public LayerMask groundLayers;
     }
 }

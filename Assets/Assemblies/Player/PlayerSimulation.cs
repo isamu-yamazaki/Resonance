@@ -14,8 +14,6 @@ namespace Resonance.Assemblies.Player
             in PlayerConfig config,
             CharacterController characterController,
             LayerMask groundLayers,
-            Vector3 trainFrameVelocityOffset,
-            float trainKnockbackVertical,
             float delta
         )
         {
@@ -27,14 +25,14 @@ namespace Resonance.Assemblies.Player
                 ref state,
                 config,
                 characterController,
-                groundLayers,
-                trainFrameVelocityOffset,
-                trainKnockbackVertical,
                 delta
             );
+            TickCharacterControllerMovement(dependencyData, state, characterController, delta);
 
             state.lastSimulatedMovementState = dependencyData.CurrentPlayerMovementState;
         }
+
+
 
         public static void TickCameraMovement(
             in PlayerInputData inputData,
@@ -54,9 +52,6 @@ namespace Resonance.Assemblies.Player
             ref PlayerMovementDataState state,
             in PlayerConfig config,
             CharacterController characterController,
-            LayerMask groundLayers,
-            Vector3 trainFrameVelocityOffset,
-            float trainKnockbackVertical,
             float delta
         )
         {
@@ -88,7 +83,7 @@ namespace Resonance.Assemblies.Player
             Vector3 movementDirection = cameraRightXZ * inputData.MovementInput.x + cameraForwardXZ * inputData.MovementInput.y;
 
             Vector3 movementDelta = movementDirection * lateralAcceleration * delta;
-            Vector3 localVelocity = characterController.velocity - trainFrameVelocityOffset;
+            Vector3 localVelocity = characterController.velocity - dependencyData.trainVelocityOffset;
             Vector3 newVelocity = localVelocity + movementDelta;
 
             // Add drag to player
@@ -96,14 +91,15 @@ namespace Resonance.Assemblies.Player
             newVelocity = (newVelocity.magnitude > stats.drag * delta) ? newVelocity - currentDrag : Vector3.zero;
             newVelocity = Vector3.ClampMagnitude(new Vector3(newVelocity.x, 0f, newVelocity.z), clampLateralMagnitude);
             newVelocity.y = state.Velocity.y;
-            newVelocity = !isGrounded ? HandleSteepWalls(newVelocity, state.Velocity.y, characterController, groundLayers) : newVelocity;
+            newVelocity = !isGrounded ? HandleSteepWalls(newVelocity, state.Velocity.y, characterController, dependencyData.groundLayers) : newVelocity;
 
-            // Move character (Unity suggests only calling this once per tick)
-            state.Velocity.y += trainKnockbackVertical;
-            newVelocity.y = state.Velocity.y;
             newVelocity += ConsumeImpulse(state);
+            newVelocity.y = state.Velocity.y;
+
+            state.Velocity = newVelocity;
+            state.Velocity.y += dependencyData.trainKnockbackVertical;
+
             TickImpulse(ref state, delta);
-            characterController.Move((newVelocity + trainFrameVelocityOffset) * delta);
         }
 
         private static void HandleSlideMovement()
@@ -228,5 +224,16 @@ namespace Resonance.Assemblies.Player
 
             state.grappleImpulse = Vector3.MoveTowards(state.grappleImpulse, Vector3.zero, GrappleImpulseDecay * delta);
         }
+
+        private static void TickCharacterControllerMovement(
+            in PlayerDependencyData dependencyData,
+            in PlayerMovementDataState state,
+            in CharacterController characterController,
+            float delta
+        )
+        {
+            characterController.Move((state.Velocity + dependencyData.trainVelocityOffset) * delta);
+        }
+
     }
 }
