@@ -68,8 +68,6 @@ namespace Resonance.PlayerController
         #region Late Update Logic
         private void LateUpdate()
         {
-            JumpPressed = false;
-
             if (_playerState == null) return;
 
             // Disable crouch when airborne (jumping or falling)
@@ -129,7 +127,11 @@ namespace Resonance.PlayerController
 
         public void OnJump(InputAction.CallbackContext context)
         {
-            if (!context.performed) return;
+            if (!context.performed)
+            {
+                JumpPressed = false;
+                return;
+            }
             if (_playerState != null && (_playerState.IsDead() || _playerState.IsMatchFrozen())) return;
 
             JumpPressed = true;
