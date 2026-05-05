@@ -40,7 +40,7 @@ namespace Resonance.Abilities.SonarDisc
 
             if (isOwner)
             {
-                _playerActionsInput = GetComponent<PlayerActionsInput>();
+                _playerActionsInput = PlayerActionsInput.Instance;
                 _fpArmsManager = GetComponent<FPArmsManager>();
             }
         }

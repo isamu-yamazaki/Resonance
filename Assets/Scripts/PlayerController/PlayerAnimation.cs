@@ -42,10 +42,10 @@ namespace Resonance.PlayerController
 
         private void Awake()
         {
-            _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            _playerLocomotionInput = PlayerLocomotionInput.Instance;
             _playerState = GetComponent<PlayerState>();
             _playerController = GetComponent<PlayerController>();
-            _playerActionsInput = GetComponent<PlayerActionsInput>();
+            _playerActionsInput = PlayerActionsInput.Instance;
 
             actionHashes = new int[] { isAttackingHash, isReloadingHash };
         }

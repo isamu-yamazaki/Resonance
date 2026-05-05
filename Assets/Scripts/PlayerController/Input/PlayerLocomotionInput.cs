@@ -1,4 +1,3 @@
-using PurrNet;
 using Resonance.Assemblies.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,9 +5,10 @@ using UnityEngine.InputSystem;
 namespace Resonance.PlayerController
 {
     [DefaultExecutionOrder(-2)]
-    public class PlayerLocomotionInput : NetworkBehaviour, PlayerControls.IPlayerLocomotionMapActions
-
+    public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomotionMapActions
     {
+        public static PlayerLocomotionInput Instance { get; private set; }
+
         #region Class Variables
         [SerializeField] private bool holdToSprint = true;
         public Vector2 MovementInput { get; private set; }
@@ -18,27 +18,29 @@ namespace Resonance.PlayerController
         public bool CrouchToggledOn { get; private set; }
 
         private PlayerState _playerState;
-        private bool wasPreviouslyOwner;
         #endregion
 
         #region Startup
 
         private void Awake()
         {
-            _playerState = GetComponent<PlayerState>();
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            _playerState = FindFirstObjectByType<PlayerState>();
+
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.AddCallbacks(this);
         }
 
-        protected override void OnSpawned()
+        private void OnDestroy()
         {
-            base.OnSpawned();
-            enabled = isOwner;
-            wasPreviouslyOwner = isOwner;
-
-            if (isOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.AddCallbacks(this);
-            }
+            if (Instance == this) Instance = null;
         }
 
         private void OnEnable()
@@ -58,11 +60,8 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (wasPreviouslyOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Disable();
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.RemoveCallbacks(this);
-            }
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Disable();
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.RemoveCallbacks(this);
         }
         #endregion
 
@@ -70,6 +69,8 @@ namespace Resonance.PlayerController
         private void LateUpdate()
         {
             JumpPressed = false;
+
+            if (_playerState == null) return;
 
             // Disable crouch when airborne (jumping or falling)
             bool isAirborne = _playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping ||
@@ -92,7 +93,7 @@ namespace Resonance.PlayerController
         #region Input Callbacks
         public void OnMovement(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
+            if (_playerState != null && (_playerState.IsDead() || _playerState.IsMatchFrozen()))
             {
                 MovementInput = Vector2.zero;
                 return;
@@ -103,7 +104,7 @@ namespace Resonance.PlayerController
 
         public void OnLook(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
+            if (_playerState != null && (_playerState.IsDead() || _playerState.IsMatchFrozen()))
             {
                 LookInput = Vector2.zero;
                 return;
@@ -114,7 +115,7 @@ namespace Resonance.PlayerController
 
         public void OnToggleSprint(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen()) return;
+            if (_playerState != null && (_playerState.IsDead() || _playerState.IsMatchFrozen())) return;
 
             if (context.performed)
             {
@@ -128,16 +129,16 @@ namespace Resonance.PlayerController
 
         public void OnJump(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed) return;
+            if (_playerState != null && (_playerState.IsDead() || _playerState.IsMatchFrozen())) return;
 
             JumpPressed = true;
         }
 
         public void OnToggleCrouch(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed) return;
+            if (_playerState != null && (_playerState.IsDead() || _playerState.IsMatchFrozen())) return;
 
             CrouchToggledOn = !CrouchToggledOn;
         }

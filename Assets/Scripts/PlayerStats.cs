@@ -316,8 +316,9 @@ namespace Resonance.Player
             {
                 _animator.enabled = false;
             }
-            
-            GetComponent<PlayerActionsInput>()?.ResetAllInputs();
+
+            if (isOwner)
+                PlayerActionsInput.Instance?.ResetAllInputs();
 
             OnPlayerDeath?.Invoke();
         }
@@ -346,7 +347,8 @@ namespace Resonance.Player
         [ObserversRpc]
         private void ApplyRespawnEffectsRpc()
         {
-            GetComponent<PlayerActionsInput>()?.ResetAllInputs();
+            if (isOwner)
+                PlayerActionsInput.Instance?.ResetAllInputs();
             IsDead = false;
 
             // Clear damage tracking

@@ -11,7 +11,6 @@ using UnityEngine;
 
 namespace Resonance.Combat
 {
-    [RequireComponent(typeof(PlayerActionsInput))]
     public class PlayerShooter : NetworkBehaviour
     {
         #region Fields
@@ -86,7 +85,7 @@ namespace Resonance.Combat
         {
             viewModel = GetComponent<PlayerViewModel>();
             playerState = GetComponent<PlayerState>();
-            playerActionsInput = GetComponent<PlayerActionsInput>();
+            playerActionsInput = PlayerActionsInput.Instance;
             playerEquip = GetComponent<PlayerEquip>();
             fpArmsManager = GetComponent<FPArmsManager>();
 

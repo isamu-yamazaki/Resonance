@@ -75,7 +75,7 @@ namespace Resonance.Combat.Augments
 
         private void Awake()
         {
-            playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            playerLocomotionInput = PlayerLocomotionInput.Instance;
             playerState = GetComponent<PlayerState>();
             playerController = GetComponent<PlayerController.PlayerController>();
             characterController = GetComponent<CharacterController>();

@@ -22,7 +22,7 @@ namespace Resonance.Combat
 
         private void Start()
         {
-            playerActionsInput = GetComponent<PlayerActionsInput>();
+            playerActionsInput = PlayerActionsInput.Instance;
             inventory = GetComponent<PlayerInventory>();
             fpArmsAnimator = GetComponent<FPArmsAnimator>();
 

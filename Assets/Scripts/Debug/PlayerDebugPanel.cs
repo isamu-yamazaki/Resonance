@@ -58,7 +58,7 @@ namespace Resonance.DebugTools
 
             _playerController = player.GetComponent<PlayerController.PlayerController>();
             _playerState = player.GetComponent<PlayerState>();
-            _playerInput = player.GetComponent<PlayerLocomotionInput>();
+            _playerInput = PlayerLocomotionInput.Instance;
             _overdriveAbility = player.GetComponent<OverdriveAbility>();
             _characterController = player.GetComponent<CharacterController>();
             _playerStats = player.GetComponent<PlayerStats>();

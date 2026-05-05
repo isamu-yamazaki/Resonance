@@ -121,7 +121,7 @@ namespace Resonance.PlayerController
 
         private void Awake()
         {
-            _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            _playerLocomotionInput = PlayerLocomotionInput.Instance;
             _playerState = GetComponent<PlayerState>();
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerStats = GetComponent<PlayerStats>();

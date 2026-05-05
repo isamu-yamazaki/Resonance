@@ -38,7 +38,7 @@ namespace Resonance.Combat.Augments
         private void Awake()
         {
             playerStats = GetComponent<PlayerStats>();
-            playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            playerLocomotionInput = PlayerLocomotionInput.Instance;
             currentMeter = maxMeter;
             wasSprinting = false;
             timeSinceLastSprinting = 0f;

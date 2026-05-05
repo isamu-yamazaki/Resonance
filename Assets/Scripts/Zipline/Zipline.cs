@@ -146,10 +146,10 @@ public class Zipline : MonoBehaviour, IInteractable
         if (state == null || state.IsDead())
             return;
 
-        PlayerLocomotionInput locomotionInput = interactor.GetComponent<PlayerLocomotionInput>();
+        PlayerLocomotionInput locomotionInput = PlayerLocomotionInput.Instance;
         if (locomotionInput == null)
         {
-            Debug.LogError("Zipline: interactor is missing PlayerLocomotionInput.");
+            Debug.LogError("Zipline: PlayerLocomotionInput not found in scene.");
             return;
         }
 
@@ -162,7 +162,7 @@ public class Zipline : MonoBehaviour, IInteractable
 
         playerState = state;
         playerLocomotionInput = locomotionInput;
-        playerActionsInput = interactor.GetComponent<PlayerActionsInput>();
+        playerActionsInput = PlayerActionsInput.Instance;
         playerController = characterController;
         currentPlayer = interactor;
         playerHeight = playerController.height;
@@ -366,7 +366,7 @@ public class Zipline : MonoBehaviour, IInteractable
 
     private string GetInteractBindingLabel(GameObject player)
     {
-        PlayerActionsInput actionsInput = player.GetComponent<PlayerActionsInput>();
+        PlayerActionsInput actionsInput = PlayerActionsInput.Instance;
         if (actionsInput == null) return "E";
 
         var controls = Resonance.PlayerController.PlayerInputManager.Instance?.PlayerControls;

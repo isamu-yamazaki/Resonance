@@ -46,7 +46,7 @@ namespace Resonance.Combat
             _playerShooter = GetComponent<PlayerShooter>();
             _fpArmsManager = GetComponent<FPArmsManager>();
             _skinRenderer = GetComponent<PlayerSkinRenderer>();
-            _playerActionsInput = GetComponent<PlayerActionsInput>();
+            _playerActionsInput = PlayerActionsInput.Instance;
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerHealthStim = GetComponent<PlayerHealthStim>();
             _grappleHook = GetComponent<AbilityGrappleHook>();

@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using PurrNet;
 using Resonance.Combat;
 
 namespace Resonance.PlayerController
 {
-    public class PlayerActionsInput : NetworkBehaviour, PlayerControls.IPlayerActionMapActions
+    public class PlayerActionsInput : MonoBehaviour, PlayerControls.IPlayerActionMapActions
     {
+        public static PlayerActionsInput Instance { get; private set; }
+
         #region Class Variables
         public bool AttackPressed { get; private set; }
         public bool AttackHeld { get; private set; }
@@ -24,38 +25,38 @@ namespace Resonance.PlayerController
         public bool ShowStatsHeld { get; private set; }
 
         public bool ToggleShopPressed { get; private set; }
-        
+
         public bool AdsHeld { get; private set; }
 
         private PlayerLocomotionInput _playerLocomotionInput;
         private OverdriveAbility _overdriveAbility;
         private PlayerState _playerState;
         private FPArmsAnimator _fpArmsAnimator;
-
-        // needed for disabling correctly after PurrNet resets the attribute
-        private bool wasPreviouslyOwner;
         #endregion
 
         #region Startup
         private void Awake()
         {
-            _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
-            _overdriveAbility = GetComponent<OverdriveAbility>();
-            _playerState = GetComponent<PlayerState>();
-            _fpArmsAnimator = GetComponent<FPArmsAnimator>();
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            _playerLocomotionInput = PlayerLocomotionInput.Instance;
+            _overdriveAbility = FindFirstObjectByType<OverdriveAbility>();
+            _playerState = FindFirstObjectByType<PlayerState>();
+            _fpArmsAnimator = FindFirstObjectByType<FPArmsAnimator>();
+
+            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
+            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
         }
 
-        protected override void OnSpawned()
+        private void OnDestroy()
         {
-            base.OnSpawned();
-            enabled = isOwner;
-            wasPreviouslyOwner = isOwner;
-
-            if (isOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
-            }
+            if (Instance == this) Instance = null;
         }
 
         private void OnEnable()
@@ -75,11 +76,8 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (wasPreviouslyOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
-                PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(this);
-            }
+            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
+            PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(this);
         }
         #endregion
 
@@ -88,7 +86,7 @@ namespace Resonance.PlayerController
         private void Update()
         {
             // TODO: Implement action cancellation on movement
-            if (_playerLocomotionInput.MovementInput != Vector2.zero)
+            if (_playerLocomotionInput != null && _playerLocomotionInput.MovementInput != Vector2.zero)
             {
                 // Cancels interruptible animations while moving
                 // AttackPressed = false;
@@ -144,8 +142,7 @@ namespace Resonance.PlayerController
         #region Input Callbacks
         public void OnAttack(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (IsBlockedByPlayerState()) return;
 
             if (context.started)
             {
@@ -164,48 +161,42 @@ namespace Resonance.PlayerController
 
         public void OnReload(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed || IsBlockedByPlayerState()) return;
 
             ReloadPressed = true;
         }
 
         public void OnInteract(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed || IsBlockedByPlayerState()) return;
 
             InteractPressed = true;
         }
 
         public void OnOverdrive(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed || IsBlockedByPlayerState()) return;
 
             _fpArmsAnimator?.RequestOverdriveActivation();
         }
 
         public void OnSwapSlotOne(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed || IsBlockedByPlayerState()) return;
 
             SwapSlotOnePressed = true;
         }
 
         public void OnSwapSlotTwo(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed || IsBlockedByPlayerState()) return;
 
             SwapSlotTwoPressed = true;
         }
 
         public void OnSwapWeapon(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (IsBlockedByPlayerState()) return;
 
             Vector2 scroll = context.ReadValue<Vector2>();
             if (Mathf.Abs(scroll.y) < 0.01f)
@@ -216,24 +207,21 @@ namespace Resonance.PlayerController
 
         public void OnStim(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed || IsBlockedByPlayerState()) return;
 
             _fpArmsAnimator?.RequestStimActivation();
         }
 
         public void OnAbilityUpper(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed || IsBlockedByPlayerState()) return;
 
             AbilityUpperPressed = true;
         }
 
         public void OnAbilityLower(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (!context.performed || IsBlockedByPlayerState()) return;
 
             AbilityLowerPressed = true;
         }
@@ -256,7 +244,7 @@ namespace Resonance.PlayerController
                 bridge.HideMatchStats();
             }
         }
-        
+
         public void OnADS(InputAction.CallbackContext context)
         {
             if (context.started)
@@ -268,12 +256,11 @@ namespace Resonance.PlayerController
         #endregion
         public void RequestReload()
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            if (IsBlockedByPlayerState()) return;
 
             ReloadPressed = true;
         }
-        
+
         public void ResetAllInputs()
         {
             AttackPressed = false;
@@ -286,6 +273,11 @@ namespace Resonance.PlayerController
             AbilityUpperPressed = false;
             AbilityLowerPressed = false;
             AdsHeld = false;
+        }
+
+        private bool IsBlockedByPlayerState()
+        {
+            return _playerState != null && (_playerState.IsDead() || _playerState.IsMatchFrozen());
         }
     }
 }

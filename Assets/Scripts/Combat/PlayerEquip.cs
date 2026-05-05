@@ -60,6 +60,7 @@ namespace Resonance.Combat
             playerAugmentEquipper = GetComponent<PlayerAugmentEquipper>();
             playerAbilityManager = GetComponent<PlayerAbilityManager>();
             weaponStatManager = GetComponent<WeaponStatManager>();
+            playerActionsInput = PlayerActionsInput.Instance;
         }
 
         protected override PlayerEquipDataState GetInitialState()

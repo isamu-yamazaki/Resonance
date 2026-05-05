@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    [RequireComponent(typeof(PlayerActionsInput))]
     public class PlayerADS : NetworkBehaviour
     {
         [Header("FOV Settings")]
@@ -26,7 +25,7 @@ namespace Resonance.PlayerController
 
         private void Awake()
         {
-            _playerActionsInput = GetComponent<PlayerActionsInput>();
+            _playerActionsInput = PlayerActionsInput.Instance;
             _virtualCamera = GetComponentInChildren<CinemachineCamera>();
             _virtualCamera.Lens.FieldOfView = normalFOV;
         }

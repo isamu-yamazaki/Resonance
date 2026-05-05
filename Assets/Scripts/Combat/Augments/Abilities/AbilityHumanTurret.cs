@@ -36,7 +36,7 @@ namespace Resonance.Combat.Augments
         private void Awake()
         {
             playerStats = GetComponent<PlayerStats>();
-            playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            playerLocomotionInput = PlayerLocomotionInput.Instance;
             weaponStatManager = GetComponent<WeaponStatManager>();
             playerShooter = GetComponent<PlayerShooter>();
             timeStandingStill = 0f;

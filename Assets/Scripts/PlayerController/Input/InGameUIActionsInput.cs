@@ -1,26 +1,31 @@
-using PurrNet;
 using Resonance.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Resonance.PlayerController
 {
-    public class InGameUIActionsInput : NetworkBehaviour, PlayerControls.IInGameUIActionMapActions
+    public class InGameUIActionsInput : MonoBehaviour, PlayerControls.IInGameUIActionMapActions
     {
-        private bool wasPreviouslyOwner;
+        public static InGameUIActionsInput Instance { get; private set; }
 
         #region Startup
-        protected override void OnSpawned()
+        private void Awake()
         {
-            base.OnSpawned();
-            enabled = isOwner;
-            wasPreviouslyOwner = isOwner;
-
-            if (isOwner)
+            if (Instance != null && Instance != this)
             {
-                PlayerInputManager.Instance.PlayerControls.InGameUIActionMap.Enable();
-                PlayerInputManager.Instance.PlayerControls.InGameUIActionMap.AddCallbacks(this);
+                Destroy(gameObject);
+                return;
             }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            PlayerInputManager.Instance.PlayerControls.InGameUIActionMap.Enable();
+            PlayerInputManager.Instance.PlayerControls.InGameUIActionMap.AddCallbacks(this);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
         }
 
         private void OnDisable()
@@ -31,11 +36,8 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (wasPreviouslyOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.InGameUIActionMap.Disable();
-                PlayerInputManager.Instance.PlayerControls.InGameUIActionMap.RemoveCallbacks(this);
-            }
+            PlayerInputManager.Instance.PlayerControls.InGameUIActionMap.Disable();
+            PlayerInputManager.Instance.PlayerControls.InGameUIActionMap.RemoveCallbacks(this);
         }
 
         #endregion
