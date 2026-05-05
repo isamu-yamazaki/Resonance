@@ -316,7 +316,7 @@ namespace Resonance.Shop
         {
             if (playerShooter == null)
             {
-                playerShooter = OwnerFinder.FindFirstOwnedNetworkObjectByType<PlayerShooter>();
+                playerShooter = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerShooter>();
             }
 
             return playerShooter;

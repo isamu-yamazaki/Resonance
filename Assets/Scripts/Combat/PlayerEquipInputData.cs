@@ -8,6 +8,6 @@ namespace Resonance.Combat
         public bool SwapSlotOnePressed { get; set; }
         public bool SwapSlotTwoPressed { get; set; }
 
-        public void Dispose() { }
+        public readonly void Dispose() { }
     }
 }
