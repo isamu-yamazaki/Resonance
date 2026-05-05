@@ -1,5 +1,5 @@
 using System.Linq;
-using PurrNet;
+using PurrNet.Prediction;
 using Resonance.Audio;
 using Resonance.Combat.Augments;
 using Resonance.Combat.Weapons;
@@ -13,7 +13,14 @@ using UnityEngine;
 namespace Resonance.Combat
 {
     [DefaultExecutionOrder(-1)]
-    public class PlayerEquip : NetworkBehaviour
+    [RequireComponent(typeof(PlayerSkinRenderer))]
+    [RequireComponent(typeof(PlayerState))]
+    [RequireComponent(typeof(FPArmsAnimator))]
+    [RequireComponent(typeof(PlayerStats))]
+    [RequireComponent(typeof(PlayerAugmentEquipper))]
+    [RequireComponent(typeof(PlayerAbilityManager))]
+    [RequireComponent(typeof(WeaponStatManager))]
+    public class PlayerEquip : PredictedIdentity<PlayerEquipInputData, PlayerEquipDataState>
     {
         private PlayerStats playerStats;
         private PlayerSkinRenderer playerSkinRenderer;
@@ -38,62 +45,90 @@ namespace Resonance.Combat
 
         private WeaponProperties[] weapons;
         private bool _isInitialEquip = true;
+        private int _lastViewedSlot = int.MinValue;
 
-        private void Awake()
+        private const int StartingSlot = 1;
+
+        protected override void LateAwake()
         {
             playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
             playerSkinRenderer.OnNewSkinSpawned += OnNewSkinSpawned;
             weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
             playerState = GetComponent<PlayerState>();
             fpArmsAnimator = GetComponent<FPArmsAnimator>();
-        }
-
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
             playerStats = GetComponent<PlayerStats>();
             playerAugmentEquipper = GetComponent<PlayerAugmentEquipper>();
             playerAbilityManager = GetComponent<PlayerAbilityManager>();
             weaponStatManager = GetComponent<WeaponStatManager>();
-
-            if (isOwner)
-                StartCoroutine(EquipStartingWeaponNextFrame());
         }
 
-        private System.Collections.IEnumerator EquipStartingWeaponNextFrame()
+        protected override PlayerEquipDataState GetInitialState()
         {
-            yield return null;
-
-            if (playerInventory == null) yield break;
-            if (playerInventory.weaponInventory == null || playerInventory.weaponInventory.Length <= 1) yield break;
-
-            WeaponProperties startWeapon = playerInventory.weaponInventory[1];
-            if (startWeapon != null)
-            {
-                EquipWeapon(startWeapon);
-            }
+            return new PlayerEquipDataState { CurrentSlot = StartingSlot };
         }
 
-        private void Update()
+        protected override void UpdateInput(ref PlayerEquipInputData input)
         {
-            if (playerActionsInput == null || playerInventory == null) return;
+            if (playerActionsInput == null) return;
 
             if (playerActionsInput.SwapWeaponPressed)
             {
-                SwapWeapon();
+                input.SwapWeaponPressed = true;
                 playerActionsInput.SetSwapWeaponPressedFalse();
             }
-
             if (playerActionsInput.SwapSlotOnePressed)
             {
-                EquipFromSlot(0);
+                input.SwapSlotOnePressed = true;
                 playerActionsInput.SetSlotOnePressedFalse();
             }
-
             if (playerActionsInput.SwapSlotTwoPressed)
             {
-                EquipFromSlot(1);
+                input.SwapSlotTwoPressed = true;
                 playerActionsInput.SetSlotTwoPressedFalse();
+            }
+        }
+
+        protected override void Simulate(PlayerEquipInputData input, ref PlayerEquipDataState state, float delta)
+        {
+            // Pure slot-index transition. The actual weapon-side effects (stats, observable,
+            // animation, TP refresh) are deferred to UpdateView.
+            if (input.SwapWeaponPressed)
+                state.CurrentSlot = state.CurrentSlot == 0 ? 1 : 0;
+            else if (input.SwapSlotOnePressed)
+                state.CurrentSlot = 0;
+            else if (input.SwapSlotTwoPressed)
+                state.CurrentSlot = 1;
+        }
+
+        protected override PlayerEquipDataState Interpolate(
+            PlayerEquipDataState from,
+            PlayerEquipDataState to,
+            float t)
+        {
+            return to;
+        }
+
+        protected override void UpdateView(PlayerEquipDataState viewState, PlayerEquipDataState? verified)
+        {
+            if (_lastViewedSlot == viewState.CurrentSlot) return;
+            if (playerInventory == null || playerInventory.weaponInventory == null) return;
+            if (viewState.CurrentSlot < 0 || viewState.CurrentSlot >= playerInventory.weaponInventory.Length) return;
+
+            WeaponProperties weapon = playerInventory.weaponInventory[viewState.CurrentSlot];
+            if (weapon == null) return;
+
+            _lastViewedSlot = viewState.CurrentSlot;
+
+            if (isOwner)
+            {
+                if (fpArmsAnimator != null)
+                    fpArmsAnimator.RequestWeaponSwap(weapon);
+                else
+                    EquipWeapon(weapon);
+            }
+            else
+            {
+                EquipWeapon(weapon);
             }
         }
 
@@ -160,42 +195,6 @@ namespace Resonance.Combat
             }
         }
 
-        private void SwapWeapon()
-        {
-            if (EquippedWeapon == null)
-            {
-                EquipFromSlot(1);
-                return;
-            }
-
-            if (EquippedWeapon.Slot == WeaponSlot.Primary)
-            {
-                EquipFromSlot(1);
-            }
-            else
-            {
-                EquipFromSlot(0);
-            }
-        }
-
-        private void EquipFromSlot(int slotIndex)
-        {
-            if (slotIndex < 0 || slotIndex >= playerInventory.weaponInventory.Length) return;
-
-            WeaponProperties weapon = playerInventory.weaponInventory[slotIndex];
-            if (weapon == null) return;
-            if (weapon.Key == EquippedWeapon?.Key) return;
-
-            GetComponent<PlayerShooter>().CancelReload();
-
-            if (playerState.CurrentWeaponState != WeaponState.Idle) return;
-
-            if (isOwner && fpArmsAnimator != null)
-                fpArmsAnimator.RequestWeaponSwap(weapon);
-            else
-                EquipWeapon(weapon);
-        }
-
         public void ExecuteWeaponSwap(WeaponProperties weapon)
         {
             EquipWeapon(weapon);
@@ -231,33 +230,18 @@ namespace Resonance.Combat
 
             if (playerSkinRenderer.CurrentMeshInstance != null)
             {
-                RefreshTPWeaponViewOnAllClients(weapon.Key);
+                RefreshTPWeaponView(playerSkinRenderer.CurrentMeshInstance);
             }
 
             if (!_isInitialEquip)
             {
-                PlayEquipOnAllClients();
+                PlayEquipEffects();
             }
 
             _isInitialEquip = false;
         }
 
-        [ObserversRpc(runLocally: true)]
-        private void RefreshTPWeaponViewOnAllClients(string weaponKey)
-        {
-            if (!isOwner)
-            {
-                WeaponProperties weapon = System.Array.Find(weapons, w => w.Key == weaponKey);
-                if (weapon == null) return;
-                EquippedWeapon = weapon;
-                weaponStatManager?.ManageWeapon(weapon);
-                playerState?.SetWeaponClass(weapon.Class);
-            }
-            RefreshTPWeaponView(playerSkinRenderer.CurrentMeshInstance);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void PlayEquipOnAllClients()
+        private void PlayEquipEffects()
         {
             currentWeaponView?.PlayEquip();
 
