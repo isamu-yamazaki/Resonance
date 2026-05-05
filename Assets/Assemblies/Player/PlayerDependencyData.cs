@@ -10,7 +10,7 @@ namespace Resonance.Assemblies.Player
     /// </summary>
     public struct PlayerDependencyData
     {
-        /// <summary>From PlayerStats.PlayerSpeed (ValidatedSyncVar&lt;float&gt;).</summary>
+        /// <summary>From PlayerStats.PlayerSpeed (predicted state).</summary>
         public float MovementSpeedMultiplier;
 
         /// <summary>From PlayerState.CurrentPlayerMovementState (ValidatedSyncVar&lt;int&gt;).</summary>

@@ -157,12 +157,6 @@ namespace Resonance.PlayerController
             if (_playerState.IsZiplining() || _playerState.IsGrappling()) return;
             if (!_characterController.enabled) return;
 
-            // PlayerState/PlayerStats are NetworkBehaviours backed by ValidatedSyncVar.
-            // They aren't part of the predicted state, so during rollback/replay they
-            // hold the currently-synced value — not the value at that historical tick.
-            // TODO: push this snapshot into the predicted state, or run the legacy
-            // UpdateMovementState transitions inside Simulate so the state machine is
-            // also predicted.
             var deps = new PlayerDependencyData
             {
                 MovementSpeedMultiplier = _playerStats.PlayerSpeed,

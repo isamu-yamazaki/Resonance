@@ -16,7 +16,7 @@ public class KillVolume : NetworkBehaviour
 
         _inside.Add(stats);
         stats.OnPlayerRespawn += () => OnPlayerRespawned(stats);
-        stats.TakeDamage(999999f, null);
+        stats.TakeExternalDamage(999999f);
     }
 
     private void OnPlayerRespawned(PlayerStats stats)

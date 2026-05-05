@@ -209,7 +209,7 @@ namespace Resonance.DebugTools
 
             GUILayout.BeginVertical("box");
 
-            GUILayout.Label($"Current Health: {_playerStats.CurrentHealth.value:F0} / {_playerStats.MaxHealth:F0}");
+            GUILayout.Label($"Current Health: {_playerStats.CurrentHealth:F0} / {_playerStats.MaxHealth:F0}");
             GUILayout.Label($"Health Regen: {_playerStats.CurrentHealthRegen:F1}/s (base: {_playerStats.BaseHealthRegen:F1})");
             GUILayout.Label($"Damage Reduction: {_playerStats.DamageReduction:F1}%");
 
@@ -434,7 +434,7 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (float.TryParse(_damageAmount, out float damage))
             {
-                _playerStats.TakeDamage(damage);
+                _playerStats.TakeExternalDamage(damage);
                 Debug.Log($"Applied {damage} damage via debug tools");
             }
             else Debug.LogWarning("Invalid damage amount");

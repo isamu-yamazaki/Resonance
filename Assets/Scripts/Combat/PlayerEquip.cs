@@ -35,7 +35,7 @@ namespace Resonance.Combat
         [SerializeField] PlayerInventory playerInventory;
         public PlayerInventory PlayerInventory => playerInventory;
 
-        [SerializeField] private PlayerActionsInput playerActionsInput;
+        private PlayerActionsInput playerActionsInput;
         private PlayerState playerState;
 
         private WeaponView currentWeaponView;
