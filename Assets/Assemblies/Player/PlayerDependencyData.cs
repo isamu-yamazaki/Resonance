@@ -18,5 +18,7 @@ namespace Resonance.Assemblies.Player
         public Vector3 trainVelocityOffset;
         public float trainKnockbackVertical;
         public LayerMask groundLayers;
+        public float OverdriveSpeedMultiplier;
+        public bool IsInOverdrive;
     }
 }

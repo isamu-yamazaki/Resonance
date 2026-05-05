@@ -17,19 +17,22 @@ namespace Resonance.Assemblies.Player
             float delta
         )
         {
+            var derivedStats = CalculateDerivedStats(dependencyData, config);
+
             TickCameraMovement(inputData, dependencyData, ref state, config, delta);
-            TickVerticalMovement(inputData, dependencyData, ref state, config, delta);
+            TickVerticalMovement(inputData, dependencyData, ref state, derivedStats, config, delta);
             TickLateralMovement(
                 inputData,
                 dependencyData,
                 ref state,
+                derivedStats,
                 config,
                 characterController,
                 delta
             );
             TickCharacterControllerMovement(dependencyData, state, characterController, delta);
 
-            state.lastSimulatedMovementState = dependencyData.CurrentPlayerMovementState;
+            state.LastSimulatedMovementState = dependencyData.CurrentPlayerMovementState;
         }
 
 
@@ -50,20 +53,26 @@ namespace Resonance.Assemblies.Player
             in PlayerInputData inputData,
             in PlayerDependencyData dependencyData,
             ref PlayerMovementDataState state,
+            in PlayerDerivedStats derivedStats,
             in PlayerConfig config,
             CharacterController characterController,
             float delta
         )
         {
-            var stats = CalculateDerivedStats(dependencyData, config);
-
             bool isSliding = dependencyData.CurrentPlayerMovementState == PlayerMovementState.Sliding;
 
             if (isSliding)
             {
-                // fall through until sliding is implemented
-                // HandleSlideMovement();
-                // return;
+                HandleSlideMovement(
+                    inputData,
+                    dependencyData,
+                    ref state,
+                    derivedStats,
+                    config,
+                    characterController,
+                    delta
+                );
+                return;
             }
 
             bool isSprinting = dependencyData.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
@@ -71,12 +80,12 @@ namespace Resonance.Assemblies.Player
             bool isCrouching = dependencyData.CurrentPlayerMovementState == PlayerMovementState.Crouching;
 
             // State dependent acceleration and speed
-            float lateralAcceleration = !isGrounded ? stats.inAirAcceleration :
-                                        isCrouching ? stats.crouchAcceleration :
-                                        isSprinting ? stats.sprintAcceleration : stats.runAcceleration;
-            float clampLateralMagnitude = !isGrounded ? stats.sprintSpeed :
-                                          isCrouching ? stats.crouchSpeed :
-                                          isSprinting ? stats.sprintSpeed : stats.runSpeed;
+            float lateralAcceleration = !isGrounded ? derivedStats.inAirAcceleration :
+                                        isCrouching ? derivedStats.crouchAcceleration :
+                                        isSprinting ? derivedStats.sprintAcceleration : derivedStats.runAcceleration;
+            float clampLateralMagnitude = !isGrounded ? derivedStats.sprintSpeed :
+                                          isCrouching ? derivedStats.crouchSpeed :
+                                          isSprinting ? derivedStats.sprintSpeed : derivedStats.runSpeed;
 
             float yawRad = state.CameraYaw * Mathf.Deg2Rad;
             Vector3 cameraForwardXZ = new Vector3(Mathf.Sin(yawRad), 0f, Mathf.Cos(yawRad));
@@ -88,8 +97,8 @@ namespace Resonance.Assemblies.Player
             Vector3 newVelocity = localVelocity + movementDelta;
 
             // Add drag to player
-            Vector3 currentDrag = newVelocity.normalized * stats.drag * delta;
-            newVelocity = (newVelocity.magnitude > stats.drag * delta) ? newVelocity - currentDrag : Vector3.zero;
+            Vector3 currentDrag = newVelocity.normalized * derivedStats.drag * delta;
+            newVelocity = (newVelocity.magnitude > derivedStats.drag * delta) ? newVelocity - currentDrag : Vector3.zero;
             newVelocity = Vector3.ClampMagnitude(new Vector3(newVelocity.x, 0f, newVelocity.z), clampLateralMagnitude);
             newVelocity.y = state.Velocity.y;
             newVelocity = !isGrounded ? HandleSteepWalls(newVelocity, state.Velocity.y, characterController, dependencyData.groundLayers) : newVelocity;
@@ -103,68 +112,78 @@ namespace Resonance.Assemblies.Player
             TickImpulse(ref state, delta);
         }
 
-        private static void HandleSlideMovement()
+        private static void HandleSlideMovement(
+            in PlayerInputData inputData,
+            in PlayerDependencyData dependencyData,
+            ref PlayerMovementDataState state,
+            in PlayerDerivedStats derivedStats,
+            in PlayerConfig config,
+            CharacterController characterController,
+            float delta
+        )
         {
             // we'll do this in a bit
-            // Vector3 groundNormal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
-            // float slopeAngle = Vector3.Angle(groundNormal, Vector3.up);
-            // float slopeAngle = 0;
+            Vector3 groundNormal = CharacterControllerUtils.GetNormalWithSphereCast(characterController, dependencyData.groundLayers);
+            float slopeAngle = Vector3.Angle(groundNormal, Vector3.up);
 
-            // Vector3 slopeDownDirection = Vector3.ProjectOnPlane(Vector3.down, groundNormal).normalized;
+            Vector3 slopeDownDirection = Vector3.ProjectOnPlane(Vector3.down, groundNormal).normalized;
     
-            // float slopeDot = Vector3.Dot(_slideDirection, slopeDownDirection);
+            Vector3 slideDirection = new Vector3(characterController.velocity.x, 0f, characterController.velocity.z).normalized;
+            float slopeDot = Vector3.Dot(slideDirection, slopeDownDirection);
     
-            // bool isDownhill = slopeAngle > slopeAngleThreshold && slopeDot > 0.1f;
-            // bool isUphill = slopeAngle > slopeAngleThreshold && slopeDot < -0.1f;
+            bool isDownhill = slopeAngle > config.slopeAngleThreshold && slopeDot > 0.1f;
+            bool isUphill = slopeAngle > config.slopeAngleThreshold && slopeDot < -0.1f;
     
-            // // Update slide timer based on slope
-            // if (isDownhill)
-            // {
-            //     _slideTimer -= Time.deltaTime * 0.5f; // Slower decay on downhill
-            // }
-            // else if (isUphill)
-            // {
-            //     _slideTimer -= Time.deltaTime * uphillSlideDecelerationMultiplier;
-            // }
-            // else
-            // {
-            //     _slideTimer -= Time.deltaTime;
-            // }
+            // Update slide timer based on slope
+            if (isDownhill)
+            {
+                state.SlideTimer -= delta * 0.5f; // Slower decay on downhill
+            }
+            else if (isUphill)
+            {
+                state.SlideTimer -= delta * config.uphillSlideDecelerationMultiplier;
+            }
+            else
+            {
+                state.SlideTimer -= delta;
+            }
     
-            // // Calculate slide speed
-            // float slideProgress = 1f - (_slideTimer / slideDuration);
-            // float currentSlideSpeed = Mathf.Lerp(slideSpeed, minSlideSpeed, slideProgress);
+            // Calculate slide speed
+            float slideProgress = 1f - (state.SlideTimer / config.slideDuration);
+            float currentSlideSpeed = Mathf.Lerp(derivedStats.slideSpeed, derivedStats.minSlideSpeed, slideProgress);
     
-            // // Apply slope modifications to speed
-            // if (isDownhill)
-            // {
-            //     currentSlideSpeed *= downhillSlideSpeedBoost;
-            // }
-            // else if (isUphill)
-            // {
-            //     currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * uphillSlideDecelerationMultiplier * Time.deltaTime), minSlideSpeed);
-            // }
-            // else
-            // {
-            //     currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * Time.deltaTime), minSlideSpeed);
-            // }
+            // Apply slope modifications to speed
+            if (isDownhill)
+            {
+                currentSlideSpeed *= config.downhillSlideSpeedBoost;
+            }
+            else if (isUphill)
+            {
+                currentSlideSpeed = Mathf.Max(currentSlideSpeed - (config.slideDeceleration * config.uphillSlideDecelerationMultiplier * delta), derivedStats.minSlideSpeed);
+            }
+            else
+            {
+                currentSlideSpeed = Mathf.Max(currentSlideSpeed - (config.slideDeceleration * Time.deltaTime), derivedStats.minSlideSpeed);
+            }
             
-            // // Apply Overdrive speed multiplier to slide
-            // if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
-            // {
-            //     currentSlideSpeed *= _overdriveAbility.SpeedMultiplier;
-            // }
+            // Apply Overdrive speed multiplier to slide
+            if (dependencyData.IsInOverdrive)
+            {
+                currentSlideSpeed *= dependencyData.OverdriveSpeedMultiplier;
+            }
     
-            // // End slide when timer expires
-            // if (_slideTimer <= 0f)
-            // {
-            //     _playerLocomotionInput.DisableCrouch();
-            //     return;
-            // }
+            // End slide when timer expires
+            if (state.SlideTimer <= 0f)
+            {
+                // TODO: make this flag do something
+                // _playerLocomotionInput.DisableCrouch();
+                return;
+            }
     
-            // // Move in locked slide direction
-            // Vector3 slideVelocity = _slideDirection * currentSlideSpeed;
-            // slideVelocity.y = _verticalVelocity;
+            // Move in locked slide direction
+            Vector3 slideVelocity = slideDirection * currentSlideSpeed;
+            slideVelocity.y = state.Velocity.y;
+            state.Velocity = slideVelocity;
     
             // Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetFrameVelocityOffset() : Vector3.zero;
         }
@@ -173,11 +192,11 @@ namespace Resonance.Assemblies.Player
             in PlayerInputData inputData,
             in PlayerDependencyData dependencyData,
             ref PlayerMovementDataState state,
+            in PlayerDerivedStats derivedStats,
             in PlayerConfig config,
             float delta
         )
         {
-            var derived = CalculateDerivedStats(dependencyData, config);
             var verticalVelocity = state.Velocity.y;
 
             // TODO: forward predict PlayerState (aka run it as part of a forward predicted loop)
@@ -187,20 +206,20 @@ namespace Resonance.Assemblies.Player
 
             if (isGrounded && verticalVelocity < 0f)
             {
-                verticalVelocity = -derived.antiBump;
-                state.grappleImpulse = Vector3.zero;
+                verticalVelocity = -derivedStats.antiBump;
+                state.GrappleImpulse = Vector3.zero;
             }
 
             if (inputData.JumpPressed && isGrounded)
             {
                 verticalVelocity += Mathf.Sqrt(config.jumpSpeed * 3 * config.gravity);
-                state.jumpedLastSimulatedFrame = true;
+                state.JumpedLastSimulatedFrame = true;
             }
 
             // TODO: need to double check if this is the correct behavior
-            if (PlayerMovementStateUtils.IsStateGroundedState(state.lastSimulatedMovementState) && !isGrounded)
+            if (PlayerMovementStateUtils.IsStateGroundedState(state.LastSimulatedMovementState) && !isGrounded)
             {
-                verticalVelocity += derived.antiBump;
+                verticalVelocity += derivedStats.antiBump;
             }
 
             if (Mathf.Abs(verticalVelocity) > Mathf.Abs(config.terminalVelocity))
@@ -273,18 +292,18 @@ namespace Resonance.Assemblies.Player
 
         private static Vector3 ConsumeImpulse(in PlayerMovementDataState state)
         {
-            return state.grappleImpulse;
+            return state.GrappleImpulse;
         }
 
         private static void TickImpulse(ref PlayerMovementDataState state, float delta)
         {
-            if (state.grappleImpulse.sqrMagnitude <= 0.001f)
+            if (state.GrappleImpulse.sqrMagnitude <= 0.001f)
             {
-                state.grappleImpulse = Vector3.zero;
+                state.GrappleImpulse = Vector3.zero;
                 return;
             }
 
-            state.grappleImpulse = Vector3.MoveTowards(state.grappleImpulse, Vector3.zero, GrappleImpulseDecay * delta);
+            state.GrappleImpulse = Vector3.MoveTowards(state.GrappleImpulse, Vector3.zero, GrappleImpulseDecay * delta);
         }
 
         private static void TickCharacterControllerMovement(

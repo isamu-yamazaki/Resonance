@@ -17,8 +17,9 @@ namespace Resonance.Assemblies.Player
         public float CameraYaw;
 
         // Persistent values for deriving velocity later
-        public Vector3 grappleImpulse;
-        public bool jumpedLastSimulatedFrame;
-        public PlayerMovementState lastSimulatedMovementState;
+        public Vector3 GrappleImpulse;
+        public bool JumpedLastSimulatedFrame;
+        public PlayerMovementState LastSimulatedMovementState;
+        public float SlideTimer;
     }
 }
