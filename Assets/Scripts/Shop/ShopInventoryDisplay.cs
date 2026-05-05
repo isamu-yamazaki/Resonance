@@ -4,6 +4,7 @@ using Resonance.Combat.Augments;
 using Resonance.Combat.Mods;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
+using Resonance.Helper;
 using Resonance.Inventory;
 using TMPro;
 using UnityEngine;
@@ -39,8 +40,8 @@ namespace Resonance.Shop
 
         private void Awake()
         {
-            if (playerInventory == null || !playerInventory.isOwner)
-                playerInventory = FindObjectsOfType<PlayerInventory>().FirstOrDefault(p => p.isOwner);
+            if (playerInventory == null)
+                playerInventory = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerInventory>();
 
             primaryWeaponSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellWeapon(WeaponSlot.Primary));
             secondaryWeaponSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellWeapon(WeaponSlot.Secondary));
@@ -52,7 +53,7 @@ namespace Resonance.Shop
         {
             if (playerInventory == null || !playerInventory.isOwner)
             {
-                playerInventory = FindObjectsOfType<PlayerInventory>().FirstOrDefault(p => p.isOwner);
+                playerInventory = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerInventory>();
                 if (playerInventory == null) return;
             }
 
