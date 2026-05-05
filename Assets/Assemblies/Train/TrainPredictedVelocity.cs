@@ -3,33 +3,31 @@ using UnityEngine;
 
 namespace Resonance.Assemblies.Train
 {
-    public class TrainPredictedVelocity : PredictedIdentity<TrainPredictedState>
+    public class TrainPredictedVelocity : MonoBehaviour
     {
-        public Vector3 Velocity => currentState.Velocity;
+        public Vector3 Velocity { get; private set; }
+        private Vector3 lastTransformPosition;
 
-        protected override TrainPredictedState GetInitialState()
-        {
-            return new TrainPredictedState
-            {
-                Velocity = default,
-                lastTransformPosition = default
-            };
-        }
 
-        protected override void Simulate(ref TrainPredictedState state, float delta)
-        {
-            if (!predictionManager.isReplaying)
+        // protected override TrainPredictedState GetInitialState()
+        // {
+        //     return new TrainPredictedState
+        //     {
+        //         Velocity = default,
+        //         lastTransformPosition = default
+        //     };
+        // }
+
+        private void FixedUpdate()
+        {   
+            if (lastTransformPosition != default)
             {
-                Debug.Log($"[TrainPredictedVelocity] {state.Velocity}");
-            }
-            
-            
-            if (state.lastTransformPosition != default)
-            {
-                state.Velocity = (transform.position - state.lastTransformPosition) / delta;
+                Velocity = (transform.position - lastTransformPosition) / Time.fixedDeltaTime;
             }
 
-            state.lastTransformPosition = transform.position;
+            lastTransformPosition = transform.position;
+
+            Debug.Log($"[TrainPredictedVelocity] {Velocity}");
         }
     }
 }
