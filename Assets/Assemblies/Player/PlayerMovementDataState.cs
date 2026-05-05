@@ -20,6 +20,7 @@ namespace Resonance.Assemblies.Player
         // Persistent values for deriving velocity later
         public Vector3 GrappleImpulse;
         public bool JumpedLastSimulatedFrame;
+        public bool WasGroundedLastTick;
         public PlayerMovementState LastSimulatedMovementState;
         public float SlideTimer;
 

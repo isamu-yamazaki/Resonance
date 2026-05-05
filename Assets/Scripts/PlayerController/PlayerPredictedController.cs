@@ -116,6 +116,7 @@ namespace Resonance.PlayerController
                 CameraYaw = transform.eulerAngles.y,
                 GrappleImpulse = Vector3.zero,
                 JumpedLastSimulatedFrame = false,
+                WasGroundedLastTick = true,
                 LastSimulatedMovementState = PlayerMovementState.Falling,
                 SlideTimer = 0f,
             };
@@ -137,15 +138,16 @@ namespace Resonance.PlayerController
 
         protected override void UpdateInput(ref PlayerInputData input)
         {
-            input.JumpPressed = _playerLocomotionInput.JumpPressed;
-            input.SprintToggledOn = _playerLocomotionInput.SprintToggledOn;
-            input.CrouchToggledOn = _playerLocomotionInput.CrouchToggledOn;
+            input.JumpPressed |= _playerLocomotionInput.JumpPressed;
+            input.SprintToggledOn |= _playerLocomotionInput.SprintToggledOn;
+            input.CrouchToggledOn |= _playerLocomotionInput.CrouchToggledOn;
         }
 
         protected override void GetFinalInput(ref PlayerInputData input)
         {
             input.MovementInput = _playerLocomotionInput.MovementInput;
             input.LookInput = _playerLocomotionInput.LookInput;
+            // input.JumpPressed = _playerLocomotionInput.JumpPressed;
         }
 
 
@@ -196,6 +198,7 @@ namespace Resonance.PlayerController
                 GrappleImpulse = Vector3.Lerp(from.GrappleImpulse, to.GrappleImpulse, t),
                 // Discrete fields snap to `to`.
                 JumpedLastSimulatedFrame = to.JumpedLastSimulatedFrame,
+                WasGroundedLastTick = to.WasGroundedLastTick,
                 LastSimulatedMovementState = to.LastSimulatedMovementState,
                 SlideTimer = Mathf.Lerp(from.SlideTimer, to.SlideTimer, t),
             };

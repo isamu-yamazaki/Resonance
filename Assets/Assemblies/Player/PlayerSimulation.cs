@@ -34,7 +34,7 @@ namespace Resonance.Assemblies.Player
             var derivedStats = CalculateDerivedStats(ctx.Dependency, ctx.Config);
 
             bool isSprinting = ctx.Dependency.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
-            bool isGrounded = PlayerMovementStateUtils.IsStateGroundedState(ctx.Dependency.CurrentPlayerMovementState);
+            bool isGrounded = ctx.CharacterController.isGrounded;
             bool isCrouching = ctx.Dependency.CurrentPlayerMovementState == PlayerMovementState.Crouching;
 
             // State dependent acceleration and speed
@@ -146,9 +146,12 @@ namespace Resonance.Assemblies.Player
             var derivedStats = CalculateDerivedStats(ctx.Dependency, ctx.Config);
             var verticalVelocity = state.Velocity.y;
 
-            // TODO: forward predict PlayerState (aka run it as part of a forward predicted loop)
-            // Right now it relies on server propagation which causes a delay
-            var isGrounded = PlayerMovementStateUtils.IsStateGroundedState(ctx.Dependency.CurrentPlayerMovementState);
+            // Use CharacterController.isGrounded (updated by last frame's Move) combined with
+            // JumpedLastSimulatedFrame to cover the one-tick window right after a jump where the
+            // CC hasn't moved off the ground yet. This mirrors the old _jumpedLastFrame pattern.
+            bool isGrounded = ctx.CharacterController.isGrounded && !state.JumpedLastSimulatedFrame;
+            state.JumpedLastSimulatedFrame = false;
+
             verticalVelocity -= ctx.Config.gravity * ctx.Delta;
 
             if (isGrounded && verticalVelocity < 0f)
@@ -163,11 +166,13 @@ namespace Resonance.Assemblies.Player
                 state.JumpedLastSimulatedFrame = true;
             }
 
-            // TODO: need to double check if this is the correct behavior
-            if (PlayerMovementStateUtils.IsStateGroundedState(state.LastSimulatedMovementState) && !isGrounded)
+            // Fire once on the first airborne tick after leaving the ground (coyote-time antiBump).
+            if (state.WasGroundedLastTick && !isGrounded)
             {
                 verticalVelocity += derivedStats.antiBump;
             }
+
+            state.WasGroundedLastTick = isGrounded;
 
             if (Mathf.Abs(verticalVelocity) > Mathf.Abs(ctx.Config.terminalVelocity))
             {
