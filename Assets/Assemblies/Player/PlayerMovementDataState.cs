@@ -1,4 +1,4 @@
-
+using PurrNet.Prediction;
 using UnityEngine;
 
 namespace Resonance.Assemblies.Player
@@ -6,8 +6,9 @@ namespace Resonance.Assemblies.Player
     /// <summary>
     /// The simulated movement state of the player.
     /// </summary>
-    public struct PlayerMovementDataState
+    public struct PlayerMovementDataState : IPredictedData<PlayerMovementDataState>
     {
+        public Vector3 Position;
         public Vector3 Velocity;
 
         /// <summary>
@@ -21,5 +22,10 @@ namespace Resonance.Assemblies.Player
         public bool JumpedLastSimulatedFrame;
         public PlayerMovementState LastSimulatedMovementState;
         public float SlideTimer;
+
+        public void Dispose() { }
+
+        // IMath<T> Add/Negate/Scale: leave at the throwing default-interface impls.
+        // PlayerPredictedController overrides Interpolate per-field instead.
     }
 }
