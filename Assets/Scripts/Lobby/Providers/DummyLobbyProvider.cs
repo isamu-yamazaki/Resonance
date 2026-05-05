@@ -56,10 +56,15 @@ namespace Resonance.LobbySystem
 #pragma warning restore CS0067
         public event UnityAction<string> OnError;
 
+        // Local server bind port. Changes after Start() do not restart the listener.
         [SerializeField] private string portNumber = "5001";
+
+        [SerializeField, Tooltip("Optional remote host:port to connect to instead of localhost (e.g. \"192.168.1.5:5001\"). Leave empty to use localhost. Do NOT include http:// scheme. The local DummyLobbyServer is still started in the background so peers on the LAN can connect to this client.")]
+        private string remoteAddress = "";
 
         private DummyLobbyServer server;
         private HttpClient client;
+        private string appliedBaseAddress;
         private string currentLobbyId;
         private string localUserId;
         private Coroutine updateCoroutine;
@@ -78,14 +83,35 @@ namespace Resonance.LobbySystem
                 server.AttemptStart(portNumber);
             }
 
-            client = new HttpClient
-            {
-                BaseAddress = new Uri($"http://localhost:{portNumber}")
-            };
+            Apply();
 
             updateCoroutine = StartCoroutine(PeriodicLobbyUpdate());
         }
 
+        private void Apply()
+        {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
+            string target = string.IsNullOrWhiteSpace(remoteAddress)
+                ? $"http://localhost:{portNumber}"
+                : $"http://{remoteAddress.Trim()}:{portNumber}";
+
+            if (target == appliedBaseAddress && client != null)
+            {
+                return;
+            }
+
+            client = new HttpClient
+            {
+                BaseAddress = new Uri(target)
+            };
+
+            appliedBaseAddress = target;
+            currentLobbyId = null;
+        }
 
         private async Task<bool> CheckServerRunning()
         {

@@ -7,19 +7,26 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Resonance.Assemblies.LobbySystem;
+using UnityEngine;
 
 namespace Resonance.LobbySystem
 {
     /// <summary>
     /// Use for development only.
-    /// Controls a localhost server which implements basic functionality required
-    /// for a lobby provider. Some functionality off the critical path (e.g. friends)
-    /// are not implemented and should be stubbed by the provider instead.
+    /// Controls a server (bound to all local interfaces) which implements basic
+    /// functionality required for a lobby provider. Some functionality off the
+    /// critical path (e.g. friends) are not implemented and should be stubbed by
+    /// the provider instead.
     /// </summary>
     public class DummyLobbyServer
     {
+        // Thread-safe RNG for lobby ids. CreateLobby runs on a thread-pool task,
+        // so UnityEngine.Random is unsafe here.
+        private static readonly System.Random _idRandom = new System.Random();
+        private const int LobbyIdMin = 10_000_000;   // 8 digits
+        private const int LobbyIdMax = 100_000_000;  // exclusive
+
         private List<Lobby> lobbies;
-        private int nextLobbyId = 1;
 
         private HttpListener httpListener;
 
@@ -28,10 +35,51 @@ namespace Resonance.LobbySystem
             lobbies = new List<Lobby>();
 
             httpListener = new HttpListener();
-            httpListener.Prefixes.Add($"http://localhost:{portNumber}/api/");
-            httpListener.Start();
+            // "+" binds to all hostnames on every interface. HttpListener does
+            // not accept raw IPs (e.g. 0.0.0.0). On Windows this requires a URL
+            // ACL reservation: `netsh http add urlacl url=http://+:<port>/ user=Everyone`.
+            // Mono on macOS/Linux accepts it without elevation.
+            httpListener.Prefixes.Add($"http://+:{portNumber}/api/");
+            try
+            {
+                httpListener.Start();
+            }
+            catch (HttpListenerException ex)
+            {
+                Debug.LogError($"[DummyLobbyServer] Failed to bind to http://+:{portNumber}/api/: {ex.Message}. On Windows, run: netsh http add urlacl url=http://+:{portNumber}/ user=Everyone");
+                httpListener = null;
+                return;
+            }
 
             Listen();
+        }
+
+        internal static string GenerateLobbyId(IList<Lobby> existing)
+        {
+            lock (_idRandom)
+            {
+                for (int attempt = 0; attempt < 16; attempt++)
+                {
+                    string candidate = _idRandom.Next(LobbyIdMin, LobbyIdMax).ToString();
+                    bool collides = false;
+                    if (existing != null)
+                    {
+                        for (int i = 0; i < existing.Count; i++)
+                        {
+                            if (existing[i].LobbyId == candidate)
+                            {
+                                collides = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!collides)
+                    {
+                        return candidate;
+                    }
+                }
+                throw new InvalidOperationException("Failed to allocate a unique lobby id after 16 attempts");
+            }
         }
 
         private void Listen()
@@ -242,13 +290,15 @@ namespace Resonance.LobbySystem
                     ? Convert.ToInt32(lobbyData["maxPlayers"])
                     : 4;
 
+                string lobbyId = GenerateLobbyId(lobbies);
+
                 string lobbyName = lobbyData != null && lobbyData.ContainsKey("name")
                     ? lobbyData["name"].ToString()
-                    : "Dummy Lobby " + nextLobbyId;
+                    : "Dummy Lobby " + lobbyId;
 
                 var newLobby = new Lobby
                 {
-                    LobbyId = nextLobbyId.ToString(),
+                    LobbyId = lobbyId,
                     Name = lobbyName,
                     MaxPlayers = maxPlayers,
                     IsValid = true,
@@ -257,7 +307,6 @@ namespace Resonance.LobbySystem
                 };
 
                 lobbies.Add(newLobby);
-                nextLobbyId++;
 
                 await WriteJsonResponse(response, newLobby);
             }
