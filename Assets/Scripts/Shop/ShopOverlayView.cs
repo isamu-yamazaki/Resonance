@@ -296,7 +296,7 @@ namespace Resonance.Shop
         {
             if (playerEquip == null || !playerEquip.isOwner)
             {
-                playerEquip = OwnerFinder.FindFirstOwnedNetworkObjectByType<PlayerEquip>();
+                playerEquip = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerEquip>();
             }
 
             return playerEquip;
@@ -304,9 +304,9 @@ namespace Resonance.Shop
 
         private PlayerInventory GetPlayerInventory()
         {
-            if (playerInventory == null || !playerInventory.isOwner)
+            if (playerInventory == null)
             {
-                playerInventory = OwnerFinder.FindFirstOwnedNetworkObjectByType<PlayerInventory>();
+                playerInventory = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerInventory>();
             }
 
             return playerInventory;
