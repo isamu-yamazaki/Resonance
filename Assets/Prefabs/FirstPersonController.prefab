@@ -400,10 +400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7264354477965666744}
-  - component: {fileID: 8603361819792898361}
-  - component: {fileID: 8323531065397955590}
-  - component: {fileID: 3887967411063251530}
-  - component: {fileID: -3134566903920560379}
+  - component: {fileID: 625382980807758898}
   - component: {fileID: 3494420511587806199}
   - component: {fileID: 186030322157751487}
   - component: {fileID: 6986822269938596396}
@@ -472,7 +469,7 @@ Transform:
   - {fileID: 5434481047200221691}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8603361819792898361
+--- !u!114 &625382980807758898
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -481,116 +478,45 @@ MonoBehaviour:
   m_GameObject: {fileID: 6809321870534573542}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90833cdbb5a985c479c712b698d07a62, type: 3}
+  m_Script: {fileID: 11500000, guid: bb44ab50c506c1040a35e29eb483f20e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerPredictedController
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   _characterController: {fileID: 3494420511587806199}
   _virtualCamera: {fileID: 3024070534968682805}
-  baseCrouchAcceleration: 25
-  baseCrouchSpeed: 2
-  baseRunAcceleration: 35
-  baseRunSpeed: 4
-  baseSprintAcceleration: 50
-  baseSprintSpeed: 7
-  baseInAirAcceleration: 25
-  baseDrag: 20
-  gravity: 25
-  terminalVelocity: 50
-  jumpSpeed: 1
-  movingThreshold: 0.01
-  baseSlideSpeed: 8
-  baseMinSlideSpeed: 2
-  slideDuration: 1
-  slideDeceleration: 8
-  slopeAngleThreshold: 15
-  uphillSlideDecelerationMultiplier: 2
-  downhillSlideSpeedBoost: 1.2
-  playerModelRotationSpeed: 10
-  rotateToTargetTime: 1
-  lookSensitivityH: 0.1
-  lookSensitivityV: 0.1
-  lookLimitV: 70
-  baseFOV: 75
-  sprintFOV: 85
-  overdriveFOV: 95
-  fovTransitionSpeed: 10
+  _config:
+    baseCrouchAcceleration: 25
+    baseCrouchSpeed: 2
+    baseRunAcceleration: 35
+    baseRunSpeed: 4
+    baseSprintAcceleration: 50
+    baseSprintSpeed: 7
+    baseInAirAcceleration: 25
+    baseDrag: 20
+    gravity: 25
+    terminalVelocity: 50
+    jumpSpeed: 1
+    movingThreshold: 0.01
+    baseSlideSpeed: 8
+    baseMinSlideSpeed: 2
+    slideDuration: 1
+    slideDeceleration: 8
+    slopeAngleThreshold: 15
+    uphillSlideDecelerationMultiplier: 2
+    downhillSlideSpeedBoost: 1.2
+    playerModelRotationSpeed: 10
+    rotateToTargetTime: 1
+    lookSensitivityH: 0.1
+    lookSensitivityV: 0.1
+    lookLimitV: 70
+    baseFOV: 75
+    sprintFOV: 85
+    overdriveFOV: 95
+    fovTransitionSpeed: 10
   _groundLayers:
     serializedVersion: 2
     m_Bits: 257
-  grappleImpulseDecay: 10
---- !u!114 &8323531065397955590
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9baf2753d051ed5429094497e7e104e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerLocomotionInput
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  holdToSprint: 1
---- !u!114 &3887967411063251530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9013b3fa3d70ab04c93dacdd173ebf4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerActionsInput
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
---- !u!114 &-3134566903920560379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aa942677aede4bedb6c2938011e8a2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.InGameUIActionsInput
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
 --- !u!143 &3494420511587806199
 CharacterController:
   m_ObjectHideFlags: 0
@@ -650,16 +576,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50898351a65ff4848b3a068352164aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerState
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  <CurrentPlayerMovementState>k__BackingField: 0
 --- !u!114 &1227219239304027150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -892,17 +808,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9f65672025fa5d4abac8993a47b6afd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerEquip
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   playerInventory: {fileID: 7304100629892152196}
-  playerActionsInput: {fileID: 3887967411063251530}
+  playerActionsInput: {fileID: 0}
 --- !u!114 &4363601593636969602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,22 +852,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2551c363f8a16b948b7ff20b467041d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Inventory.PlayerInventory
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  weaponInventory:
-  - {fileID: 0}
-  - {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   startingWeapon: {fileID: 11400000, guid: 28cadf78b26d3a1489c2a936a55f1575, type: 2}
-  augmentInventory:
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &8505458450555133255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1202,6 +1098,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bda92ce9f3864754a8fed28b007ed58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainPassengerPhysics
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _trainController: {fileID: 0}
   _trainFloorTag: Train
   _inertiaDecay: 4
