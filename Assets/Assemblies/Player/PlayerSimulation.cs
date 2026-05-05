@@ -61,8 +61,9 @@ namespace Resonance.Assemblies.Player
 
             if (isSliding)
             {
-                HandleSlideMovement();
-                return;
+                // fall through until sliding is implemented
+                // HandleSlideMovement();
+                // return;
             }
 
             bool isSprinting = dependencyData.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
@@ -104,7 +105,68 @@ namespace Resonance.Assemblies.Player
 
         private static void HandleSlideMovement()
         {
-            throw new NotImplementedException();
+            // we'll do this in a bit
+            // Vector3 groundNormal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
+            // float slopeAngle = Vector3.Angle(groundNormal, Vector3.up);
+            // float slopeAngle = 0;
+
+            // Vector3 slopeDownDirection = Vector3.ProjectOnPlane(Vector3.down, groundNormal).normalized;
+    
+            // float slopeDot = Vector3.Dot(_slideDirection, slopeDownDirection);
+    
+            // bool isDownhill = slopeAngle > slopeAngleThreshold && slopeDot > 0.1f;
+            // bool isUphill = slopeAngle > slopeAngleThreshold && slopeDot < -0.1f;
+    
+            // // Update slide timer based on slope
+            // if (isDownhill)
+            // {
+            //     _slideTimer -= Time.deltaTime * 0.5f; // Slower decay on downhill
+            // }
+            // else if (isUphill)
+            // {
+            //     _slideTimer -= Time.deltaTime * uphillSlideDecelerationMultiplier;
+            // }
+            // else
+            // {
+            //     _slideTimer -= Time.deltaTime;
+            // }
+    
+            // // Calculate slide speed
+            // float slideProgress = 1f - (_slideTimer / slideDuration);
+            // float currentSlideSpeed = Mathf.Lerp(slideSpeed, minSlideSpeed, slideProgress);
+    
+            // // Apply slope modifications to speed
+            // if (isDownhill)
+            // {
+            //     currentSlideSpeed *= downhillSlideSpeedBoost;
+            // }
+            // else if (isUphill)
+            // {
+            //     currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * uphillSlideDecelerationMultiplier * Time.deltaTime), minSlideSpeed);
+            // }
+            // else
+            // {
+            //     currentSlideSpeed = Mathf.Max(currentSlideSpeed - (slideDeceleration * Time.deltaTime), minSlideSpeed);
+            // }
+            
+            // // Apply Overdrive speed multiplier to slide
+            // if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
+            // {
+            //     currentSlideSpeed *= _overdriveAbility.SpeedMultiplier;
+            // }
+    
+            // // End slide when timer expires
+            // if (_slideTimer <= 0f)
+            // {
+            //     _playerLocomotionInput.DisableCrouch();
+            //     return;
+            // }
+    
+            // // Move in locked slide direction
+            // Vector3 slideVelocity = _slideDirection * currentSlideSpeed;
+            // slideVelocity.y = _verticalVelocity;
+    
+            // Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetFrameVelocityOffset() : Vector3.zero;
         }
 
         public static void TickVerticalMovement(
