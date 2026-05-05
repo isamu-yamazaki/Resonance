@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Resonance.PlayerController
+namespace Resonance.Assemblies.Player
 {
     public static class CharacterControllerUtils
     {
