@@ -483,7 +483,6 @@ GameObject:
   - component: {fileID: -3105654030807264256}
   - component: {fileID: 6773602070252493702}
   - component: {fileID: 6640094424697639188}
-  - component: {fileID: 7757077280568375954}
   m_Layer: 8
   m_Name: Train
   m_TagString: Train
@@ -737,18 +736,6 @@ MonoBehaviour:
   _trainController: {fileID: 3448999368842045501}
   _openTriggerName: OpenDoors
   _closeTriggerName: CloseDoors
---- !u!114 &7757077280568375954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3592926597777073106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cef3e9bd6e60c549b59f4a3661e83ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Train::Resonance.Assemblies.Train.TrainPredictedVelocity
 --- !u!1 &4366152663786485355
 GameObject:
   m_ObjectHideFlags: 0
