@@ -101,14 +101,14 @@ public class PreMatchCameraController : MonoBehaviour
 
     private IEnumerator Start()
     {
-        while (PlayerController.LocalPlayer == null || !_configured)
+        while (PlayerPredictedController.LocalPlayer == null || !_configured)
             yield return null;
 
         if (hudCanvas == null)
             hudCanvas = GameObject.FindWithTag("HUDCanvas");
         
-        target = PlayerController.LocalPlayer.transform;
-        playerCamera = PlayerController.LocalPlayer.GetComponentInChildren<Camera>(true);
+        target = PlayerPredictedController.LocalPlayer.transform;
+        playerCamera = PlayerPredictedController.LocalPlayer.GetComponentInChildren<Camera>(true);
 
         Task<int> matchStateTask = ArenaRoundManagerBridge.GetTemporaryReference()?.GetMatchState();
         if (matchStateTask == null)
