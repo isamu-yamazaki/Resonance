@@ -406,6 +406,7 @@ GameObject:
   - component: {fileID: 6986822269938596396}
   - component: {fileID: 1227219239304027150}
   - component: {fileID: 7288220896636920470}
+  - component: {fileID: 5486924316632066744}
   - component: {fileID: 566397693469419020}
   - component: {fileID: 1639472579186224973}
   - component: {fileID: 6663562861641907931}
@@ -611,15 +612,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c38e9634aee9db4684b50e737ad0cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveAbility
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   activateEvent:
     idInternal: 0
     valueGuidInternal: 
@@ -634,6 +626,28 @@ MonoBehaviour:
   overdriveHealAmount: 50
   overdriveRegenAmount: 5
   overdriveDamageReductionAmount: 0.25
+--- !u!114 &5486924316632066744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ca31240ded0e4d409d11da5f4acfc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveAudioBroadcast
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
+  activateEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: c5b3619e4bff0c44d8779ca1e0d84562, type: 2}
+  activateWorldEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 7d7f96cb21ef4204eb7d687c634973e6, type: 2}
 --- !u!114 &566397693469419020
 MonoBehaviour:
   m_ObjectHideFlags: 0
