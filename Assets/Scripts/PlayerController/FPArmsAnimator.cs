@@ -15,7 +15,6 @@ namespace Resonance.Combat
         private PlayerShooter _playerShooter;
         private FPArmsManager _fpArmsManager;
         private PlayerSkinRenderer _skinRenderer;
-        private PlayerActionsInput _playerActionsInput;
         private GameObject _skillArmsInstance;
         private OverdriveAbility _overdriveAbility;
         private PlayerHealthStim _playerHealthStim;
@@ -46,7 +45,6 @@ namespace Resonance.Combat
             _playerShooter = GetComponent<PlayerShooter>();
             _fpArmsManager = GetComponent<FPArmsManager>();
             _skinRenderer = GetComponent<PlayerSkinRenderer>();
-            _playerActionsInput = PlayerActionsInput.Instance;
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerHealthStim = GetComponent<PlayerHealthStim>();
             _grappleHook = GetComponent<AbilityGrappleHook>();
@@ -112,7 +110,18 @@ namespace Resonance.Combat
             if (weapon?.FireClip != null)
             {
                 float fireRate = GetComponent<WeaponStatManager>()?.FireRate ?? 1f;
-                active.SetFloat(FireSpeedHash, _playerActionsInput.AttackHeld ? weapon.FireClip.length * fireRate : 1f);
+                active.SetFloat(FireSpeedHash, PlayerActionsInput.Instance.AttackHeld ? weapon.FireClip.length * fireRate : 1f);
+            }
+
+            if (PlayerActionsInput.Instance.OverdrivePressed)
+            {
+                RequestOverdriveActivation();
+                PlayerActionsInput.Instance.SetOverdrivePressedFales();
+            }
+            if (PlayerActionsInput.Instance.StimPressed)
+            {
+                RequestStimActivation();
+                PlayerActionsInput.Instance.SetStimPressedFalse();
             }
         }
 

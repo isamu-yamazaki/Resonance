@@ -27,11 +27,12 @@ namespace Resonance.PlayerController
         public bool ToggleShopPressed { get; private set; }
 
         public bool AdsHeld { get; private set; }
+        public bool OverdrivePressed { get; private set; }
+        public bool StimPressed { get; private set; }
 
         private PlayerLocomotionInput _playerLocomotionInput;
         private OverdriveAbility _overdriveAbility;
         private PlayerState _playerState;
-        private FPArmsAnimator _fpArmsAnimator;
         #endregion
 
         #region Startup
@@ -48,7 +49,6 @@ namespace Resonance.PlayerController
             _playerLocomotionInput = PlayerLocomotionInput.Instance;
             _overdriveAbility = FindFirstObjectByType<OverdriveAbility>();
             _playerState = FindFirstObjectByType<PlayerState>();
-            _fpArmsAnimator = FindFirstObjectByType<FPArmsAnimator>();
 
             PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
             PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
@@ -137,6 +137,16 @@ namespace Resonance.PlayerController
             AbilityLowerPressed = false;
         }
 
+        public void SetOverdrivePressedFales()
+        {
+            OverdrivePressed = false;
+        }
+
+        public void SetStimPressedFalse()
+        {
+            StimPressed = false;
+        }
+
         #endregion
 
         #region Input Callbacks
@@ -177,7 +187,7 @@ namespace Resonance.PlayerController
         {
             if (!context.performed || IsBlockedByPlayerState()) return;
 
-            _fpArmsAnimator?.RequestOverdriveActivation();
+            OverdrivePressed = true;
         }
 
         public void OnSwapSlotOne(InputAction.CallbackContext context)
@@ -209,7 +219,7 @@ namespace Resonance.PlayerController
         {
             if (!context.performed || IsBlockedByPlayerState()) return;
 
-            _fpArmsAnimator?.RequestStimActivation();
+            StimPressed = true;
         }
 
         public void OnAbilityUpper(InputAction.CallbackContext context)
