@@ -138,6 +138,7 @@ namespace Resonance.PlayerController
 
         protected override void UpdateInput(ref PlayerInputData input)
         {
+            if (!isOwner) return;
             input.JumpPressed |= _playerLocomotionInput.JumpPressed;
             input.SprintToggledOn |= _playerLocomotionInput.SprintToggledOn;
             input.CrouchToggledOn |= _playerLocomotionInput.CrouchToggledOn;
@@ -145,6 +146,7 @@ namespace Resonance.PlayerController
 
         protected override void GetFinalInput(ref PlayerInputData input)
         {
+            if (!isOwner) return;
             input.MovementInput = _playerLocomotionInput.MovementInput;
             input.LookInput = _playerLocomotionInput.LookInput;
             // input.JumpPressed = _playerLocomotionInput.JumpPressed;
