@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Resonance.Combat;
+using Resonance.Helper;
 
 namespace Resonance.PlayerController
 {
@@ -31,8 +32,8 @@ namespace Resonance.PlayerController
         public bool StimPressed { get; private set; }
 
         private PlayerLocomotionInput _playerLocomotionInput;
-        private OverdriveAbility _overdriveAbility;
-        private PlayerState _playerState;
+        private OverdriveAbility _cachedOverdriveAbilityReference;
+        private PlayerState _cachedPlayerStateReference;
         #endregion
 
         #region Startup
@@ -47,9 +48,7 @@ namespace Resonance.PlayerController
             DontDestroyOnLoad(gameObject);
 
             _playerLocomotionInput = PlayerLocomotionInput.Instance;
-            _overdriveAbility = FindFirstObjectByType<OverdriveAbility>();
-            _playerState = FindFirstObjectByType<PlayerState>();
-
+            
             PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
             PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
         }
@@ -78,6 +77,18 @@ namespace Resonance.PlayerController
 
             PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Disable();
             PlayerInputManager.Instance.PlayerControls.PlayerActionMap.RemoveCallbacks(this);
+        }
+
+        // sometime after the player has spawned, try to get component references
+        private void TryCachePlayerComponentReferences()
+        {
+            if (_cachedOverdriveAbilityReference != null && _cachedPlayerStateReference != null) return;
+
+            var gameObject = OwnerFinder.FindGameObjectOfOwnedPlayerPredictedController();
+            if (gameObject == null) return;
+
+            _cachedOverdriveAbilityReference = gameObject.GetComponent<OverdriveAbility>();
+            _cachedPlayerStateReference = gameObject.GetComponent<PlayerState>();
         }
         #endregion
 
@@ -238,7 +249,8 @@ namespace Resonance.PlayerController
 
         public void OnShowMatchStats(InputAction.CallbackContext context)
         {
-            if (_playerState != null && _playerState.IsDead())
+            TryCachePlayerComponentReferences();
+            if (_cachedPlayerStateReference != null && _cachedPlayerStateReference.IsDead())
                 return;
 
             var bridge = UI.InGameViewRouterBridge.Instance;
@@ -287,7 +299,8 @@ namespace Resonance.PlayerController
 
         private bool IsBlockedByPlayerState()
         {
-            return _playerState != null && (_playerState.IsDead() || _playerState.IsMatchFrozen());
+            TryCachePlayerComponentReferences();
+            return _cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen());
         }
     }
 }
