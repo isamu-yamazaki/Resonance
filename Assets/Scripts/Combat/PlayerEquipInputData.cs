@@ -4,9 +4,15 @@ namespace Resonance.Combat
 {
     public struct PlayerEquipInputData : IPredictedData
     {
-        public bool SwapWeaponPressed { get; set; }
-        public bool SwapSlotOnePressed { get; set; }
-        public bool SwapSlotTwoPressed { get; set; }
+        public bool SwapWeaponPressed;
+        public bool SwapSlotOnePressed;
+        public bool SwapSlotTwoPressed;
+
+        public string WeaponKeyToEquip;
+        public bool PendingPrimaryWeaponSlotRemoval;
+        public bool PendingSecondaryWeaponSlotRemoval;
+        public bool PendingUpperAugmentRemoval;
+        public bool PendingLowerAugmentRemoval;
 
         public readonly void Dispose() { }
     }

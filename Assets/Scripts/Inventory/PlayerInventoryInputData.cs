@@ -8,12 +8,8 @@ namespace Resonance.Inventory
     {
         public string WeaponToAddKey;
         public WeaponSlot WeaponToAddSlot;
-        public bool RemoveWeaponPrimary;
-        public bool RemoveWeaponSecondary;
 
         public string AugmentKeyToAdd;
-        public bool RemoveAugmentUpper;
-        public bool RemoveAugmentLower;
 
         public void Dispose() { }
     }

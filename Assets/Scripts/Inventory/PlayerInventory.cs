@@ -19,11 +19,7 @@ namespace Resonance.Inventory
         // Pending operations queued by the public mutator API; drained by UpdateInput each frame.
         private string _pendingWeaponAddKey;
         private WeaponSlot _pendingWeaponAddSlot;
-        private bool _pendingRemoveWeaponPrimary;
-        private bool _pendingRemoveWeaponSecondary;
         private string _pendingAugmentKeyAdd;
-        private bool _pendingRemoveAugmentUpper;
-        private bool _pendingRemoveAugmentLower;
 
         protected override void LateAwake()
         {
@@ -56,15 +52,16 @@ namespace Resonance.Inventory
             _pendingWeaponAddSlot = weaponToAdd.Slot;
         }
 
+        [SimulationOnly]
         public void RemoveWeapon(WeaponSlot slot)
         {
             switch (slot)
             {
                 case WeaponSlot.Primary:
-                    _pendingRemoveWeaponPrimary = true;
+                    currentState.WeaponPrimaryKey = null;
                     break;
                 case WeaponSlot.Secondary:
-                    _pendingRemoveWeaponSecondary = true;
+                    currentState.WeaponSecondaryKey = null;
                     break;
             }
         }
@@ -75,15 +72,16 @@ namespace Resonance.Inventory
             _pendingAugmentKeyAdd = augmentToAdd.Key;
         }
 
+        [SimulationOnly]
         public void RemoveAugment(AugmentSlot slot)
         {
             switch (slot)
             {
                 case AugmentSlot.Upper:
-                    _pendingRemoveAugmentUpper = true;
+                    currentState.AugmentKeyUpper = null;
                     break;
                 case AugmentSlot.Lower:
-                    _pendingRemoveAugmentLower = true;
+                    currentState.AugmentKeyLower = null;
                     break;
             }
         }
@@ -96,30 +94,10 @@ namespace Resonance.Inventory
                 input.WeaponToAddSlot = _pendingWeaponAddSlot;
                 _pendingWeaponAddKey = null;
             }
-            if (_pendingRemoveWeaponPrimary)
-            {
-                input.RemoveWeaponPrimary = true;
-                _pendingRemoveWeaponPrimary = false;
-            }
-            if (_pendingRemoveWeaponSecondary)
-            {
-                input.RemoveWeaponSecondary = true;
-                _pendingRemoveWeaponSecondary = false;
-            }
             if (_pendingAugmentKeyAdd != null)
             {
                 input.AugmentKeyToAdd = _pendingAugmentKeyAdd;
                 _pendingAugmentKeyAdd = null;
-            }
-            if (_pendingRemoveAugmentUpper)
-            {
-                input.RemoveAugmentUpper = true;
-                _pendingRemoveAugmentUpper = false;
-            }
-            if (_pendingRemoveAugmentLower)
-            {
-                input.RemoveAugmentLower = true;
-                _pendingRemoveAugmentLower = false;
             }
         }
 
@@ -137,8 +115,6 @@ namespace Resonance.Inventory
                         break;
                 }
             }
-            if (input.RemoveWeaponPrimary) state.WeaponPrimaryKey = null;
-            if (input.RemoveWeaponSecondary) state.WeaponSecondaryKey = null;
 
             var augment = FindAugmentByKey(input.AugmentKeyToAdd);
             if (augment != null)
@@ -153,8 +129,6 @@ namespace Resonance.Inventory
                         break;
                 }
             }
-            if (input.RemoveAugmentUpper) state.AugmentKeyUpper = null;
-            if (input.RemoveAugmentLower) state.AugmentKeyLower = null;
         }
 
         protected override PlayerInventoryDataState Interpolate(

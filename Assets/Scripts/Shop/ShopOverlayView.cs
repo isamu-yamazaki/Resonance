@@ -605,7 +605,7 @@ namespace Resonance.Shop
 
                 equip.RemoveWeapon(weapon.Slot);
                 inventory.AddWeapon(weapon);
-                equip.EquipWeapon(weapon);
+                equip.EquipWeaponExternal(weapon);
             }
             else
             {
@@ -772,7 +772,7 @@ namespace Resonance.Shop
 
             if (augment == null) return;
 
-            equip.RemoveAugment(augment);
+            equip.RemoveAugmentExternal(augment);
             PlayerMoney.LocalInstance?.AddFunds(augment.AugmentCost * SellRefundRate);
 
 #if !UNITY_SERVER
