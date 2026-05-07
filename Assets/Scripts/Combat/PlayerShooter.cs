@@ -60,7 +60,7 @@ namespace Resonance.Combat
             playerEquip = GetComponent<PlayerEquip>();
             fpArmsManager = GetComponent<FPArmsManager>();
 
-            if (playerCamera == null)
+            if (playerCamera == null && !isServer)
                 playerCamera = Camera.main;
 
             hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
@@ -102,6 +102,9 @@ namespace Resonance.Combat
                 input.ReloadPressed = true;
                 playerActionsInput.SetReloadPressedFalse();
             }
+
+            input.PlayerCameraPosition = playerCamera.transform.position;
+            input.PlayerCameraForward = playerCamera.transform.forward;
         }
 
         protected override void Simulate(PlayerShooterInputData input, ref PlayerShooterDataState state, float delta)
@@ -158,7 +161,7 @@ namespace Resonance.Combat
             // 6. Shoot input
             if ((input.AttackPressed || input.AttackHeld) && state.ReloadTimer <= 0f && state.FireCooldown <= 0f)
             {
-                TrySimulateShoot(ref state, currentSlot);
+                TrySimulateShoot(input, ref state, currentSlot);
             }
         }
 
@@ -193,7 +196,7 @@ namespace Resonance.Combat
 #endif
         }
 
-        private void TrySimulateShoot(ref PlayerShooterDataState state, int currentSlot)
+        private void TrySimulateShoot(in PlayerShooterInputData input, ref PlayerShooterDataState state, int currentSlot)
         {
             if (playerState.IsMatchFrozen()) return;
 
@@ -237,12 +240,12 @@ namespace Resonance.Combat
 
             state.LastShotHitPlayer = false;
             state.LastShotDamage = 0f;
-            state.LastShotEndPoint = view.Muzzle.position + GetAimDirection(view.Muzzle) * weaponStatManager.Range;
+            state.LastShotEndPoint = view.Muzzle.position + GetAimDirectionFromInput(input) * weaponStatManager.Range;
 
             if (weapon.FiringType == WeaponFiringType.Hitscan)
             {
-                Vector3 baseDirection = GetAimDirection(view.Muzzle);
-                FireHitscan(weapon, view, payload, baseDirection, count, ref state);
+                Vector3 baseDirection = GetAimDirectionFromInput(input);
+                FireHitscan(weapon, view, payload, baseDirection, count, input, ref state);
             }
             else
             {
@@ -413,11 +416,9 @@ namespace Resonance.Combat
             }
         }
 
-        private void FireHitscan(WeaponProperties weapon, WeaponView view, WeaponPayload payload, Vector3 baseDirection, int count, ref PlayerShooterDataState state)
+        private void FireHitscan(WeaponProperties weapon, WeaponView view, WeaponPayload payload, Vector3 baseDirection, int count, in PlayerShooterInputData input, ref PlayerShooterDataState state)
         {
-            if (playerCamera == null) return;
-
-            Vector3 rayOrigin = playerCamera.transform.position;
+            Vector3 rayOrigin = input.PlayerCameraPosition;
             float hitscanMaxDistance = weaponStatManager.Range;
 
             for (int i = 0; i < count; i++)
@@ -443,12 +444,12 @@ namespace Resonance.Combat
                     }
 
                     endPoint = hit.point;
+                }
 
-                    if (debugAimRays)
-                    {
-                        Debug.DrawLine(rayOrigin, hit.point, Color.yellow, 0.5f);
-                        Debug.DrawRay(hit.point, hit.normal * 0.3f, Color.cyan, 0.5f);
-                    }
+                if (debugAimRays)
+                {
+                    Debug.DrawLine(rayOrigin, hit.point, Color.yellow, 0.5f);
+                    Debug.DrawRay(hit.point, hit.normal * 0.3f, Color.cyan, 0.5f);
                 }
 
                 state.LastShotEndPoint = endPoint;
@@ -568,6 +569,11 @@ namespace Resonance.Combat
         {
             if (playerCamera == null) return muzzle.forward;
             return playerCamera.transform.forward.normalized;
+        }
+
+        private Vector3 GetAimDirectionFromInput(in PlayerShooterInputData input)
+        {
+            return input.PlayerCameraForward;
         }
 
         private Vector3 GetProjectileAimDirection(Transform muzzle)

@@ -1,12 +1,15 @@
 using PurrNet.Prediction;
+using UnityEngine;
 
 namespace Resonance.Combat
 {
     public struct PlayerShooterInputData : IPredictedData
     {
-        public bool AttackPressed { get; set; }
-        public bool AttackHeld { get; set; }
-        public bool ReloadPressed { get; set; }
+        public bool AttackPressed;
+        public bool AttackHeld;
+        public bool ReloadPressed;
+        public Vector3 PlayerCameraPosition;
+        public Vector3 PlayerCameraForward;
 
         public readonly void Dispose() { }
     }
