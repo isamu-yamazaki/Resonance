@@ -86,7 +86,7 @@ namespace Resonance.Inventory
             }
         }
 
-        protected override void UpdateInput(ref PlayerInventoryInputData input)
+        protected override void GetFinalInput(ref PlayerInventoryInputData input)
         {
             if (_pendingWeaponAddKey != null)
             {

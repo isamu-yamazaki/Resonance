@@ -581,7 +581,7 @@ namespace Resonance.Shop
             PlayerInventory inventory = GetPlayerInventory();
 
             if (equip == null || inventory == null) return;
-            if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(newWeapon.WeaponCost))
+            if (PlayerMoney.LocalInstance == null || !PlayerMoney.LocalInstance.TrySpend(newWeapon.WeaponCost))
             {
                 Debug.Log("Not enough credits.");
 #if !UNITY_SERVER
@@ -599,9 +599,9 @@ namespace Resonance.Shop
                 foreach (WeaponModProperties mod in oldWeapon.ModList)
                 {
                     if (mod != null)
-                        PlayerMoney.Instance?.AddFunds(mod.ModCost * SellRefundRate);
+                        PlayerMoney.LocalInstance?.AddFunds(mod.ModCost * SellRefundRate);
                 }
-                PlayerMoney.Instance?.AddFunds(oldWeapon.WeaponCost * SellRefundRate);
+                PlayerMoney.LocalInstance?.AddFunds(oldWeapon.WeaponCost * SellRefundRate);
 
                 equip.RemoveWeapon(weapon.Slot);
                 inventory.AddWeapon(weapon);
@@ -630,7 +630,7 @@ namespace Resonance.Shop
             PlayerInventory inventory = GetPlayerInventory();
 
             if (equip == null || inventory == null) return;
-            if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(augment.AugmentCost))
+            if (PlayerMoney.LocalInstance == null || !PlayerMoney.LocalInstance.TrySpend(augment.AugmentCost))
             {
                 Debug.Log("Not enough credits.");
 #if !UNITY_SERVER
@@ -645,7 +645,7 @@ namespace Resonance.Shop
                 : inventory.augmentInventory[1];
 
             if (existing != null)
-                PlayerMoney.Instance?.AddFunds(existing.AugmentCost * SellRefundRate);
+                PlayerMoney.LocalInstance?.AddFunds(existing.AugmentCost * SellRefundRate);
 
             equip.EquipAugment(augment);
 
@@ -668,7 +668,7 @@ namespace Resonance.Shop
 
             if (targetWeapon == null) return;
 
-            if (PlayerMoney.Instance == null || !PlayerMoney.Instance.TrySpend(mod.ModCost))
+            if (PlayerMoney.LocalInstance == null || !PlayerMoney.LocalInstance.TrySpend(mod.ModCost))
             {
                 Debug.Log("Not enough credits.");
 #if !UNITY_SERVER
@@ -681,7 +681,7 @@ namespace Resonance.Shop
             WeaponModProperties existing = targetWeapon.ModList.FirstOrDefault(m => m != null && m.Slot == mod.Slot);
             if (existing != null)
             {
-                PlayerMoney.Instance?.AddFunds(existing.ModCost * SellRefundRate);
+                PlayerMoney.LocalInstance?.AddFunds(existing.ModCost * SellRefundRate);
                 targetWeapon.ModList.Remove(existing);
             }
 
@@ -719,10 +719,10 @@ namespace Resonance.Shop
             foreach (WeaponModProperties mod in weapon.ModList)
             {
                 if (mod != null)
-                    PlayerMoney.Instance?.AddFunds(mod.ModCost * SellRefundRate);
+                    PlayerMoney.LocalInstance?.AddFunds(mod.ModCost * SellRefundRate);
             }
 
-            PlayerMoney.Instance?.AddFunds(weapon.WeaponCost * SellRefundRate);
+            PlayerMoney.LocalInstance?.AddFunds(weapon.WeaponCost * SellRefundRate);
             equip?.RemoveWeapon(slot);
 
 #if !UNITY_SERVER
@@ -749,7 +749,7 @@ namespace Resonance.Shop
 
             weapon.ModList.Remove(mod);
             GetPlayerShooter()?.RefreshWeaponStats();
-            PlayerMoney.Instance?.AddFunds(mod.ModCost * SellRefundRate);
+            PlayerMoney.LocalInstance?.AddFunds(mod.ModCost * SellRefundRate);
 
 #if !UNITY_SERVER
             if (shopItemSellEvent != null && shopItemSellEvent.IsValid())
@@ -773,7 +773,7 @@ namespace Resonance.Shop
             if (augment == null) return;
 
             equip.RemoveAugment(augment);
-            PlayerMoney.Instance?.AddFunds(augment.AugmentCost * SellRefundRate);
+            PlayerMoney.LocalInstance?.AddFunds(augment.AugmentCost * SellRefundRate);
 
 #if !UNITY_SERVER
             if (shopItemSellEvent != null && shopItemSellEvent.IsValid())
@@ -787,8 +787,8 @@ namespace Resonance.Shop
         #region Balance
         private void RefreshBalanceText()
         {
-            if (balanceText != null && PlayerMoney.Instance != null)
-                balanceText.text = $"₢ {PlayerMoney.Instance.Balance:0.00}";
+            if (balanceText != null && PlayerMoney.LocalInstance != null)
+                balanceText.text = $"₢ {PlayerMoney.LocalInstance.Balance:0.00}";
 
             RefreshAllItems();
         }
