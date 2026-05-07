@@ -37,6 +37,7 @@ namespace Resonance.PlayerController
         public bool IsTPHidden => _tpHidden;
 
         private int _lastAppliedSkinIndex = -1;
+        private PlayerSkinRendererDataState? _previousStateFromServer;
 
         public bool ShouldRenderArmsOnlyBasedOnCachedMatchState
         {
@@ -124,6 +125,16 @@ namespace Resonance.PlayerController
                 && input.SkinIndex >= 0 && input.SkinIndex < skinCatalog.Count)
             {
                 state.SkinIndex = input.SkinIndex;
+            }
+
+            if (predictionManager.isVerified)
+            {
+                if (_previousStateFromServer?.SkinIndex != state.SkinIndex)
+                {
+                    ApplySkin(state.SkinIndex);
+                }
+
+                _previousStateFromServer = state;
             }
         }
 

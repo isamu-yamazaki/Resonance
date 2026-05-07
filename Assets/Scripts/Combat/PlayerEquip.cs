@@ -43,7 +43,7 @@ namespace Resonance.Combat
         public WeaponView CurrentWeaponView => currentWeaponView;
 
         private WeaponProperties[] weapons;
-        public WeaponProperties EquippedWeapon => System.Array.Find(weapons, w => w.Key == currentState.EquippedWeaponKey);
+        public WeaponProperties EquippedWeapon => Array.Find(weapons, w => w.Key == currentState.EquippedWeaponKey);
 
         private bool _isInitialEquip = true;
         private int _lastViewedSlot = int.MinValue;
@@ -148,6 +148,19 @@ namespace Resonance.Combat
             }
 
             SimulateEquipWeapon(input, ref state);
+            SimulateWeaponViewUpdate();
+        }
+
+        [SimulationOnly]
+        private void SimulateWeaponViewUpdate()
+        {
+            if (EquippedWeapon == null) return;
+
+            var skinInstance = playerSkinRenderer.CurrentMeshInstance;
+            if (skinInstance == null) return;
+
+            var allViews = skinInstance.GetComponentsInChildren<WeaponView>(true);
+            currentWeaponView = allViews.FirstOrDefault(v => v.WeaponKey == EquippedWeapon.WeaponMuzzleKey);
         }
 
         [SimulationOnly]
@@ -234,7 +247,6 @@ namespace Resonance.Combat
         {
             if (skinInstance == null) return;
 
-            var allViews = skinInstance.GetComponentsInChildren<WeaponView>(true);
             var allMeshes = skinInstance.GetComponentsInChildren<TPWeaponMesh>(true);
 
             foreach (var mesh in allMeshes)
@@ -266,7 +278,6 @@ namespace Resonance.Combat
                 }
             }
 
-            currentWeaponView = allViews.FirstOrDefault(v => v.WeaponKey == EquippedWeapon.WeaponMuzzleKey);
 
             if (currentWeaponView == null)
             {
