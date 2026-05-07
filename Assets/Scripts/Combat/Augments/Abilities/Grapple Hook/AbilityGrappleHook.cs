@@ -67,7 +67,7 @@ namespace Resonance.Combat.Augments
             ropeRenderer.IsGrappling.value = true;
             currentReelTime = 0f;
 
-            playerState.SetPlayerMovementState(PlayerMovementState.Grappling);
+            playerState.SetExternalPlayerMovementState(PlayerMovementState.Grappling);
 
             BroadcastShootAndTravelRpc();
             RequestGrappleRegistrationOnServer(transform.position);
@@ -146,7 +146,7 @@ namespace Resonance.Combat.Augments
             if (earlyExit)
                 playerController.ApplyImpulse(exitDirection * (reelSpeed + exitBoost));
 
-            playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+            playerState.SetExternalPlayerMovementState(PlayerMovementState.Falling);
 
             fpArmsAnimator?.TriggerGrappleEnd();
             BroadcastStopTravelRpc();

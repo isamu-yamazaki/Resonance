@@ -230,7 +230,7 @@ namespace Resonance.PlayerController
             {
                 _slideTimer = slideDuration;
                 _slideDirection = new Vector3(_characterController.velocity.x, 0f, _characterController.velocity.z).normalized;
-                _playerState.SetPlayerMovementState(PlayerMovementState.Sliding);
+                _playerState.SetExternalPlayerMovementState(PlayerMovementState.Sliding);
                 _wasCrouchPressedLastFrame = isCrouchToggled;
                 _characterController.stepOffset = _stepOffset;
                 return;
@@ -260,7 +260,7 @@ namespace Resonance.PlayerController
                 }
                 else
                 {
-                    _playerState.SetPlayerMovementState(PlayerMovementState.Sliding);
+                    _playerState.SetExternalPlayerMovementState(PlayerMovementState.Sliding);
                     return;
                 }
             }
@@ -270,18 +270,18 @@ namespace Resonance.PlayerController
                                                isSprinting ? PlayerMovementState.Sprinting :  
                                                isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
 
-            _playerState.SetPlayerMovementState(lateralState);
+            _playerState.SetExternalPlayerMovementState(lateralState);
             
             // Control Airborne State
             if ((!isGrounded || _jumpedLastFrame) && _characterController.velocity.y > 0f)
             {
-                _playerState.SetPlayerMovementState(PlayerMovementState.Jumping);
+                _playerState.SetExternalPlayerMovementState(PlayerMovementState.Jumping);
                 _jumpedLastFrame = false;
                 _characterController.stepOffset = 0f;
             }
             else if ((!isGrounded || _jumpedLastFrame) && _characterController.velocity.y <= 0f)
             {
-                _playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+                _playerState.SetExternalPlayerMovementState(PlayerMovementState.Falling);
                 _jumpedLastFrame = false;
                 _characterController.stepOffset = 0f;
             }

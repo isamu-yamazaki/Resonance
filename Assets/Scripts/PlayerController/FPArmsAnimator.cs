@@ -77,11 +77,11 @@ namespace Resonance.Combat
                 _fpArmsManager.RefreshArms();
                 TriggerOnActiveAnimator(isNew ? IsFirstBuyHash : IsDrawHash);
                 _pendingFirstBuy = false;
-                _playerState.SetWeaponState(WeaponState.Drawing);
+                _playerState.SetExternalWeaponState(WeaponState.Drawing);
             }
             else
             {
-                _playerState.SetWeaponState(WeaponState.Holstering);
+                _playerState.SetExternalWeaponState(WeaponState.Holstering);
                 TriggerOnActiveAnimator(IsHolsterHash);
             }
         }
@@ -156,7 +156,7 @@ namespace Resonance.Combat
                     kvp.Value.SetActive(false);
             }
 
-            _playerState.SetWeaponState(skillState);
+            _playerState.SetExternalWeaponState(skillState);
 
             if (skillState != WeaponState.Grappling)
             {
@@ -201,26 +201,26 @@ namespace Resonance.Combat
             TriggerOnActiveAnimator(_pendingFirstBuy ? IsFirstBuyHash : IsDrawHash);
             _pendingFirstBuy = false;
             _pendingWeapon = null;
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         public void OnDrawComplete()
         {
-            _playerState.SetWeaponState(WeaponState.Idle);
+            _playerState.SetExternalWeaponState(WeaponState.Idle);
         }
 
         public void TriggerFirstBuy()
         {
             _holsteredClasses.Remove(BucketClass(_playerState.CurrentWeaponClass));
             TriggerOnActiveAnimator(IsFirstBuyHash);
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         public void TriggerDraw()
         {
             _holsteredClasses.Remove(BucketClass(_playerState.CurrentWeaponClass));
             TriggerOnActiveAnimator(IsDrawHash);
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         private void TriggerOnActiveAnimator(int hash)
@@ -261,7 +261,7 @@ namespace Resonance.Combat
             _pendingWeapon = null;
             _seenWeaponClasses.Clear();
             _holsteredClasses.Clear();
-            _playerState.SetWeaponState(WeaponState.Idle);
+            _playerState.SetExternalWeaponState(WeaponState.Idle);
         }
         
         public void RequestOverdriveActivation()
@@ -275,7 +275,7 @@ namespace Resonance.Combat
             if (_playerState.CurrentWeaponState == WeaponState.Stimming) return;
 
             _pendingSkillState = WeaponState.Casting;
-            _playerState.SetWeaponState(WeaponState.Holstering);
+            _playerState.SetExternalWeaponState(WeaponState.Holstering);
             TriggerOnActiveAnimator(IsHolsterHash);
         }
 
@@ -290,13 +290,13 @@ namespace Resonance.Combat
             if (_playerState.CurrentWeaponState == WeaponState.Stimming) return;
 
             _pendingSkillState = WeaponState.Stimming;
-            _playerState.SetWeaponState(WeaponState.Holstering);
+            _playerState.SetExternalWeaponState(WeaponState.Holstering);
             TriggerOnActiveAnimator(IsHolsterHash);
         }
 
         private IEnumerator SkillActivationRoutine(WeaponState skillState)
         {
-            _playerState.SetWeaponState(WeaponState.Holstering);
+            _playerState.SetExternalWeaponState(WeaponState.Holstering);
             TriggerOnActiveAnimator(IsHolsterHash);
 
             while (_playerState.CurrentWeaponState == WeaponState.Holstering)
@@ -306,7 +306,7 @@ namespace Resonance.Combat
             if (_skillArmsInstance == null) yield break;
 
             _skillArmsInstance.SetActive(true);
-            _playerState.SetWeaponState(skillState);
+            _playerState.SetExternalWeaponState(skillState);
 
             Animator skillAnimator = _skillArmsInstance.GetComponent<Animator>();
             if (skillAnimator != null)
@@ -346,7 +346,7 @@ namespace Resonance.Combat
             yield return null;
 
             TriggerOnActiveAnimator(IsDrawHash);
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
         
         public void RequestGrappleActivation()
@@ -356,7 +356,7 @@ namespace Resonance.Combat
             if (!_grappleHook.CanGrapple()) return;
 
             _pendingSkillState = WeaponState.Grappling;
-            _playerState.SetWeaponState(WeaponState.Holstering);
+            _playerState.SetExternalWeaponState(WeaponState.Holstering);
             TriggerOnActiveAnimator(IsHolsterHash);
         }
 
@@ -383,7 +383,7 @@ namespace Resonance.Combat
             yield return null;
 
             TriggerOnActiveAnimator(IsDrawHash);
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         public void TriggerGrappleEnd()

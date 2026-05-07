@@ -273,11 +273,11 @@ namespace Resonance.Combat
             // Update weapon animation state
             if (viewState.ReloadTimer > 0f)
             {
-                playerState?.SetWeaponState(viewState.IsEmptyReload ? WeaponState.EmptyReloading : WeaponState.Reloading);
+                playerState?.SetExternalWeaponState(viewState.IsEmptyReload ? WeaponState.EmptyReloading : WeaponState.Reloading);
             }
             else if (newShots > 0)
             {
-                playerState?.SetWeaponState(WeaponState.Shooting);
+                playerState?.SetExternalWeaponState(WeaponState.Shooting);
             }
             else
             {
@@ -285,7 +285,7 @@ namespace Resonance.Combat
                     playerState?.CurrentWeaponState == WeaponState.Reloading ||
                     playerState?.CurrentWeaponState == WeaponState.EmptyReloading)
                 {
-                    playerState.SetWeaponState(WeaponState.Idle);
+                    playerState.SetExternalWeaponState(WeaponState.Idle);
                 }
             }
 

@@ -193,7 +193,7 @@ public class Zipline : MonoBehaviour, IInteractable
             targetCablePosition = distToA < distToB ? pointBWorld : pointAWorld;
         }
 
-        playerState.SetPlayerMovementState(PlayerMovementState.Ziplining);
+        playerState.SetExternalPlayerMovementState(PlayerMovementState.Ziplining);
         InteractPromptUI.Instance?.Hide();
 
         isRiding = true;
@@ -338,7 +338,7 @@ public class Zipline : MonoBehaviour, IInteractable
     {
         if (currentPlayer != null)
         {
-            playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+            playerState.SetExternalPlayerMovementState(PlayerMovementState.Falling);
 
             Resonance.PlayerController.PlayerController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerController>();
             pc?.ResetState();

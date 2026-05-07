@@ -29,13 +29,13 @@ namespace Resonance.PlayerController
 
             if (roundManager.IsMatchEnded)
             {
-                playerState.SetPlayerMovementState(PlayerMovementState.MatchEndedFrozen);
+                playerState.SetExternalPlayerMovementState(PlayerMovementState.MatchEndedFrozen);
             } else if (!roundManager.IsMatchActive)
             {
-                playerState.SetPlayerMovementState(PlayerMovementState.PreMatchFrozen);
+                playerState.SetExternalPlayerMovementState(PlayerMovementState.PreMatchFrozen);
             } else if (playerState.IsMatchFrozen())
             {
-                playerState.SetPlayerMovementState(PlayerMovementState.Idling);
+                playerState.SetExternalPlayerMovementState(PlayerMovementState.Idling);
             }
         }
 

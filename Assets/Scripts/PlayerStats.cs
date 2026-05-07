@@ -213,8 +213,8 @@ namespace Resonance.Player
                 if (_playerController != null)
                     _playerController.IsPlayerDead = true;
 
-                _playerState?.SetPlayerMovementState(PlayerMovementState.Dead);
-                _playerState?.SetWeaponState(WeaponState.Idle);
+                _playerState?.SetExternalPlayerMovementState(PlayerMovementState.Dead);
+                _playerState?.SetExternalWeaponState(WeaponState.Idle);
                 GetComponent<PlayerShooter>()?.CancelReloadAndRefill();
 
                 if (_playerController != null)
@@ -238,8 +238,8 @@ namespace Resonance.Player
 
                 lastAttacker = null;
 
-                _playerState?.SetPlayerMovementState(PlayerMovementState.Idling);
-                _playerState?.SetWeaponState(WeaponState.Idle);
+                _playerState?.SetExternalPlayerMovementState(PlayerMovementState.Idling);
+                _playerState?.SetExternalWeaponState(WeaponState.Idle);
                 _playerController?.ResetState();
 
                 if (_characterController != null)
