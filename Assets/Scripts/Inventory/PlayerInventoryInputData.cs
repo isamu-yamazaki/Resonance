@@ -11,7 +11,7 @@ namespace Resonance.Inventory
         public bool RemoveWeaponPrimary;
         public bool RemoveWeaponSecondary;
 
-        public AugmentProperties AugmentToAdd;
+        public string AugmentKeyToAdd;
         public bool RemoveAugmentUpper;
         public bool RemoveAugmentLower;
 

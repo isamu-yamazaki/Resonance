@@ -8,8 +8,8 @@ namespace Resonance.Inventory
         public string WeaponPrimaryKey;
         public string WeaponSecondaryKey;
 
-        public AugmentProperties AugmentUpper;
-        public AugmentProperties AugmentLower;
+        public string AugmentKeyUpper;
+        public string AugmentKeyLower;
 
         public readonly void Dispose() { }
     }

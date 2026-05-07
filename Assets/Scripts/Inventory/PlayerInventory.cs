@@ -14,19 +14,21 @@ namespace Resonance.Inventory
         [SerializeField] WeaponProperties startingWeapon;
 
         private WeaponProperties[] _weaponResources;
+        private AugmentProperties[] _augmentResources;
 
         // Pending operations queued by the public mutator API; drained by UpdateInput each frame.
         private string _pendingWeaponAddKey;
         private WeaponSlot _pendingWeaponAddSlot;
         private bool _pendingRemoveWeaponPrimary;
         private bool _pendingRemoveWeaponSecondary;
-        private AugmentProperties _pendingAugmentAdd;
+        private string _pendingAugmentKeyAdd;
         private bool _pendingRemoveAugmentUpper;
         private bool _pendingRemoveAugmentLower;
 
         protected override void LateAwake()
         {
             _weaponResources = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+            _augmentResources = Resources.LoadAll<AugmentProperties>("Content/Augments");
         }
 
         protected override PlayerInventoryDataState GetInitialState()
@@ -70,7 +72,7 @@ namespace Resonance.Inventory
         public void AddAugment(AugmentProperties augmentToAdd)
         {
             if (augmentToAdd == null) return;
-            _pendingAugmentAdd = augmentToAdd;
+            _pendingAugmentKeyAdd = augmentToAdd.Key;
         }
 
         public void RemoveAugment(AugmentSlot slot)
@@ -104,10 +106,10 @@ namespace Resonance.Inventory
                 input.RemoveWeaponSecondary = true;
                 _pendingRemoveWeaponSecondary = false;
             }
-            if (_pendingAugmentAdd != null)
+            if (_pendingAugmentKeyAdd != null)
             {
-                input.AugmentToAdd = _pendingAugmentAdd;
-                _pendingAugmentAdd = null;
+                input.AugmentKeyToAdd = _pendingAugmentKeyAdd;
+                _pendingAugmentKeyAdd = null;
             }
             if (_pendingRemoveAugmentUpper)
             {
@@ -138,20 +140,21 @@ namespace Resonance.Inventory
             if (input.RemoveWeaponPrimary) state.WeaponPrimaryKey = null;
             if (input.RemoveWeaponSecondary) state.WeaponSecondaryKey = null;
 
-            if (input.AugmentToAdd != null)
+            var augment = FindAugmentByKey(input.AugmentKeyToAdd);
+            if (augment != null)
             {
-                switch (input.AugmentToAdd.Slot)
+                switch (augment.Slot)
                 {
                     case AugmentSlot.Upper:
-                        state.AugmentUpper = input.AugmentToAdd;
+                        state.AugmentKeyUpper = input.AugmentKeyToAdd;
                         break;
                     case AugmentSlot.Lower:
-                        state.AugmentLower = input.AugmentToAdd;
+                        state.AugmentKeyLower = input.AugmentKeyToAdd;
                         break;
                 }
             }
-            if (input.RemoveAugmentUpper) state.AugmentUpper = null;
-            if (input.RemoveAugmentLower) state.AugmentLower = null;
+            if (input.RemoveAugmentUpper) state.AugmentKeyUpper = null;
+            if (input.RemoveAugmentLower) state.AugmentKeyLower = null;
         }
 
         protected override PlayerInventoryDataState Interpolate(
@@ -166,14 +169,20 @@ namespace Resonance.Inventory
         {
             weaponInventory[0] = FindWeaponByKey(viewState.WeaponPrimaryKey);
             weaponInventory[1] = FindWeaponByKey(viewState.WeaponSecondaryKey);
-            augmentInventory[0] = viewState.AugmentUpper;
-            augmentInventory[1] = viewState.AugmentLower;
+            augmentInventory[0] = FindAugmentByKey(viewState.AugmentKeyUpper);
+            augmentInventory[1] = FindAugmentByKey(viewState.AugmentKeyLower);
         }
 
         private WeaponProperties FindWeaponByKey(string key)
         {
             if (string.IsNullOrEmpty(key) || _weaponResources == null) return null;
             return System.Array.Find(_weaponResources, w => w.Key == key);
+        }
+
+        private AugmentProperties FindAugmentByKey(string key)
+        {
+            if (string.IsNullOrEmpty(key) || _augmentResources == null) return null;
+            return System.Array.Find(_augmentResources, a => a.Key == key);
         }
     }
 }
