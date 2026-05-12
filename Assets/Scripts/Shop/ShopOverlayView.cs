@@ -620,7 +620,6 @@ namespace Resonance.Shop
             {
                 equip.GetComponent<FPArmsAnimator>()?.TriggerFirstBuy();
             }
-            inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
 
@@ -653,7 +652,6 @@ namespace Resonance.Shop
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
 #endif
-            inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
 
@@ -692,7 +690,6 @@ namespace Resonance.Shop
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
                 shopItemBuyEvent.Post(gameObject);
 #endif
-            inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
 
@@ -729,7 +726,6 @@ namespace Resonance.Shop
             if (shopItemSellEvent != null && shopItemSellEvent.IsValid())
                 shopItemSellEvent.Post(gameObject);
 #endif
-            inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
 
@@ -755,7 +751,6 @@ namespace Resonance.Shop
             if (shopItemSellEvent != null && shopItemSellEvent.IsValid())
                 shopItemSellEvent.Post(gameObject);
 #endif
-            inventoryDisplay.Refresh();
             PopulateMods();
             RefreshBalanceText();
         }
@@ -779,7 +774,6 @@ namespace Resonance.Shop
             if (shopItemSellEvent != null && shopItemSellEvent.IsValid())
                 shopItemSellEvent.Post(gameObject);
 #endif
-            inventoryDisplay.Refresh();
             RefreshBalanceText();
         }
         #endregion
@@ -821,10 +815,6 @@ namespace Resonance.Shop
             else if (activeMainTab == augmentTabButton) PopulateAugments();
             else if (activeMainTab == modTabButton) PopulateMods();
 
-            if (inventoryDisplay != null)
-            {
-                inventoryDisplay.Refresh();
-            }
         }
 
         public void OnHide()

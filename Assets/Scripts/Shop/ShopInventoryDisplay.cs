@@ -40,16 +40,29 @@ namespace Resonance.Shop
 
         private void Awake()
         {
-            if (playerInventory == null)
-                playerInventory = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerInventory>();
-
             primaryWeaponSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellWeapon(WeaponSlot.Primary));
             secondaryWeaponSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellWeapon(WeaponSlot.Secondary));
             upperAugmentSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellAugment(AugmentSlot.Upper));
             lowerAugmentSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellAugment(AugmentSlot.Lower));
         }
 
-        public void Refresh()
+        private void OnEnable()
+        {
+            if (playerInventory == null)
+                playerInventory = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerInventory>();
+            if (playerInventory == null) return;
+
+            playerInventory.OnInventoryChanged += Refresh;
+            Refresh();
+        }
+
+        private void OnDisable()
+        {
+            if (playerInventory != null)
+                playerInventory.OnInventoryChanged -= Refresh;
+        }
+
+        private void Refresh()
         {
             if (playerInventory == null || !playerInventory.isOwner)
             {

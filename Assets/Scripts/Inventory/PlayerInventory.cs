@@ -8,8 +8,12 @@ namespace Resonance.Inventory
 {
     public class PlayerInventory : PredictedIdentity<PlayerInventoryInputData, PlayerInventoryDataState>
     {
+        public event System.Action OnInventoryChanged;
+
         public WeaponProperties[] weaponInventory { get; private set; } = new WeaponProperties[2];
         public AugmentProperties[] augmentInventory { get; private set; } = new AugmentProperties[2];
+
+        private PlayerInventoryDataState? _previousVerifiedState;
 
         [SerializeField] WeaponProperties startingWeapon;
 
@@ -141,10 +145,24 @@ namespace Resonance.Inventory
 
         protected override void UpdateView(PlayerInventoryDataState viewState, PlayerInventoryDataState? verified)
         {
-            weaponInventory[0] = FindWeaponByKey(viewState.WeaponPrimaryKey);
-            weaponInventory[1] = FindWeaponByKey(viewState.WeaponSecondaryKey);
-            augmentInventory[0] = FindAugmentByKey(viewState.AugmentKeyUpper);
-            augmentInventory[1] = FindAugmentByKey(viewState.AugmentKeyLower);
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            weaponInventory[0] = FindWeaponByKey(v.WeaponPrimaryKey);
+            weaponInventory[1] = FindWeaponByKey(v.WeaponSecondaryKey);
+            augmentInventory[0] = FindAugmentByKey(v.AugmentKeyUpper);
+            augmentInventory[1] = FindAugmentByKey(v.AugmentKeyLower);
+
+            if (!_previousVerifiedState.HasValue
+                || _previousVerifiedState.Value.WeaponPrimaryKey != v.WeaponPrimaryKey
+                || _previousVerifiedState.Value.WeaponSecondaryKey != v.WeaponSecondaryKey
+                || _previousVerifiedState.Value.AugmentKeyUpper != v.AugmentKeyUpper
+                || _previousVerifiedState.Value.AugmentKeyLower != v.AugmentKeyLower)
+            {
+                OnInventoryChanged?.Invoke();
+            }
+
+            _previousVerifiedState = v;
         }
 
         private WeaponProperties FindWeaponByKey(string key)
