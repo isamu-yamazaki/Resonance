@@ -38,6 +38,18 @@ namespace Resonance.PlayerController
             requestWeaponStateUpdate = true;
         }
 
+        public void SetExternalPlayerMovementState(PlayerMovementState playerMovementState)
+        {
+            pendingMovementState = playerMovementState;
+            requestMovementStateUpdate = true;
+        }
+
+        [SimulationOnly]
+        public void SetSimulatedPlayerMovementState(PlayerMovementState playerMovementState)
+        {
+            currentState.MovementState = playerMovementState;
+        }
+
         private bool IsValidTransition(WeaponState from, WeaponState to)
         {
             switch (from)
@@ -65,11 +77,6 @@ namespace Resonance.PlayerController
             }
         }
 
-        public void SetExternalPlayerMovementState(PlayerMovementState playerMovementState)
-        {
-            pendingMovementState = playerMovementState;
-            requestMovementStateUpdate = true;
-        }
 
         public bool InGroundedState()
         {
