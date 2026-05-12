@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    public class PlayerAnimation : NetworkBehaviour
+    public class PlayerAnimation : MonoBehaviour
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private NetworkAnimator _networkAnimator;
@@ -33,12 +33,6 @@ namespace Resonance.PlayerController
 
         private int[] actionHashes;
         private Vector3 _currentBlendInput = Vector3.zero;
-
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
-            enabled = isOwner;
-        }
 
         private void Awake()
         {
