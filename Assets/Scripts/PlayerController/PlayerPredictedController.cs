@@ -118,6 +118,7 @@ namespace Resonance.PlayerController
                 JumpedLastSimulatedFrame = false,
                 WasGroundedLastTick = true,
                 LastSimulatedMovementState = PlayerMovementState.Falling,
+                SimulatedMovementState = PlayerMovementState.Falling,
                 SlideTimer = 0f,
             };
         }
@@ -185,6 +186,7 @@ namespace Resonance.PlayerController
                 delta);
 
             PlayerSimulation.Step(ctx, ref state);
+            _playerState.SetSimulatedPlayerMovementState(state.SimulatedMovementState);
         }
 
         protected override PlayerMovementDataState Interpolate(
@@ -202,6 +204,7 @@ namespace Resonance.PlayerController
                 JumpedLastSimulatedFrame = to.JumpedLastSimulatedFrame,
                 WasGroundedLastTick = to.WasGroundedLastTick,
                 LastSimulatedMovementState = to.LastSimulatedMovementState,
+                SimulatedMovementState = to.SimulatedMovementState,
                 SlideTimer = Mathf.Lerp(from.SlideTimer, to.SlideTimer, t),
             };
         }
@@ -228,7 +231,7 @@ namespace Resonance.PlayerController
             float targetFOV = _config.baseFOV;
             if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
                 targetFOV = _config.overdriveFOV;
-            else if (viewState.LastSimulatedMovementState == PlayerMovementState.Sprinting)
+            else if (viewState.SimulatedMovementState == PlayerMovementState.Sprinting)
                 targetFOV = _config.sprintFOV;
             _virtualCamera.Lens.FieldOfView = Mathf.Lerp(_virtualCamera.Lens.FieldOfView, targetFOV, _config.fovTransitionSpeed * Time.deltaTime);
         }

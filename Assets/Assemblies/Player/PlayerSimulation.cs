@@ -12,8 +12,50 @@ namespace Resonance.Assemblies.Player
             TickVerticalMovement(ctx, ref state);
             TickLateralMovement(ctx, ref state);
             TickCharacterControllerMovement(ctx, ref state);
+            TickMovementState(ctx, ref state);
 
             state.LastSimulatedMovementState = ctx.Dependency.CurrentPlayerMovementState;
+        }
+
+        public static void TickMovementState(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
+        {
+            bool isGrounded = ctx.CharacterController.isGrounded && !state.JumpedLastSimulatedFrame;
+
+            if (state.SlideTimer > 0f)
+            {
+                state.SimulatedMovementState = PlayerMovementState.Sliding;
+                return;
+            }
+
+            if (!isGrounded)
+            {
+                state.SimulatedMovementState = state.Velocity.y > 0f
+                    ? PlayerMovementState.Jumping
+                    : PlayerMovementState.Falling;
+                return;
+            }
+
+            bool isMovingLaterally = new Vector3(state.Velocity.x, 0f, state.Velocity.z).magnitude > ctx.Config.movingThreshold;
+            bool hasMovementInput = ctx.Input.MovementInput != Vector2.zero;
+            bool canRun = ctx.Input.MovementInput.y >= Mathf.Abs(ctx.Input.MovementInput.x);
+            bool isSprinting = ctx.Input.SprintToggledOn && isMovingLaterally && !ctx.Input.CrouchToggledOn && canRun;
+
+            if (ctx.Input.CrouchToggledOn && !ctx.Input.SprintToggledOn)
+            {
+                state.SimulatedMovementState = PlayerMovementState.Crouching;
+            }
+            else if (isSprinting)
+            {
+                state.SimulatedMovementState = PlayerMovementState.Sprinting;
+            }
+            else if (isMovingLaterally || hasMovementInput)
+            {
+                state.SimulatedMovementState = PlayerMovementState.Running;
+            }
+            else
+            {
+                state.SimulatedMovementState = PlayerMovementState.Idling;
+            }
         }
 
         public static void TickCameraMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)

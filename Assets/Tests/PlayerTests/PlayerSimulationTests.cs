@@ -45,7 +45,8 @@ public class PlayerSimulationTests
         float slideDeceleration = 8f,
         float slopeAngleThreshold = 15f,
         float uphillSlideDecelerationMultiplier = 2f,
-        float downhillSlideSpeedBoost = 1.5f
+        float downhillSlideSpeedBoost = 1.5f,
+        float movingThreshold = 0.01f
     )
     {
         return new PlayerConfig
@@ -68,6 +69,7 @@ public class PlayerSimulationTests
             slopeAngleThreshold = slopeAngleThreshold,
             uphillSlideDecelerationMultiplier = uphillSlideDecelerationMultiplier,
             downhillSlideSpeedBoost = downhillSlideSpeedBoost,
+            movingThreshold = movingThreshold,
         };
     }
 
@@ -95,13 +97,17 @@ public class PlayerSimulationTests
 
     private static PlayerInputData MakeInput(
         Vector2 movementInput = default,
-        bool jumpPressed = false
+        bool jumpPressed = false,
+        bool sprintToggledOn = false,
+        bool crouchToggledOn = false
     )
     {
         return new PlayerInputData
         {
             MovementInput = movementInput,
             JumpPressed = jumpPressed,
+            SprintToggledOn = sprintToggledOn,
+            CrouchToggledOn = crouchToggledOn,
         };
     }
 
@@ -111,6 +117,7 @@ public class PlayerSimulationTests
         Vector3 grappleImpulse = default,
         bool jumpedLastSimulatedFrame = false,
         PlayerMovementState lastSimulatedMovementState = PlayerMovementState.Falling,
+        PlayerMovementState simulatedMovementState = PlayerMovementState.Falling,
         float slideTimer = 0f
     )
     {
@@ -121,6 +128,7 @@ public class PlayerSimulationTests
             GrappleImpulse = grappleImpulse,
             JumpedLastSimulatedFrame = jumpedLastSimulatedFrame,
             LastSimulatedMovementState = lastSimulatedMovementState,
+            SimulatedMovementState = simulatedMovementState,
             SlideTimer = slideTimer,
         };
     }
@@ -983,6 +991,181 @@ public class PlayerSimulationTests
 
         // Same as the grounded inAir-equivalent: the steep-wall noop preserves velocity.
         Assert.AreEqual(25f / 60f, state.Velocity.z, Tolerance);
+    }
+
+    #endregion
+
+    #endregion
+
+    #region TickMovementState
+
+    // Branches (priority order):
+    //   A. Slide:     SlideTimer > 0                               → Sliding
+    //   B. Airborne:  !isGrounded && vel.y > 0                    → Jumping
+    //                 !isGrounded && vel.y <= 0                   → Falling
+    //   C. Ground:    Crouch                                       → Crouching
+    //                 Sprint (lateral vel + canRun)                → Sprinting
+    //                 Moving laterally or has movement input       → Running
+    //                 Otherwise                                    → Idling
+    //
+    // isGrounded = cc.isGrounded && !JumpedLastSimulatedFrame.
+    // Airborne tests force isGrounded=false via JumpedLastSimulatedFrame=true (no physics needed).
+    // Grounded tests rely on the test CC being at rest on the default PlayMode scene ground,
+    // matching the same assumption used by the existing TickVerticalMovement grounded-branch tests.
+
+    #region Branch A: Sliding
+
+    [Test]
+    public void TickMovementState_SlideTimerPositive_ReturnsSliding()
+    {
+        var ctx = MakeContext(input: MakeInput());
+        var state = MakeState(slideTimer: 0.5f);
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Sliding, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_SlideTimerPositive_TakesPriorityOverAirborne()
+    {
+        var ctx = MakeContext(input: MakeInput());
+        var state = MakeState(slideTimer: 0.5f, jumpedLastSimulatedFrame: true, velocity: new Vector3(0f, 5f, 0f));
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Sliding, state.SimulatedMovementState);
+    }
+
+    #endregion
+
+    #region Branch B: Airborne
+
+    [Test]
+    public void TickMovementState_Airborne_PositiveVelocityY_ReturnsJumping()
+    {
+        var ctx = MakeContext(input: MakeInput());
+        var state = MakeState(jumpedLastSimulatedFrame: true, velocity: new Vector3(0f, 5f, 0f));
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Jumping, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Airborne_NegativeVelocityY_ReturnsFalling()
+    {
+        var ctx = MakeContext(input: MakeInput());
+        var state = MakeState(jumpedLastSimulatedFrame: true, velocity: new Vector3(0f, -5f, 0f));
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Falling, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Airborne_ZeroVelocityY_ReturnsFalling()
+    {
+        var ctx = MakeContext(input: MakeInput());
+        var state = MakeState(jumpedLastSimulatedFrame: true, velocity: Vector3.zero);
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Falling, state.SimulatedMovementState);
+    }
+
+    #endregion
+
+    #region Branch C: Ground states
+
+    [Test]
+    public void TickMovementState_Grounded_NoInputNoVelocity_ReturnsIdling()
+    {
+        var ctx = MakeContext(input: MakeInput(movementInput: Vector2.zero));
+        var state = MakeState(velocity: Vector3.zero);
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Idling, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Grounded_HasMovementInput_ReturnsRunning()
+    {
+        var ctx = MakeContext(input: MakeInput(movementInput: new Vector2(0f, 1f)));
+        var state = MakeState(velocity: Vector3.zero);
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Grounded_HasLateralVelocity_ReturnsRunning()
+    {
+        var ctx = MakeContext(input: MakeInput());
+        var state = MakeState(velocity: new Vector3(2f, 0f, 0f));
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Grounded_CrouchToggled_ReturnsCrouching()
+    {
+        var ctx = MakeContext(input: MakeInput(crouchToggledOn: true));
+        var state = MakeState(velocity: Vector3.zero);
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Crouching, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Grounded_CrouchAndSprintBothToggled_ReturnsCrouching()
+    {
+        var ctx = MakeContext(input: MakeInput(crouchToggledOn: true, sprintToggledOn: true));
+        var state = MakeState(velocity: new Vector3(2f, 0f, 0f));
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Crouching, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Grounded_SprintingWithLateralVelocityAndForwardInput_ReturnsSprinting()
+    {
+        // canRun requires movementInput.y >= |movementInput.x|; use pure forward input.
+        var ctx = MakeContext(input: MakeInput(movementInput: new Vector2(0f, 1f), sprintToggledOn: true));
+        var state = MakeState(velocity: new Vector3(0f, 0f, 2f));
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Sprinting, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Grounded_SprintToggled_StrafeOnlyInput_DoesNotSprint()
+    {
+        // canRun is false when movementInput.y < |movementInput.x| (pure strafe).
+        var ctx = MakeContext(input: MakeInput(movementInput: new Vector2(1f, 0f), sprintToggledOn: true));
+        var state = MakeState(velocity: new Vector3(2f, 0f, 0f));
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementState);
+    }
+
+    [Test]
+    public void TickMovementState_Grounded_SprintToggled_NoLateralVelocityNoInput_DoesNotSprint()
+    {
+        var ctx = MakeContext(input: MakeInput(sprintToggledOn: true));
+        var state = MakeState(velocity: Vector3.zero);
+
+        PlayerSimulation.TickMovementState(ctx, ref state);
+
+        Assert.AreEqual(PlayerMovementState.Idling, state.SimulatedMovementState);
     }
 
     #endregion

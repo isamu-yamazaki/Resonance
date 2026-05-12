@@ -22,6 +22,7 @@ namespace Resonance.Assemblies.Player
         public bool JumpedLastSimulatedFrame;
         public bool WasGroundedLastTick;
         public PlayerMovementState LastSimulatedMovementState;
+        public PlayerMovementState SimulatedMovementState;
         public float SlideTimer;
 
         public void Dispose() { }
