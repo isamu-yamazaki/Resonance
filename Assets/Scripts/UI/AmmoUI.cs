@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Resonance.Helper;
 
 public class AmmoUI : MonoBehaviour
 {
@@ -28,7 +29,11 @@ public class AmmoUI : MonoBehaviour
     {
         while (viewModel == null)
         {
-            viewModel = FindObjectOfType<PlayerViewModel>();
+            var playerGameObject = OwnerFinder.FindGameObjectOfOwnedPlayerPredictedController();
+            if (playerGameObject != null)
+            {
+                viewModel = playerGameObject.GetComponent<PlayerViewModel>();
+            }
             yield return null;
         }
 
