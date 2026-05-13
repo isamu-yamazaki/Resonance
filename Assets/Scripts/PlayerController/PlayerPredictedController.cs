@@ -199,8 +199,9 @@ namespace Resonance.PlayerController
             currentState.Position = position;
             currentState.CameraYaw = rotation.x;
 
+            // ensure Unity state is updated
             transform.rotation = rotation;
-            // rely on SetUnityState for position setting
+            transform.position = position;
         }
 
         protected override PlayerMovementDataState Interpolate(
