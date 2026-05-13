@@ -120,6 +120,10 @@ namespace Resonance.PlayerController
             input.RequestedPlayerMovementState = pendingMovementState;
             input.RequestedWeaponClass = pendingWeaponClass;
             input.RequestedWeaponState = pendingWeaponState;
+
+            requestMovementStateUpdate = false;
+            requestWeaponClassUpdate = false;
+            requestWeaponStateUpdate = false;
         }
 
         protected override void Simulate(PlayerStateInput input, ref PlayerStateData state, float delta)
