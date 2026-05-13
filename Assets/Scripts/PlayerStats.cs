@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace Resonance.Player
 {
+    [RequireComponent(typeof(PlayerPredictedController))]
     public class PlayerStats : PredictedIdentity<PlayerStatsInputData, PlayerStatsDataState>,
                                IDamageable, IDamageNumberTarget
     {
@@ -59,7 +60,7 @@ namespace Resonance.Player
 
         private PlayerState _playerState;
         private CharacterController _characterController;
-        private PlayerController.PlayerController _playerController;
+        private PlayerPredictedController _playerController;
         private Animator _animator;
 
         #endregion
@@ -92,7 +93,7 @@ namespace Resonance.Player
         {
             _playerState = GetComponent<PlayerState>();
             _characterController = GetComponent<CharacterController>();
-            _playerController = GetComponent<PlayerController.PlayerController>();
+            _playerController = GetComponent<PlayerPredictedController>();
             _animator = GetComponent<Animator>();
 
             if (isOwner)
@@ -184,6 +185,11 @@ namespace Resonance.Player
                 {
                     state.CurrentHealth = maxHealth;
                     state.IsDead = false;
+
+                    _playerController.SimulatePlaceAtRespawnPoint(
+                        state.SpawnPosition,
+                        state.SpawnRotation
+                    );
                 }
             }
         }
@@ -247,8 +253,6 @@ namespace Resonance.Player
                     if (_characterController.stepOffset <= 0)
                         _characterController.stepOffset = 0.3f;
 
-                    transform.position = v.SpawnPosition;
-                    transform.rotation = v.SpawnRotation;
                     _characterController.enabled = true;
                 }
 

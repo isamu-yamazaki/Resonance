@@ -189,6 +189,20 @@ namespace Resonance.PlayerController
             _playerState.SetSimulatedPlayerMovementState(state.SimulatedMovementState);
         }
 
+        /// <summary>
+        /// Because player position is owned by PlayerPredictedController,
+        /// position setting must go through here.
+        /// </summary>
+        [SimulationOnly]
+        public void SimulatePlaceAtRespawnPoint(Vector3 position, Quaternion rotation)
+        {
+            currentState.Position = position;
+            currentState.CameraYaw = rotation.x;
+
+            transform.rotation = rotation;
+            // rely on SetUnityState for position setting
+        }
+
         protected override PlayerMovementDataState Interpolate(
             PlayerMovementDataState from,
             PlayerMovementDataState to,
