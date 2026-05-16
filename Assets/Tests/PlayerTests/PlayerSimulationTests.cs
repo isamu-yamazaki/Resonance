@@ -113,7 +113,7 @@ public class PlayerSimulationTests
 
     private static PlayerMovementDataState MakeState(
         Vector3 velocity = default,
-        float cameraYaw = 0f,
+        float yaw = 0f,
         Vector3 grappleImpulse = default,
         bool jumpedLastSimulatedFrame = false,
         PlayerMovementState lastSimulatedMovementState = PlayerMovementState.Falling,
@@ -124,7 +124,7 @@ public class PlayerSimulationTests
         return new PlayerMovementDataState
         {
             Velocity = velocity,
-            CameraYaw = cameraYaw,
+            Rotation = Quaternion.Euler(0f, yaw, 0f),
             GrappleImpulse = grappleImpulse,
             JumpedLastSimulatedFrame = jumpedLastSimulatedFrame,
             LastSimulatedMovementState = lastSimulatedMovementState,
@@ -537,7 +537,7 @@ public class PlayerSimulationTests
     //   A. Sliding early-return  -> delegates to HandleSlideMovement
     //   B. Acceleration selector (4 paths): inAir, crouch, sprint, run
     //   C. Clamp magnitude selector (4 paths): same conditions as B
-    //   D. Camera basis from CameraYaw -> movementDirection
+    //   D. Camera basis from Rotation -> movementDirection
     //   E. Train velocity offset subtracted from cc.velocity
     //   F. Drag clamp (2 paths): magnitude > drag*delta -> subtract; else snap to zero
     //   G. ClampMagnitude on XZ to clampLateralMagnitude
@@ -753,7 +753,7 @@ public class PlayerSimulationTests
         var config = MakeConfig(runAcc: 35f, drag: 0f, runSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Running);
         var input = MakeInput(movementInput: new Vector2(0f, 1f));
-        var state = MakeState(cameraYaw: 0f);
+        var state = MakeState(yaw: 0f);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickLateralMovement(ctx, ref state);
@@ -768,7 +768,7 @@ public class PlayerSimulationTests
         var config = MakeConfig(runAcc: 35f, drag: 0f, runSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Running);
         var input = MakeInput(movementInput: new Vector2(0f, 1f));
-        var state = MakeState(cameraYaw: 90f);
+        var state = MakeState(yaw: 90f);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickLateralMovement(ctx, ref state);
@@ -783,7 +783,7 @@ public class PlayerSimulationTests
         var config = MakeConfig(runAcc: 35f, drag: 0f, runSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Running);
         var input = MakeInput(movementInput: new Vector2(1f, 0f));
-        var state = MakeState(cameraYaw: 0f);
+        var state = MakeState(yaw: 0f);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickLateralMovement(ctx, ref state);
@@ -798,7 +798,7 @@ public class PlayerSimulationTests
         var config = MakeConfig(runAcc: 35f, drag: 0f, runSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Running);
         var input = MakeInput(movementInput: new Vector2(0f, 1f));
-        var state = MakeState(cameraYaw: 180f);
+        var state = MakeState(yaw: 180f);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickLateralMovement(ctx, ref state);

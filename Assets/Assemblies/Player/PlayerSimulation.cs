@@ -60,7 +60,17 @@ namespace Resonance.Assemblies.Player
 
         public static void TickCameraMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
-            state.CameraYaw += ctx.Input.LookInput.x * ctx.Config.lookSensitivityH;
+            float yaw = state.Rotation.eulerAngles.y;
+            float pitch = state.Rotation.eulerAngles.x;
+            if (pitch > 180f) pitch -= 360f;
+
+            yaw += ctx.Input.LookInput.x * ctx.Config.lookSensitivityH;
+            pitch = Mathf.Clamp(
+                pitch - ctx.Input.LookInput.y * ctx.Config.lookSensitivityV,
+                -ctx.Config.lookLimitV,
+                ctx.Config.lookLimitV);
+
+            state.Rotation = Quaternion.Euler(pitch, yaw, 0f);
         }
 
         public static void TickLateralMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
@@ -90,7 +100,7 @@ namespace Resonance.Assemblies.Player
                                           isCrouching ? derivedStats.crouchSpeed :
                                           isSprinting ? derivedStats.sprintSpeed : derivedStats.runSpeed;
 
-            float yawRad = state.CameraYaw * Mathf.Deg2Rad;
+            float yawRad = state.Rotation.eulerAngles.y * Mathf.Deg2Rad;
             Vector3 cameraForwardXZ = new Vector3(Mathf.Sin(yawRad), 0f, Mathf.Cos(yawRad));
             Vector3 cameraRightXZ = new Vector3(Mathf.Cos(yawRad), 0f, -Mathf.Sin(yawRad));
             Vector3 movementDirection = cameraRightXZ * ctx.Input.MovementInput.x + cameraForwardXZ * ctx.Input.MovementInput.y;

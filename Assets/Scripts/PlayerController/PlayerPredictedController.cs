@@ -42,7 +42,6 @@ namespace Resonance.PlayerController
         private PlayerStats _playerStats;
         private TrainPassengerPhysics _trainPassengerPhysics;
         private float _stepOffset;
-        private float _cameraPitch;
 
         #endregion
 
@@ -113,7 +112,7 @@ namespace Resonance.PlayerController
             {
                 Position = transform.position,
                 Velocity = Vector3.zero,
-                CameraYaw = transform.eulerAngles.y,
+                Rotation = transform.rotation,
                 GrappleImpulse = Vector3.zero,
                 JumpedLastSimulatedFrame = false,
                 WasGroundedLastTick = true,
@@ -126,6 +125,7 @@ namespace Resonance.PlayerController
         protected override void GetUnityState(ref PlayerMovementDataState state)
         {
             state.Position = transform.position;
+            state.Rotation = transform.rotation;
         }
 
         protected override void SetUnityState(PlayerMovementDataState state)
@@ -134,6 +134,7 @@ namespace Resonance.PlayerController
             bool wasEnabled = _characterController.enabled;
             _characterController.enabled = false;
             transform.position = state.Position;
+            transform.rotation = state.Rotation;
             _characterController.enabled = wasEnabled;
         }
 
@@ -197,7 +198,7 @@ namespace Resonance.PlayerController
         public void SimulatePlaceAtRespawnPoint(Vector3 position, Quaternion rotation)
         {
             currentState.Position = position;
-            currentState.CameraYaw = rotation.x;
+            currentState.Rotation = rotation;
 
             // ensure Unity state is updated
             transform.rotation = rotation;
@@ -213,7 +214,7 @@ namespace Resonance.PlayerController
             {
                 Position = Vector3.Lerp(from.Position, to.Position, t),
                 Velocity = Vector3.Lerp(from.Velocity, to.Velocity, t),
-                CameraYaw = Mathf.LerpAngle(from.CameraYaw, to.CameraYaw, t),
+                Rotation = Quaternion.Slerp(from.Rotation, to.Rotation, t),
                 GrappleImpulse = Vector3.Lerp(from.GrappleImpulse, to.GrappleImpulse, t),
                 // Discrete fields snap to `to`.
                 JumpedLastSimulatedFrame = to.JumpedLastSimulatedFrame,
@@ -229,14 +230,9 @@ namespace Resonance.PlayerController
             if (!isOwner || IsPlayerDead) return;
             if (_virtualCamera == null || _playerLocomotionInput == null) return;
 
-            _cameraPitch = Mathf.Clamp(
-                _cameraPitch - _config.lookSensitivityV * _playerLocomotionInput.LookInput.y,
-                -_config.lookLimitV,
-                _config.lookLimitV);
+            _virtualCamera.transform.rotation = viewState.Rotation;
 
-            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraPitch, viewState.CameraYaw, 0f);
-
-            Quaternion targetBodyRotation = Quaternion.Euler(0f, viewState.CameraYaw, 0f);
+            Quaternion targetBodyRotation = Quaternion.Euler(0f, viewState.Rotation.eulerAngles.y, 0f);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetBodyRotation, _config.playerModelRotationSpeed * Time.deltaTime);
 
             Vector3 camForwardXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
