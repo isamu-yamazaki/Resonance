@@ -12,9 +12,10 @@ namespace Resonance.Assemblies.Player
         public Vector3 Velocity;
 
         /// <summary>
-        /// The camera rotation, modified deterministically each tick by PlayerInputData.LookInput.
+        /// The x-component of the camera rotation.
+        /// Modified deterministically each tick by PlayerInputData.LookInput.
         /// </summary>
-        public Quaternion Rotation;
+        public float CameraYaw;
 
         // Persistent values for deriving velocity later
         public Vector3 GrappleImpulse;
