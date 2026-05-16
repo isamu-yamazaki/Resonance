@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using PurrNet;
 using PurrNet.Packing;
+using PurrNet.Prediction;
 using Resonance.Assemblies.MatchStat;
 using UnityEngine;
 
@@ -41,11 +42,11 @@ namespace Resonance.Match
             return result;
         }
 
-        public static bool TryExtractPlayerIds(GameObject gameObject, out ulong playerId)
+        public static bool TryExtractNetworkIdentityPlayerIds(GameObject gameObject, out ulong playerId)
         {
             playerId = 0;
-            
-            if (!gameObject.TryGetComponent(out NetworkBehaviour controller))
+
+            if (!gameObject.TryGetComponent(out NetworkIdentity controller))
                 return false;
 
             if (controller.owner?.id.value is ulong idPrimitive)
@@ -57,13 +58,49 @@ namespace Resonance.Match
             return false;
         }
 
-        public static bool TryExtractPlayerIds(GameObject first, GameObject second, out ulong firstId, out ulong secondId)
+        public static bool TryExtractNetworkIdentityPlayerIds(GameObject first, GameObject second, out ulong firstId, out ulong secondId)
         {
             firstId = 0;
             secondId = 0;
 
-            if (!first.TryGetComponent(out NetworkBehaviour firstController) ||
-                !second.TryGetComponent(out NetworkBehaviour secondController))
+            if (!first.TryGetComponent(out NetworkIdentity firstController) ||
+                !second.TryGetComponent(out NetworkIdentity secondController))
+                return false;
+
+            if (firstController.owner?.id.value is ulong firstIdPrimitive &&
+                secondController.owner?.id.value is ulong secondIdPrimitive)
+            {
+                firstId = firstIdPrimitive;
+                secondId = secondIdPrimitive;
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool TryExtractPredictedIdentityPlayerIds(GameObject gameObject, out ulong playerId)
+        {
+            playerId = 0;
+
+            if (!gameObject.TryGetComponent(out PredictedIdentity controller))
+                return false;
+
+            if (controller.owner?.id.value is ulong idPrimitive)
+            {
+                playerId = idPrimitive;
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool TryExtractPredictedIdentityPlayerIds(GameObject first, GameObject second, out ulong firstId, out ulong secondId)
+        {
+            firstId = 0;
+            secondId = 0;
+
+            if (!first.TryGetComponent(out PredictedIdentity firstController) ||
+                !second.TryGetComponent(out PredictedIdentity secondController))
                 return false;
 
             if (firstController.owner?.id.value is ulong firstIdPrimitive &&
