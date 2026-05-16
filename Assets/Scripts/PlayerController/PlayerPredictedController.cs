@@ -134,6 +134,10 @@ namespace Resonance.PlayerController
             bool wasEnabled = _characterController.enabled;
             _characterController.enabled = false;
             transform.position = state.Position;
+
+            Quaternion targetBodyRotation = Quaternion.Euler(0f, state.CameraYaw, 0f);
+            transform.rotation = targetBodyRotation;
+            
             _characterController.enabled = wasEnabled;
         }
 
