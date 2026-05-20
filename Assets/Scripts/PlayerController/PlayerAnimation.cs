@@ -13,7 +13,6 @@ namespace Resonance.PlayerController
 
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
-        private PlayerController _playerController;
         private PlayerActionsInput _playerActionsInput;
 
         private static int inputXHash = Animator.StringToHash("inputX");
@@ -38,7 +37,6 @@ namespace Resonance.PlayerController
         {
             _playerLocomotionInput = PlayerLocomotionInput.Instance;
             _playerState = GetComponent<PlayerState>();
-            _playerController = GetComponent<PlayerController>();
             _playerActionsInput = PlayerActionsInput.Instance;
 
             actionHashes = new int[] { isAttackingHash, isReloadingHash };

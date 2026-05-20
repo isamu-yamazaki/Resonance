@@ -340,7 +340,7 @@ public class Zipline : MonoBehaviour, IInteractable
         {
             playerState.SetExternalPlayerMovementState(PlayerMovementState.Falling);
 
-            Resonance.PlayerController.PlayerController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerController>();
+            Resonance.PlayerController.PlayerPredictedController pc = currentPlayer.GetComponent<Resonance.PlayerController.PlayerPredictedController>();
             pc?.ResetState();
 
             if (applyJump)

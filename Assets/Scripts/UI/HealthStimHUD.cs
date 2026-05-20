@@ -34,12 +34,12 @@ public class HealthStimHUD : MonoBehaviour
     private System.Collections.IEnumerator InitializeWhenPlayerReady()
     {
         // Wait until local player exists
-        while (PlayerController.LocalPlayer == null)
+        while (PlayerPredictedController.LocalPlayer == null)
         {
             yield return null;
         }
 
-        healthStim = PlayerController.LocalPlayer.GetComponent<PlayerHealthStim>();
+        healthStim = PlayerPredictedController.LocalPlayer.GetComponent<PlayerHealthStim>();
         if (healthStim == null)
         {
             Debug.LogError("[HealthStimHUD] PlayerHealthStim not found on local player!");

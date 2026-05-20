@@ -7,7 +7,7 @@ namespace Resonance.DebugTools
     public class PlayerDebugPanel : MonoBehaviour
     {
         #region Class Variables
-        private PlayerController.PlayerController _playerController;
+        private PlayerPredictedController _playerController;
         private PlayerState _playerState;
         private PlayerLocomotionInput _playerInput;
         private OverdriveAbility _overdriveAbility;
@@ -56,7 +56,7 @@ namespace Resonance.DebugTools
                 return;
             }
 
-            _playerController = player.GetComponent<PlayerController.PlayerController>();
+            _playerController = player.GetComponent<PlayerPredictedController>();
             _playerState = player.GetComponent<PlayerState>();
             _playerInput = PlayerLocomotionInput.Instance;
             _overdriveAbility = player.GetComponent<OverdriveAbility>();
@@ -137,21 +137,7 @@ namespace Resonance.DebugTools
                 GUILayout.Space(5);
                 GUILayout.Label($"Base Speed: {_playerStats.BaseSpeed:F2}");
                 GUILayout.Label($"Effective Speed Multiplier: {_playerStats.PlayerSpeed:F2}");
-                var verticalVelocity = typeof(PlayerController.PlayerController)
-                    .GetField("_verticalVelocity", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    ?.GetValue(_playerController);
-
-                var antiBump = typeof(PlayerController.PlayerController)
-                    .GetField("_antiBump", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    ?.GetValue(_playerController);
-
-                var lastAppliedAntiBump = typeof(PlayerController.PlayerController)
-                    .GetField("_lastAppliedAntiBump", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    ?.GetValue(_playerController);
-
-                GUILayout.Label($"Vertical Velocity: {verticalVelocity:F3}");
-                GUILayout.Label($"AntiBump: {antiBump:F3}");
-                GUILayout.Label($"Last Applied AntiBump: {lastAppliedAntiBump:F3}");
+                GUILayout.Label($"Vertical Velocity: {_playerController.currentState.Velocity.y:F3}");
             }
 
             if (_playerInput != null)
