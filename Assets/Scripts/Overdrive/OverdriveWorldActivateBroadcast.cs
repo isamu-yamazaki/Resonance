@@ -1,10 +1,11 @@
 using PurrNet.Prediction;
 using Resonance.Audio;
+using Resonance.Helper.PredictedAudioBroadcast;
 using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    public class OverdriveWorldActivateBroadcast : PredictedIdentity<OverdriveWorldActivateBroadcastInput, OverdriveWorldActivateBroadcastState>
+    public class OverdriveWorldActivateBroadcast : PredictedIdentity<PredictedAudioBroadcastInput, PredictedAudioBroadcastState>
     {
 
 #if !UNITY_SERVER
@@ -13,18 +14,18 @@ namespace Resonance.PlayerController
 
         private bool requestAudioBroadcast;
 
-        protected override void GetFinalInput(ref OverdriveWorldActivateBroadcastInput input)
+        protected override void GetFinalInput(ref PredictedAudioBroadcastInput input)
         {
             input.RequestAudioBroadcastNextTick = requestAudioBroadcast;
             requestAudioBroadcast = false;
         }
 
-        protected override void Simulate(OverdriveWorldActivateBroadcastInput input, ref OverdriveWorldActivateBroadcastState state, float delta)
+        protected override void Simulate(PredictedAudioBroadcastInput input, ref PredictedAudioBroadcastState state, float delta)
         {
             state.BroadcastAudio = input.RequestAudioBroadcastNextTick;
         }
 
-        protected override void UpdateView(OverdriveWorldActivateBroadcastState viewState, OverdriveWorldActivateBroadcastState? verified)
+        protected override void UpdateView(PredictedAudioBroadcastState viewState, PredictedAudioBroadcastState? verified)
         {
             if (!verified.HasValue) return;
             var v = verified.Value;
