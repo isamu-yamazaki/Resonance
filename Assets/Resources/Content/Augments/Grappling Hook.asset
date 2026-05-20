@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ce7836e1165da94795069ad946c025a, type: 3}
   m_Name: Grappling Hook
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AugmentProperties
-  key: 
+  key: augment_upper_grapplingHook
   augmentName: Grapple Hook
   description: Grapple it!
   icon: {fileID: 21300000, guid: 79983110782288c4a956809f29d2eb78, type: 3}
