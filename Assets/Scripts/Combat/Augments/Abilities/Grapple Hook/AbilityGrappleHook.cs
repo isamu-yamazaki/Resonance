@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Resonance.Combat.Augments
 {
-    public class AbilityGrappleHook : NetworkBehaviour, IAugmentAbility
+    public class AbilityGrappleHook : MonoBehaviour, IAugmentAbility
     {
         [Header("Grapple Settings")]
         [SerializeField] private float maxRange = 30f;
@@ -20,21 +20,15 @@ namespace Resonance.Combat.Augments
         [Header("References")]
         [SerializeField] private LayerMask grappleLayerMask;
 
-#if !UNITY_SERVER
-        [Header("Wwise Events")]
-        [SerializeField] private AK.Wwise.Event shootEvent;
-        [SerializeField] private AK.Wwise.Event travelLoopEvent;
-        [SerializeField] private AK.Wwise.Event stopTravelEvent;
-        [SerializeField] private AK.Wwise.Event releaseEvent;
-#endif
-
         private PlayerLocomotionInput playerLocomotionInput;
         private PlayerState playerState;
-        private PlayerController.PlayerController playerController;
+        private PlayerPredictedController playerController;
         private CharacterController characterController;
         private Camera playerCamera;
         private GrappleRopeRenderer ropeRenderer;
         private FPArmsAnimator fpArmsAnimator;
+
+        private AbilityGrappleHookAudioBroadcast _audioBroadcast;
 
         private float currentReelTime;
         private float currentCooldown;
@@ -52,7 +46,6 @@ namespace Resonance.Combat.Augments
 
         public void ActivateAbility()
         {
-            if (!isOwner) return;
             if (!AbilityReady) return;
 
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
@@ -69,33 +62,25 @@ namespace Resonance.Combat.Augments
 
             playerState.SetExternalPlayerMovementState(PlayerMovementState.Grappling);
 
-            BroadcastShootAndTravelRpc();
-            RequestGrappleRegistrationOnServer(transform.position);
+            _audioBroadcast.RequestExternalBroadcastShootAndTravel();
+            _audioBroadcast.RequestExternalBroadcastGrappleRegistration(transform.position);
         }
 
         private void Awake()
         {
             playerLocomotionInput = PlayerLocomotionInput.Instance;
             playerState = GetComponent<PlayerState>();
-            playerController = GetComponent<PlayerController.PlayerController>();
+            playerController = GetComponent<PlayerPredictedController>();
             characterController = GetComponent<CharacterController>();
             ropeRenderer = GetComponent<GrappleRopeRenderer>();
             fpArmsAnimator = GetComponent<FPArmsAnimator>();
-        }
+            playerCamera = Camera.main;
 
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
-
-            if (isOwner)
-                playerCamera = Camera.main;
+            _audioBroadcast = GetComponent<AbilityGrappleHookAudioBroadcast>();
         }
 
         private void Update()
         {
-            if (!isOwner)
-                return;
-
             if (currentCooldown > 0f)
                 currentCooldown -= Time.deltaTime;
 
@@ -131,7 +116,7 @@ namespace Resonance.Combat.Augments
 
         private void OnDisable()
         {
-            if (ropeRenderer.IsGrappling.value && isOwner)
+            if (ropeRenderer.IsGrappling.value)
                 ExitGrapple(earlyExit: false);
         }
 
@@ -149,64 +134,16 @@ namespace Resonance.Combat.Augments
             playerState.SetExternalPlayerMovementState(PlayerMovementState.Falling);
 
             fpArmsAnimator?.TriggerGrappleEnd();
-            BroadcastStopTravelRpc();
-            BroadcastReleaseRpc();
+
+            _audioBroadcast.RequestExternalBroadcastStopTravel();
+            _audioBroadcast.RequestExternalBroadcastRelease();
         }
-        
+
         public bool CanGrapple()
         {
             if (playerCamera == null) return false;
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
             return Physics.Raycast(ray, maxRange, grappleLayerMask);
         }
-
-        #region Audio RPCs
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastShootAndTravelRpc()
-        {
-#if !UNITY_SERVER
-            if (shootEvent != null && shootEvent.IsValid())
-                shootEvent.Post(gameObject);
-
-            if (travelLoopEvent != null && travelLoopEvent.IsValid())
-                travelLoopEvent.Post(gameObject);
-#endif
-        }
-
-        [ServerRpc]
-        private void RequestGrappleRegistrationOnServer(Vector3 position)
-        {
-            BroadcastGrappleRegistration(position);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastGrappleRegistration(Vector3 position)
-        {
-#if !UNITY_SERVER
-            if (AudioSourceTracker.Instance != null)
-                AudioSourceTracker.Instance.RegisterSound(position, 1f);
-#endif
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastStopTravelRpc()
-        {
-#if !UNITY_SERVER
-            if (stopTravelEvent != null && stopTravelEvent.IsValid())
-                stopTravelEvent.Post(gameObject);
-#endif
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastReleaseRpc()
-        {
-#if !UNITY_SERVER
-            if (releaseEvent != null && releaseEvent.IsValid())
-                releaseEvent.Post(gameObject);
-#endif
-        }
-
-        #endregion
     }
 }

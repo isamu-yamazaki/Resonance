@@ -12,12 +12,12 @@ namespace Resonance.PlayerController
         [SerializeField] private AK.Wwise.Event activateWorldEvent;
 #endif
 
-        private bool requestAudioBroadcast;
+        private bool _requestAudioBroadcast;
 
         protected override void GetFinalInput(ref PredictedAudioBroadcastInput input)
         {
-            input.RequestAudioBroadcastNextTick = requestAudioBroadcast;
-            requestAudioBroadcast = false;
+            input.RequestAudioBroadcastNextTick = _requestAudioBroadcast;
+            _requestAudioBroadcast = false;
         }
 
         protected override void Simulate(PredictedAudioBroadcastInput input, ref PredictedAudioBroadcastState state, float delta)
@@ -46,7 +46,7 @@ namespace Resonance.PlayerController
 
         public void RequestAudioBroadcastNextTick()
         {
-            requestAudioBroadcast = true;
+            _requestAudioBroadcast = true;
         }
     }
 }

@@ -133,6 +133,10 @@ namespace Resonance.Inventory
                         break;
                 }
             }
+            else if (input.AugmentKeyToAdd != null)
+            {
+                Debug.Log($"[PlayerInventory] Attempted to assign augment key {input.AugmentKeyToAdd}, but unable to find corresponding augment");
+            }
         }
 
         protected override PlayerInventoryDataState Interpolate(
