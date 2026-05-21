@@ -97,9 +97,9 @@ namespace Resonance.Assemblies.Player
 
             Vector3 movementDelta = movementDirection * lateralAcceleration * ctx.Delta;
             Vector3 localVelocity = new Vector3(
-                state.Velocity.x - ctx.Dependency.trainVelocityOffset.x,
+                state.Velocity.x - ctx.Dependency.TrainVelocityOffset.x,
                 0f,
-                state.Velocity.z - ctx.Dependency.trainVelocityOffset.z);
+                state.Velocity.z - ctx.Dependency.TrainVelocityOffset.z);
             Vector3 newVelocity = localVelocity + movementDelta;
 
             // Add drag to player
@@ -113,7 +113,7 @@ namespace Resonance.Assemblies.Player
             newVelocity.y = state.Velocity.y;
 
             state.Velocity = newVelocity;
-            state.Velocity.y += ctx.Dependency.trainKnockbackVertical;
+            state.Velocity.y += ctx.Dependency.TrainKnockbackVertical;
 
             TickImpulse(ctx, ref state);
         }
@@ -123,7 +123,7 @@ namespace Resonance.Assemblies.Player
             var derivedStats = CalculateDerivedStats(ctx.Dependency, ctx.Config);
 
             // we'll do this in a bit
-            Vector3 groundNormal = CharacterControllerUtils.GetNormalWithSphereCast(ctx.CharacterController, ctx.Dependency.groundLayers);
+            Vector3 groundNormal = CharacterControllerUtils.GetNormalWithSphereCast(ctx.CharacterController, ctx.Dependency.GroundLayers);
             float slopeAngle = Vector3.Angle(groundNormal, Vector3.up);
 
             Vector3 slopeDownDirection = Vector3.ProjectOnPlane(Vector3.down, groundNormal).normalized;
@@ -229,7 +229,7 @@ namespace Resonance.Assemblies.Player
 
         public static void TickCharacterControllerMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
-            ctx.CharacterController.Move((state.Velocity + ctx.Dependency.trainVelocityOffset) * ctx.Delta);
+            ctx.CharacterController.Move((state.Velocity + ctx.Dependency.TrainVelocityOffset) * ctx.Delta);
             state.Position = ctx.CharacterController.transform.position;
         }
 
@@ -269,7 +269,7 @@ namespace Resonance.Assemblies.Player
             float verticalVelocity
         )
         {
-            Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(ctx.CharacterController, ctx.Dependency.groundLayers);
+            Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(ctx.CharacterController, ctx.Dependency.GroundLayers);
             float angle = Vector3.Angle(normal, Vector3.up);
             bool validAngle = angle <= ctx.CharacterController.slopeLimit;
 

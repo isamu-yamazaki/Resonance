@@ -137,7 +137,7 @@ namespace Resonance.PlayerController
 
             Quaternion targetBodyRotation = Quaternion.Euler(0f, state.CameraYaw, 0f);
             transform.rotation = targetBodyRotation;
-            
+
             _characterController.enabled = wasEnabled;
         }
 
@@ -171,13 +171,13 @@ namespace Resonance.PlayerController
             {
                 MovementSpeedMultiplier = _playerStats.PlayerSpeed,
                 CurrentPlayerMovementState = _playerState.CurrentPlayerMovementState,
-                trainVelocityOffset = _trainPassengerPhysics != null
+                TrainVelocityOffset = _trainPassengerPhysics != null
                     ? _trainPassengerPhysics.GetFrameVelocityOffset()
                     : Vector3.zero,
-                trainKnockbackVertical = _trainPassengerPhysics != null
+                TrainKnockbackVertical = _trainPassengerPhysics != null
                     ? _trainPassengerPhysics.GetKnockbackVertical()
                     : 0f,
-                groundLayers = _groundLayers,
+                GroundLayers = _groundLayers,
                 OverdriveSpeedMultiplier = _overdriveAbility != null ? _overdriveAbility.SpeedMultiplier : 1f,
                 IsInOverdrive = _overdriveAbility != null && _overdriveAbility.IsInOverdrive,
             };

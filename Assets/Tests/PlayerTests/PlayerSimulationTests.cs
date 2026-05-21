@@ -87,9 +87,9 @@ public class PlayerSimulationTests
         {
             MovementSpeedMultiplier = multiplier,
             CurrentPlayerMovementState = movementState,
-            trainVelocityOffset = trainVelocityOffset,
-            trainKnockbackVertical = trainKnockbackVertical,
-            groundLayers = groundLayers,
+            TrainVelocityOffset = trainVelocityOffset,
+            TrainKnockbackVertical = trainKnockbackVertical,
+            GroundLayers = groundLayers,
             OverdriveSpeedMultiplier = overdriveSpeedMultiplier,
             IsInOverdrive = isInOverdrive,
         };

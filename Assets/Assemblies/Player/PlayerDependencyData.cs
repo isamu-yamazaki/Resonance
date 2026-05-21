@@ -15,9 +15,9 @@ namespace Resonance.Assemblies.Player
 
         /// <summary>From PlayerState.CurrentPlayerMovementState (ValidatedSyncVar&lt;int&gt;).</summary>
         public PlayerMovementState CurrentPlayerMovementState;
-        public Vector3 trainVelocityOffset;
-        public float trainKnockbackVertical;
-        public LayerMask groundLayers;
+        public Vector3 TrainVelocityOffset;
+        public float TrainKnockbackVertical;
+        public LayerMask GroundLayers;
         public float OverdriveSpeedMultiplier;
         public bool IsInOverdrive;
     }
