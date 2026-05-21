@@ -1,5 +1,6 @@
 using PurrNet.Prediction;
 using Resonance.Assemblies.Player;
+using Resonance.Combat.Augments;
 using Resonance.Player;
 using Resonance.Train;
 using Unity.Cinemachine;
@@ -41,6 +42,7 @@ namespace Resonance.PlayerController
         private OverdriveAbility _overdriveAbility;
         private PlayerStats _playerStats;
         private TrainPassengerPhysics _trainPassengerPhysics;
+        private AbilityGrappleHook _grapple;
         private float _stepOffset;
         private float _cameraPitch;
 
@@ -90,6 +92,7 @@ namespace Resonance.PlayerController
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerStats = GetComponent<PlayerStats>();
             _trainPassengerPhysics = GetComponent<TrainPassengerPhysics>();
+            _grapple = GetComponent<AbilityGrappleHook>();
 
             _stepOffset = _characterController != null ? _characterController.stepOffset : 0f;
 
@@ -164,7 +167,7 @@ namespace Resonance.PlayerController
             if (IsPlayerDead) return;
             if (_playerState.IsDead()) return;
             if (_playerState.IsMatchFrozen()) return;
-            if (_playerState.IsZiplining() || _playerState.IsGrappling()) return;
+            if (_playerState.IsZiplining()) return;
             if (!_characterController.enabled) return;
 
             var deps = new PlayerDependencyData
@@ -180,6 +183,9 @@ namespace Resonance.PlayerController
                 GroundLayers = _groundLayers,
                 OverdriveSpeedMultiplier = _overdriveAbility != null ? _overdriveAbility.SpeedMultiplier : 1f,
                 IsInOverdrive = _overdriveAbility != null && _overdriveAbility.IsInOverdrive,
+                IsGrappling = _grapple != null && _grapple.IsGrappling,
+                GrappleVelocity = _grapple != null ? _grapple.ReelVelocity : Vector3.zero,
+                GrappleExitImpulse = _grapple != null ? _grapple.ExitImpulse : Vector3.zero,
             };
 
             var ctx = new PlayerSimulationContext(

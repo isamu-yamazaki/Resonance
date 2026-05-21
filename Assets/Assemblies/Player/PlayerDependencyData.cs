@@ -20,5 +20,14 @@ namespace Resonance.Assemblies.Player
         public LayerMask GroundLayers;
         public float OverdriveSpeedMultiplier;
         public bool IsInOverdrive;
+
+        /// <summary>True while the grapple hook is reeling the player (from AbilityGrappleHook).</summary>
+        public bool IsGrappling;
+
+        /// <summary>Reel velocity to apply this tick while IsGrappling (overrides normal movement).</summary>
+        public Vector3 GrappleVelocity;
+
+        /// <summary>One-shot impulse applied on the tick the grapple ends early; decays via GrappleImpulse.</summary>
+        public Vector3 GrappleExitImpulse;
     }
 }

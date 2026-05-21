@@ -9,16 +9,42 @@ namespace Resonance.Assemblies.Player
         public static void Step(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
             TickCameraMovement(ctx, ref state);
-            TickVerticalMovement(ctx, ref state);
-            TickLateralMovement(ctx, ref state);
+
+            if (ctx.Dependency.IsGrappling)
+            {
+                TickGrappleMovement(ctx, ref state);
+            }
+            else
+            {
+                TickVerticalMovement(ctx, ref state);
+                TickLateralMovement(ctx, ref state);
+            }
+
             TickCharacterControllerMovement(ctx, ref state);
             TickMovementState(ctx, ref state);
 
             state.LastSimulatedMovementState = ctx.Dependency.CurrentPlayerMovementState;
         }
 
+        /// <summary>
+        /// While the grapple hook is reeling, the player moves purely along the reel velocity
+        /// supplied by AbilityGrappleHook — gravity and lateral input are suppressed (mirrors the
+        /// legacy direct CharacterController.Move during grapple).
+        /// </summary>
+        public static void TickGrappleMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
+        {
+            state.Velocity = ctx.Dependency.GrappleVelocity;
+            state.SimulatedMovementState = PlayerMovementState.Grappling;
+        }
+
         public static void TickMovementState(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
+            if (ctx.Dependency.IsGrappling)
+            {
+                state.SimulatedMovementState = PlayerMovementState.Grappling;
+                return;
+            }
+
             bool isGrounded = ctx.CharacterController.isGrounded && !state.JumpedLastSimulatedFrame;
 
             if (state.SlideTimer > 0f)
@@ -65,6 +91,18 @@ namespace Resonance.Assemblies.Player
 
         public static void TickLateralMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
+            // First non-grappling tick after an early grapple exit: seed the velocity with the exit
+            // boost. Routed through GrappleImpulse so it decays via ConsumeImpulse/TickImpulse, exactly
+            // like the legacy PlayerPredictedController.ApplyImpulse used to do.
+            if (ctx.Dependency.GrappleExitImpulse != Vector3.zero)
+            {
+                state.Velocity.y = ctx.Dependency.GrappleExitImpulse.y;
+                state.GrappleImpulse = new Vector3(
+                    ctx.Dependency.GrappleExitImpulse.x,
+                    0f,
+                    ctx.Dependency.GrappleExitImpulse.z);
+            }
+
             bool isSliding = state.SlideTimer > 0f;
 
             if (isSliding)
