@@ -10,8 +10,19 @@ namespace Resonance.Inventory
     {
         public event System.Action OnInventoryChanged;
 
-        public WeaponProperties[] weaponInventory { get; private set; } = new WeaponProperties[2];
-        public AugmentProperties[] augmentInventory { get; private set; } = new AugmentProperties[2];
+        // Resolved from the simulated state so reads reflect currentState on both server and client,
+        // not just the locally-applied verified view.
+        public WeaponProperties[] weaponInventory => new[]
+        {
+            FindWeaponByKey(currentState.WeaponPrimaryKey),
+            FindWeaponByKey(currentState.WeaponSecondaryKey),
+        };
+
+        public AugmentProperties[] augmentInventory => new[]
+        {
+            FindAugmentByKey(currentState.AugmentKeyUpper),
+            FindAugmentByKey(currentState.AugmentKeyLower),
+        };
 
         private PlayerInventoryDataState? _previousVerifiedState;
 
@@ -151,11 +162,6 @@ namespace Resonance.Inventory
         {
             if (!verified.HasValue) return;
             var v = verified.Value;
-
-            weaponInventory[0] = FindWeaponByKey(v.WeaponPrimaryKey);
-            weaponInventory[1] = FindWeaponByKey(v.WeaponSecondaryKey);
-            augmentInventory[0] = FindAugmentByKey(v.AugmentKeyUpper);
-            augmentInventory[1] = FindAugmentByKey(v.AugmentKeyLower);
 
             if (!_previousVerifiedState.HasValue
                 || _previousVerifiedState.Value.WeaponPrimaryKey != v.WeaponPrimaryKey
