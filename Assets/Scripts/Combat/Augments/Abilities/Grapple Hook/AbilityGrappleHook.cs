@@ -60,7 +60,7 @@ namespace Resonance.Combat.Augments
         /// the fire-hook event. Performs the camera raycast and, on a hit, queues a predicted activation
         /// request.
         /// </summary>
-        public void ActivateAbility()
+        public void ActivateAbilityExternal()
         {
             if (!AbilityReady) return;
             if (playerCamera == null) return;
@@ -78,6 +78,21 @@ namespace Resonance.Combat.Augments
 
             _audioBroadcast.RequestExternalBroadcastShootAndTravel();
             _audioBroadcast.RequestExternalBroadcastGrappleRegistration(transform.position);
+        }
+
+        [SimulationOnly]
+        public void SimulateActivateAbility()
+        {
+            Ray ray = new Ray(currentState.CameraPosition, currentState.CameraForward);
+            if (!Physics.Raycast(ray, out RaycastHit hit, maxRange, grappleLayerMask))
+            {
+                fpArmsAnimator?.TriggerGrappleEnd();
+                return;
+            }
+
+            currentState.IsGrappling = true;
+            currentState.HookPoint = hit.point;
+            currentState.ReelTime = 0f;
         }
 
         public bool CanGrapple()
@@ -110,7 +125,7 @@ namespace Resonance.Combat.Augments
 
         #endregion
 
-        #region Prediction overrides
+        #region Simulation loop
 
         protected override void GetFinalInput(ref AbilityGrappleHookInput input)
         {
@@ -120,6 +135,12 @@ namespace Resonance.Combat.Augments
             input.HookPoint = _pendingHookPoint;
             input.JumpPressed = playerLocomotionInput != null && playerLocomotionInput.JumpPressed;
 
+            if (playerCamera != null)
+            {
+                input.CameraPosition = playerCamera.transform.position;
+                input.CameraForward = playerCamera.transform.forward;
+            }
+
             _pendingActivate = false;
         }
 
@@ -128,6 +149,11 @@ namespace Resonance.Combat.Augments
             // Per-tick outputs are consumed each tick, never accumulated.
             state.ReelVelocity = Vector3.zero;
             state.ExitImpulse = Vector3.zero;
+
+            // Mirror the owner camera pose into state so SimulationOnly code (SimulateActivateAbility)
+            // can read it outside the input frame.
+            state.CameraPosition = input.CameraPosition;
+            state.CameraForward = input.CameraForward;
 
             if (input.ActivatePressed && !state.IsGrappling)
             {
@@ -211,6 +237,10 @@ namespace Resonance.Combat.Augments
         public Vector3 HookPoint;
         public bool JumpPressed;
 
+        /// <summary>Owner camera pose this tick, forwarded into state so SimulationOnly code can read it.</summary>
+        public Vector3 CameraPosition;
+        public Vector3 CameraForward;
+
         public void Dispose() { }
     }
 
@@ -225,6 +255,10 @@ namespace Resonance.Combat.Augments
 
         /// <summary>Exit boost emitted on the tick an early exit occurs (zero otherwise).</summary>
         public Vector3 ExitImpulse;
+
+        /// <summary>Latest owner camera pose, mirrored from input each tick so SimulationOnly code can read it.</summary>
+        public Vector3 CameraPosition;
+        public Vector3 CameraForward;
 
         public void Dispose() { }
     }

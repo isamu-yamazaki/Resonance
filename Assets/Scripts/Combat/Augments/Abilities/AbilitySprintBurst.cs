@@ -12,7 +12,7 @@ namespace Resonance.Combat.Augments
         [SerializeField] private float maxMeter = 5f;
         [SerializeField] private float meterRecoverySpeed = 1f;
         [SerializeField] private float timeUntilRecovery = 0.5f;
-        
+
         private PlayerLocomotionInput playerLocomotionInput;
         private PlayerStats playerStats;
 
@@ -20,8 +20,8 @@ namespace Resonance.Combat.Augments
         private float lastAppliedSpeedMod;
         private float timeSinceLastSprinting;
         private bool wasSprinting;
-        
-        
+
+
         public string AbilityKey => "ability_sprintBurst";
         public string Name => "Sprint Burst";
         public string Description => "Move with a brief burst of speed.";
@@ -33,8 +33,12 @@ namespace Resonance.Combat.Augments
         }
         public bool AbilityReady => false;
 
-        public void ActivateAbility() { }
-        
+        public void ActivateAbilityExternal() { }
+        public void SimulateActivateAbility()
+        {
+            throw new NotImplementedException();
+        }
+
         private void Awake()
         {
             playerStats = GetComponent<PlayerStats>();
@@ -79,10 +83,10 @@ namespace Resonance.Combat.Augments
             {
                 RemovePreviousModifier();
             }
-            
+
             playerStats.AddSpeedModifier(boostToApply);
             lastAppliedSpeedMod = boostToApply;
-            
+
             wasSprinting = true;
         }
 
@@ -94,7 +98,7 @@ namespace Resonance.Combat.Augments
             {
                 currentMeter = Mathf.Clamp(currentMeter + (Time.deltaTime * meterRecoverySpeed), 0f, maxMeter);
             }
-            
+
             wasSprinting = false;
         }
         private void RemovePreviousModifier()

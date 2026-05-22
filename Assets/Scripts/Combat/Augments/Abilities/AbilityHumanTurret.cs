@@ -8,7 +8,7 @@ namespace Resonance.Combat.Augments
     public class AbilityHumanTurret : MonoBehaviour, IAugmentAbility
     {
         [SerializeField] private float timeToActivate = 2f;
-        
+
         [SerializeField] private float damageReduction = 0.25f;
         [SerializeField] private WeaponModProperties turretMod;
 
@@ -31,7 +31,11 @@ namespace Resonance.Combat.Augments
         }
         public bool AbilityReady => false;
 
-        public void ActivateAbility() { }
+        public void ActivateAbilityExternal() { }
+        public void SimulateActivateAbility()
+        {
+            throw new System.NotImplementedException();
+        }
 
         private void Awake()
         {
@@ -45,7 +49,7 @@ namespace Resonance.Combat.Augments
 
         private void Update()
         {
-            
+
 
             if (playerLocomotionInput.MovementInput == Vector2.zero)
             {

@@ -34,7 +34,7 @@ namespace Resonance.Abilities.BubbleShield
         }
         public bool AbilityReady => currentCooldown <= 0f;
 
-        public void ActivateAbility()
+        public void ActivateAbilityExternal()
         {
             if (!AbilityReady) return;
 
@@ -48,6 +48,11 @@ namespace Resonance.Abilities.BubbleShield
             Vector3 lobDirection = Vector3.Lerp(playerCamera.transform.forward, Vector3.up, upwardLobBias).normalized;
 
             RequestSpawnShieldServerRpc(spawnPosition, lobDirection, NetworkManager.main.localPlayer);
+        }
+
+        public void SimulateActivateAbility()
+        {
+            throw new System.NotImplementedException();
         }
 
         private void Awake()

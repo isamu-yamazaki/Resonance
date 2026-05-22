@@ -362,7 +362,7 @@ namespace Resonance.Combat
 
         public void OnGrappleFireHook()
         {
-            _grappleHook?.ActivateAbility();
+            _grappleHook?.ActivateAbilityExternal();
         }
 
         public void OnGrappleComplete()

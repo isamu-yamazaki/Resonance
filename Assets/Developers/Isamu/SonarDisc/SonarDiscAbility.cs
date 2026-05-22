@@ -73,7 +73,7 @@ namespace Resonance.Abilities.SonarDisc
             return view.Muzzle;
         }
 
-        public void ActivateAbility()
+        public void ActivateAbilityExternal()
         {
             if (_cooldownTimeRemaining > 0f)
                 return;
@@ -89,6 +89,11 @@ namespace Resonance.Abilities.SonarDisc
 
             _cooldownTimeRemaining = cooldown;
             RequestFireDiscServerRpc(muzzle.position, muzzle.forward, NetworkManager.main.localPlayer);
+        }
+
+        public void SimulateActivateAbility()
+        {
+            throw new System.NotImplementedException();
         }
 
         [ServerRpc]
