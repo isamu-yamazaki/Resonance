@@ -48,7 +48,7 @@ namespace Resonance.PlayerController
             DontDestroyOnLoad(gameObject);
 
             _playerLocomotionInput = PlayerLocomotionInput.Instance;
-            
+
             PlayerInputManager.Instance.PlayerControls.PlayerActionMap.Enable();
             PlayerInputManager.Instance.PlayerControls.PlayerActionMap.AddCallbacks(this);
         }
@@ -138,16 +138,6 @@ namespace Resonance.PlayerController
             HealPressed = false;
         }
 
-        public void SetAbilityUpperPressedFalse()
-        {
-            AbilityUpperPressed = false;
-        }
-
-        public void SetAbilityLowerPressedFalse()
-        {
-            AbilityLowerPressed = false;
-        }
-
         public void SetOverdrivePressedFales()
         {
             OverdrivePressed = false;
@@ -235,14 +225,22 @@ namespace Resonance.PlayerController
 
         public void OnAbilityUpper(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState()) return;
+            if (!context.performed || IsBlockedByPlayerState())
+            {
+                AbilityUpperPressed = false;
+                return;
+            };
 
             AbilityUpperPressed = true;
         }
 
         public void OnAbilityLower(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState()) return;
+            if (!context.performed || IsBlockedByPlayerState())
+            {
+                AbilityLowerPressed = false;
+                return;
+            };
 
             AbilityLowerPressed = true;
         }
