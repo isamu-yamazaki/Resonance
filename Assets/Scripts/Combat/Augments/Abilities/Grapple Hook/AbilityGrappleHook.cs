@@ -47,13 +47,9 @@ namespace Resonance.Combat.Augments
         public string Description => "Fire a hook to pull yourself to a target point.";
         public float MaxCooldown => cooldown;
 
-        public float CurrentCooldown
-        {
-            get => currentCooldown;
-            set => currentCooldown = Mathf.Clamp(value, 0f, cooldown);
-        }
+        public float CurrentCooldown => currentState.Cooldown;
 
-        public bool AbilityReady => currentCooldown <= 0f && !currentState.IsGrappling;
+        public bool AbilityReady => CurrentCooldown <= 0f && !currentState.IsGrappling;
 
         /// <summary>
         /// Invoked externally by FPArmsAnimator.OnGrappleFireHook once the holster animation reaches
@@ -83,6 +79,9 @@ namespace Resonance.Combat.Augments
         [SimulationOnly]
         public void SimulateActivateAbility()
         {
+            // modify the current state in-place instead of going through the input cycle
+            
+            if (!AbilityReady) return;
             Ray ray = new Ray(currentState.CameraPosition, currentState.CameraForward);
             if (!Physics.Raycast(ray, out RaycastHit hit, maxRange, grappleLayerMask))
             {
@@ -120,7 +119,9 @@ namespace Resonance.Combat.Augments
             ropeRenderer = GetComponent<GrappleRopeRenderer>();
             fpArmsAnimator = GetComponent<FPArmsAnimator>();
             _audioBroadcast = GetComponent<AbilityGrappleHookAudioBroadcast>();
-            playerCamera = Camera.main;
+            
+            if (isOwner)
+                playerCamera = Camera.main;
         }
 
         #endregion
@@ -146,6 +147,9 @@ namespace Resonance.Combat.Augments
 
         protected override void Simulate(AbilityGrappleHookInput input, ref AbilityGrappleHookState state, float delta)
         {
+            if (state.Cooldown > 0)
+                state.Cooldown -= delta;
+            
             // Per-tick outputs are consumed each tick, never accumulated.
             state.ReelVelocity = Vector3.zero;
             state.ExitImpulse = Vector3.zero;
@@ -169,20 +173,25 @@ namespace Resonance.Combat.Augments
 
             Vector3 directionToHook = state.HookPoint - transform.position;
             float distanceToHook = directionToHook.magnitude;
+            
 
+            // Start the cooldown after the grappling hook ends
             if (input.JumpPressed)
             {
                 ExitGrapple(ref state, directionToHook, earlyExit: true);
+                state.Cooldown = cooldown;
                 return;
             }
 
             if (state.ReelTime >= maxReelTime || distanceToHook < 0.5f)
             {
                 ExitGrapple(ref state, directionToHook, earlyExit: false);
+                state.Cooldown = cooldown;
                 return;
             }
 
             state.ReelVelocity = directionToHook.normalized * reelSpeed;
+
         }
 
         private void ExitGrapple(ref AbilityGrappleHookState state, Vector3 directionToHook, bool earlyExit)
@@ -201,10 +210,6 @@ namespace Resonance.Combat.Augments
         {
             if (!isOwner) return;
 
-            // Cooldown is owner-side only — it gates re-activation in PlayerAbilityManager.
-            if (currentCooldown > 0f)
-                currentCooldown -= Time.deltaTime;
-
             if (!verified.HasValue) return;
             var v = verified.Value;
 
@@ -219,7 +224,6 @@ namespace Resonance.Combat.Augments
             // Detect the grapple-end transition to start the cooldown and fire end-of-grapple feedback.
             if (_wasGrappling && !v.IsGrappling)
             {
-                currentCooldown = cooldown;
                 fpArmsAnimator?.TriggerGrappleEnd();
                 _audioBroadcast.RequestExternalBroadcastStopTravel();
                 _audioBroadcast.RequestExternalBroadcastRelease();
@@ -259,6 +263,8 @@ namespace Resonance.Combat.Augments
         /// <summary>Latest owner camera pose, mirrored from input each tick so SimulationOnly code can read it.</summary>
         public Vector3 CameraPosition;
         public Vector3 CameraForward;
+
+        public float Cooldown;
 
         public void Dispose() { }
     }
