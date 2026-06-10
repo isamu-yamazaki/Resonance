@@ -1,0 +1,6 @@
+{
+    "name": "AbilitySimulationTests",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
