@@ -1,4 +1,5 @@
 using PurrNet.Prediction;
+using Resonance.Assemblies.AbilitySimulation.GrappleHook;
 using Resonance.PlayerController;
 using UnityEngine;
 
@@ -14,16 +15,8 @@ namespace Resonance.Combat.Augments
     public class AbilityGrappleHook
         : PredictedIdentity<AbilityGrappleHookInput, AbilityGrappleHookState>, IAugmentAbility
     {
-        [Header("Grapple Settings")]
-        [SerializeField] private float maxRange = 30f;
-        [SerializeField] private float reelSpeed = 20f;
-        [SerializeField] private float maxReelTime = 3f;
-        [SerializeField] private float exitBoost = 5f;
-        [SerializeField] private float upwardBias = 0.25f;
-        [SerializeField] private float cooldown = 10f;
-
-        [Header("References")]
-        [SerializeField] private LayerMask grappleLayerMask;
+        [Header("Config")] [SerializeField] private GrappleHookConfig config;
+        private LayerMask grappleLayerMask => config.grappleLayerMask;
 
         private PlayerLocomotionInput playerLocomotionInput;
         private Camera playerCamera;
@@ -45,7 +38,7 @@ namespace Resonance.Combat.Augments
         public string AbilityKey => "ability_grappleHook";
         public string Name => "Grapple Hook";
         public string Description => "Fire a hook to pull yourself to a target point.";
-        public float MaxCooldown => cooldown;
+        public float MaxCooldown => config.cooldown;
 
         public float CurrentCooldown => currentState.Cooldown;
 
@@ -63,7 +56,7 @@ namespace Resonance.Combat.Augments
 
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, maxRange, grappleLayerMask))
+            if (!Physics.Raycast(ray, out RaycastHit hit, config.maxRange, grappleLayerMask))
             {
                 fpArmsAnimator?.TriggerGrappleEnd();
                 return;
@@ -83,7 +76,7 @@ namespace Resonance.Combat.Augments
             
             if (!AbilityReady) return;
             Ray ray = new Ray(currentState.CameraPosition, currentState.CameraForward);
-            if (!Physics.Raycast(ray, out RaycastHit hit, maxRange, grappleLayerMask))
+            if (!Physics.Raycast(ray, out RaycastHit hit, config.maxRange, grappleLayerMask))
             {
                 fpArmsAnimator?.TriggerGrappleEnd();
                 return;
@@ -98,7 +91,7 @@ namespace Resonance.Combat.Augments
         {
             if (playerCamera == null) return false;
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-            return Physics.Raycast(ray, maxRange, grappleLayerMask);
+            return Physics.Raycast(ray, config.maxRange, grappleLayerMask);
         }
 
         #endregion
@@ -147,64 +140,11 @@ namespace Resonance.Combat.Augments
 
         protected override void Simulate(AbilityGrappleHookInput input, ref AbilityGrappleHookState state, float delta)
         {
-            if (state.Cooldown > 0)
-                state.Cooldown -= delta;
-            
-            // Per-tick outputs are consumed each tick, never accumulated.
-            state.ReelVelocity = Vector3.zero;
-            state.ExitImpulse = Vector3.zero;
-
-            // Mirror the owner camera pose into state so SimulationOnly code (SimulateActivateAbility)
-            // can read it outside the input frame.
-            state.CameraPosition = input.CameraPosition;
-            state.CameraForward = input.CameraForward;
-
-            if (input.ActivatePressed && !state.IsGrappling)
-            {
-                state.IsGrappling = true;
-                state.HookPoint = input.HookPoint;
-                state.ReelTime = 0f;
-            }
-
-            if (!state.IsGrappling)
-                return;
-
-            state.ReelTime += delta;
-
-            Vector3 directionToHook = state.HookPoint - transform.position;
-            float distanceToHook = directionToHook.magnitude;
-            
-
-            // Start the cooldown after the grappling hook ends
-            if (input.JumpPressed)
-            {
-                ExitGrapple(ref state, directionToHook, earlyExit: true);
-                state.Cooldown = cooldown;
-                return;
-            }
-
-            if (state.ReelTime >= maxReelTime || distanceToHook < 0.5f)
-            {
-                ExitGrapple(ref state, directionToHook, earlyExit: false);
-                state.Cooldown = cooldown;
-                return;
-            }
-
-            state.ReelVelocity = directionToHook.normalized * reelSpeed;
-
+            var ctx = new GrappleHookSimulationContext(
+                input, config, transform.position, delta);
+            GrappleHookSimulation.Step(ctx, ref state);
         }
 
-        private void ExitGrapple(ref AbilityGrappleHookState state, Vector3 directionToHook, bool earlyExit)
-        {
-            state.IsGrappling = false;
-
-            if (earlyExit)
-            {
-                Vector3 pullDirection = directionToHook.normalized;
-                Vector3 exitDirection = Vector3.Lerp(pullDirection, Vector3.up, upwardBias).normalized;
-                state.ExitImpulse = exitDirection * (reelSpeed + exitBoost);
-            }
-        }
 
         protected override void UpdateView(AbilityGrappleHookState viewState, AbilityGrappleHookState? verified)
         {
@@ -235,37 +175,6 @@ namespace Resonance.Combat.Augments
         #endregion
     }
 
-    public struct AbilityGrappleHookInput : IPredictedData
-    {
-        public bool ActivatePressed;
-        public Vector3 HookPoint;
-        public bool JumpPressed;
 
-        /// <summary>Owner camera pose this tick, forwarded into state so SimulationOnly code can read it.</summary>
-        public Vector3 CameraPosition;
-        public Vector3 CameraForward;
 
-        public void Dispose() { }
-    }
-
-    public struct AbilityGrappleHookState : IPredictedData<AbilityGrappleHookState>
-    {
-        public bool IsGrappling;
-        public Vector3 HookPoint;
-        public float ReelTime;
-
-        /// <summary>Reel velocity computed this tick (zero when not grappling).</summary>
-        public Vector3 ReelVelocity;
-
-        /// <summary>Exit boost emitted on the tick an early exit occurs (zero otherwise).</summary>
-        public Vector3 ExitImpulse;
-
-        /// <summary>Latest owner camera pose, mirrored from input each tick so SimulationOnly code can read it.</summary>
-        public Vector3 CameraPosition;
-        public Vector3 CameraForward;
-
-        public float Cooldown;
-
-        public void Dispose() { }
-    }
 }

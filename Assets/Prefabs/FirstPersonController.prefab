@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 02372b49c7f35af4caecfab755da37c7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkGameObj
   m_listeners:
     initialListenerList: []
@@ -68,24 +68,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3fb3fbdc9f764c489e3744340ad6f4d, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Audio.FootstepController
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   footstepEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a35941d3b3e47f048b1b2a2d11e05fbe, type: 2}
   landingEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 983da4f4ba31b1f45bb4611e79967bb3, type: 2}
   raycastDistance: 0.5
   groundLayers:
@@ -93,45 +93,45 @@ MonoBehaviour:
     m_Bits: 257
   concreteSurface:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     groupIdInternal: 0
-    groupGuidInternal:
+    groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: b02dcbcb01ee8794291510e72fc898ea, type: 2}
   metalSurface:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     groupIdInternal: 0
-    groupGuidInternal:
+    groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: c5bce7335af06af42983090c80ca090c, type: 2}
   woodSurface:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     groupIdInternal: 0
-    groupGuidInternal:
+    groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: f4dbeccf60488634fb04ff38ac9d299a, type: 2}
   gravelSurface:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     groupIdInternal: 0
-    groupGuidInternal:
+    groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 34e918b5320f2394486160c7307a58ef, type: 2}
   grassSurface:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     groupIdInternal: 0
-    groupGuidInternal:
+    groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: d48893ac1a8654d0e95d9b7e8d503412, type: 2}
   runSwitch:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     groupIdInternal: 0
-    groupGuidInternal:
+    groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 5b5af89d392f5db409347cdfbfa7f77e, type: 2}
   sprintSwitch:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     groupIdInternal: 0
-    groupGuidInternal:
+    groupGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 942aaf7dc06e71f41b4c1dbf17b8db7f, type: 2}
 --- !u!114 &8375709091427389756
 MonoBehaviour:
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f898346e55a92449a1030d1390b9900, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WwiseSmartOcclusion
   occlusionParameter: Occlusion
   diffractionParameter: Diffraction
@@ -231,7 +231,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
   Priority:
     Enabled: 0
@@ -274,7 +274,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
   ApplyAfter: 3
   ChannelMask: 1
@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 02372b49c7f35af4caecfab755da37c7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkGameObj
   m_listeners:
     initialListenerList: []
@@ -322,7 +322,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e325349b27c78b84c8ac5656b66ad2a6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkAudioListener
   isDefaultListener: 1
   bOverrideScalingFactor: 0
@@ -480,7 +480,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb44ab50c506c1040a35e29eb483f20e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerPredictedController
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -560,7 +560,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage:
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -575,7 +575,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 50898351a65ff4848b3a068352164aa7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerState
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -589,7 +589,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ca641dc478de5f4fae60cf9f7cd1016, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   _animator: {fileID: 186030322157751487}
   _networkAnimator: {fileID: 5378828892324781899}
@@ -604,11 +604,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c38e9634aee9db4684b50e737ad0cf4, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveAbility
   activateEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: c5b3619e4bff0c44d8779ca1e0d84562, type: 2}
   overdriveDuration: 8
   overdriveCooldown: 1
@@ -626,13 +626,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ca31240ded0e4d409d11da5f4acfc7e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveAudioBroadcast
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
   activateWorldEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 7d7f96cb21ef4204eb7d687c634973e6, type: 2}
 --- !u!114 &566397693469419020
 MonoBehaviour:
@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88a2f7b50c8598b40b30e939fae75a15, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveTrailEffect
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -697,7 +697,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306b386571bb40847b079fec30bc047a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -717,7 +717,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ca360bb62ba71c4883fbc6104d1191d, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.VFX.PlayerDeathEffect
   deathGlitchMaterial: {fileID: 2100000, guid: b9a1d38ab4565463ab4661a1743f1780, type: 2}
   effectDuration: 0.5
@@ -731,14 +731,14 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 817fe5016bd0a2a49a95b6eb338bb132, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkTransform
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -762,14 +762,14 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7b598b9d8509d64abb9fdaf07fa3f6e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkAnimator
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -787,7 +787,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9f65672025fa5d4abac8993a47b6afd, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerEquip
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -802,7 +802,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20ea97cdb3e312945afe919a15f3110b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.ProjectileShooter
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -823,7 +823,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2551c363f8a16b948b7ff20b467041d9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Inventory.PlayerInventory
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -838,7 +838,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6710b10f117684b4aa0755fed0bea3e9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorState
 --- !u!114 &884933758777301057
 MonoBehaviour:
@@ -850,7 +850,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56327ccb6bff56942bc369710b03ec1d, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerViewModel
 --- !u!114 &22982227885916328
 MonoBehaviour:
@@ -862,7 +862,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a594fc3f1dec85458af979963bb5c29, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerAudioBridge
   footstepController: {fileID: 4736762120235980275}
   footstepCooldown: 0.2
@@ -876,7 +876,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c91b8c40e13cd144a8d5c2cf42abcec3, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WwiseSmartReverb
   isGlobal: 1
   targetEmitter: {fileID: 6809321870534573542}
@@ -949,15 +949,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7eadec4af733d5445870b0d861fb4b09, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WwiseAmbienceManager
   outdoorAmbienceEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 9d77646d52ac5d74db7eaf97c80a0f75, type: 2}
   indoorAmbienceEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: f2e933a297e714e43b6d52e46b8a0e59, type: 2}
   scannerSource: {fileID: -3400458708190070123}
   directionCount: 16
@@ -982,7 +982,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e5b738d0ae3f5a4e971816bbc9221d1, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.WeaponStatManager
 --- !u!114 &-2009204506129055193
 MonoBehaviour:
@@ -994,7 +994,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 207bfba71cd18c142bf9699a76867ff5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerAugmentEquipper
 --- !u!114 &1243582744159536647
 MonoBehaviour:
@@ -1006,7 +1006,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e5b738d0ae3f5a4e971816bbc9221d1, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.WeaponStatManager
 --- !u!114 &5575042648507424026
 MonoBehaviour:
@@ -1018,7 +1018,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19a917e9c7c544d59a5c1b09bc598baa, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerSkinRenderer
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -1036,14 +1036,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bda92ce9f3864754a8fed28b007ed58, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainPassengerPhysics
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1061,14 +1061,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae81c8d7f5408c444acb6669e9e5cd6a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerPostProcessing
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1092,7 +1092,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
   m_IsGlobal: 1
   priority: 0
@@ -1109,7 +1109,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1618d4599f2d78942842ae474dda5cf3, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerHealthStim
   stimCooldown: 15
   maxCharges: 2
@@ -1123,14 +1123,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4ce0fb1f407f3543b800c5c2def9b1a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteract
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1145,14 +1145,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 103cbf7204e768746879e6fb3d2697e7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerSpotlight
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1163,7 +1163,7 @@ MonoBehaviour:
   switchOffDuration: 0.5
   spotlightOnEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 954432cf6c73a634381e080288d69c7a, type: 2}
 --- !u!114 &4690382465625623557
 MonoBehaviour:
@@ -1175,14 +1175,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 852536295ce38437fa9654726308ca8d, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.MatchMovementLock
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1196,8 +1196,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e563d196eb249d44b9c3aabda3ba9ff, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerAugmentManager
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
 --- !u!114 &5294477622813519415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1208,7 +1210,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1791d882e5a61fb4b943aef66559ae98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilitySprintBurst
   maxBurstSpeed: 2
   minBurstSpeed: 1.2
@@ -1225,14 +1227,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f101be1c3ebfe47c797c61afb81cd5d5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarDiscAbility
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1249,14 +1251,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d4bb70d5cf544cac9778323e8d7b4a3, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ElectrocuteEffect
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1272,14 +1274,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8809aee6a74a8492994e6ab7778f5858, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.ScannedHighlight
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1289,7 +1291,7 @@ MonoBehaviour:
   snapshotCount: 3
   snapshotEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 0}
 --- !u!114 &-6813632310427250886
 MonoBehaviour:
@@ -1301,7 +1303,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d23374860f546664bb11961b1f55e134, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilityHumanTurret
   timeToActivate: 2
   damageReduction: 0.25
@@ -1316,33 +1318,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 756697708992c6b4ba888e216e9886b9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilityGrappleHook
-  maxRange: 40
-  reelSpeed: 30
-  maxReelTime: 1.5
-  exitBoost: 5
-  upwardBias: 0.25
-  cooldown: 1
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
+  config:
+    maxRange: 30
+    reelSpeed: 20
+    maxReelTime: 3
+    exitBoost: 5
+    upwardBias: 0.25
+    cooldown: 10
+    grappleLayerMask:
+      serializedVersion: 2
+      m_Bits: 256
   grappleLayerMask:
     serializedVersion: 2
     m_Bits: 256
-  shootEvent:
-    idInternal: 0
-    valueGuidInternal:
-    WwiseObjectReference: {fileID: 11400000, guid: ccfeef1468a60b040a86648f65fb5345, type: 2}
-  travelLoopEvent:
-    idInternal: 0
-    valueGuidInternal:
-    WwiseObjectReference: {fileID: 11400000, guid: 0542d3919461d10409bca7ea4847ed86, type: 2}
-  stopTravelEvent:
-    idInternal: 0
-    valueGuidInternal:
-    WwiseObjectReference: {fileID: 11400000, guid: 8ad66c9abd2d8c342b507553d76153c0, type: 2}
-  releaseEvent:
-    idInternal: 0
-    valueGuidInternal:
-    WwiseObjectReference: {fileID: 11400000, guid: 24e2f969f6ffb554eb2a07b7230a0745, type: 2}
 --- !u!114 &-2774476923640116218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1353,25 +1345,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ad330c65434477bba90310b9d84e460, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilityGrappleHookAudioBroadcast
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
   shootEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: ccfeef1468a60b040a86648f65fb5345, type: 2}
   travelLoopEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 0542d3919461d10409bca7ea4847ed86, type: 2}
   stopTravelEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 8ad66c9abd2d8c342b507553d76153c0, type: 2}
   releaseEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 24e2f969f6ffb554eb2a07b7230a0745, type: 2}
 --- !u!114 &-9158808936870234664
 MonoBehaviour:
@@ -1383,14 +1375,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1cf1830bf0f316d4bafd3c046ec7087b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.GrappleRopeRenderer
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1405,14 +1397,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6c9b65a90592be42910be98e69f32a1, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.BubbleShield.AbilityBubbleShield
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1422,7 +1414,7 @@ MonoBehaviour:
   bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
   throwSoundEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 7560fd83120d05e46ae5211711644808, type: 2}
 --- !u!114 &8062843662524459022
 MonoBehaviour:
@@ -1434,7 +1426,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 594f5b14d937cfb44919103412464871, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.FPArmsManager
   _playerState: {fileID: 0}
   _skinRenderer: {fileID: 0}
@@ -1448,7 +1440,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80934240d14a43742b65e47d627899e8, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.FPArmsAnimator
 --- !u!114 &5684997356607948869
 MonoBehaviour:
@@ -1460,7 +1452,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9f1a2183787b15469d6633826859cd7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Economy.PlayerMoney
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
@@ -1475,14 +1467,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6320e42972dfea84c818925e2de1831b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerADS
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
   _shouldBePooled: 0
   _parent: {fileID: 0}
-  _invertedPathToNearestParent:
+  _invertedPathToNearestParent: 
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
@@ -1597,7 +1589,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
