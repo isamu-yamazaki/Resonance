@@ -127,8 +127,7 @@ public class PlayerSimulationTests
             CameraYaw = cameraYaw,
             GrappleImpulse = grappleImpulse,
             JumpedLastSimulatedFrame = jumpedLastSimulatedFrame,
-            LastSimulatedMovementState = lastSimulatedMovementState,
-            SimulatedMovementState = simulatedMovementState,
+            SimulatedMovementStateResult = simulatedMovementState,
             SlideTimer = slideTimer,
         };
     }
@@ -1023,7 +1022,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Sliding, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Sliding, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1034,7 +1033,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Sliding, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Sliding, state.SimulatedMovementStateResult);
     }
 
     #endregion
@@ -1049,7 +1048,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Jumping, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Jumping, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1060,7 +1059,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Falling, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Falling, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1071,7 +1070,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Falling, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Falling, state.SimulatedMovementStateResult);
     }
 
     #endregion
@@ -1086,7 +1085,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Idling, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Idling, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1097,7 +1096,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1108,7 +1107,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1119,7 +1118,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Crouching, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Crouching, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1130,7 +1129,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Crouching, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Crouching, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1142,7 +1141,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Sprinting, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Sprinting, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1154,7 +1153,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Running, state.SimulatedMovementStateResult);
     }
 
     [Test]
@@ -1165,7 +1164,7 @@ public class PlayerSimulationTests
 
         PlayerSimulation.TickMovementState(ctx, ref state);
 
-        Assert.AreEqual(PlayerMovementState.Idling, state.SimulatedMovementState);
+        Assert.AreEqual(PlayerMovementState.Idling, state.SimulatedMovementStateResult);
     }
 
     #endregion

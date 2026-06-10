@@ -21,8 +21,12 @@ namespace Resonance.Assemblies.Player
         public Vector3 GrappleImpulse;
         public bool JumpedLastSimulatedFrame;
         public bool WasGroundedLastTick;
-        public PlayerMovementState LastSimulatedMovementState;
-        public PlayerMovementState SimulatedMovementState;
+        
+        /// <summary>
+        /// Must be propagated back to PlayerState by the controller to work with other systems
+        /// </summary>
+        public PlayerMovementState SimulatedMovementStateResult;
+        
         public float SlideTimer;
 
         public void Dispose() { }

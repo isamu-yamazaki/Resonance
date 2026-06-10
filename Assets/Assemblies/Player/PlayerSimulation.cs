@@ -22,8 +22,6 @@ namespace Resonance.Assemblies.Player
 
             TickCharacterControllerMovement(ctx, ref state);
             TickMovementState(ctx, ref state);
-
-            state.LastSimulatedMovementState = ctx.Dependency.CurrentPlayerMovementState;
         }
 
         /// <summary>
@@ -34,14 +32,14 @@ namespace Resonance.Assemblies.Player
         public static void TickGrappleMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
             state.Velocity = ctx.Dependency.GrappleVelocity;
-            state.SimulatedMovementState = PlayerMovementState.Grappling;
+            state.SimulatedMovementStateResult = PlayerMovementState.Grappling;
         }
 
         public static void TickMovementState(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
             if (ctx.Dependency.IsGrappling)
             {
-                state.SimulatedMovementState = PlayerMovementState.Grappling;
+                state.SimulatedMovementStateResult = PlayerMovementState.Grappling;
                 return;
             }
 
@@ -49,13 +47,13 @@ namespace Resonance.Assemblies.Player
 
             if (state.SlideTimer > 0f)
             {
-                state.SimulatedMovementState = PlayerMovementState.Sliding;
+                state.SimulatedMovementStateResult = PlayerMovementState.Sliding;
                 return;
             }
 
             if (!isGrounded)
             {
-                state.SimulatedMovementState = state.Velocity.y > 0f
+                state.SimulatedMovementStateResult = state.Velocity.y > 0f
                     ? PlayerMovementState.Jumping
                     : PlayerMovementState.Falling;
                 return;
@@ -68,19 +66,19 @@ namespace Resonance.Assemblies.Player
 
             if (ctx.Input.CrouchToggledOn && !ctx.Input.SprintToggledOn)
             {
-                state.SimulatedMovementState = PlayerMovementState.Crouching;
+                state.SimulatedMovementStateResult = PlayerMovementState.Crouching;
             }
             else if (isSprinting)
             {
-                state.SimulatedMovementState = PlayerMovementState.Sprinting;
+                state.SimulatedMovementStateResult = PlayerMovementState.Sprinting;
             }
             else if (isMovingLaterally || hasMovementInput)
             {
-                state.SimulatedMovementState = PlayerMovementState.Running;
+                state.SimulatedMovementStateResult = PlayerMovementState.Running;
             }
             else
             {
-                state.SimulatedMovementState = PlayerMovementState.Idling;
+                state.SimulatedMovementStateResult = PlayerMovementState.Idling;
             }
         }
 
@@ -113,12 +111,10 @@ namespace Resonance.Assemblies.Player
 
             var derivedStats = CalculateDerivedStats(ctx.Dependency, ctx.Config);
 
-            bool isGrounded = ctx.CharacterController.isGrounded;
-            bool isCrouching = ctx.Input.CrouchToggledOn && !ctx.Input.SprintToggledOn;
-            bool isSprinting = ctx.Input.SprintToggledOn
-                               && ctx.Input.MovementInput != Vector2.zero
-                               && !ctx.Input.CrouchToggledOn
-                               && isGrounded;
+            bool isGrounded = ctx.Dependency.CurrentPlayerMovementState != PlayerMovementState.Falling
+                              && ctx.Dependency.CurrentPlayerMovementState != PlayerMovementState.Jumping;
+            bool isCrouching = ctx.Dependency.CurrentPlayerMovementState == PlayerMovementState.Crouching;
+            bool isSprinting = ctx.Dependency.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
 
             // State dependent acceleration and speed
             float lateralAcceleration = !isGrounded ? derivedStats.inAirAcceleration :

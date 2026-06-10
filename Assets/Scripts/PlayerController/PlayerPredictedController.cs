@@ -120,8 +120,7 @@ namespace Resonance.PlayerController
                 GrappleImpulse = Vector3.zero,
                 JumpedLastSimulatedFrame = false,
                 WasGroundedLastTick = true,
-                LastSimulatedMovementState = PlayerMovementState.Falling,
-                SimulatedMovementState = PlayerMovementState.Falling,
+                SimulatedMovementStateResult = PlayerMovementState.Falling,
                 SlideTimer = 0f,
             };
         }
@@ -169,6 +168,12 @@ namespace Resonance.PlayerController
             if (_playerState.IsMatchFrozen()) return;
             if (_playerState.IsZiplining()) return;
             if (!_characterController.enabled) return;
+            
+            // Player movement state:
+            // The current player movement state is read from _playerState.
+            // A resulting state is calculated in PlayerSimulation, then
+            // PlayerPredictedController feeds it back to PlayerState in the
+            // simulation loop.
 
             var deps = new PlayerDependencyData
             {
@@ -196,7 +201,8 @@ namespace Resonance.PlayerController
                 delta);
 
             PlayerSimulation.Step(ctx, ref state);
-            _playerState.SetSimulatedPlayerMovementState(state.SimulatedMovementState);
+            
+            _playerState.SetSimulatedPlayerMovementState(state.SimulatedMovementStateResult);
         }
 
         /// <summary>
@@ -228,8 +234,7 @@ namespace Resonance.PlayerController
                 // Discrete fields snap to `to`.
                 JumpedLastSimulatedFrame = to.JumpedLastSimulatedFrame,
                 WasGroundedLastTick = to.WasGroundedLastTick,
-                LastSimulatedMovementState = to.LastSimulatedMovementState,
-                SimulatedMovementState = to.SimulatedMovementState,
+                SimulatedMovementStateResult = to.SimulatedMovementStateResult,
                 SlideTimer = Mathf.Lerp(from.SlideTimer, to.SlideTimer, t),
             };
         }
@@ -256,7 +261,7 @@ namespace Resonance.PlayerController
             float targetFOV = _config.baseFOV;
             if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
                 targetFOV = _config.overdriveFOV;
-            else if (viewState.SimulatedMovementState == PlayerMovementState.Sprinting)
+            else if (viewState.SimulatedMovementStateResult == PlayerMovementState.Sprinting)
                 targetFOV = _config.sprintFOV;
             _virtualCamera.Lens.FieldOfView = Mathf.Lerp(_virtualCamera.Lens.FieldOfView, targetFOV, _config.fovTransitionSpeed * Time.deltaTime);
         }
