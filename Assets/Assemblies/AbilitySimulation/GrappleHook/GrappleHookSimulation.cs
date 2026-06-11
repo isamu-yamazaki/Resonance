@@ -34,8 +34,7 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
 
             state.ReelTime += delta;
 
-            // TODO: ensure that the transform position is server-client synced
-            // (for some reason it's not, even though transform pos is set via PlayerPredictedController)
+            // In the future, transform position should be server-auth
             Vector3 directionToHook = state.HookPoint - input.LocalTransformPosition;
             float distanceToHook = directionToHook.magnitude;
 

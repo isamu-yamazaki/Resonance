@@ -14,7 +14,6 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
         public GrappleHookSimulationContext(
             in AbilityGrappleHookInput input,
             in GrappleHookConfig config,
-            Vector3 transformPosition,
             float delta
             )
         {

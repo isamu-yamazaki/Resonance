@@ -141,7 +141,7 @@ namespace Resonance.Combat.Augments
         protected override void Simulate(AbilityGrappleHookInput input, ref AbilityGrappleHookState state, float delta)
         {
             var ctx = new GrappleHookSimulationContext(
-                input, config, transform.position, delta);
+                input, config, delta);
             GrappleHookSimulation.Step(ctx, ref state);
         }
 
