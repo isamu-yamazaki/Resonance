@@ -1332,9 +1332,6 @@ MonoBehaviour:
     grappleLayerMask:
       serializedVersion: 2
       m_Bits: 256
-  grappleLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!114 &-2774476923640116218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1399,18 +1396,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c9b65a90592be42910be98e69f32a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.BubbleShield.AbilityBubbleShield
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  lobForce: 6
-  upwardLobBias: 0.4
-  cooldown: 1
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
+  config:
+    lobForce: 6
+    upwardLobBias: 0.4
+    cooldown: 5
   bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
   throwSoundEvent:
     idInternal: 0

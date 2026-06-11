@@ -43,10 +43,13 @@ namespace Resonance.Abilities.BubbleShield
         [SimulationOnly]
         public void SimulateActivateAbility()
         {
-            currentState.Cooldown = config.cooldown;
+            if (currentState.Cooldown <= 0)
+            {
+                currentState.Cooldown = config.cooldown;
 
-            // both args determined from player's local input (for now)
-            SpawnShield(currentState.SpawnPosition, currentState.LobDirection);
+                // both args determined from player's local input (for now)
+                SpawnShield(currentState.SpawnPosition, currentState.LobDirection);
+            }
         }
 
         protected override void LateAwake()
