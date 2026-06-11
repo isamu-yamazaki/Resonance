@@ -1,83 +1,111 @@
 using PurrNet;
+using PurrNet.Prediction;
+using Resonance.Assemblies.AbilitySimulation.BubbleShield;
 using Resonance.Combat.Augments;
 using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Abilities.BubbleShield
 {
-    public class AbilityBubbleShield : NetworkBehaviour, IAugmentAbility
+    public class AbilityBubbleShield : PredictedIdentity<AbilityBubbleShieldInput, AbilityBubbleShieldState>,
+        IAugmentAbility
     {
-        [Header("Shield Settings")]
-        [SerializeField] private float lobForce = 12f;
-        [SerializeField] private float upwardLobBias = 0.4f;
-        [SerializeField] private float cooldown = 20f;
+        [Header("Config")] [SerializeField] private BubbleShieldConfig config;
 
-        [Header("References")]
-        [SerializeField] private GameObject bubbleShieldPrefab;
+        [Header("References")] [SerializeField]
+        private GameObject bubbleShieldPrefab;
 
 #if !UNITY_SERVER
-        [Header("Audio")]
-        [SerializeField] private AK.Wwise.Event throwSoundEvent;
+        [Header("Audio")] [SerializeField] private AK.Wwise.Event throwSoundEvent;
 #endif
 
         private Camera playerCamera;
-        private float currentCooldown;
+        private bool _pendingActivate;
+        private AbilityBubbleShieldState? _previousVerifiedState;
+        private float currentCooldown => currentState.Cooldown;
 
         public string AbilityKey => "ability_bubbleShield";
         public string Name => "Bubble Shield";
         public string Description => "Throw a shield that blocks bullets.";
-        public float MaxCooldown => cooldown;
-        public float CurrentCooldown
-        {
-            get => currentCooldown;
-            set => currentCooldown = Mathf.Clamp(value, 0f, cooldown);
-        }
+        public float MaxCooldown => config.cooldown;
+
+        public float CurrentCooldown => currentCooldown;
+
         public bool AbilityReady => currentCooldown <= 0f;
 
         public void ActivateAbilityExternal()
         {
             if (!AbilityReady) return;
 
-            currentCooldown = cooldown;
-
-#if !UNITY_SERVER
-            throwSoundEvent?.Post(gameObject);
-#endif
-
-            Vector3 spawnPosition = playerCamera.transform.position;
-            Vector3 lobDirection = Vector3.Lerp(playerCamera.transform.forward, Vector3.up, upwardLobBias).normalized;
-
-            RequestSpawnShieldServerRpc(spawnPosition, lobDirection, NetworkManager.main.localPlayer);
+            _pendingActivate = true;
         }
 
+        [SimulationOnly]
         public void SimulateActivateAbility()
         {
-            throw new System.NotImplementedException();
+            currentState.Cooldown = config.cooldown;
+
+            // both args determined from player's local input (for now)
+            SpawnShield(currentState.SpawnPosition, currentState.LobDirection);
         }
 
-        private void Awake()
+        protected override void LateAwake()
         {
-            currentCooldown = 0f;
-        }
-
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
-
             if (isOwner)
                 playerCamera = Camera.main;
         }
 
-        private void Update()
+        protected override void GetFinalInput(ref AbilityBubbleShieldInput input)
         {
             if (!isOwner) return;
 
-            if (currentCooldown > 0f)
-                currentCooldown -= Time.deltaTime;
+            input.ActivatePressed = _pendingActivate;
+
+            if (playerCamera != null)
+            {
+                input.SpawnPosition = playerCamera.transform.position;
+                input.LobDirection = Vector3.Lerp(playerCamera.transform.forward, Vector3.up, config.upwardLobBias)
+                    .normalized;
+            }
+
+            _pendingActivate = false;
         }
 
-        [ServerRpc]
-        private void RequestSpawnShieldServerRpc(Vector3 spawnPosition, Vector3 lobDirection, PlayerID ownerID)
+
+        protected override void Simulate(AbilityBubbleShieldInput input, ref AbilityBubbleShieldState state,
+            float delta)
+        {
+            state.SpawnPosition = input.SpawnPosition;
+            state.LobDirection = input.LobDirection;
+
+            if (input.ActivatePressed)
+            {
+                state.Cooldown = config.cooldown;
+                SpawnShield(input.SpawnPosition, input.LobDirection);
+            }
+
+            if (state.Cooldown > 0f)
+                state.Cooldown -= delta;
+        }
+
+        protected override void UpdateView(AbilityBubbleShieldState viewState, AbilityBubbleShieldState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            var previousCooldown = _previousVerifiedState?.Cooldown ?? 0f;
+            if (previousCooldown <= 0f && v.Cooldown > 0)
+            {
+#if !UNITY_SERVER
+                throwSoundEvent?.Post(gameObject);
+#endif
+            }
+
+            _previousVerifiedState = v;
+        }
+
+        [SimulationOnly]
+        private void SpawnShield(Vector3 spawnPosition, Vector3 lobDirection)
         {
             if (bubbleShieldPrefab == null)
             {
@@ -85,8 +113,10 @@ namespace Resonance.Abilities.BubbleShield
                 return;
             }
 
-            GameObject instance = Instantiate(bubbleShieldPrefab, spawnPosition, Quaternion.identity);
-            NetworkManager.main.Spawn(instance);
+            PredictedObjectID? predictedObjectId =
+                hierarchy.Create(bubbleShieldPrefab, spawnPosition, Quaternion.identity, owner);
+            GameObject instance = hierarchy.GetGameObject(predictedObjectId);
+            // NetworkManager.main.Spawn(instance);
 
             BubbleShieldProjectile projectile = instance.GetComponent<BubbleShieldProjectile>();
             if (projectile == null)
@@ -95,7 +125,29 @@ namespace Resonance.Abilities.BubbleShield
                 return;
             }
 
-            projectile.Launch(lobDirection * lobForce);
+            projectile.Launch(lobDirection * config.lobForce);
+        }
+    }
+
+    public struct AbilityBubbleShieldState : IPredictedData<AbilityBubbleShieldState>
+    {
+        public float Cooldown;
+        public Vector3 LobDirection;
+        public Vector3 SpawnPosition;
+
+        public void Dispose()
+        {
+        }
+    }
+
+    public struct AbilityBubbleShieldInput : IPredictedData
+    {
+        public bool ActivatePressed;
+        public Vector3 SpawnPosition;
+        public Vector3 LobDirection;
+
+        public void Dispose()
+        {
         }
     }
 }
