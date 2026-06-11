@@ -9,13 +9,14 @@ namespace Resonance.Abilities.BubbleShield
     [RequireComponent(typeof(Rigidbody))]
     public class BubbleShieldProjectile : PredictedIdentity<BubbleShieldProjectileState>, IDamageable
     {
-        private BubbleShieldProjectileConfig config;
+        [SerializeField] private BubbleShieldProjectileConfig config;
 
         [Header("References")] [SerializeField]
         private GameObject dome;
 
         [SerializeField] private BubbleShieldVisuals domeVisuals;
 
+        private PredictedTransform _predictedTransform;
         private PredictedRigidbody _predictedRigidbody;
         private BubbleShieldProjectileState? _previousVerifiedState;
 
@@ -24,7 +25,7 @@ namespace Resonance.Abilities.BubbleShield
             return new BubbleShieldProjectileState()
             {
                 Health = config.shieldHealth,
-                AliveTime = config.shieldDuration,
+                AliveTime = 0f,
                 IsDespawning = false,
                 IsLanded = false
             };
@@ -32,7 +33,6 @@ namespace Resonance.Abilities.BubbleShield
 
         protected override void LateAwake()
         {
-
             if (dome != null && domeVisuals == null)
                 domeVisuals = dome.GetComponent<BubbleShieldVisuals>();
 
@@ -44,10 +44,13 @@ namespace Resonance.Abilities.BubbleShield
             _predictedRigidbody = GetComponent<PredictedRigidbody>();
             if (_predictedRigidbody != null)
                 _predictedRigidbody.isKinematic = false;
+
+            _predictedTransform = GetComponent<PredictedTransform>();
         }
 
 
         #region Simulation
+
         protected override void Simulate(ref BubbleShieldProjectileState state, float delta)
         {
             if (state.IsDespawning) return;
@@ -59,7 +62,7 @@ namespace Resonance.Abilities.BubbleShield
                 // resolves to the same tick on every rollback/replay — no physics event, and it
                 // works against plain static geometry that isn't a predicted identity.
                 bool descending = _predictedRigidbody.linearVelocity.y <= 0.01f;
-                if (descending && IsGrounded(transform.position))
+                if (descending && IsGrounded(_predictedTransform.currentState.unityPosition))
                     Land(ref state);
                 return;
             }
@@ -128,9 +131,11 @@ namespace Resonance.Abilities.BubbleShield
             yield return new WaitForSeconds(delay);
             hierarchy.Delete(this);
         }
+
         #endregion
 
         #region UpdateView
+
         protected override void UpdateView(BubbleShieldProjectileState viewState, BubbleShieldProjectileState? verified)
         {
             if (!verified.HasValue) return;
