@@ -36,7 +36,7 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
 
             // TODO: ensure that the transform position is server-client synced
             // (for some reason it's not, even though transform pos is set via PlayerPredictedController)
-            Vector3 directionToHook = state.HookPoint - ctx.TransformPosition;
+            Vector3 directionToHook = state.HookPoint - input.LocalTransformPosition;
             float distanceToHook = directionToHook.magnitude;
 
             // Start the cooldown after the grappling hook ends
@@ -54,6 +54,7 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
                 return;
             }
 
+            // Send the player according to the reel speed, in the determined direction
             state.ReelVelocity = directionToHook.normalized * config.reelSpeed;
         }
         

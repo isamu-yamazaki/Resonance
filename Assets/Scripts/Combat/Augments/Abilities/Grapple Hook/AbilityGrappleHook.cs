@@ -24,8 +24,6 @@ namespace Resonance.Combat.Augments
         private FPArmsAnimator fpArmsAnimator;
         private AbilityGrappleHookAudioBroadcast _audioBroadcast;
 
-        private float currentCooldown;
-
         // Owner-only input accumulators, flushed in GetFinalInput.
         private bool _pendingActivate;
         private Vector3 _pendingHookPoint;
@@ -134,6 +132,8 @@ namespace Resonance.Combat.Augments
                 input.CameraPosition = playerCamera.transform.position;
                 input.CameraForward = playerCamera.transform.forward;
             }
+
+            input.LocalTransformPosition = transform.position;
 
             _pendingActivate = false;
         }

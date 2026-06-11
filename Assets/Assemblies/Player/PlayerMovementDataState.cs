@@ -8,6 +8,7 @@ namespace Resonance.Assemblies.Player
     /// </summary>
     public struct PlayerMovementDataState : IPredictedData<PlayerMovementDataState>
     {
+        // may move into a PredictedTransform later to share between additional components
         public Vector3 Position;
         public Vector3 Velocity;
 

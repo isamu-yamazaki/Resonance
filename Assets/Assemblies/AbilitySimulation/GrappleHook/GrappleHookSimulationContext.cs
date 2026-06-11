@@ -10,7 +10,6 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
         public readonly GrappleHookConfig Config;
         public readonly AbilityGrappleHookInput Input;
         public readonly float Delta;
-        public readonly Vector3 TransformPosition;
 
         public GrappleHookSimulationContext(
             in AbilityGrappleHookInput input,
@@ -22,7 +21,6 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
             Config = config;
             Input = input;
             Delta = delta;
-            TransformPosition = transformPosition;
         }
     }
 }

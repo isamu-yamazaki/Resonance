@@ -12,10 +12,6 @@ namespace Resonance.PlayerController
     /// Predicted equivalent of PlayerController. Mirrors its public API surface and
     /// component dependencies, but runs the movement tick inside PurrNet's prediction
     /// loop via PlayerSimulation.Step.
-    ///
-    /// This is scaffolding for the migration off the legacy PlayerController. Several
-    /// pieces of legacy behavior (movement-state machine, camera rotation, slide init,
-    /// rotate-to-target) are not yet ported and are flagged with TODOs below.
     /// </summary>
     [DefaultExecutionOrder(-1)]
     [RequireComponent(typeof(CharacterController))]
