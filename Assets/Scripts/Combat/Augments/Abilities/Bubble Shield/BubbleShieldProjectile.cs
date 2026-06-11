@@ -53,6 +53,10 @@ namespace Resonance.Abilities.BubbleShield
 
         protected override void Simulate(ref BubbleShieldProjectileState state, float delta)
         {
+            // Dome holds bullet-blocking collider, so must run on both client + server
+            if (dome != null && dome.activeSelf != state.IsLanded)
+                dome.SetActive(state.IsLanded);
+
             if (state.IsDespawning) return;
 
             if (!state.IsLanded)
@@ -145,10 +149,6 @@ namespace Resonance.Abilities.BubbleShield
             if (v.Health < previousHealth)
                 PlayHitFlashObservers();
 
-            bool previouslyLanded = _previousVerifiedState?.IsLanded ?? false;
-            if (v.IsLanded && !previouslyLanded)
-                ActivateDomeObservers();
-
             bool previouslyDespawning = _previousVerifiedState?.IsDespawning ?? false;
             if (v.IsDespawning && !previouslyDespawning)
                 PlayDespawnObservers();
@@ -156,12 +156,6 @@ namespace Resonance.Abilities.BubbleShield
             _previousVerifiedState = v;
         }
 
-
-        private void ActivateDomeObservers()
-        {
-            if (dome != null && !dome.activeSelf)
-                dome.SetActive(true);
-        }
 
         private void PlayHitFlashObservers()
         {

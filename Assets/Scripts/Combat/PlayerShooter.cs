@@ -63,8 +63,6 @@ namespace Resonance.Combat
             if (playerCamera == null && !isServer)
                 playerCamera = Camera.main;
 
-            hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
-
             weaponStatManager = GetComponent<WeaponStatManager>();
 
             if (viewModel != null)
