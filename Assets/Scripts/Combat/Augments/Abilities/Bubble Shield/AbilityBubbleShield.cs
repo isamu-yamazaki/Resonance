@@ -43,13 +43,9 @@ namespace Resonance.Abilities.BubbleShield
         [SimulationOnly]
         public void SimulateActivateAbility()
         {
-            if (currentState.Cooldown <= 0)
-            {
-                currentState.Cooldown = config.cooldown;
-
-                // both args determined from player's local input (for now)
+            // both args determined from player's local input (for now)
+            if (BubbleShieldSimulation.TryActivate(ref currentState, config))
                 SpawnShield(currentState.SpawnPosition, currentState.LobDirection);
-            }
         }
 
         protected override void LateAwake()
@@ -78,17 +74,11 @@ namespace Resonance.Abilities.BubbleShield
         protected override void Simulate(AbilityBubbleShieldInput input, ref AbilityBubbleShieldState state,
             float delta)
         {
-            state.SpawnPosition = input.SpawnPosition;
-            state.LobDirection = input.LobDirection;
+            var ctx = new BubbleShieldSimulationContext(input, config, delta);
+            BubbleShieldSimulation.Step(ctx, ref state);
 
-            if (input.ActivatePressed)
-            {
-                state.Cooldown = config.cooldown;
-                SpawnShield(input.SpawnPosition, input.LobDirection);
-            }
-
-            if (state.Cooldown > 0f)
-                state.Cooldown -= delta;
+            if (state.ShouldSpawnShield)
+                SpawnShield(state.SpawnPosition, state.LobDirection);
         }
 
         protected override void UpdateView(AbilityBubbleShieldState viewState, AbilityBubbleShieldState? verified)
@@ -129,28 +119,6 @@ namespace Resonance.Abilities.BubbleShield
             }
 
             projectile.Launch(lobDirection * config.lobForce);
-        }
-    }
-
-    public struct AbilityBubbleShieldState : IPredictedData<AbilityBubbleShieldState>
-    {
-        public float Cooldown;
-        public Vector3 LobDirection;
-        public Vector3 SpawnPosition;
-
-        public void Dispose()
-        {
-        }
-    }
-
-    public struct AbilityBubbleShieldInput : IPredictedData
-    {
-        public bool ActivatePressed;
-        public Vector3 SpawnPosition;
-        public Vector3 LobDirection;
-
-        public void Dispose()
-        {
         }
     }
 }

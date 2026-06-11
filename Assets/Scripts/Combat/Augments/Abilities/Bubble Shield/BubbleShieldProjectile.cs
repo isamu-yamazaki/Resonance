@@ -57,24 +57,26 @@ namespace Resonance.Abilities.BubbleShield
             if (dome != null && dome.activeSelf != state.IsLanded)
                 dome.SetActive(state.IsLanded);
 
-            if (state.IsDespawning) return;
+            // Resolve the physics dependencies the simulation needs and pass them through the
+            // context. Deterministic landing: sweep a sphere straight down against static ground.
+            // The projectile's position is reconciled and the ground never moves, so this resolves
+            // to the same tick on every rollback/replay — no physics event, and it works against
+            // plain static geometry that isn't a predicted identity. The ground is only probed when
+            // a landing can actually happen this tick (the simulation re-derives the descent check
+            // from the same velocity + threshold).
+            Vector3 velocity = _predictedRigidbody.linearVelocity;
+            bool descending = velocity.y <= BubbleShieldProjectileSimulation.DescendVelocityThreshold;
+            bool grounded = !state.IsDespawning && !state.IsLanded && descending
+                            && IsGrounded(_predictedTransform.currentState.unityPosition);
 
-            if (!state.IsLanded)
-            {
-                // Deterministic landing: sweep a sphere straight down against static ground.
-                // The projectile's position is reconciled and the ground never moves, so this
-                // resolves to the same tick on every rollback/replay — no physics event, and it
-                // works against plain static geometry that isn't a predicted identity.
-                bool descending = _predictedRigidbody.linearVelocity.y <= 0.01f;
-                if (descending && IsGrounded(_predictedTransform.currentState.unityPosition))
-                    Land(ref state);
-                return;
-            }
+            var ctx = new BubbleShieldProjectileSimulationContext(config, delta, velocity, grounded);
+            BubbleShieldProjectileSimulation.Step(ctx, ref state);
 
-            state.AliveTime += delta;
+            if (state.ShouldFreezeBody)
+                FreezeBody();
 
-            if (state.AliveTime >= config.shieldDuration - config.despawnAnimDuration)
-                DestroyShield(ref state);
+            if (state.ShouldBeginDespawn)
+                StartCoroutine(DestroyAfterDelay(config.despawnAnimDuration));
         }
 
         // Pure function of (reconciled) position + immovable static colliders → replay-safe.
@@ -103,31 +105,21 @@ namespace Resonance.Abilities.BubbleShield
         [SimulationOnly]
         public void TakeDamage(float damage, GameObject shooter)
         {
-            currentState.Health -= damage;
+            BubbleShieldProjectileSimulation.ApplyDamage(ref currentState, damage);
 
-            if (currentState.Health <= 0f)
-                DestroyShield(ref currentState);
+            if (currentState.ShouldBeginDespawn)
+                StartCoroutine(DestroyAfterDelay(config.despawnAnimDuration));
         }
 
+        // Freezes the body on the tick the simulation reports a landing. PredictedRigidbody owns
+        // velocity/kinematic in its OWN reconciled state, so freezing it here rolls back together
+        // with the IsLanded flag.
         [SimulationOnly]
-        private void Land(ref BubbleShieldProjectileState state)
+        private void FreezeBody()
         {
-            state.IsLanded = true;
-
-            // PredictedRigidbody owns velocity/kinematic in its OWN reconciled state, so
-            // freezing it here rolls back together with the IsLanded flag.
             _predictedRigidbody.linearVelocity = Vector3.zero;
             _predictedRigidbody.angularVelocity = Vector3.zero;
             _predictedRigidbody.isKinematic = true;
-        }
-
-        [SimulationOnly]
-        private void DestroyShield(ref BubbleShieldProjectileState state)
-        {
-            if (state.IsDespawning) return;
-            state.IsDespawning = true;
-
-            StartCoroutine(DestroyAfterDelay(config.despawnAnimDuration));
         }
 
         private IEnumerator DestroyAfterDelay(float delay)
@@ -169,17 +161,5 @@ namespace Resonance.Abilities.BubbleShield
         }
 
         #endregion
-    }
-
-    public struct BubbleShieldProjectileState : IPredictedData<BubbleShieldProjectileState>
-    {
-        public float AliveTime;
-        public bool IsDespawning;
-        public bool IsLanded;
-        public float Health;
-
-        public void Dispose()
-        {
-        }
     }
 }
