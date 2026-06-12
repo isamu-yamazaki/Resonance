@@ -33,27 +33,16 @@ namespace Resonance.Abilities.BubbleShield
 
         public bool AbilityReady => currentCooldown <= 0f;
 
-        public void ActivateAbilityExternal()
-        {
-            if (!AbilityReady) return;
-
-            _pendingActivate = true;
-        }
-
-        [SimulationOnly]
-        public void SimulateActivateAbility()
-        {
-            // both args determined from player's local input (for now)
-            if (BubbleShieldSimulation.TryActivate(ref currentState, config))
-                SpawnShield(currentState.SpawnPosition, currentState.LobDirection);
-        }
-
+        #region Lifecycle
         protected override void LateAwake()
         {
             if (isOwner)
                 playerCamera = Camera.main;
         }
 
+        #endregion
+
+        #region Input
         protected override void GetFinalInput(ref AbilityBubbleShieldInput input)
         {
             if (!isOwner) return;
@@ -70,7 +59,18 @@ namespace Resonance.Abilities.BubbleShield
             _pendingActivate = false;
         }
 
+        public void ActivateAbilityExternal()
+        {
+            if (!AbilityReady) return;
 
+            _pendingActivate = true;
+        }
+
+        #endregion
+
+
+
+        #region Simulation loop
         protected override void Simulate(AbilityBubbleShieldInput input, ref AbilityBubbleShieldState state,
             float delta)
         {
@@ -81,20 +81,13 @@ namespace Resonance.Abilities.BubbleShield
                 SpawnShield(state.SpawnPosition, state.LobDirection);
         }
 
-        protected override void UpdateView(AbilityBubbleShieldState viewState, AbilityBubbleShieldState? verified)
+
+        [SimulationOnly]
+        public void SimulateActivateAbility()
         {
-            if (!verified.HasValue) return;
-            var v = verified.Value;
-
-            var previousCooldown = _previousVerifiedState?.Cooldown ?? 0f;
-            if (previousCooldown <= 0f && v.Cooldown > 0)
-            {
-#if !UNITY_SERVER
-                throwSoundEvent?.Post(gameObject);
-#endif
-            }
-
-            _previousVerifiedState = v;
+            // both args determined from player's local input (for now)
+            if (BubbleShieldSimulation.TryActivate(ref currentState, config))
+                SpawnShield(currentState.SpawnPosition, currentState.LobDirection);
         }
 
         [SimulationOnly]
@@ -120,5 +113,28 @@ namespace Resonance.Abilities.BubbleShield
 
             projectile.Launch(lobDirection * config.lobForce);
         }
+        #endregion
+
+
+
+        #region Local view updates
+        protected override void UpdateView(AbilityBubbleShieldState viewState, AbilityBubbleShieldState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            var previousCooldown = _previousVerifiedState?.Cooldown ?? 0f;
+            if (previousCooldown <= 0f && v.Cooldown > 0)
+            {
+#if !UNITY_SERVER
+                throwSoundEvent?.Post(gameObject);
+#endif
+            }
+
+            _previousVerifiedState = v;
+        }
+        #endregion
+
+
     }
 }

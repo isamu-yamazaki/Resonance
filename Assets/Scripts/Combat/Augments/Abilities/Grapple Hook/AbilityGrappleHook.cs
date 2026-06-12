@@ -144,8 +144,9 @@ namespace Resonance.Combat.Augments
                 input, config, delta);
             GrappleHookSimulation.Step(ctx, ref state);
         }
+        #endregion
 
-
+        #region Local view updates
         protected override void UpdateView(AbilityGrappleHookState viewState, AbilityGrappleHookState? verified)
         {
             if (!isOwner) return;
@@ -171,8 +172,8 @@ namespace Resonance.Combat.Augments
 
             _wasGrappling = v.IsGrappling;
         }
-
         #endregion
+
     }
 
 
