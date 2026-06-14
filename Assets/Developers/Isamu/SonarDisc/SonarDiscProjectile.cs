@@ -1,7 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
 using PurrNet;
 using PurrNet.Prediction;
 using Resonance.Helper;
+using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
@@ -53,6 +55,10 @@ namespace Resonance.Abilities.SonarDisc
 
         // Reused by the pulse scan so the predicted tick doesn't allocate; sized for max players in range.
         private readonly Collider[] _pulseOverlapBuffer = new Collider[64];
+
+        // Server-only dedup of players already reported this pulse. Deliberately NOT in predicted state:
+        // it must not replicate (privacy) and the server never rolls back, so a plain field is correct.
+        private readonly HashSet<PlayerID> _scannedThisPulse = new HashSet<PlayerID>();
 
         #region Lifecycle
 
@@ -147,6 +153,7 @@ namespace Resonance.Abilities.SonarDisc
         )
         {
             state.IsAttached = true;
+            _scannedThisPulse.Clear();
 
             _predictedRigidbody.currentState.linearVelocity = Vector3.zero;
             _predictedRigidbody.currentState.angularVelocity = Vector3.zero;
@@ -245,14 +252,44 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            // TODO: UpdateView
-            // NotifyPulseVFX();
+            switch (state.IsPulsing)
+            {
+                case false when state.PrePulseElapsed >= pulseDelay:
+                    state.IsPulsing = true;
+                    break;
+                case false:
+                    state.PrePulseElapsed += delta;
+                    break;
+                default:
+                {
+                    state.PulseElapsed += delta;
+                    float currentRadius = Mathf.Lerp(0f, pulseRadius, state.PulseElapsed / pulseExpandDuration);
 
-            state.PulseElapsed += delta;
-            float currentRadius = Mathf.Lerp(0f, pulseRadius, state.PulseElapsed / pulseExpandDuration);
+                    DetectAndNotifyOnServer(currentRadius);
+                    break;
+                }
+            }
+        }
 
-            // Query the prediction's PhysicsScene (not the global default) into a reusable buffer so the
-            // scan replays deterministically and doesn't allocate every tick.
+        // Server-only: find players the expanding pulse newly reveals and notify the owner + each victim via
+        // targeted RPCs. Nothing here touches predicted `state`, so it adds side effects without affecting
+        // reconciliation on clients.
+        [SimulationOnly]
+        private void DetectAndNotifyOnServer(float currentRadius)
+        {
+            // Scan reveal is server-authoritative. The rollback/replay loop is client-only (PredictionManager
+            // skips it when cachedIsServer), so the server runs this exactly once per tick — `isServer` alone
+            // is a sufficient guard against double-firing, no isReplaying check needed.
+            if (!isServer)
+                return;
+
+            if (!owner.HasValue)
+                return; // no scanner to report to yet (owner is assigned by the ability)
+
+            SonarScanNetworkAdapter adapter = SonarScanNetworkAdapter.Instance;
+            if (adapter == null)
+                return;
+
             Vector3 discPos = _predictedTransform.currentState.unityPosition;
             PhysicsScene physicsScene = gameObject.scene.GetPhysicsScene();
             int candidateCount = physicsScene.OverlapSphere(discPos, pulseRadius, _pulseOverlapBuffer,
@@ -269,6 +306,7 @@ namespace Resonance.Abilities.SonarDisc
                 if (Vector3.Distance(discPos, candidatePos) > currentRadius)
                     continue;
 
+                // Occlusion: skip players behind walls.
                 Vector3 directionToDisc = discPos - candidatePos;
                 float distanceToDisc = directionToDisc.magnitude;
                 if (physicsScene.Raycast(candidatePos, directionToDisc.normalized,
@@ -276,13 +314,18 @@ namespace Resonance.Abilities.SonarDisc
                         QueryTriggerInteraction.Ignore))
                     continue;
 
-                // TODO: cross-tick dedup needs a value-type representation in predicted state — the old
-                // per-tick HashSet couldn't persist across ticks anyway, so a player in range is currently
-                // re-detected every tick until the pulse ends.
-                // NotifyPlayerDetected(owner, candidate.gameObject);
-                // ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
-                // if (scannedHighlight != null && scannedHighlight.owner.HasValue)
-                //     NotifyScanConfirmed(owner);
+                PlayerPredictedController victim = candidate.GetComponentInParent<PlayerPredictedController>();
+                if (victim == null || !victim.owner.HasValue)
+                    continue;
+
+                PlayerID victimId = victim.owner.Value;
+
+                // Dedup across the whole pulse so each player is reported at most once.
+                if (!_scannedThisPulse.Add(victimId))
+                    continue;
+
+                adapter.NotifyOwnerOfDetection(owner.Value, victimId, candidatePos); // owner-only payload
+                adapter.NotifyScannedSelf(victimId, discPos);                        // victim-only payload
             }
         }
 
@@ -480,6 +523,15 @@ namespace Resonance.Abilities.SonarDisc
         public Quaternion AttachLocalRot;
 
         public bool IsDespawning;
+
+        /// <summary>
+        /// For the view to fire the pulse VFX.
+        /// This is fully controlled by the simulation and may run some time
+        /// after attaching to a wall, which is why we need the separate property.
+        /// </summary>
+        public bool IsPulsing;
+
+        public float PrePulseElapsed;
         public float PulseElapsed;
         public float DistanceTravelled;
 
