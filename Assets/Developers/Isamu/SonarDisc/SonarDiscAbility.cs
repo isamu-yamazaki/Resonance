@@ -1,4 +1,5 @@
 using PurrNet;
+using PurrNet.Prediction;
 using Resonance.Combat.Augments;
 using Resonance.Combat.Weapons;
 using Resonance.PlayerController;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Resonance.Abilities.SonarDisc
 {
-    public class SonarDiscAbility : NetworkBehaviour, IAugmentAbility
+    public class SonarDiscAbility : PredictedIdentity<SonarDiscAbilityInput, SonarDiscAbilityState>, IAugmentAbility
     {
         [Header("References")]
         [SerializeField] private AugmentProperties augmentProperties;
@@ -34,15 +35,12 @@ namespace Resonance.Abilities.SonarDisc
 
         #region Network
 
-        protected override void OnSpawned()
+        protected override void LateAwake()
         {
-            base.OnSpawned();
+            if (!isOwner) return;
 
-            if (isOwner)
-            {
-                _playerActionsInput = PlayerActionsInput.Instance;
-                _fpArmsManager = GetComponent<FPArmsManager>();
-            }
+            _playerActionsInput = PlayerActionsInput.Instance;
+            _fpArmsManager = GetComponent<FPArmsManager>();
         }
 
         #endregion
@@ -53,6 +51,11 @@ namespace Resonance.Abilities.SonarDisc
 
             if (_cooldownTimeRemaining > 0f)
                 _cooldownTimeRemaining -= Time.deltaTime;
+        }
+
+        protected override void Simulate(SonarDiscAbilityInput input, ref SonarDiscAbilityState state, float delta)
+        {
+            throw new System.NotImplementedException();
         }
 
         private Transform GetActiveMuzzle()
@@ -96,9 +99,10 @@ namespace Resonance.Abilities.SonarDisc
             throw new System.NotImplementedException();
         }
 
-        [ServerRpc]
         private void RequestFireDiscServerRpc(Vector3 spawnPosition, Vector3 direction, PlayerID firingPlayerID)
         {
+            // TODO: assign owner when creating in hierarchy
+
             GameObject discInstance = Instantiate(sonarDiscPrefab, spawnPosition, Quaternion.LookRotation(direction));
             NetworkManager.main.Spawn(discInstance);
 
@@ -109,8 +113,22 @@ namespace Resonance.Abilities.SonarDisc
                 return;
             }
 
-            disc.Launch(direction, gameObject, firingPlayerID);
-            disc.BroadcastShootSoundObserversRpc();
+            disc.Launch(direction);
+            disc.BroadcastShootSound();
+        }
+    }
+
+    public struct SonarDiscAbilityState : IPredictedData<SonarDiscAbilityState>
+    {
+        public void Dispose()
+        {
+        }
+    }
+
+    public struct SonarDiscAbilityInput : IPredictedData
+    {
+        public void Dispose()
+        {
         }
     }
 }

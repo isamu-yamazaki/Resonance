@@ -1,6 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using PurrNet;
+using PurrNet.Prediction;
 using Resonance.Helper;
 using UnityEngine;
 
@@ -9,204 +9,346 @@ namespace Resonance.Abilities.SonarDisc
     // Disc projectile — travels, sticks to surfaces/players, fires a sonar pulse on wall attach. Physics server-only, VFX broadcast to all clients.
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereCollider))]
-    public class SonarDiscProjectile : NetworkBehaviour, IDamageable
+    public class SonarDiscProjectile : PredictedIdentity<SonarDiscProjectileState>, IDamageable
     {
-        [Header("Travel")]
-        [SerializeField] private float travelSpeed = 28f;
+        [Header("Travel")] [SerializeField] private float travelSpeed = 28f;
         [SerializeField] private float maxRange = 40f;
 
-        [Header("VFX")]
-        [SerializeField] private Material deathGlitchMaterial;
+        [Header("VFX")] [SerializeField] private Material deathGlitchMaterial;
         [SerializeField] private float glitchEffectDuration = 0.5f;
 
-        [Header("Combat")]
-        [SerializeField] private float discDamage = 5f;
+        [Header("Combat")] [SerializeField] private float discDamage = 5f;
         [SerializeField] private DamageNumber damageNumberPrefab;
 
-        [Header("Pulse")]
-        [SerializeField] private float pulseDelay = 1f;
+        [Header("Pulse")] [SerializeField] private float pulseDelay = 1f;
         [SerializeField] private float pulseRadius = 30f;
         [SerializeField] private float pulseExpandDuration = 0.6f;
         [SerializeField] private LayerMask playerLayerMask;
         [SerializeField] private LayerMask occlusionLayerMask;
 
-        [Header("Collision")]
-        [SerializeField] private LayerMask discCollisionMask;
+        [Header("Collision")] [SerializeField] private LayerMask discCollisionMask;
 
 #if !UNITY_SERVER
         [Header("Wwise Events")]
         // TODO: Assign shoot event (Play_SD_Shoot) in inspector
-        [SerializeField] private AK.Wwise.Event shootEvent;
+        [SerializeField]
+        private AK.Wwise.Event shootEvent;
+
         // TODO: Assign wall impact event (Play_SD_WallImpact) in inspector
         [SerializeField] private AK.Wwise.Event wallImpactEvent;
+
         // TODO: Assign pulse activation event (Play_SD_PulseActivate) in inspector
         [SerializeField] private AK.Wwise.Event pulseActivationEvent;
+
         // Plays spatially on the hit player for all clients (Play_SD_Distortion)
         [SerializeField] private AK.Wwise.Event hitPlayerEvent;
+
         // Plays only for the disc owner on a successful scan (Play_SD_Ping)
         [SerializeField] private AK.Wwise.Event scanConfirmedEvent;
 #endif
 
-        private Rigidbody _rigidbody;
-        private bool _isAttached;
-        private bool _isDestroyed;
-        private float _distanceTravelled;
-        private Vector3 _lastPosition;
-        private GameObject _owner;
-        private PlayerID _ownerPlayerID;
+        private PredictedRigidbody _predictedRigidbody;
+        private PredictedTransform _predictedTransform;
+        private SonarDiscProjectileState? _previousVerifiedState;
 
-        private void Awake()
+        // Reused by the pulse scan so the predicted tick doesn't allocate; sized for max players in range.
+        private readonly Collider[] _pulseOverlapBuffer = new Collider[64];
+
+        #region Lifecycle
+
+        protected override void LateAwake()
         {
-            _rigidbody = GetComponent<Rigidbody>();
-            _rigidbody.useGravity = false;
-            _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-            _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        }
+            _predictedRigidbody = GetComponent<PredictedRigidbody>();
+            _predictedRigidbody.useGravity = false;
+            _predictedRigidbody.isKinematic = !isServer;
 
-        #region Network
-
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
-            _rigidbody.isKinematic = !isServer;
+            _predictedTransform = GetComponent<PredictedTransform>();
         }
 
         #endregion
 
-        public void Launch(Vector3 direction, GameObject owner, PlayerID ownerPlayerID)
+        #region Simulation loop
+
+        [SimulationOnly]
+        public void Launch(Vector3 direction)
         {
-            _owner = owner;
-            _ownerPlayerID = ownerPlayerID;
-            _lastPosition = transform.position;
-            _rigidbody.linearVelocity = direction.normalized * travelSpeed;
-            transform.rotation = Quaternion.LookRotation(direction.normalized);
+            currentState.LastPosition = transform.position;
+            _predictedRigidbody.linearVelocity = direction.normalized * travelSpeed;
+            _predictedTransform.currentState.unityRotation = Quaternion.LookRotation(direction.normalized);
         }
 
-        private void Update()
+        protected override void Simulate(ref SonarDiscProjectileState state, float delta)
         {
-            if (!isServer) return;
-            if (_isAttached) return;
-
-            _lastPosition = transform.position;
-        }
-
-        private void FixedUpdate()
-        {
-            if (!isServer) return;
-            if (_isAttached) return;
-
-            if (Physics.Linecast(_lastPosition, transform.position, out RaycastHit hit, discCollisionMask, QueryTriggerInteraction.Ignore))
+            if (state.IsAttached)
             {
-                AttachToTarget(hit.collider, hit.point, hit.normal);
+                FollowTarget(ref state);
+
+                if (state.IsAttachedToPlayer)
+                {
+                    PlayerAttachTick(ref state, delta);
+                }
+                else
+                {
+                    WallPulseTick(ref state, delta);
+                }
+
                 return;
             }
 
-            _distanceTravelled += Vector3.Distance(transform.position, _lastPosition);
+            // previously in FixedUpdate, now runs by prediction tick.
+            // Query the same PhysicsScene the prediction loop steps, not the global default scene,
+            // so the swept hit-test replays identically on every peer.
+            PhysicsScene physicsScene = gameObject.scene.GetPhysicsScene();
+            Vector3 sweepStart = state.LastPosition;
+            Vector3 sweepEnd = _predictedTransform.currentState.unityPosition;
+            Vector3 sweep = sweepEnd - sweepStart;
+            if (physicsScene.Raycast(sweepStart, sweep.normalized, out RaycastHit hit, sweep.magnitude,
+                    discCollisionMask, QueryTriggerInteraction.Ignore))
+            {
+                if (!OwnerFinder.BelongsToOwner(hit.collider, owner))
+                {
+                    AttachToTarget(hit.collider, hit.point, hit.normal, ref state);
+                    return;
+                }
+            }
 
-            if (_distanceTravelled >= maxRange)
-                DestroyDisc();
+            state.DistanceTravelled += Vector3.Distance(_predictedTransform.currentState.unityPosition, state.LastPosition);
+            if (state.DistanceTravelled >= maxRange)
+                DestroyDisc(ref state);
+
+            // for the linecast in the next tick
+            state.LastPosition = _predictedTransform.currentState.unityPosition;
         }
+
 
         #region IDamageable
 
+        [SimulationOnly]
         public void TakeDamage(float damage, GameObject shooter)
         {
-            if (!isServer) return;
-            DestroyDisc();
+            // pretty sure this was the intention of disabling the collider
+            // on attach in the old code; there might be more that i'm missing though
+            if (!currentState.IsAttached)
+            {
+                DestroyDisc(ref currentState);
+            }
         }
 
         #endregion
 
         #region Collision
 
-        private void OnCollisionEnter(Collision collision)
+        [SimulationOnly]
+        private void AttachToTarget(
+            Collider hitCollider,
+            Vector3 hitPoint,
+            Vector3 hitNormal,
+            ref SonarDiscProjectileState state
+        )
         {
-            if (!isServer) return;
-            if (_isAttached) return;
+            state.IsAttached = true;
 
-            if (_owner != null && collision.collider.transform.IsChildOf(_owner.transform))
-                return;
-
-            ContactPoint contact = collision.GetContact(0);
-            AttachToTarget(collision.collider, contact.point, contact.normal);
-        }
-
-        private void AttachToTarget(Collider hitCollider, Vector3 hitPoint, Vector3 hitNormal)
-        {
-            _isAttached = true;
-
-            _rigidbody.linearVelocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
-            GetComponent<SphereCollider>().enabled = false;
-            _rigidbody.isKinematic = true;
+            _predictedRigidbody.currentState.linearVelocity = Vector3.zero;
+            _predictedRigidbody.currentState.angularVelocity = Vector3.zero;
+            _predictedRigidbody.currentState.isKinematic = true;
 
             Quaternion surfaceAlignment = Quaternion.LookRotation(-hitNormal);
             Vector3 attachPoint = hitPoint + hitNormal * 0.01f;
 
             bool hitPlayer = hitCollider.CompareTag("Player");
 
-            if (hitPlayer)
+            // Record the attach in the target's local space so the disc rides moving surfaces (e.g. a train).
+            // Reference the target by its PredictedObjectID (replay/pool-safe), not a Transform — FollowTarget
+            // reconstructs the world pose from the target's reconciled transform each tick. Static geometry has
+            // no predicted parent, so AttachTargetId stays null and the disc just holds this world pose.
+            // .id is a PredictedComponentID (object + component); .objectId narrows it to the owning object.
+            // Every predicted component on the target shares that objectId, so it's the same regardless of
+            // which PredictedIdentity GetComponentInParent returned; TryGetComponent then fetches the transform.
+            var targetIdentity = hitCollider.GetComponentInParent<PredictedIdentity>();
+            if (targetIdentity != null && targetIdentity != this
+                && hierarchy.TryGetComponent(targetIdentity.id.objectId, out PredictedTransform targetTransform))
             {
-                transform.SetParent(hitCollider.transform, worldPositionStays: true);
-                transform.SetPositionAndRotation(attachPoint, surfaceAlignment);
-                NotifyAttachedToPlayerObserversRpc(hitCollider.gameObject, attachPoint, surfaceAlignment);
-                OnAttachedToPlayer(hitCollider);
+                Vector3 targetPos = targetTransform.currentState.unityPosition;
+                Quaternion targetRot = targetTransform.currentState.unityRotation;
+                Quaternion inverseTargetRot = Quaternion.Inverse(targetRot);
+
+                state.AttachTargetId = targetIdentity.id.objectId;
+                state.AttachLocalPos = inverseTargetRot * (attachPoint - targetPos);
+                state.AttachLocalRot = inverseTargetRot * surfaceAlignment;
             }
             else
             {
-                transform.SetParent(hitCollider.transform, worldPositionStays: true);
-                StartCoroutine(RepositionAfterPhysics(attachPoint, surfaceAlignment));
-                NotifyAttachedToWallObserversRpc(hitCollider.gameObject, attachPoint, surfaceAlignment);
-                OnAttachedToWall();
+                state.AttachTargetId = null;
             }
-        }
 
-        private IEnumerator RepositionAfterPhysics(Vector3 position, Quaternion rotation)
-        {
-            yield return new WaitForFixedUpdate();
-            transform.SetPositionAndRotation(position, rotation);
+            _predictedTransform.currentState.SetPositionAndRotation(attachPoint, surfaceAlignment);
+            if (hitPlayer)
+            {
+                OnAttachedToPlayer(hitCollider, ref state);
+            }
         }
 
         #endregion
 
         #region Attachment Handlers
 
-        private void OnAttachedToPlayer(Collider playerCollider)
+        [SimulationOnly]
+        private void OnAttachedToPlayer(Collider playerCollider, ref SonarDiscProjectileState state)
         {
-            ElectrocuteEffect electrocuteEffect = playerCollider.transform.root.GetComponentInChildren<ElectrocuteEffect>();
-            if (electrocuteEffect != null)
-                electrocuteEffect.Play();
-
-            IDamageable damageable = playerCollider.GetComponent<IDamageable>() ?? playerCollider.GetComponentInParent<IDamageable>();
+            IDamageable damageable = playerCollider.GetComponent<IDamageable>() ??
+                                     playerCollider.GetComponentInParent<IDamageable>();
             if (damageable != null)
             {
-                damageable.TakeDamage(discDamage, _owner);
+                var ownerGameObject = OwnerFinder.FindPlayerGameObjectById(owner);
+                damageable.TakeDamage(discDamage, ownerGameObject);
 
-                if (damageNumberPrefab != null && playerCollider.GetComponent<IDamageNumberTarget>() != null)
-                {
-                    DamageNumber number = Instantiate(damageNumberPrefab, playerCollider.transform.position, Quaternion.identity);
-                    number.Initialize(discDamage);
-                }
             }
 
-            BroadcastHitPlayerSoundObserversRpc(playerCollider.gameObject);
-
             // TODO: start disorient coroutine on playerCollider's owner (phase 2)
-            DestroyDisc();
-        }
-
-        private void OnAttachedToWall()
-        {
-            BroadcastWallImpactObserversRpc();
-            StartCoroutine(WallPulseSequence());
+            DestroyDisc(ref state);
         }
 
         #endregion
 
-        #region Audio RPCs
+        #region Attach ticks
 
-        [ObserversRpc(runLocally: true)]
-        public void BroadcastShootSoundObserversRpc()
+        // While attached, reconstruct the disc's world pose from the target's reconciled transform so it rides
+        // moving surfaces. Pure function of the target's predicted state, so it replays identically once the
+        // target is itself a PredictedIdentity. Static walls (null target) and a despawned target hold the
+        // last pose written at attach.
+        [SimulationOnly]
+        private void FollowTarget(ref SonarDiscProjectileState state)
+        {
+            if (!state.AttachTargetId.HasValue)
+                return;
+
+            if (!hierarchy.TryGetComponent(state.AttachTargetId, out PredictedTransform targetTransform))
+                return;
+
+            Vector3 targetPos = targetTransform.currentState.unityPosition;
+            Quaternion targetRot = targetTransform.currentState.unityRotation;
+
+            _predictedTransform.currentState.SetPositionAndRotation(
+                targetPos + targetRot * state.AttachLocalPos,
+                targetRot * state.AttachLocalRot);
+        }
+
+        [SimulationOnly]
+        private void WallPulseTick(ref SonarDiscProjectileState state, float delta)
+        {
+            if (state.IsDespawning)
+                return;
+
+            if (state.PulseElapsed >= pulseExpandDuration)
+            {
+                DestroyDisc(ref state);
+                return;
+            }
+
+            // TODO: UpdateView
+            // NotifyPulseVFX();
+
+            state.PulseElapsed += delta;
+            float currentRadius = Mathf.Lerp(0f, pulseRadius, state.PulseElapsed / pulseExpandDuration);
+
+            // Query the prediction's PhysicsScene (not the global default) into a reusable buffer so the
+            // scan replays deterministically and doesn't allocate every tick.
+            Vector3 discPos = _predictedTransform.currentState.unityPosition;
+            PhysicsScene physicsScene = gameObject.scene.GetPhysicsScene();
+            int candidateCount = physicsScene.OverlapSphere(discPos, pulseRadius, _pulseOverlapBuffer,
+                playerLayerMask, QueryTriggerInteraction.Ignore);
+
+            for (int i = 0; i < candidateCount; i++)
+            {
+                Collider candidate = _pulseOverlapBuffer[i];
+
+                if (OwnerFinder.BelongsToOwner(candidate, owner))
+                    continue;
+
+                Vector3 candidatePos = candidate.transform.position;
+                if (Vector3.Distance(discPos, candidatePos) > currentRadius)
+                    continue;
+
+                Vector3 directionToDisc = discPos - candidatePos;
+                float distanceToDisc = directionToDisc.magnitude;
+                if (physicsScene.Raycast(candidatePos, directionToDisc.normalized,
+                        out RaycastHit occlusionHit, distanceToDisc, occlusionLayerMask,
+                        QueryTriggerInteraction.Ignore))
+                    continue;
+
+                // TODO: cross-tick dedup needs a value-type representation in predicted state — the old
+                // per-tick HashSet couldn't persist across ticks anyway, so a player in range is currently
+                // re-detected every tick until the pulse ends.
+                // NotifyPlayerDetected(owner, candidate.gameObject);
+                // ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
+                // if (scannedHighlight != null && scannedHighlight.owner.HasValue)
+                //     NotifyScanConfirmed(owner);
+            }
+        }
+
+        [SimulationOnly]
+        private void PlayerAttachTick(ref SonarDiscProjectileState state, float delta)
+        {
+        }
+
+        #endregion
+
+        #region Destruction
+
+        [SimulationOnly]
+        private void DestroyDisc(ref SonarDiscProjectileState state)
+        {
+            if (state.IsDespawning) return;
+            state.IsDespawning = true;
+
+            // TODO: add a timeout for clients to play the glitch effect
+            hierarchy.Delete(this);
+        }
+        #endregion
+
+        #endregion
+
+        #region Local view updates
+
+        protected override void UpdateView(SonarDiscProjectileState viewState, SonarDiscProjectileState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            var wasPreviouslyAttachedToPlayer = _previousVerifiedState?.IsAttachedToPlayer ?? false;
+            var wasPreviouslyAttachedToWall = !wasPreviouslyAttachedToPlayer && (_previousVerifiedState?.IsAttached ?? false);
+            if (v.AttachedPlayer.HasValue && !wasPreviouslyAttachedToPlayer)
+            {
+                var playerGameObject = OwnerFinder.FindPlayerGameObjectById(v.AttachedPlayer.Value);
+                // TODO: check where this exists
+                var playerCollider = playerGameObject.GetComponentInChildren<Collider>();
+
+                if (damageNumberPrefab != null && playerCollider.GetComponent<IDamageNumberTarget>() != null)
+                {
+                    DamageNumber number = Instantiate(damageNumberPrefab, playerCollider.transform.position,
+                        Quaternion.identity);
+                    number.Initialize(discDamage);
+                }
+
+                NotifyAttachedToPlayer(playerGameObject);
+                BroadcastHitPlayerSound(playerGameObject);
+            } else if (v.IsAttached && !wasPreviouslyAttachedToWall)
+            {
+                BroadcastWallImpact();
+            }
+
+            bool wasDespawning = _previousVerifiedState?.IsDespawning ?? false;
+            if (v.IsDespawning && !wasDespawning)
+            {
+                NotifyDestroy();
+            }
+
+            _previousVerifiedState = v;
+        }
+
+        #region Audio
+
+        public void BroadcastShootSound()
         {
 #if !UNITY_SERVER
             if (shootEvent != null && shootEvent.IsValid())
@@ -214,8 +356,7 @@ namespace Resonance.Abilities.SonarDisc
 #endif
         }
 
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastWallImpactObserversRpc()
+        private void BroadcastWallImpact()
         {
 #if !UNITY_SERVER
             if (wallImpactEvent != null && wallImpactEvent.IsValid())
@@ -223,8 +364,7 @@ namespace Resonance.Abilities.SonarDisc
 #endif
         }
 
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastHitPlayerSoundObserversRpc(GameObject hitPlayer)
+        private void BroadcastHitPlayerSound(GameObject hitPlayer)
         {
 #if !UNITY_SERVER
             if (hitPlayerEvent != null && hitPlayerEvent.IsValid())
@@ -232,8 +372,7 @@ namespace Resonance.Abilities.SonarDisc
 #endif
         }
 
-        [TargetRpc]
-        private void NotifyScanConfirmedOwnerRpc(PlayerID target)
+        private void NotifyScanConfirmed(PlayerID target)
         {
 #if !UNITY_SERVER
             if (scanConfirmedEvent != null && scanConfirmedEvent.IsValid())
@@ -243,10 +382,9 @@ namespace Resonance.Abilities.SonarDisc
 
         #endregion
 
-        #region VFX RPCs
+        #region VFX
 
-        [ObserversRpc(runLocally: true)]
-        private void NotifyPulseVFXObserversRpc()
+        private void NotifyPulseVFX()
         {
             SonarPulseEffect pulseEffect = GetComponent<SonarPulseEffect>();
             if (pulseEffect != null)
@@ -258,8 +396,7 @@ namespace Resonance.Abilities.SonarDisc
 #endif
         }
 
-        [TargetRpc]
-        private void NotifyPlayerDetectedOwnerRpc(PlayerID target, GameObject detectedPlayer)
+        private void NotifyPlayerDetected(PlayerID target, GameObject detectedPlayer)
         {
             if (detectedPlayer == null)
                 return;
@@ -269,90 +406,20 @@ namespace Resonance.Abilities.SonarDisc
                 highlight.Play();
         }
 
-        [ObserversRpc(runLocally: false)]
-        private void NotifyAttachedToPlayerObserversRpc(GameObject playerObject, Vector3 hitPoint, Quaternion rotation)
+        private void NotifyAttachedToPlayer(GameObject playerObject)
         {
-            transform.SetParent(playerObject.transform, worldPositionStays: true);
-            transform.SetPositionAndRotation(hitPoint, rotation);
-
-            ElectrocuteEffect electrocuteEffect = playerObject.transform.root.GetComponentInChildren<ElectrocuteEffect>();
+            ElectrocuteEffect electrocuteEffect =
+                playerObject.transform.root.GetComponentInChildren<ElectrocuteEffect>();
             if (electrocuteEffect != null)
                 electrocuteEffect.Play();
         }
 
-        [ObserversRpc(runLocally: false)]
-        private void NotifyAttachedToWallObserversRpc(GameObject hitObject, Vector3 hitPoint, Quaternion rotation)
-        {
-            transform.SetParent(hitObject.transform, worldPositionStays: true);
-            transform.SetPositionAndRotation(hitPoint, rotation);
-        }
-
         #endregion
 
-        #region Pulse
-
-        private IEnumerator WallPulseSequence()
-        {
-            yield return new WaitForSeconds(pulseDelay);
-
-            if (_isDestroyed)
-                yield break;
-
-            NotifyPulseVFXObserversRpc();
-
-            Collider[] candidates = Physics.OverlapSphere(transform.position, pulseRadius, playerLayerMask);
-            HashSet<Collider> detected = new HashSet<Collider>();
-
-            float elapsed = 0f;
-            while (elapsed < pulseExpandDuration)
-            {
-                elapsed += Time.deltaTime;
-                float currentRadius = Mathf.Lerp(0f, pulseRadius, elapsed / pulseExpandDuration);
-
-                foreach (Collider candidate in candidates)
-                {
-                    if (detected.Contains(candidate))
-                        continue;
-
-                    if (_owner != null && candidate.transform.IsChildOf(_owner.transform))
-                        continue;
-
-                    if (Vector3.Distance(transform.position, candidate.transform.position) > currentRadius)
-                        continue;
-
-                    detected.Add(candidate);
-
-                    Vector3 directionToDisc = transform.position - candidate.transform.position;
-                    float distanceToDisc = directionToDisc.magnitude;
-                    if (Physics.Raycast(candidate.transform.position, directionToDisc.normalized, out RaycastHit occlusionHit, distanceToDisc, occlusionLayerMask, QueryTriggerInteraction.Ignore))
-                        continue;
-
-                    NotifyPlayerDetectedOwnerRpc(_ownerPlayerID, candidate.gameObject);
-
-                    ScannedHighlight scannedHighlight = candidate.GetComponentInChildren<ScannedHighlight>();
-                    if (scannedHighlight != null && scannedHighlight.owner.HasValue)
-                        NotifyScanConfirmedOwnerRpc(_ownerPlayerID);
-                }
-
-                yield return null;
-            }
-
-            DestroyDisc();
-        }
-
-        #endregion
 
         #region Destruction
 
-        private void DestroyDisc()
-        {
-            if (_isDestroyed) return;
-            _isDestroyed = true;
-            NotifyDestroyObserversRpc();
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void NotifyDestroyObserversRpc()
+        private void NotifyDestroy()
         {
             StartCoroutine(GlitchAndDestroy());
         }
@@ -373,11 +440,51 @@ namespace Resonance.Abilities.SonarDisc
                     yield return null;
                 }
             }
-
-            if (isServer)
-                Destroy(gameObject);
         }
 
         #endregion
+
+        #endregion
+
+    }
+
+    public struct SonarDiscProjectileState : IPredictedData<SonarDiscProjectileState>
+    {
+        public Vector3 LastPosition;
+
+        public bool IsAttached;
+
+        /// <summary>
+        /// True if attached to a player, false if attached to another object.
+        /// Use in combination with `IsAttached`.
+        /// </summary>
+        public bool IsAttachedToPlayer => AttachedPlayer.HasValue;
+
+        /// <summary>
+        /// Populated if attached to a player, null if attached to another object.
+        /// Use in combination with `IsAttached`.
+        /// </summary>
+        public PlayerID? AttachedPlayer;
+
+        /// <summary>
+        /// The predicted object the disc is attached to (e.g. a moving train), or null for static world
+        /// geometry. Referenced by id (not a Transform) so it survives rollback/replay and pooling.
+        /// </summary>
+        public PredictedObjectID? AttachTargetId;
+
+        /// <summary>
+        /// Attach pose stored in <see cref="AttachTargetId"/>'s local space; FollowTarget rebuilds the
+        /// world pose from the target's reconciled transform each tick.
+        /// </summary>
+        public Vector3 AttachLocalPos;
+        public Quaternion AttachLocalRot;
+
+        public bool IsDespawning;
+        public float PulseElapsed;
+        public float DistanceTravelled;
+
+        public void Dispose()
+        {
+        }
     }
 }
