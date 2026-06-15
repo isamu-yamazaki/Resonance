@@ -410,8 +410,6 @@ GameObject:
   - component: {fileID: 566397693469419020}
   - component: {fileID: 1639472579186224973}
   - component: {fileID: 6663562861641907931}
-  - component: {fileID: 442510756705436988}
-  - component: {fileID: 5378828892324781899}
   - component: {fileID: 3601999263526900247}
   - component: {fileID: 4363601593636969602}
   - component: {fileID: 7304100629892152196}
@@ -445,6 +443,7 @@ GameObject:
   - component: {fileID: 1942585291339358380}
   - component: {fileID: 5684997356607948869}
   - component: {fileID: 573185485124298836}
+  - component: {fileID: 6546640426539019072}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -592,7 +591,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   _animator: {fileID: 186030322157751487}
-  _networkAnimator: {fileID: 5378828892324781899}
+  _networkAnimator: {fileID: 0}
   locomotionBlendSpeed: 10
 --- !u!114 &7288220896636920470
 MonoBehaviour:
@@ -721,62 +720,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.VFX.PlayerDeathEffect
   deathGlitchMaterial: {fileID: 2100000, guid: b9a1d38ab4565463ab4661a1743f1780, type: 2}
   effectDuration: 0.5
---- !u!114 &442510756705436988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 817fe5016bd0a2a49a95b6eb338bb132, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkTransform
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  _syncPosition: 1
-  _syncRotation: 1
-  _syncScale: 1
-  _syncParent: 1
-  _interpolateSettings: 7
-  _minBufferSize: 1
-  _maxBufferSize: 2
-  _characterControllerPatch: 0
-  _ownerAuth: 1
-  _interpolationTiming: 0
---- !u!114 &5378828892324781899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7b598b9d8509d64abb9fdaf07fa3f6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkAnimator
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  _animator: {fileID: 186030322157751487}
-  _ownerAuth: 1
-  _autoSyncParameters: 0
-  _dontSyncParameters: []
 --- !u!114 &3601999263526900247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1229,15 +1172,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f101be1c3ebfe47c797c61afb81cd5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarDiscAbility
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   augmentProperties: {fileID: 11400000, guid: 7ccee1832ce824258abe079e5d607225, type: 2}
   sonarDiscPrefab: {fileID: 5617757003934067384, guid: ae6d8f4a902ef43b1820c02a8c4e6d36, type: 3}
   cooldown: 1
@@ -1472,6 +1408,26 @@ MonoBehaviour:
   normalFOV: 80
   zoomedFOV: 20
   zoomSpeed: 10
+--- !u!114 &6546640426539019072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03700931d6590b49a1a6d643c69e1f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.LocalSonarListener
+  scanConfirmedEvent:
+    idInternal: 0
+    valueGuidInternal:
+    WwiseObjectReference: {fileID: 11400000, guid: cefad1e1f9c484e0e9e9590d30fa1560, type: 2}
+  scannedWarningEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!1 &9074476893389208830
 GameObject:
   m_ObjectHideFlags: 0

@@ -44,9 +44,6 @@ namespace Resonance.Abilities.SonarDisc
 
         // Plays spatially on the hit player for all clients (Play_SD_Distortion)
         [SerializeField] private AK.Wwise.Event hitPlayerEvent;
-
-        // Plays only for the disc owner on a successful scan (Play_SD_Ping)
-        [SerializeField] private AK.Wwise.Event scanConfirmedEvent;
 #endif
 
         private PredictedRigidbody _predictedRigidbody;
@@ -58,7 +55,7 @@ namespace Resonance.Abilities.SonarDisc
 
         // Server-only dedup of players already reported this pulse. Deliberately NOT in predicted state:
         // it must not replicate (privacy) and the server never rolls back, so a plain field is correct.
-        private readonly HashSet<PlayerID> _scannedThisPulse = new HashSet<PlayerID>();
+        private readonly HashSet<PlayerID> _scannedThisPulse = new();
 
         #region Lifecycle
 
@@ -440,14 +437,6 @@ namespace Resonance.Abilities.SonarDisc
 #endif
         }
 
-        private void NotifyScanConfirmed(PlayerID target)
-        {
-#if !UNITY_SERVER
-            if (scanConfirmedEvent != null && scanConfirmedEvent.IsValid())
-                scanConfirmedEvent.Post(gameObject);
-#endif
-        }
-
         #endregion
 
         #region VFX
@@ -464,20 +453,12 @@ namespace Resonance.Abilities.SonarDisc
 #endif
         }
 
-        private void NotifyPlayerDetected(PlayerID target, GameObject detectedPlayer)
-        {
-            if (detectedPlayer == null)
-                return;
-
-            ScannedHighlight highlight = detectedPlayer.GetComponentInChildren<ScannedHighlight>();
-            if (highlight != null)
-                highlight.Play();
-        }
-
         private void NotifyAttachedToPlayer(GameObject playerObject)
         {
             ElectrocuteEffect electrocuteEffect =
                 playerObject.transform.root.GetComponentInChildren<ElectrocuteEffect>();
+
+
             if (electrocuteEffect != null)
                 electrocuteEffect.Play();
         }

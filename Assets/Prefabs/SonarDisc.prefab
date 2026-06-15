@@ -231,7 +231,7 @@ MonoBehaviour:
   damageNumberPrefab: {fileID: 2474898762247100464, guid: 325d2b673ea625b4d984c4618506fb81, type: 3}
   pulseDelay: 1
   pulseRadius: 40
-  pulseExpandDuration: 300
+  pulseExpandDuration: 1
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -257,10 +257,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 9ee5018f3bf1f42c88a43c7cd4aeab02, type: 2}
-  scanConfirmedEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: cefad1e1f9c484e0e9e9590d30fa1560, type: 2}
 --- !u!114 &1513038871202352520
 MonoBehaviour:
   m_ObjectHideFlags: 0
