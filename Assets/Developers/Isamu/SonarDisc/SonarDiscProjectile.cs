@@ -71,6 +71,14 @@ namespace Resonance.Abilities.SonarDisc
             _predictedTransform = GetComponent<PredictedTransform>();
         }
 
+        protected override SonarDiscProjectileState GetInitialState()
+        {
+            return new SonarDiscProjectileState()
+            {
+                TicksUntilShootSound = 3
+            };
+        }
+
         #endregion
 
         #region Simulation loop
@@ -85,6 +93,11 @@ namespace Resonance.Abilities.SonarDisc
 
         protected override void Simulate(ref SonarDiscProjectileState state, float delta)
         {
+            if (state.TicksUntilShootSound > 0)
+            {
+                state.TicksUntilShootSound -= 1;
+            }
+
             if (state.IsAttached)
             {
                 FollowTarget(ref state);
@@ -380,6 +393,12 @@ namespace Resonance.Abilities.SonarDisc
                 BroadcastWallImpact();
             }
 
+            bool didPlayShootSound = _previousVerifiedState?.PlayShootSound ?? false;
+            if (v.PlayShootSound && !didPlayShootSound)
+            {
+                BroadcastShootSound();
+            }
+
             bool wasPulsing = _previousVerifiedState?.IsPulsing ?? false;
             if (v.IsPulsing && !wasPulsing)
             {
@@ -397,7 +416,7 @@ namespace Resonance.Abilities.SonarDisc
 
         #region Audio
 
-        public void BroadcastShootSound()
+        private void BroadcastShootSound()
         {
 #if !UNITY_SERVER
             if (shootEvent != null && shootEvent.IsValid())
@@ -542,10 +561,14 @@ namespace Resonance.Abilities.SonarDisc
         public float DistanceTravelled;
 
         /// <summary>
-        /// True for the first server tick.
+        /// Whether the client should play the shoot sound.
         /// </summary>
-        public bool JustSpawned;
+        public bool PlayShootSound => TicksUntilShootSound <= 0;
 
+        /// <summary>
+        /// Number of server ticks to wait until PlayShootSound is true.
+        /// </summary>
+        public int TicksUntilShootSound;
 
         public void Dispose()
         {
