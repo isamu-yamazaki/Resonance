@@ -380,6 +380,12 @@ namespace Resonance.Abilities.SonarDisc
                 BroadcastWallImpact();
             }
 
+            bool wasPulsing = _previousVerifiedState?.IsPulsing ?? false;
+            if (v.IsPulsing && !wasPulsing)
+            {
+                NotifyPulseVFX();
+            }
+
             bool wasDespawning = _previousVerifiedState?.IsDespawning ?? false;
             if (v.IsDespawning && !wasDespawning)
             {
