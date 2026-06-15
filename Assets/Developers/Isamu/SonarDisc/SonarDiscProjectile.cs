@@ -66,7 +66,7 @@ namespace Resonance.Abilities.SonarDisc
         {
             _predictedRigidbody = GetComponent<PredictedRigidbody>();
             _predictedRigidbody.useGravity = false;
-            _predictedRigidbody.isKinematic = !isServer;
+            _predictedRigidbody.isKinematic = false;
 
             _predictedTransform = GetComponent<PredictedTransform>();
         }
@@ -91,7 +91,6 @@ namespace Resonance.Abilities.SonarDisc
 
                 if (state.IsAttachedToPlayer)
                 {
-                    PlayerAttachTick(ref state, delta);
                 }
                 else
                 {
@@ -329,11 +328,6 @@ namespace Resonance.Abilities.SonarDisc
             }
         }
 
-        [SimulationOnly]
-        private void PlayerAttachTick(ref SonarDiscProjectileState state, float delta)
-        {
-        }
-
         #endregion
 
         #region Destruction
@@ -363,7 +357,7 @@ namespace Resonance.Abilities.SonarDisc
             if (v.AttachedPlayer.HasValue && !wasPreviouslyAttachedToPlayer)
             {
                 var playerGameObject = OwnerFinder.FindPlayerGameObjectById(v.AttachedPlayer.Value);
-                // TODO: check where this exists
+                // TODO: double check where this exists
                 var playerCollider = playerGameObject.GetComponentInChildren<Collider>();
 
                 if (damageNumberPrefab != null && playerCollider.GetComponent<IDamageNumberTarget>() != null)
@@ -534,6 +528,12 @@ namespace Resonance.Abilities.SonarDisc
         public float PrePulseElapsed;
         public float PulseElapsed;
         public float DistanceTravelled;
+
+        /// <summary>
+        /// True for the first server tick.
+        /// </summary>
+        public bool JustSpawned;
+
 
         public void Dispose()
         {
