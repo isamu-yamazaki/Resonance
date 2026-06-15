@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using PurrNet;
 using PurrNet.Prediction;
+using Resonance.Assemblies.AbilitySimulation.SonarDisc;
 using Resonance.Helper;
 using Resonance.PlayerController;
 using UnityEngine;
@@ -13,8 +14,7 @@ namespace Resonance.Abilities.SonarDisc
     [RequireComponent(typeof(SphereCollider))]
     public class SonarDiscProjectile : PredictedIdentity<SonarDiscProjectileState>, IDamageable
     {
-        [Header("Travel")] [SerializeField] private float travelSpeed = 28f;
-        [SerializeField] private float maxRange = 40f;
+        [Header("Config")] [SerializeField] private SonarDiscProjectileConfig config;
 
         [Header("VFX")] [SerializeField] private Material deathGlitchMaterial;
         [SerializeField] private float glitchEffectDuration = 0.5f;
@@ -22,10 +22,7 @@ namespace Resonance.Abilities.SonarDisc
         [Header("Combat")] [SerializeField] private float discDamage = 5f;
         [SerializeField] private DamageNumber damageNumberPrefab;
 
-        [Header("Pulse")] [SerializeField] private float pulseDelay = 1f;
-        [SerializeField] private float pulseRadius = 30f;
-        [SerializeField] private float pulseExpandDuration = 0.6f;
-        [SerializeField] private LayerMask playerLayerMask;
+        [Header("Pulse")] [SerializeField] private LayerMask playerLayerMask;
         [SerializeField] private LayerMask occlusionLayerMask;
 
         [Header("Collision")] [SerializeField] private LayerMask discCollisionMask;
@@ -84,27 +81,29 @@ namespace Resonance.Abilities.SonarDisc
         public void Launch(Vector3 direction)
         {
             currentState.LastPosition = transform.position;
-            _predictedRigidbody.linearVelocity = direction.normalized * travelSpeed;
+            _predictedRigidbody.linearVelocity = direction.normalized * config.travelSpeed;
             _predictedRigidbody.rotation = Quaternion.LookRotation(direction.normalized);
         }
 
         protected override void Simulate(ref SonarDiscProjectileState state, float delta)
         {
-            if (state.TicksUntilShootSound > 0)
-            {
-                state.TicksUntilShootSound -= 1;
-            }
+            SonarDiscProjectileSimulation.TickShootSound(ref state);
 
             if (state.IsAttached)
             {
                 FollowTarget(ref state);
 
-                if (state.IsAttachedToPlayer)
+                if (!state.IsAttachedToPlayer)
                 {
-                }
-                else
-                {
-                    WallPulseTick(ref state, delta);
+                    var pulseCtx = new SonarDiscProjectileSimulationContext(
+                        config, delta, _predictedTransform.currentState.unityPosition);
+                    SonarDiscProjectileSimulation.WallPulseStep(pulseCtx, ref state);
+
+                    if (state.ShouldScanThisTick)
+                        DetectAndNotifyOnServer(state.CurrentPulseRadius);
+
+                    if (state.ShouldDestroy)
+                        DestroyDisc(ref state);
                 }
 
                 return;
@@ -127,12 +126,12 @@ namespace Resonance.Abilities.SonarDisc
                 }
             }
 
-            state.DistanceTravelled += Vector3.Distance(_predictedTransform.currentState.unityPosition, state.LastPosition);
-            if (state.DistanceTravelled >= maxRange)
-                DestroyDisc(ref state);
+            var travelCtx = new SonarDiscProjectileSimulationContext(
+                config, delta, _predictedTransform.currentState.unityPosition);
+            SonarDiscProjectileSimulation.TravelStep(travelCtx, ref state);
 
-            // for the linecast in the next tick
-            state.LastPosition = _predictedTransform.currentState.unityPosition;
+            if (state.ShouldDestroy)
+                DestroyDisc(ref state);
         }
 
 
@@ -166,9 +165,6 @@ namespace Resonance.Abilities.SonarDisc
 
             FreezeBody();
 
-            Quaternion surfaceAlignment = Quaternion.LookRotation(-hitNormal);
-            Vector3 attachPoint = hitPoint + hitNormal * 0.01f;
-
             bool hitPlayer = hitCollider.CompareTag("Player");
 
             // Record the attach in the target's local space so the disc rides moving surfaces (e.g. a train).
@@ -179,19 +175,30 @@ namespace Resonance.Abilities.SonarDisc
             // Every predicted component on the target shares that objectId, so it's the same regardless of
             // which PredictedIdentity GetComponentInParent returned; TryGetComponent then fetches the transform.
             var targetIdentity = hitCollider.GetComponentInParent<PredictedIdentity>();
+            Vector3 attachPoint;
+            Quaternion surfaceAlignment;
             if (targetIdentity != null && targetIdentity != this
                 && hierarchy.TryGetComponent(targetIdentity.id.objectId, out PredictedTransform targetTransform))
             {
-                Vector3 targetPos = targetTransform.currentState.unityPosition;
-                Quaternion targetRot = targetTransform.currentState.unityRotation;
-                Quaternion inverseTargetRot = Quaternion.Inverse(targetRot);
+                SonarDiscProjectileSimulation.ComputeLocalAttachPose(
+                    hitPoint, hitNormal,
+                    targetTransform.currentState.unityPosition,
+                    targetTransform.currentState.unityRotation,
+                    out attachPoint, out surfaceAlignment,
+                    out Vector3 localPos, out Quaternion localRot);
 
                 state.AttachTargetId = targetIdentity.id.objectId;
-                state.AttachLocalPos = inverseTargetRot * (attachPoint - targetPos);
-                state.AttachLocalRot = inverseTargetRot * surfaceAlignment;
+                state.AttachLocalPos = localPos;
+                state.AttachLocalRot = localRot;
             }
             else
             {
+                // Static geometry: no moving target to ride, so the local pose is unused — just compute
+                // the world attach pose directly (identity target leaves it in world space).
+                SonarDiscProjectileSimulation.ComputeLocalAttachPose(
+                    hitPoint, hitNormal, Vector3.zero, Quaternion.identity,
+                    out attachPoint, out surfaceAlignment, out _, out _);
+
                 state.AttachTargetId = null;
             }
 
@@ -248,42 +255,14 @@ namespace Resonance.Abilities.SonarDisc
             if (!hierarchy.TryGetComponent(state.AttachTargetId, out PredictedTransform targetTransform))
                 return;
 
-            Vector3 targetPos = targetTransform.currentState.unityPosition;
-            Quaternion targetRot = targetTransform.currentState.unityRotation;
+            SonarDiscProjectileSimulation.ComputeFollowPose(
+                targetTransform.currentState.unityPosition,
+                targetTransform.currentState.unityRotation,
+                state.AttachLocalPos, state.AttachLocalRot,
+                out Vector3 worldPos, out Quaternion worldRot);
 
-            _predictedRigidbody.position = targetPos + targetRot * state.AttachLocalPos;
-            _predictedRigidbody.rotation = targetRot * state.AttachLocalRot;
-        }
-
-        [SimulationOnly]
-        private void WallPulseTick(ref SonarDiscProjectileState state, float delta)
-        {
-            if (state.IsDespawning)
-                return;
-
-            if (state.PulseElapsed >= pulseExpandDuration)
-            {
-                DestroyDisc(ref state);
-                return;
-            }
-
-            switch (state.IsPulsing)
-            {
-                case false when state.PrePulseElapsed >= pulseDelay:
-                    state.IsPulsing = true;
-                    break;
-                case false:
-                    state.PrePulseElapsed += delta;
-                    break;
-                default:
-                {
-                    state.PulseElapsed += delta;
-                    float currentRadius = Mathf.Lerp(0f, pulseRadius, state.PulseElapsed / pulseExpandDuration);
-
-                    DetectAndNotifyOnServer(currentRadius);
-                    break;
-                }
-            }
+            _predictedRigidbody.position = worldPos;
+            _predictedRigidbody.rotation = worldRot;
         }
 
         // Server-only: find players the expanding pulse newly reveals and notify the owner + each victim via
@@ -307,7 +286,7 @@ namespace Resonance.Abilities.SonarDisc
 
             Vector3 discPos = _predictedTransform.currentState.unityPosition;
             PhysicsScene physicsScene = gameObject.scene.GetPhysicsScene();
-            int candidateCount = physicsScene.OverlapSphere(discPos, pulseRadius, _pulseOverlapBuffer,
+            int candidateCount = physicsScene.OverlapSphere(discPos, config.pulseRadius, _pulseOverlapBuffer,
                 playerLayerMask, QueryTriggerInteraction.Ignore);
 
             for (int i = 0; i < candidateCount; i++)
@@ -495,64 +474,5 @@ namespace Resonance.Abilities.SonarDisc
 
         #endregion
 
-    }
-
-    public struct SonarDiscProjectileState : IPredictedData<SonarDiscProjectileState>
-    {
-        public Vector3 LastPosition;
-
-        public bool IsAttached;
-
-        /// <summary>
-        /// True if attached to a player, false if attached to another object.
-        /// Use in combination with `IsAttached`.
-        /// </summary>
-        public bool IsAttachedToPlayer => AttachedPlayer.HasValue;
-
-        /// <summary>
-        /// Populated if attached to a player, null if attached to another object.
-        /// Use in combination with `IsAttached`.
-        /// </summary>
-        public PlayerID? AttachedPlayer;
-
-        /// <summary>
-        /// The predicted object the disc is attached to (e.g. a moving train), or null for static world
-        /// geometry. Referenced by id (not a Transform) so it survives rollback/replay and pooling.
-        /// </summary>
-        public PredictedObjectID? AttachTargetId;
-
-        /// <summary>
-        /// Attach pose stored in <see cref="AttachTargetId"/>'s local space; FollowTarget rebuilds the
-        /// world pose from the target's reconciled transform each tick.
-        /// </summary>
-        public Vector3 AttachLocalPos;
-        public Quaternion AttachLocalRot;
-
-        public bool IsDespawning;
-
-        /// <summary>
-        /// For the view to fire the pulse VFX.
-        /// This is fully controlled by the simulation and may run some time
-        /// after attaching to a wall, which is why we need the separate property.
-        /// </summary>
-        public bool IsPulsing;
-
-        public float PrePulseElapsed;
-        public float PulseElapsed;
-        public float DistanceTravelled;
-
-        /// <summary>
-        /// Whether the client should play the shoot sound.
-        /// </summary>
-        public bool PlayShootSound => TicksUntilShootSound <= 0;
-
-        /// <summary>
-        /// Number of server ticks to wait until PlayShootSound is true.
-        /// </summary>
-        public int TicksUntilShootSound;
-
-        public void Dispose()
-        {
-        }
     }
 }

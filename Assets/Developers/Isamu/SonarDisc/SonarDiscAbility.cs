@@ -1,5 +1,6 @@
 using PurrNet;
 using PurrNet.Prediction;
+using Resonance.Assemblies.AbilitySimulation.SonarDisc;
 using Resonance.Combat.Augments;
 using Resonance.Combat.Weapons;
 using Resonance.PlayerController;
@@ -14,7 +15,7 @@ namespace Resonance.Abilities.SonarDisc
 
         [SerializeField] private GameObject sonarDiscPrefab;
 
-        [Header("Cooldown")] [SerializeField] private float cooldown = 12f;
+        [Header("Config")] [SerializeField] private SonarDiscConfig config;
 
         private PlayerActionsInput _playerActionsInput;
         private FPArmsManager _fpArmsManager;
@@ -25,7 +26,7 @@ namespace Resonance.Abilities.SonarDisc
         public string AbilityKey => AbilityKeyConst;
         public string Name => "Sonar Disc";
         public string Description => augmentProperties != null ? augmentProperties.Description : string.Empty;
-        public float MaxCooldown => cooldown;
+        public float MaxCooldown => config.cooldown;
         public float CurrentCooldown => currentState.Cooldown;
         public bool AbilityReady => CurrentCooldown <= 0f;
 
@@ -35,7 +36,7 @@ namespace Resonance.Abilities.SonarDisc
         {
             return new SonarDiscAbilityState()
             {
-                Cooldown = cooldown
+                Cooldown = config.cooldown
             };
         }
 
@@ -102,26 +103,11 @@ namespace Resonance.Abilities.SonarDisc
 
         protected override void Simulate(SonarDiscAbilityInput input, ref SonarDiscAbilityState state, float delta)
         {
-            if (state.Cooldown > 0f)
-            {
-                state.Cooldown -= delta;
-            }
+            var ctx = new SonarDiscSimulationContext(input, config, delta);
+            SonarDiscSimulation.Step(ctx, ref state);
 
-            if (state.SpawnDiscNextTick)
-            {
-                state.Cooldown = cooldown;
-                FireDisc(state.MuzzlePosition, state.MuzzleForward);
-                state.SpawnDiscNextTick = false;
-            }
-
-            if (input.ActivatePressed)
-            {
-                state.SpawnDiscNextTick = true;
-            }
-
-            // forwarded every tick
-            state.MuzzleForward = input.MuzzleForward;
-            state.MuzzlePosition = input.MuzzlePosition;
+            if (state.ShouldSpawnDisc)
+                FireDisc(state.SpawnPosition, state.SpawnDirection);
         }
 
         [SimulationOnly]
@@ -149,31 +135,5 @@ namespace Resonance.Abilities.SonarDisc
 
         #endregion
 
-    }
-
-
-    public struct SonarDiscAbilityState : IPredictedData<SonarDiscAbilityState>
-    {
-        public float Cooldown;
-        public bool SpawnDiscNextTick;
-
-        // Forwarded from input
-        public Vector3 MuzzlePosition;
-        public Vector3 MuzzleForward;
-
-        public void Dispose()
-        {
-        }
-    }
-
-    public struct SonarDiscAbilityInput : IPredictedData
-    {
-        public void Dispose()
-        {
-        }
-
-        public bool ActivatePressed;
-        public Vector3 MuzzleForward;
-        public Vector3 MuzzlePosition;
     }
 }

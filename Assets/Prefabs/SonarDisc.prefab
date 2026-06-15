@@ -223,15 +223,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335710749257e4d888b0b0fce5036f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarDiscProjectile
-  travelSpeed: 28
-  maxRange: 40
+  config:
+    travelSpeed: 28
+    maxRange: 40
+    pulseDelay: 1
+    pulseRadius: 40
+    pulseExpandDuration: 0.6
   deathGlitchMaterial: {fileID: 2100000, guid: b9a1d38ab4565463ab4661a1743f1780, type: 2}
   glitchEffectDuration: 0.5
   discDamage: 5
   damageNumberPrefab: {fileID: 2474898762247100464, guid: 325d2b673ea625b4d984c4618506fb81, type: 3}
-  pulseDelay: 1
-  pulseRadius: 40
-  pulseExpandDuration: 1
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 64

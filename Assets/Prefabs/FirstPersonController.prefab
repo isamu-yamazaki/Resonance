@@ -1176,7 +1176,8 @@ MonoBehaviour:
   _extrapolateInput: 1
   augmentProperties: {fileID: 11400000, guid: 7ccee1832ce824258abe079e5d607225, type: 2}
   sonarDiscPrefab: {fileID: 5617757003934067384, guid: ae6d8f4a902ef43b1820c02a8c4e6d36, type: 3}
-  cooldown: 1
+  config:
+    cooldown: 12
 --- !u!114 &-291350223014566401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1422,7 +1423,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.LocalSonarListener
   scanConfirmedEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: cefad1e1f9c484e0e9e9590d30fa1560, type: 2}
   scannedWarningEvent:
     idInternal: 0
