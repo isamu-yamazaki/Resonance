@@ -80,7 +80,7 @@ namespace Resonance.Abilities.SonarDisc
         {
             currentState.LastPosition = transform.position;
             _predictedRigidbody.linearVelocity = direction.normalized * travelSpeed;
-            _predictedTransform.currentState.unityRotation = Quaternion.LookRotation(direction.normalized);
+            _predictedRigidbody.rotation = Quaternion.LookRotation(direction.normalized);
         }
 
         protected override void Simulate(ref SonarDiscProjectileState state, float delta)
@@ -185,7 +185,8 @@ namespace Resonance.Abilities.SonarDisc
                 state.AttachTargetId = null;
             }
 
-            _predictedTransform.currentState.SetPositionAndRotation(attachPoint, surfaceAlignment);
+            _predictedRigidbody.position = attachPoint;
+            _predictedRigidbody.rotation = surfaceAlignment;
             if (hitPlayer)
             {
                 OnAttachedToPlayer(hitCollider, ref state);
@@ -240,9 +241,8 @@ namespace Resonance.Abilities.SonarDisc
             Vector3 targetPos = targetTransform.currentState.unityPosition;
             Quaternion targetRot = targetTransform.currentState.unityRotation;
 
-            _predictedTransform.currentState.SetPositionAndRotation(
-                targetPos + targetRot * state.AttachLocalPos,
-                targetRot * state.AttachLocalRot);
+            _predictedRigidbody.position = targetPos + targetRot * state.AttachLocalPos;
+            _predictedRigidbody.rotation = targetRot * state.AttachLocalRot;
         }
 
         [SimulationOnly]
