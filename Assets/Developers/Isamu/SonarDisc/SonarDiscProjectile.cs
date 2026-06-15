@@ -154,9 +154,7 @@ namespace Resonance.Abilities.SonarDisc
             state.IsAttached = true;
             _scannedThisPulse.Clear();
 
-            _predictedRigidbody.currentState.linearVelocity = Vector3.zero;
-            _predictedRigidbody.currentState.angularVelocity = Vector3.zero;
-            _predictedRigidbody.currentState.isKinematic = true;
+            FreezeBody();
 
             Quaternion surfaceAlignment = Quaternion.LookRotation(-hitNormal);
             Vector3 attachPoint = hitPoint + hitNormal * 0.01f;
@@ -192,6 +190,14 @@ namespace Resonance.Abilities.SonarDisc
             {
                 OnAttachedToPlayer(hitCollider, ref state);
             }
+        }
+
+        [SimulationOnly]
+        private void FreezeBody()
+        {
+            _predictedRigidbody.linearVelocity = Vector3.zero;
+            _predictedRigidbody.angularVelocity = Vector3.zero;
+            _predictedRigidbody.isKinematic = true;
         }
 
         #endregion

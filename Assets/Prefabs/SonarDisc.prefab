@@ -231,7 +231,7 @@ MonoBehaviour:
   damageNumberPrefab: {fileID: 2474898762247100464, guid: 325d2b673ea625b4d984c4618506fb81, type: 3}
   pulseDelay: 1
   pulseRadius: 40
-  pulseExpandDuration: 1
+  pulseExpandDuration: 300
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 64
