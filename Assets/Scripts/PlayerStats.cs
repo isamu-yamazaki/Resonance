@@ -246,14 +246,12 @@ namespace Resonance.Player
 
         private void SimulateAddSpeedModifier(ref PlayerStatsDataState state, float modifier)
         {
-            Debug.Log($"[SimulateAddSpeedModifier] {modifier}");
             state.SpeedModifiers.Add(modifier);
             CalculateSpeed(ref state);
         }
 
         private void SimulateRemoveSpeedModifier(ref PlayerStatsDataState state, float modifier)
         {
-            Debug.Log($"[SimulateRemoveSpeedModifier] {modifier}");
             state.SpeedModifiers.Remove(modifier);
             CalculateSpeed(ref state);
         }
