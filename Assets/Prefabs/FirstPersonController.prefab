@@ -1155,11 +1155,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1791d882e5a61fb4b943aef66559ae98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilitySprintBurst
-  maxBurstSpeed: 2
-  minBurstSpeed: 1.2
-  maxMeter: 5
-  meterRecoverySpeed: 1
-  timeUntilRecovery: 0.5
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
+  config:
+    maxBurstSpeed: 2
+    minBurstSpeed: 1.2
+    maxMeter: 5
+    meterRecoverySpeed: 1
+    timeUntilRecovery: 0.5
 --- !u!114 &-8132299845463937113
 MonoBehaviour:
   m_ObjectHideFlags: 0
