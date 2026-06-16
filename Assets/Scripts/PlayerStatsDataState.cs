@@ -17,6 +17,9 @@ namespace Resonance.Player
         public Quaternion SpawnRotation;
         public DisposableList<float> SpeedModifiers;
 
-        public readonly void Dispose() { }
+        public void Dispose()
+        {
+            SpeedModifiers.Dispose();
+        }
     }
 }
