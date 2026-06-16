@@ -44,7 +44,7 @@ namespace Resonance.Player
         public bool IsDead => currentState.IsDead;
 
         public IReadOnlyList<float> DamageReductionModifiers => damageReductionModifiers;
-        public IReadOnlyList<float> SpeedModifiers => speedModifiers;
+        public IReadOnlyList<float> SpeedModifiers => currentState.SpeedModifiers;
         public IReadOnlyList<float> RegenModifiers => regenModifiers;
 
         #endregion
@@ -78,6 +78,14 @@ namespace Resonance.Player
         private float _pendingExternalHeal;
         private Vector3 _pendingAttackerPos;
 
+
+        #endregion
+
+        #region External speed modifiers
+
+        private float? _pendingSpeedModifierToAdd;
+        private float? _pendingSpeedModifierToRemove;
+
         #endregion
 
         #region UpdateView tracking
@@ -87,7 +95,7 @@ namespace Resonance.Player
 
         #endregion
 
-        #region Startup
+        #region Lifecycle
 
         protected override void LateAwake()
         {
@@ -120,9 +128,6 @@ namespace Resonance.Player
                 matchStats.UnregisterPlayer(gameObject);
         }
 
-        #endregion
-
-        #region PredictedIdentity overrides
 
         protected override PlayerStatsDataState GetInitialState()
         {
@@ -136,22 +141,43 @@ namespace Resonance.Player
             };
         }
 
+        #endregion
+
+        #region Input
+
         protected override void GetFinalInput(ref PlayerStatsInputData input)
         {
             input.ExternalHealAmount = _pendingExternalHeal;
             input.ExternalDamageAmount = _pendingExternalDamage;
             input.ExternalAttackerPosition = _pendingAttackerPos;
+            input.ExternalSpeedModifierToAdd = _pendingSpeedModifierToAdd;
+            input.ExternalSpeedModifierToRemove = _pendingSpeedModifierToRemove;
+
             _pendingExternalHeal = 0f;
             _pendingExternalDamage = 0f;
+            _pendingSpeedModifierToAdd = null;
+            _pendingSpeedModifierToRemove = null;
         }
+
+        public void AddSpeedModifierExternal(float modifier)
+        {
+            _pendingSpeedModifierToAdd = modifier;
+        }
+
+        public void RemoveSpeedModifierExternal(float modifier)
+        {
+            _pendingSpeedModifierToRemove = modifier;
+        }
+
+        #endregion
 
         protected override void Simulate(PlayerStatsInputData input, ref PlayerStatsDataState state, float delta)
         {
-            // 1. Health regen
+            // Health regen
             if (!state.IsDead && state.CurrentHealthRegen > 0f)
                 state.CurrentHealth = Mathf.Min(state.CurrentHealth + state.CurrentHealthRegen * delta, maxHealth);
 
-            // 2. External damage (owner-queued)
+            // External damage (owner-queued)
             if (input.ExternalDamageAmount > 0f && !state.IsDead)
             {
                 float finalDamage = input.ExternalDamageAmount * (1f - state.CurrentDamageReduction);
@@ -159,11 +185,17 @@ namespace Resonance.Player
                 state.LastDamageAttackerPos = input.ExternalAttackerPosition;
             }
 
-            // 3. External heal (owner-queued)
+            // External heal (owner-queued)
             if (input.ExternalHealAmount > 0f && !state.IsDead)
                 state.CurrentHealth = Mathf.Min(state.CurrentHealth + input.ExternalHealAmount, maxHealth);
 
-            // 4. Death check
+            // External modifiers (owner-queued)
+            if (input.ExternalSpeedModifierToAdd.HasValue)
+                SimulateAddSpeedModifier(ref state, input.ExternalSpeedModifierToAdd.Value);
+            if (input.ExternalSpeedModifierToRemove.HasValue)
+                SimulateRemoveSpeedModifier(ref state, input.ExternalSpeedModifierToRemove.Value);
+
+            // Death check
             if (state.CurrentHealth <= 0f && !state.IsDead)
             {
                 state.IsDead = true;
@@ -177,7 +209,7 @@ namespace Resonance.Player
                 }
             }
 
-            // 5. Respawn timer
+            // Respawn timer
             if (state.IsDead && state.RespawnTimer > 0f)
             {
                 state.RespawnTimer -= delta;
@@ -194,10 +226,72 @@ namespace Resonance.Player
             }
         }
 
+        [SimulationOnly]
+        public void SimulateAddSpeedModifier(float modifier)
+        {
+            SimulateAddSpeedModifier(ref currentState, modifier);
+        }
+
+        [SimulationOnly]
+        public void SimulateRemoveSpeedModifier(float modifier)
+        {
+            SimulateRemoveSpeedModifier(ref currentState, modifier);
+        }
+
+        private void SimulateAddSpeedModifier(ref PlayerStatsDataState state, float modifier)
+        {
+            state.SpeedModifiers.Add(modifier);
+            CalculateSpeed(ref state);
+        }
+
+        private void SimulateRemoveSpeedModifier(ref PlayerStatsDataState state, float modifier)
+        {
+            state.SpeedModifiers.Remove(modifier);
+            CalculateSpeed(ref state);
+        }
+
+        private void CalculateSpeed(ref PlayerStatsDataState state)
+        {
+            state.CurrentSpeed = playerBaseSpeed * state.SpeedModifiers.Aggregate(1f, (combined, next) => combined * next);
+        }
+
         protected override PlayerStatsDataState Interpolate(PlayerStatsDataState from, PlayerStatsDataState to, float t)
         {
             return to;
         }
+
+        #region Health Management
+
+        [SimulationOnly]
+        public void TakeDamage(float amount)
+        {
+            TakeDamage(amount, null);
+        }
+
+        [SimulationOnly]
+        public void TakeDamage(float amount, GameObject attacker)
+        {
+            if (currentState.IsDead) return;
+
+            if (isServer && attacker != null && attacker != gameObject)
+            {
+                var matchStats = MatchStatBridge.GetTemporaryReference();
+                if (matchStats != null)
+                {
+                    matchStats.RecordDamage(attacker, gameObject, amount);
+                    lastAttacker = attacker;
+                    lastDamageTime = Time.time;
+                }
+            }
+
+            float finalDamage = amount * (1f - currentState.CurrentDamageReduction);
+            currentState.CurrentHealth = Mathf.Max(0f, currentState.CurrentHealth - finalDamage);
+
+            if (attacker != null)
+                currentState.LastDamageAttackerPos = attacker.transform.position;
+        }
+
+        #region Local view updates
 
         protected override void UpdateView(PlayerStatsDataState viewState, PlayerStatsDataState? verified)
         {
@@ -269,36 +363,6 @@ namespace Resonance.Player
 
         #endregion
 
-        #region Health Management
-
-        [SimulationOnly]
-        public void TakeDamage(float amount)
-        {
-            TakeDamage(amount, null);
-        }
-
-        [SimulationOnly]
-        public void TakeDamage(float amount, GameObject attacker)
-        {
-            if (currentState.IsDead) return;
-
-            if (isServer && attacker != null && attacker != gameObject)
-            {
-                var matchStats = MatchStatBridge.GetTemporaryReference();
-                if (matchStats != null)
-                {
-                    matchStats.RecordDamage(attacker, gameObject, amount);
-                    lastAttacker = attacker;
-                    lastDamageTime = Time.time;
-                }
-            }
-
-            float finalDamage = amount * (1f - currentState.CurrentDamageReduction);
-            currentState.CurrentHealth = Mathf.Max(0f, currentState.CurrentHealth - finalDamage);
-
-            if (attacker != null)
-                currentState.LastDamageAttackerPos = attacker.transform.position;
-        }
 
         public void TakeExternalDamage(float amount, GameObject attacker = null)
         {
@@ -357,24 +421,6 @@ namespace Resonance.Player
 
         #region Speed Management
 
-        private List<float> speedModifiers = new List<float>();
-
-        public void AddSpeedModifier(float modifier)
-        {
-            speedModifiers.Add(modifier);
-            CalculateSpeed();
-        }
-
-        public void RemoveSpeedModifier(float modifier)
-        {
-            speedModifiers.Remove(modifier);
-            CalculateSpeed();
-        }
-
-        private void CalculateSpeed()
-        {
-            currentState.CurrentSpeed = playerBaseSpeed * speedModifiers.Aggregate(1f, (combined, next) => combined * next);
-        }
 
         #endregion
 

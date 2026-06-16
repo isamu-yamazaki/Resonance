@@ -174,7 +174,7 @@ namespace Resonance.Combat
 
                 if (EquippedWeapon != null && playerStats != null)
                 {
-                    playerStats.RemoveSpeedModifier(weaponStatManager.GetStat(WeaponStat.Mobility));
+                    playerStats.RemoveSpeedModifierExternal(weaponStatManager.GetStat(WeaponStat.Mobility));
                 }
 
                 playerState?.SetWeaponClass(weapon.Class);
@@ -191,7 +191,7 @@ namespace Resonance.Combat
 
                 if (playerStats != null)
                 {
-                    playerStats.AddSpeedModifier(weaponStatManager.Mobility);
+                    playerStats.AddSpeedModifierExternal(weaponStatManager.Mobility);
                 }
             }
 
@@ -335,7 +335,7 @@ namespace Resonance.Combat
             {
                 if (playerStats != null)
                 {
-                    playerStats.RemoveSpeedModifier(existing.Mobility);
+                    playerStats.RemoveSpeedModifierExternal(existing.Mobility);
                 }
 
                 if (weaponStatManager != null)

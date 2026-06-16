@@ -26,7 +26,7 @@ namespace Resonance.Combat
             //Player Stats first
             if (augment.Speed != 0)
             {
-                augmentedPlayerStatTarget.AddSpeedModifier(augment.Speed);
+                augmentedPlayerStatTarget.AddSpeedModifierExternal(augment.Speed);
             }
             
             if (augment.DamageReduction != 0)
@@ -56,7 +56,7 @@ namespace Resonance.Combat
             //Player Stats first
             if (augment.Speed != 0)
             {
-                augmentedPlayerStatTarget.RemoveSpeedModifier(augment.Speed);
+                augmentedPlayerStatTarget.RemoveSpeedModifierExternal(augment.Speed);
             }
             
             if (augment.DamageReduction != 0)

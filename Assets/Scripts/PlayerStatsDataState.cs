@@ -1,3 +1,4 @@
+using PurrNet.Pooling;
 using PurrNet.Prediction;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ namespace Resonance.Player
         public Vector3 LastDamageAttackerPos;
         public Vector3 SpawnPosition;
         public Quaternion SpawnRotation;
+        public DisposableList<float> SpeedModifiers;
+
         public readonly void Dispose() { }
     }
 }

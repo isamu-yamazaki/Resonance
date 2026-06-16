@@ -1,11 +1,12 @@
-using System;
+using System.Collections;
+using PurrNet.Prediction;
 using Resonance.Player;
 using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Combat.Augments
 {
-    public class AbilitySprintBurst : MonoBehaviour, IAugmentAbility
+    public class AbilitySprintBurst : PredictedIdentity<AbilityStateBurstInput, AbilitySprintBurstState>, IAugmentAbility
     {
         [SerializeField] private float maxBurstSpeed = 2f;
         [SerializeField] private float minBurstSpeed = 1.2f;
@@ -16,99 +17,143 @@ namespace Resonance.Combat.Augments
         private PlayerLocomotionInput playerLocomotionInput;
         private PlayerStats playerStats;
 
-        private float currentMeter;
-        private float lastAppliedSpeedMod;
-        private float timeSinceLastSprinting;
-        private bool wasSprinting;
-
-
         public string AbilityKey => "ability_sprintBurst";
         public string Name => "Sprint Burst";
         public string Description => "Move with a brief burst of speed.";
         public float MaxCooldown => maxMeter;
-        public float CurrentCooldown
-        {
-            get => currentMeter;
-            set => currentMeter = Mathf.Clamp(value, 0f, maxMeter);
-        }
+
+        public float CurrentCooldown => currentState.CurrentMeter;
+
         public bool AbilityReady => false;
 
-        public void ActivateAbilityExternal() { }
-        public void SimulateActivateAbility()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Awake()
+        #region Lifecycle
+        protected override void LateAwake()
         {
             playerStats = GetComponent<PlayerStats>();
             playerLocomotionInput = PlayerLocomotionInput.Instance;
-            currentMeter = maxMeter;
-            wasSprinting = false;
-            timeSinceLastSprinting = 0f;
         }
 
-        private void Update()
+        protected override AbilitySprintBurstState GetInitialState()
         {
-            if (wasSprinting && !playerLocomotionInput.SprintToggledOn)
+            return new AbilitySprintBurstState()
             {
-                JustStoppedSprinting();
-            } else if (playerLocomotionInput.SprintToggledOn)
+                CurrentMeter = maxMeter,
+                WasSprinting = false,
+                TimeSinceLastSprinting = 0f,
+            };
+        }
+
+        #endregion
+
+        #region Input
+        public void ActivateAbilityExternal()
+        {
+        }
+
+        protected override void UpdateInput(ref AbilityStateBurstInput input)
+        {
+            if (!isOwner) return;
+            input.SprintToggledOn |= playerLocomotionInput.SprintToggledOn;
+        }
+
+        #endregion
+
+        #region Simulation
+
+        [SimulationOnly]
+        public void SimulateActivateAbility()
+        {
+        }
+
+        protected override void Simulate(AbilityStateBurstInput input, ref AbilitySprintBurstState state, float delta)
+        {
+            if (!enabled) return;
+
+            if (state.WasSprinting && !input.SprintToggledOn)
             {
-                Sprinting();
-            } else
+                JustStoppedSprinting(ref state);
+            }
+            else if (input.SprintToggledOn)
             {
-                NotSprinting();
+                Sprinting(ref state, delta);
+            }
+            else
+            {
+                NotSprinting(ref state, delta);
             }
         }
+        #endregion
 
         private void OnDisable()
         {
-            RemovePreviousModifier();
+            RemovePreviousModifier(ref currentState);
         }
 
-        private void JustStoppedSprinting()
+        private void JustStoppedSprinting(ref AbilitySprintBurstState state)
         {
-            RemovePreviousModifier();
-            timeSinceLastSprinting = 0f;
-            wasSprinting = false;
+            RemovePreviousModifier(ref state);
+            state.TimeSinceLastSprinting = 0f;
+            state.WasSprinting = false;
         }
 
-        private void Sprinting()
+        private void Sprinting(ref AbilitySprintBurstState state, float delta)
         {
-            currentMeter = Mathf.Clamp(currentMeter - Time.deltaTime, 0f, maxMeter);
-            float boostToApply = Mathf.Lerp(minBurstSpeed, maxBurstSpeed, currentMeter / maxMeter);
+            state.CurrentMeter = Mathf.Clamp(state.CurrentMeter - delta, 0f, maxMeter);
+            float boostToApply = Mathf.Lerp(minBurstSpeed, maxBurstSpeed, state.CurrentMeter / maxMeter);
+            Debug.Log($"[AbilitySprintBurst] {boostToApply}");
 
-            if (wasSprinting)
+            if (state.WasSprinting)
             {
-                RemovePreviousModifier();
+                RemovePreviousModifier(ref state);
             }
 
-            playerStats.AddSpeedModifier(boostToApply);
-            lastAppliedSpeedMod = boostToApply;
+            playerStats.SimulateAddSpeedModifier(boostToApply);
+            state.LastAppliedSpeedMod = boostToApply;
 
-            wasSprinting = true;
+            state.WasSprinting = true;
         }
 
-        private void NotSprinting()
+        private void NotSprinting(ref AbilitySprintBurstState state, float delta)
         {
-            timeSinceLastSprinting += Time.deltaTime;
+            state.TimeSinceLastSprinting += delta;
 
-            if (timeSinceLastSprinting >= timeUntilRecovery)
+            if (state.TimeSinceLastSprinting >= timeUntilRecovery)
             {
-                currentMeter = Mathf.Clamp(currentMeter + (Time.deltaTime * meterRecoverySpeed), 0f, maxMeter);
+                state.CurrentMeter = Mathf.Clamp(state.CurrentMeter + (delta * meterRecoverySpeed), 0f, maxMeter);
             }
 
-            wasSprinting = false;
-        }
-        private void RemovePreviousModifier()
-        {
-            if (lastAppliedSpeedMod > 0)
-            {
-                playerStats.RemoveSpeedModifier(lastAppliedSpeedMod);
-                lastAppliedSpeedMod = 0;
-            }
+            state.WasSprinting = false;
         }
 
+        private void RemovePreviousModifier(ref AbilitySprintBurstState state)
+        {
+            if (state.LastAppliedSpeedMod > 0)
+            {
+                playerStats.SimulateRemoveSpeedModifier(state.LastAppliedSpeedMod);
+                state.LastAppliedSpeedMod = 0;
+            }
+        }
+    }
+
+    public struct AbilitySprintBurstState : IPredictedData<AbilitySprintBurstState>
+    {
+        public void Dispose()
+        {
+        }
+
+        public bool IsEquipped;
+        public float TimeSinceLastSprinting;
+        public float CurrentMeter;
+        public bool WasSprinting;
+        public float LastAppliedSpeedMod;
+    }
+
+    public struct AbilityStateBurstInput : IPredictedData
+    {
+        public void Dispose()
+        {
+        }
+
+        public bool SprintToggledOn;
     }
 }

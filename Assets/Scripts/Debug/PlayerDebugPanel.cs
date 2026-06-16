@@ -367,14 +367,14 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (!float.TryParse(_speedModifierAmount, out float val)) { Debug.LogWarning("Invalid speed modifier"); return; }
             _activeSpeedModifier = val;
-            _playerStats.AddSpeedModifier(val);
+            _playerStats.AddSpeedModifierExternal(val);
             Debug.Log($"Added speed modifier: {val}");
         }
 
         private void RemoveSpeedModifier()
         {
             if (_playerStats == null || !_activeSpeedModifier.HasValue) return;
-            _playerStats.RemoveSpeedModifier(_activeSpeedModifier.Value);
+            _playerStats.RemoveSpeedModifierExternal(_activeSpeedModifier.Value);
             Debug.Log($"Removed speed modifier: {_activeSpeedModifier.Value}");
             _activeSpeedModifier = null;
         }
