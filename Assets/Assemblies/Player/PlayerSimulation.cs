@@ -148,6 +148,7 @@ namespace Resonance.Assemblies.Player
 
             state.Velocity = newVelocity;
             state.Velocity.y += ctx.Dependency.TrainKnockbackVertical;
+            Debug.Log($"[PlayerSimulation] {state.Velocity} {isSprinting} {derivedStats.sprintAcceleration} {derivedStats.sprintSpeed}");
 
             TickImpulse(ctx, ref state);
         }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Resonance.Combat.Augments
 {
-    public class AbilityHumanTurret : MonoBehaviour, IAugmentAbility
+    public class AbilityHumanTurret : MonoBehaviour, IAugmentAbility, IEquippableAbility
     {
         [SerializeField] private float timeToActivate = 2f;
 
@@ -19,6 +19,10 @@ namespace Resonance.Combat.Augments
 
         private float timeStandingStill;
         private bool isTurretActive;
+
+        // This component stays permanently enabled; "equipped" is tracked here instead of via the
+        // Unity `enabled` flag (see IEquippableAbility / PlayerAbilityManager).
+        private bool _isEquipped;
 
         public string AbilityKey => "ability_humanTurret";
         public string Name => "Human Turret";
@@ -37,6 +41,18 @@ namespace Resonance.Combat.Augments
             throw new System.NotImplementedException();
         }
 
+        public void SetEquipped(bool equipped)
+        {
+            if (_isEquipped == equipped) return;
+
+            _isEquipped = equipped;
+
+            // Unequipping must tear down the turret effect; OnDisable used to do this, but the
+            // component no longer gets disabled.
+            if (!equipped)
+                DeactivateTurret();
+        }
+
         private void Awake()
         {
             playerStats = GetComponent<PlayerStats>();
@@ -49,7 +65,7 @@ namespace Resonance.Combat.Augments
 
         private void Update()
         {
-
+            if (!_isEquipped) return;
 
             if (playerLocomotionInput.MovementInput == Vector2.zero)
             {

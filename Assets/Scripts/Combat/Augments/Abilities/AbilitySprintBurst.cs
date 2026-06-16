@@ -1,4 +1,3 @@
-using System.Collections;
 using PurrNet.Prediction;
 using Resonance.Player;
 using Resonance.PlayerController;
@@ -6,7 +5,8 @@ using UnityEngine;
 
 namespace Resonance.Combat.Augments
 {
-    public class AbilitySprintBurst : PredictedIdentity<AbilityStateBurstInput, AbilitySprintBurstState>, IAugmentAbility
+    public class AbilitySprintBurst : PredictedIdentity<AbilitySprintBurstInput, AbilitySprintBurstState>,
+        IAugmentAbility, IEquippableAbility
     {
         [SerializeField] private float maxBurstSpeed = 2f;
         [SerializeField] private float minBurstSpeed = 1.2f;
@@ -50,10 +50,17 @@ namespace Resonance.Combat.Augments
         {
         }
 
-        protected override void UpdateInput(ref AbilityStateBurstInput input)
+        protected override void UpdateInput(ref AbilitySprintBurstInput input)
         {
             if (!isOwner) return;
-            input.SprintToggledOn |= playerLocomotionInput.SprintToggledOn;
+            // if (!currentState.IsEquipped) return;
+            input.Sprinting |= playerLocomotionInput.SprintToggledOn;
+            // Debug.Log($"[AbilitySprintBurst] {input.Sprinting}");
+        }
+
+        protected override void GetFinalInput(ref AbilitySprintBurstInput input)
+        {
+            input.Sprinting = playerLocomotionInput.SprintToggledOn;
         }
 
         #endregion
@@ -65,15 +72,32 @@ namespace Resonance.Combat.Augments
         {
         }
 
-        protected override void Simulate(AbilityStateBurstInput input, ref AbilitySprintBurstState state, float delta)
+        // Equipped-ness lives in predicted state, not a Unity `enabled` flag, so it stays in sync with
+        // the simulation and survives rollback. See IEquippableAbility.
+        [SimulationOnly]
+        public void SetEquipped(bool equipped)
         {
-            if (!enabled) return;
+            // if (currentState.IsEquipped == equipped) return;
 
-            if (state.WasSprinting && !input.SprintToggledOn)
+            currentState.IsEquipped = equipped;
+
+            // Releasing the augment must drop any speed modifier this ability applied mid-sprint,
+            // mirroring the cleanup that previously lived in OnDisable.
+            // if (!equipped)
+            //     RemovePreviousModifier(ref currentState);
+        }
+
+        protected override void Simulate(AbilitySprintBurstInput input, ref AbilitySprintBurstState state, float delta)
+        {
+            Debug.Log($"[AbilitySprintBurst] {input.Sprinting}");
+            if (!state.IsEquipped) return;
+
+            if (state.WasSprinting && !input.Sprinting)
             {
+
                 JustStoppedSprinting(ref state);
             }
-            else if (input.SprintToggledOn)
+            else if (input.Sprinting)
             {
                 Sprinting(ref state, delta);
             }
@@ -83,11 +107,6 @@ namespace Resonance.Combat.Augments
             }
         }
         #endregion
-
-        private void OnDisable()
-        {
-            RemovePreviousModifier(ref currentState);
-        }
 
         private void JustStoppedSprinting(ref AbilitySprintBurstState state)
         {
@@ -100,14 +119,13 @@ namespace Resonance.Combat.Augments
         {
             state.CurrentMeter = Mathf.Clamp(state.CurrentMeter - delta, 0f, maxMeter);
             float boostToApply = Mathf.Lerp(minBurstSpeed, maxBurstSpeed, state.CurrentMeter / maxMeter);
-            Debug.Log($"[AbilitySprintBurst] {boostToApply}");
 
             if (state.WasSprinting)
             {
                 RemovePreviousModifier(ref state);
             }
 
-            playerStats.SimulateAddSpeedModifier(boostToApply);
+            // playerStats.SimulateAddSpeedModifier(boostToApply);
             state.LastAppliedSpeedMod = boostToApply;
 
             state.WasSprinting = true;
@@ -129,7 +147,7 @@ namespace Resonance.Combat.Augments
         {
             if (state.LastAppliedSpeedMod > 0)
             {
-                playerStats.SimulateRemoveSpeedModifier(state.LastAppliedSpeedMod);
+                // playerStats.SimulateRemoveSpeedModifier(state.LastAppliedSpeedMod);
                 state.LastAppliedSpeedMod = 0;
             }
         }
@@ -148,12 +166,12 @@ namespace Resonance.Combat.Augments
         public float LastAppliedSpeedMod;
     }
 
-    public struct AbilityStateBurstInput : IPredictedData
+    public struct AbilitySprintBurstInput : IPredictedData
     {
         public void Dispose()
         {
         }
 
-        public bool SprintToggledOn;
+        public bool Sprinting;
     }
 }

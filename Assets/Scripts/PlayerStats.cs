@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using PurrNet.Pooling;
 using PurrNet.Prediction;
 using Resonance.Assemblies.Player;
 using Resonance.Combat;
@@ -138,6 +139,7 @@ namespace Resonance.Player
                 CurrentSpeed = playerBaseSpeed,
                 CurrentDamageReduction = baseDamageReduction,
                 CurrentHealthRegen = baseHealthRegen,
+                SpeedModifiers = new DisposableList<float>(),
             };
         }
 
@@ -240,12 +242,14 @@ namespace Resonance.Player
 
         private void SimulateAddSpeedModifier(ref PlayerStatsDataState state, float modifier)
         {
+            Debug.Log($"[SimulateAddSpeedModifier] {modifier}");
             state.SpeedModifiers.Add(modifier);
             CalculateSpeed(ref state);
         }
 
         private void SimulateRemoveSpeedModifier(ref PlayerStatsDataState state, float modifier)
         {
+            Debug.Log($"[SimulateRemoveSpeedModifier] {modifier}");
             state.SpeedModifiers.Remove(modifier);
             CalculateSpeed(ref state);
         }

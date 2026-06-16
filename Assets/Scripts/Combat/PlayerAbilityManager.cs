@@ -36,7 +36,12 @@ namespace Resonance.Combat
             foreach (IAugmentAbility ability in GetComponents<IAugmentAbility>())
             {
                 abilityMap[ability.AbilityKey] = ability;
-                SetAbilityEnabled(ability, false);
+
+                // Abilities stay permanently enabled; equipped-ness is gated through predicted state
+                // (IEquippableAbility), not the Unity `enabled` flag. Force enabled so a stale prefab
+                // value can't suppress input/simulation. They start unequipped via their own state.
+                if (ability is MonoBehaviour mb)
+                    mb.enabled = true;
             }
 
             if (!isOwner) return;
@@ -122,7 +127,7 @@ namespace Resonance.Combat
         {
             if (abilityMap.TryGetValue(abilityKey, out IAugmentAbility ability))
             {
-                SetAbilityEnabled(ability, false);
+                SetAbilityEquipped(ability, false);
             }
         }
 
@@ -131,7 +136,7 @@ namespace Resonance.Combat
         {
             if (abilityMap.TryGetValue(abilityKey, out IAugmentAbility ability))
             {
-                SetAbilityEnabled(ability, true);
+                SetAbilityEquipped(ability, true);
             }
         }
 
@@ -168,12 +173,14 @@ namespace Resonance.Combat
         }
 
         [SimulationOnly]
-        private void SetAbilityEnabled(IAugmentAbility ability, bool enabled)
+        private void SetAbilityEquipped(IAugmentAbility ability, bool equipped)
         {
-            if (ability is MonoBehaviour mb)
-            {
-                mb.enabled = enabled;
-            }
+            // Equippable abilities gate themselves through predicted state (or a plain flag for the
+            // non-predicted turret) and stay permanently enabled. Everything else is left enabled and
+            // remains gated by the inventory/activation flow — we never toggle `mb.enabled` here, as
+            // disabling a PredictedIdentity breaks its input transmission to the server.
+            if (ability is IEquippableAbility equippable)
+                equippable.SetEquipped(equipped);
         }
 
         #endregion
