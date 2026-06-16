@@ -77,19 +77,18 @@ namespace Resonance.Combat.Augments
         [SimulationOnly]
         public void SetEquipped(bool equipped)
         {
-            // if (currentState.IsEquipped == equipped) return;
+            if (currentState.IsEquipped == equipped) return;
 
             currentState.IsEquipped = equipped;
 
             // Releasing the augment must drop any speed modifier this ability applied mid-sprint,
             // mirroring the cleanup that previously lived in OnDisable.
-            // if (!equipped)
-            //     RemovePreviousModifier(ref currentState);
+            if (!equipped)
+                RemovePreviousModifier(ref currentState);
         }
 
         protected override void Simulate(AbilitySprintBurstInput input, ref AbilitySprintBurstState state, float delta)
         {
-            Debug.Log($"[AbilitySprintBurst] {input.Sprinting}");
             if (!state.IsEquipped) return;
 
             if (state.WasSprinting && !input.Sprinting)
