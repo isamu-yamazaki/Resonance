@@ -1,4 +1,5 @@
 using PurrNet.Prediction;
+using Resonance.Assemblies.AbilitySimulation.SprintBurst;
 using Resonance.Player;
 using Resonance.PlayerController;
 using UnityEngine;
@@ -8,11 +9,7 @@ namespace Resonance.Combat.Augments
     public class AbilitySprintBurst : PredictedIdentity<AbilitySprintBurstInput, AbilitySprintBurstState>,
         IAugmentAbility, IEquippableAbility
     {
-        [SerializeField] private float maxBurstSpeed = 2f;
-        [SerializeField] private float minBurstSpeed = 1.2f;
-        [SerializeField] private float maxMeter = 5f;
-        [SerializeField] private float meterRecoverySpeed = 1f;
-        [SerializeField] private float timeUntilRecovery = 0.5f;
+        [Header("Config")] [SerializeField] private SprintBurstConfig config;
 
         private PlayerLocomotionInput playerLocomotionInput;
         private PlayerStats playerStats;
@@ -20,7 +17,7 @@ namespace Resonance.Combat.Augments
         public string AbilityKey => "ability_sprintBurst";
         public string Name => "Sprint Burst";
         public string Description => "Move with a brief burst of speed.";
-        public float MaxCooldown => maxMeter;
+        public float MaxCooldown => config.maxMeter;
 
         public float CurrentCooldown => currentState.CurrentMeter;
 
@@ -37,7 +34,7 @@ namespace Resonance.Combat.Augments
         {
             return new AbilitySprintBurstState()
             {
-                CurrentMeter = maxMeter,
+                CurrentMeter = config.maxMeter,
                 WasSprinting = false,
                 TimeSinceLastSprinting = 0f,
             };
@@ -91,55 +88,27 @@ namespace Resonance.Combat.Augments
         {
             if (!state.IsEquipped) return;
 
-            if (state.WasSprinting && !input.Sprinting)
-            {
+            // The pure meter/boost math lives in SprintBurstSimulation.Step, which writes the desired
+            // speed modifier into state.LastAppliedSpeedMod. The continuous PlayerStats modifier is this
+            // ability's only side effect, so reconcile it here against the value Step produced: remove
+            // the previous modifier and add the new one whenever it changes (first sprint tick adds
+            // only; ramping ticks remove+add; the stop tick removes only).
+            float previousSpeedMod = state.LastAppliedSpeedMod;
 
-                JustStoppedSprinting(ref state);
-            }
-            else if (input.Sprinting)
-            {
-                Sprinting(ref state, delta);
-            }
-            else
-            {
-                NotSprinting(ref state, delta);
-            }
+            SprintBurstSimulation.Step(new SprintBurstSimulationContext(input, config, delta), ref state);
+
+            ReconcileSpeedModifier(previousSpeedMod, state.LastAppliedSpeedMod);
         }
         #endregion
 
-        private void JustStoppedSprinting(ref AbilitySprintBurstState state)
+        private void ReconcileSpeedModifier(float previous, float current)
         {
-            RemovePreviousModifier(ref state);
-            state.TimeSinceLastSprinting = 0f;
-            state.WasSprinting = false;
-        }
+            if (Mathf.Approximately(previous, current)) return;
 
-        private void Sprinting(ref AbilitySprintBurstState state, float delta)
-        {
-            state.CurrentMeter = Mathf.Clamp(state.CurrentMeter - delta, 0f, maxMeter);
-            float boostToApply = Mathf.Lerp(minBurstSpeed, maxBurstSpeed, state.CurrentMeter / maxMeter);
-
-            if (state.WasSprinting)
-            {
-                RemovePreviousModifier(ref state);
-            }
-
-            playerStats.SimulateAddSpeedModifier(boostToApply);
-            state.LastAppliedSpeedMod = boostToApply;
-
-            state.WasSprinting = true;
-        }
-
-        private void NotSprinting(ref AbilitySprintBurstState state, float delta)
-        {
-            state.TimeSinceLastSprinting += delta;
-
-            if (state.TimeSinceLastSprinting >= timeUntilRecovery)
-            {
-                state.CurrentMeter = Mathf.Clamp(state.CurrentMeter + (delta * meterRecoverySpeed), 0f, maxMeter);
-            }
-
-            state.WasSprinting = false;
+            if (previous > 0f)
+                playerStats.SimulateRemoveSpeedModifier(previous);
+            if (current > 0f)
+                playerStats.SimulateAddSpeedModifier(current);
         }
 
         private void RemovePreviousModifier(ref AbilitySprintBurstState state)
@@ -150,27 +119,5 @@ namespace Resonance.Combat.Augments
                 state.LastAppliedSpeedMod = 0;
             }
         }
-    }
-
-    public struct AbilitySprintBurstState : IPredictedData<AbilitySprintBurstState>
-    {
-        public void Dispose()
-        {
-        }
-
-        public bool IsEquipped;
-        public float TimeSinceLastSprinting;
-        public float CurrentMeter;
-        public bool WasSprinting;
-        public float LastAppliedSpeedMod;
-    }
-
-    public struct AbilitySprintBurstInput : IPredictedData
-    {
-        public void Dispose()
-        {
-        }
-
-        public bool Sprinting;
     }
 }
