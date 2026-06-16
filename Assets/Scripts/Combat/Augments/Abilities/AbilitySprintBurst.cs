@@ -125,7 +125,7 @@ namespace Resonance.Combat.Augments
                 RemovePreviousModifier(ref state);
             }
 
-            // playerStats.SimulateAddSpeedModifier(boostToApply);
+            playerStats.SimulateAddSpeedModifier(boostToApply);
             state.LastAppliedSpeedMod = boostToApply;
 
             state.WasSprinting = true;
@@ -147,7 +147,7 @@ namespace Resonance.Combat.Augments
         {
             if (state.LastAppliedSpeedMod > 0)
             {
-                // playerStats.SimulateRemoveSpeedModifier(state.LastAppliedSpeedMod);
+                playerStats.SimulateRemoveSpeedModifier(state.LastAppliedSpeedMod);
                 state.LastAppliedSpeedMod = 0;
             }
         }

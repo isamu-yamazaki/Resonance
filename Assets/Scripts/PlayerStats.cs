@@ -139,7 +139,11 @@ namespace Resonance.Player
                 CurrentSpeed = playerBaseSpeed,
                 CurrentDamageReduction = baseDamageReduction,
                 CurrentHealthRegen = baseHealthRegen,
-                SpeedModifiers = new DisposableList<float>(),
+
+                // Not using DisposableList.Create when creating a DisposableList will cause all sorts of
+                // spurious behaviors. Do not make the same mistake, I beg you.
+
+                SpeedModifiers = DisposableList<float>.Create(),
             };
         }
 
