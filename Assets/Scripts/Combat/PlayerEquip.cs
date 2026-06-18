@@ -128,6 +128,7 @@ namespace Resonance.Combat
         protected override void Simulate(PlayerEquipInputData input, ref PlayerEquipDataState state, float delta)
         {
             // slot transition
+            state.LastSlot = state.CurrentSlot;
             if (input.SwapWeaponPressed)
                 state.CurrentSlot = state.CurrentSlot == 0 ? 1 : 0;
             else if (input.SwapSlotOnePressed)
@@ -171,29 +172,66 @@ namespace Resonance.Combat
         [SimulationOnly]
         private void SimulateEquipWeapon(PlayerEquipInputData input, ref PlayerEquipDataState state)
         {
+            // Fully in-simulation weapon switching
+            // In the same tick as the slot update, update the
+            // equipped weapon. Required for PlayerShooter to correctly set slot ammo
+            if (state.CurrentSlot != state.LastSlot)
+            {
+                var weapon = playerInventory.WeaponInventory[state.CurrentSlot];
+                if (weapon != null)
+                {
+                    state.EquippedWeaponKey = weapon.Key;
+                    state.EquippedWeaponId = weapon.Id;
+
+                    // TODO: add simulation variant
+                    playerState?.SetWeaponClass(weapon.Class);
+
+                    // refresh magazine size reported in PlayerShooter
+                    if (weaponStatManager != null)
+                    {
+                        weaponStatManager.SetWeaponPropertiesToManage(weapon);
+                    }
+
+                    if (equippedWeaponObservable != null)
+                    {
+                        equippedWeaponObservable.Value = weapon;
+                    }
+
+                    // TODO: add simulation variant
+                    if (playerStats != null)
+                    {
+                        playerStats.AddSpeedModifierExternal(weaponStatManager.Mobility);
+                    }
+                }
+            }
+
+            // This path currently runs when the player buys from the shop
+            // TODO: remove the input path entirely
             if (input.WeaponKeyToEquip != null && input.WeaponIdToEquip != null)
             {
                 state.EquippedWeaponKey = input.WeaponKeyToEquip;
                 state.EquippedWeaponId = input.WeaponIdToEquip;
 
-                var weapon = Array.Find(_weapons, w => w.Key == input.WeaponKeyToEquip);
+                var baseWeapon = Array.Find(_weapons, w => w.Key == input.WeaponKeyToEquip);
+                var weaponWithId = baseWeapon.Clone(state.EquippedWeaponId);
 
                 if (EquippedWeapon != null && playerStats != null)
                 {
                     playerStats.RemoveSpeedModifierExternal(weaponStatManager.GetStat(WeaponStat.Mobility));
                 }
 
-                playerState?.SetWeaponClass(weapon.Class);
+                playerState?.SetWeaponClass(weaponWithId.Class);
 
                 if (weaponStatManager != null)
                 {
-                    weaponStatManager.ManageWeapon(weapon);
+                    weaponStatManager.SetWeaponPropertiesToManage(weaponWithId);
                 }
 
                 if (equippedWeaponObservable != null)
                 {
-                    equippedWeaponObservable.Value = weapon;
+                    equippedWeaponObservable.Value = weaponWithId;
                 }
+
 
                 if (playerStats != null)
                 {
@@ -337,6 +375,8 @@ namespace Resonance.Combat
 
         public void RemoveWeapon(WeaponSlot slot)
         {
+            // note that this is a non-simulation path currently
+
             WeaponProperties existing = slot == WeaponSlot.Primary
                 ? playerInventory.WeaponInventory[0]
                 : playerInventory.WeaponInventory[1];
@@ -352,7 +392,7 @@ namespace Resonance.Combat
 
                 if (weaponStatManager != null)
                 {
-                    weaponStatManager.ManageWeapon(null);
+                    weaponStatManager.SetWeaponToManageExternal(null);
                 }
 
                 if (equippedWeaponObservable != null)

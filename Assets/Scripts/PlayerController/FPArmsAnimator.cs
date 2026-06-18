@@ -73,7 +73,8 @@ namespace Resonance.Combat
             {
                 _holsteredClasses.Remove(bucketed);
                 _hasPendingSwap = false;
-                GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(weapon);
+                // TODO: restore if needed
+                // GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(weapon);
                 _fpArmsManager.RefreshArms();
                 TriggerOnActiveAnimator(isNew ? IsFirstBuyHash : IsDrawHash);
                 _pendingFirstBuy = false;
@@ -192,7 +193,8 @@ namespace Resonance.Combat
             _hasPendingSwap = false;
 
             _fpArmsManager.SuppressNextRefresh();
-            GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(_pendingWeapon);
+            // TODO: restore if needed
+            // GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(_pendingWeapon);
 
             _fpArmsManager.RefreshArms();
 

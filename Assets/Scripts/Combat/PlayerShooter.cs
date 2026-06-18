@@ -125,7 +125,7 @@ namespace Resonance.Combat
             ref string trackedWeaponId = ref (currentSlot == 0 ? ref state.WeaponIdSlot0 : ref state.WeaponIdSlot1);
 
             bool slotChanged = state.LastEquippedSlot != currentSlot;
-            bool weaponChanged = currentWeaponId != null && trackedWeaponId != currentWeaponId;
+            bool weaponChanged = trackedWeaponId != currentWeaponId;
 
             if (slotChanged || weaponChanged)
             {
@@ -133,6 +133,7 @@ namespace Resonance.Combat
                 state.CurrentSpread = weaponStatManager.Spread;
                 state.ReloadTimer = 0f;
                 ref int slotAmmo = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
+
 
                 if (weaponChanged)
                 {

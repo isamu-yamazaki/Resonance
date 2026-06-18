@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
+using PurrNet.Pooling;
+using PurrNet.Prediction;
 using Resonance.Combat.Mods;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
@@ -7,41 +11,174 @@ using UnityEngine;
 
 namespace Resonance.Combat
 {
-    public class WeaponStatManager : MonoBehaviour
+    public class WeaponStatManager : PredictedIdentity<WeaponStatManagerInput, WeaponStatManagerState>
     {
-        private WeaponProperties managedWeapon;
-        private readonly List<WeaponModProperties> augmentMods = new List<WeaponModProperties>();
+        private WeaponProperties[] _weapons;
+        private WeaponModProperties[] _mods;
 
-        public void ManageWeapon(WeaponProperties weaponToManage)
+        // Pending augment-mod operations queued by the non-predicted mutator API
+        // (PlayerAugmentEquipper, AbilityHumanTurret); drained into the input in GetFinalInput.
+        private string _pendingAugmentAdd;
+        private string _pendingAugmentRemove;
+        private bool _pendingClear;
+
+        // Pending weapon-to-manage change queued by non-simulation callers (e.g. the shop via
+        // PlayerEquip.RemoveWeapon); drained into the input in GetFinalInput. The flag distinguishes
+        // "no change this tick" from "set to null" (unequip).
+        private WeaponIdentity? _pendingWeaponToManage;
+        private bool _hasPendingWeaponManage;
+
+        [CanBeNull]
+        public WeaponProperties ManagedWeapon
         {
-            managedWeapon = weaponToManage;
+            get
+            {
+                if (!currentState.WeaponIdentity.HasValue) return null;
+                var weaponIdentity = currentState.WeaponIdentity.Value;
+                var weapon = Array.Find(_weapons, w => w.Key == weaponIdentity.Key);
+                return weapon.Clone(weaponIdentity.Id);
+            }
+        }
+
+        #region Lifecycle
+
+        protected override void LateAwake()
+        {
+            _weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+            _mods = Resources.LoadAll<WeaponModProperties>("Content/Mods");
+
+            // Augment-mod changes are one-shot keys carried in the input; repeating (extrapolating)
+            // the last input on non-owner clients would re-add the same key every tick. Non-owners
+            // receive the authoritative AugmentModKeys via state sync, so disabling extrapolation is safe.
+            _extrapolateInput = false;
+        }
+
+        protected override WeaponStatManagerState GetInitialState()
+        {
+            return new WeaponStatManagerState()
+            {
+                AugmentModKeys = DisposableList<string>.Create(),
+                WeaponIdentity = null
+            };
+        }
+
+        #endregion
+
+        #region Input
+
+        protected override void GetFinalInput(ref WeaponStatManagerInput input)
+        {
+            if (_pendingClear)
+            {
+                input.ClearAugmentMods = true;
+                _pendingClear = false;
+            }
+
+            if (_pendingAugmentAdd != null)
+            {
+                input.AugmentKeyToAdd = _pendingAugmentAdd;
+                _pendingAugmentAdd = null;
+            }
+
+            if (_pendingAugmentRemove != null)
+            {
+                input.AugmentKeyToRemove = _pendingAugmentRemove;
+                _pendingAugmentRemove = null;
+            }
+
+            if (_hasPendingWeaponManage)
+            {
+                input.ManageWeapon = true;
+                input.WeaponToManage = _pendingWeaponToManage;
+                _hasPendingWeaponManage = false;
+                _pendingWeaponToManage = null;
+            }
+        }
+
+        // Queues a weapon-to-manage change from non-simulation code. Pass null to clear (unequip).
+        public void SetWeaponToManageExternal(WeaponProperties weaponToManage)
+        {
+            _pendingWeaponToManage = weaponToManage != null
+                ? WeaponIdentity.FromWeaponProperties(weaponToManage)
+                : null;
+            _hasPendingWeaponManage = true;
         }
 
         public void AddAugmentMod(WeaponModProperties mod)
         {
             if (mod == null) return;
-            augmentMods.Add(mod);
+            _pendingAugmentAdd = mod.Key;
         }
 
         public void RemoveAugmentMod(WeaponModProperties mod)
         {
-            augmentMods.Remove(mod);
+            if (mod == null) return;
+            _pendingAugmentRemove = mod.Key;
         }
 
         public void ClearAugmentMods()
         {
-            augmentMods.Clear();
+            _pendingClear = true;
+        }
+
+        #endregion
+
+        #region Simulation
+
+        [SimulationOnly]
+        public void SetWeaponPropertiesToManage(WeaponProperties weaponToManage)
+        {
+            var identity = WeaponIdentity.FromWeaponProperties(weaponToManage);
+            SetWeaponToManage(identity);
+        }
+
+        [SimulationOnly]
+        public void SetWeaponToManage(WeaponIdentity? identity)
+        {
+            currentState.WeaponIdentity = identity;
+        }
+
+        protected override void Simulate(WeaponStatManagerInput input, ref WeaponStatManagerState state, float delta)
+        {
+            if (input.ManageWeapon)
+                state.WeaponIdentity = input.WeaponToManage;
+
+            if (input.ClearAugmentMods)
+                state.AugmentModKeys.Clear();
+
+            // Remove the first matching key so multiplicity (e.g. two augments sharing a mod) is preserved.
+            if (input.AugmentKeyToRemove != null)
+                state.AugmentModKeys.Remove(input.AugmentKeyToRemove);
+
+            if (input.AugmentKeyToAdd != null)
+                state.AugmentModKeys.Add(input.AugmentKeyToAdd);
+        }
+
+        #endregion
+
+        #region State getters
+
+        // Resolves the predicted augment-mod keys back to their WeaponModProperties assets.
+        private IEnumerable<WeaponModProperties> ResolveAugmentMods()
+        {
+            foreach (var key in currentState.AugmentModKeys)
+            {
+                var mod = Array.Find(_mods, m => m.Key == key);
+                if (mod != null) yield return mod;
+            }
         }
 
         public float GetStat(WeaponStat stat)
         {
+            var managedWeapon = ManagedWeapon;
             if (managedWeapon == null) return 0f;
 
             float baseStat = GetBaseValue(stat);
             float additiveSum = 0f;
             float multiplicativeProduct = 1f;
 
-            IEnumerable<WeaponModProperties> allMods = managedWeapon.ModList.Concat(augmentMods).Where(mod => mod != null);
+            IEnumerable<WeaponModProperties> allMods =
+                managedWeapon.ModList.Concat(ResolveAugmentMods()).Where(mod => mod != null);
 
             foreach (WeaponModProperties mod in allMods)
             {
@@ -61,9 +198,11 @@ namespace Resonance.Combat
 
         public BulletProperties GetBulletProperties()
         {
+            var managedWeapon = ManagedWeapon;
             if (managedWeapon == null) return null;
 
-            IEnumerable<WeaponModProperties> allMods = managedWeapon.ModList.Concat(augmentMods).Where(mod => mod != null);
+            IEnumerable<WeaponModProperties> allMods =
+                managedWeapon.ModList.Concat(ResolveAugmentMods()).Where(mod => mod != null);
 
             foreach (WeaponModProperties mod in allMods)
             {
@@ -76,9 +215,11 @@ namespace Resonance.Combat
 
         public MuzzleFlashSettings GetMuzzleFlashSettings()
         {
+            var managedWeapon = ManagedWeapon;
             if (managedWeapon == null) return null;
 
-            IEnumerable<WeaponModProperties> allMods = managedWeapon.ModList.Concat(augmentMods).Where(mod => mod != null);
+            IEnumerable<WeaponModProperties> allMods =
+                managedWeapon.ModList.Concat(ResolveAugmentMods()).Where(mod => mod != null);
 
             foreach (WeaponModProperties mod in allMods)
             {
@@ -92,9 +233,11 @@ namespace Resonance.Combat
         // Returns barrel mod audio override if one exists, falls back to base weapon audio.
         public WeaponAudioProperties GetAudioProperties()
         {
+            var managedWeapon = ManagedWeapon;
             if (managedWeapon == null) return null;
 
-            IEnumerable<WeaponModProperties> allMods = managedWeapon.ModList.Concat(augmentMods).Where(mod => mod != null);
+            IEnumerable<WeaponModProperties> allMods =
+                managedWeapon.ModList.Concat(ResolveAugmentMods()).Where(mod => mod != null);
 
             foreach (WeaponModProperties mod in allMods)
             {
@@ -105,42 +248,77 @@ namespace Resonance.Combat
             return managedWeapon.AudioProperties;
         }
 
-        private float GetBaseValue(WeaponStat stat) => stat switch
+        private float GetBaseValue(WeaponStat stat)
         {
-            WeaponStat.Damage             => managedWeapon.Damage,
-            WeaponStat.FireRate           => managedWeapon.FireRate,
-            WeaponStat.ProjectilesPerShot => managedWeapon.ProjectilesPerShot,
-            WeaponStat.Range              => managedWeapon.Range,
-            WeaponStat.Accuracy           => managedWeapon.Accuracy,
-            WeaponStat.Control            => managedWeapon.Control,
-            WeaponStat.Spread             => managedWeapon.Spread,
-            WeaponStat.MuzzleVelocity     => managedWeapon.MuzzleVelocity,
-            WeaponStat.Mobility           => managedWeapon.Mobility,
-            WeaponStat.Handling           => managedWeapon.Handling,
-            WeaponStat.MagazineSize       => managedWeapon.MagazineSize,
-            WeaponStat.ReloadTime         => managedWeapon.ReloadTime,
-            WeaponStat.SpreadPerShot      => managedWeapon.SpreadPerShot,
-            WeaponStat.MaxSpread          => managedWeapon.MaxSpread,
-            WeaponStat.SpreadRecoveryRate => managedWeapon.SpreadRecoveryRate,
-            _                             => 0f
-        };
+            var managedWeapon = ManagedWeapon;
+            if (managedWeapon != null)
+            {
+                return stat switch
+                {
+                    WeaponStat.Damage => managedWeapon.Damage,
+                    WeaponStat.FireRate => managedWeapon.FireRate,
+                    WeaponStat.ProjectilesPerShot => managedWeapon.ProjectilesPerShot,
+                    WeaponStat.Range => managedWeapon.Range,
+                    WeaponStat.Accuracy => managedWeapon.Accuracy,
+                    WeaponStat.Control => managedWeapon.Control,
+                    WeaponStat.Spread => managedWeapon.Spread,
+                    WeaponStat.MuzzleVelocity => managedWeapon.MuzzleVelocity,
+                    WeaponStat.Mobility => managedWeapon.Mobility,
+                    WeaponStat.Handling => managedWeapon.Handling,
+                    WeaponStat.MagazineSize => managedWeapon.MagazineSize,
+                    WeaponStat.ReloadTime => managedWeapon.ReloadTime,
+                    WeaponStat.SpreadPerShot => managedWeapon.SpreadPerShot,
+                    WeaponStat.MaxSpread => managedWeapon.MaxSpread,
+                    WeaponStat.SpreadRecoveryRate => managedWeapon.SpreadRecoveryRate,
+                    _ => 0f
+                };
+            }
 
-        public float Damage             => GetStat(WeaponStat.Damage);
-        public float FireRate           => GetStat(WeaponStat.FireRate);
-        public int   ProjectilesPerShot => Mathf.RoundToInt(GetStat(WeaponStat.ProjectilesPerShot));
-        public float Range              => GetStat(WeaponStat.Range);
-        public float Accuracy           => GetStat(WeaponStat.Accuracy);
-        public float Control            => GetStat(WeaponStat.Control);
-        public float Spread             => GetStat(WeaponStat.Spread);
-        public float MuzzleVelocity     => GetStat(WeaponStat.MuzzleVelocity);
-        public float Mobility           => GetStat(WeaponStat.Mobility);
-        public float Handling           => GetStat(WeaponStat.Handling);
-        public int   MagazineSize       => Mathf.RoundToInt(GetStat(WeaponStat.MagazineSize));
-        public float ReloadTime         => GetStat(WeaponStat.ReloadTime);
-        public float SpreadPerShot      => GetStat(WeaponStat.SpreadPerShot);
-        public float MaxSpread          => GetStat(WeaponStat.MaxSpread);
+            return 0f;
+        }
+
+        #endregion
+
+
+        public float Damage => GetStat(WeaponStat.Damage);
+        public float FireRate => GetStat(WeaponStat.FireRate);
+        public int ProjectilesPerShot => Mathf.RoundToInt(GetStat(WeaponStat.ProjectilesPerShot));
+        public float Range => GetStat(WeaponStat.Range);
+        public float Accuracy => GetStat(WeaponStat.Accuracy);
+        public float Control => GetStat(WeaponStat.Control);
+        public float Spread => GetStat(WeaponStat.Spread);
+        public float MuzzleVelocity => GetStat(WeaponStat.MuzzleVelocity);
+        public float Mobility => GetStat(WeaponStat.Mobility);
+        public float Handling => GetStat(WeaponStat.Handling);
+        public int MagazineSize => Mathf.RoundToInt(GetStat(WeaponStat.MagazineSize));
+        public float ReloadTime => GetStat(WeaponStat.ReloadTime);
+        public float SpreadPerShot => GetStat(WeaponStat.SpreadPerShot);
+        public float MaxSpread => GetStat(WeaponStat.MaxSpread);
         public float SpreadRecoveryRate => GetStat(WeaponStat.SpreadRecoveryRate);
+    }
 
-        public WeaponProperties ManagedWeapon => managedWeapon;
+    public struct WeaponStatManagerInput : IPredictedData
+    {
+        public string AugmentKeyToAdd;
+        public string AugmentKeyToRemove;
+        public bool ClearAugmentMods;
+
+        public WeaponIdentity? WeaponToManage;
+        public bool ManageWeapon;
+
+        public void Dispose()
+        {
+        }
+    }
+
+    public struct WeaponStatManagerState : IPredictedData<WeaponStatManagerState>
+    {
+        public WeaponIdentity? WeaponIdentity;
+        public DisposableList<string> AugmentModKeys;
+
+        public void Dispose()
+        {
+            AugmentModKeys.Dispose();
+        }
     }
 }

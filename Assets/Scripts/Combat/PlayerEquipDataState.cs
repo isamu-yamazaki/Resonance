@@ -15,6 +15,7 @@ namespace Resonance.Combat
         public string EquippedWeaponId;
 
         public int CurrentSlot;
+        public int LastSlot;
 
         public readonly void Dispose() { }
     }
