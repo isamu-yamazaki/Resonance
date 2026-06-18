@@ -7,6 +7,8 @@ namespace Resonance.Combat
     {
         public int AmmoSlot0;
         public int AmmoSlot1;
+        public string WeaponIdSlot0;
+        public string WeaponIdSlot1;
         public float FireCooldown;
         public float ReloadTimer;
         public bool IsEmptyReload;

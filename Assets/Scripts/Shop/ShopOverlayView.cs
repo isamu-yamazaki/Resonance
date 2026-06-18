@@ -424,8 +424,8 @@ namespace Resonance.Shop
         {
             PlayerInventory inventory = GetPlayerInventory();
 
-            bool hasPrimary = inventory != null && inventory.weaponInventory[0] != null;
-            bool hasSecondary = inventory != null && inventory.weaponInventory[1] != null;
+            bool hasPrimary = inventory != null && inventory.WeaponInventory[0] != null;
+            bool hasSecondary = inventory != null && inventory.WeaponInventory[1] != null;
 
             modPrimaryButton.interactable = hasPrimary;
             modSecondaryButton.interactable = hasSecondary;
@@ -534,8 +534,8 @@ namespace Resonance.Shop
             if (inventory != null)
             {
                 targetWeapon = selectedModWeaponSlot == WeaponSlot.Primary
-                    ? inventory.weaponInventory[0]
-                    : inventory.weaponInventory[1];
+                    ? inventory.WeaponInventory[0]
+                    : inventory.WeaponInventory[1];
             }
 
             if (targetWeapon == null)
@@ -661,8 +661,8 @@ namespace Resonance.Shop
             if (inventory == null) return;
 
             WeaponProperties targetWeapon = selectedModWeaponSlot == WeaponSlot.Primary
-                ? inventory.weaponInventory[0]
-                : inventory.weaponInventory[1];
+                ? inventory.WeaponInventory[0]
+                : inventory.WeaponInventory[1];
 
             if (targetWeapon == null) return;
 
@@ -708,8 +708,8 @@ namespace Resonance.Shop
             if (inventory == null) return;
 
             WeaponProperties weapon = slot == WeaponSlot.Primary
-                ? inventory.weaponInventory[0]
-                : inventory.weaponInventory[1];
+                ? inventory.WeaponInventory[0]
+                : inventory.WeaponInventory[1];
 
             if (weapon == null) return;
 
@@ -735,8 +735,8 @@ namespace Resonance.Shop
             if (inventory == null) return;
 
             WeaponProperties weapon = weaponSlot == WeaponSlot.Primary
-                ? inventory.weaponInventory[0]
-                : inventory.weaponInventory[1];
+                ? inventory.WeaponInventory[0]
+                : inventory.WeaponInventory[1];
 
             if (weapon == null) return;
 

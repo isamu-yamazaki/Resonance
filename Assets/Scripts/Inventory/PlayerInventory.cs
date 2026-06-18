@@ -12,11 +12,33 @@ namespace Resonance.Inventory
 
         // Resolved from the simulated state so reads reflect currentState on both server and client,
         // not just the locally-applied verified view.
-        public WeaponProperties[] weaponInventory => new[]
+        public WeaponProperties[] WeaponInventory
         {
-            FindWeaponByKey(currentState.WeaponPrimaryKey),
-            FindWeaponByKey(currentState.WeaponSecondaryKey),
-        };
+            get
+            {
+                WeaponProperties primaryWeapon = null;
+                if (currentState.WeaponPrimaryIdentity.HasValue)
+                {
+                    var primaryIdentity = currentState.WeaponPrimaryIdentity.Value;
+                    var primaryBaseWeapon = FindWeaponByKey(primaryIdentity.Key);
+                    primaryWeapon = primaryBaseWeapon.Clone(primaryIdentity.Id);
+                }
+
+                WeaponProperties secondaryWeapon = null;
+                if (currentState.WeaponSecondaryIdentity.HasValue)
+                {
+                    var secondaryIdentity = currentState.WeaponSecondaryIdentity.Value;
+                    var secondaryBaseWeapon = FindWeaponByKey(secondaryIdentity.Key);
+                    secondaryWeapon = secondaryBaseWeapon.Clone(secondaryIdentity.Id);
+                }
+
+                return new[]
+                {
+                    primaryWeapon,
+                    secondaryWeapon,
+                };
+            }
+        }
 
         public AugmentProperties[] augmentInventory => new[]
         {
@@ -32,7 +54,7 @@ namespace Resonance.Inventory
         private AugmentProperties[] _augmentResources;
 
         // Pending operations queued by the public mutator API; drained by UpdateInput each frame.
-        private string _pendingWeaponAddKey;
+        private WeaponIdentity? _pendingWeaponIdentityAdd;
         private WeaponSlot _pendingWeaponAddSlot;
         private string _pendingAugmentKeyAdd;
 
@@ -45,15 +67,18 @@ namespace Resonance.Inventory
         protected override PlayerInventoryDataState GetInitialState()
         {
             var state = new PlayerInventoryDataState();
+
             if (startingWeapon != null)
             {
-                switch (startingWeapon.Slot)
+                var startingWeaponWithId = startingWeapon.Clone();
+                var weaponIdentity = WeaponIdentity.FromWeaponProperties(startingWeaponWithId);
+                switch (startingWeaponWithId.Slot)
                 {
                     case WeaponSlot.Primary:
-                        state.WeaponPrimaryKey = startingWeapon.Key;
+                        state.WeaponPrimaryIdentity = weaponIdentity;
                         break;
                     case WeaponSlot.Secondary:
-                        state.WeaponSecondaryKey = startingWeapon.Key;
+                        state.WeaponSecondaryIdentity = weaponIdentity;
                         break;
                 }
             }
@@ -63,7 +88,7 @@ namespace Resonance.Inventory
         public void AddWeapon(WeaponProperties weaponToAdd)
         {
             if (weaponToAdd == null) return;
-            _pendingWeaponAddKey = weaponToAdd.Key;
+            _pendingWeaponIdentityAdd = WeaponIdentity.FromWeaponProperties(weaponToAdd);
             _pendingWeaponAddSlot = weaponToAdd.Slot;
         }
 
@@ -73,10 +98,10 @@ namespace Resonance.Inventory
             switch (slot)
             {
                 case WeaponSlot.Primary:
-                    currentState.WeaponPrimaryKey = null;
+                    currentState.WeaponPrimaryIdentity = null;
                     break;
                 case WeaponSlot.Secondary:
-                    currentState.WeaponSecondaryKey = null;
+                    currentState.WeaponSecondaryIdentity = null;
                     break;
             }
         }
@@ -103,11 +128,11 @@ namespace Resonance.Inventory
 
         protected override void GetFinalInput(ref PlayerInventoryInputData input)
         {
-            if (_pendingWeaponAddKey != null)
+            if (_pendingWeaponIdentityAdd != null)
             {
-                input.WeaponToAddKey = _pendingWeaponAddKey;
+                input.WeaponIdentityToAdd = _pendingWeaponIdentityAdd;
                 input.WeaponToAddSlot = _pendingWeaponAddSlot;
-                _pendingWeaponAddKey = null;
+                _pendingWeaponIdentityAdd = null;
             }
             if (_pendingAugmentKeyAdd != null)
             {
@@ -118,15 +143,16 @@ namespace Resonance.Inventory
 
         protected override void Simulate(PlayerInventoryInputData input, ref PlayerInventoryDataState state, float delta)
         {
-            if (input.WeaponToAddKey != null)
+            if (input.WeaponIdentityToAdd.HasValue)
             {
+                var weaponIdentity = input.WeaponIdentityToAdd.Value;
                 switch (input.WeaponToAddSlot)
                 {
                     case WeaponSlot.Primary:
-                        state.WeaponPrimaryKey = input.WeaponToAddKey;
+                        state.WeaponPrimaryIdentity = weaponIdentity;
                         break;
                     case WeaponSlot.Secondary:
-                        state.WeaponSecondaryKey = input.WeaponToAddKey;
+                        state.WeaponSecondaryIdentity = weaponIdentity;
                         break;
                 }
             }
@@ -164,8 +190,8 @@ namespace Resonance.Inventory
             var v = verified.Value;
 
             if (!_previousVerifiedState.HasValue
-                || _previousVerifiedState.Value.WeaponPrimaryKey != v.WeaponPrimaryKey
-                || _previousVerifiedState.Value.WeaponSecondaryKey != v.WeaponSecondaryKey
+                || _previousVerifiedState.Value.WeaponPrimaryIdentity != v.WeaponPrimaryIdentity
+                || _previousVerifiedState.Value.WeaponSecondaryIdentity != v.WeaponSecondaryIdentity
                 || _previousVerifiedState.Value.AugmentKeyUpper != v.AugmentKeyUpper
                 || _previousVerifiedState.Value.AugmentKeyLower != v.AugmentKeyLower)
             {

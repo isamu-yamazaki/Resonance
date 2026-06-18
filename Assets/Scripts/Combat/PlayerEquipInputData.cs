@@ -9,6 +9,7 @@ namespace Resonance.Combat
         public bool SwapSlotTwoPressed;
 
         public string WeaponKeyToEquip;
+        public string WeaponIdToEquip;
         public bool PendingPrimaryWeaponSlotRemoval;
         public bool PendingSecondaryWeaponSlotRemoval;
         public bool PendingUpperAugmentRemoval;

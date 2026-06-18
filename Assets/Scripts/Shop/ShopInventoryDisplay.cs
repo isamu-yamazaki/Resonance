@@ -70,9 +70,9 @@ namespace Resonance.Shop
                 if (playerInventory == null) return;
             }
 
-            RefreshWeapon(playerInventory.weaponInventory[0], primaryWeaponName, primaryModContainer,
+            RefreshWeapon(playerInventory.WeaponInventory[0], primaryWeaponName, primaryModContainer,
                 primaryModTexts, WeaponSlot.Primary, primaryWeaponSellButton);
-            RefreshWeapon(playerInventory.weaponInventory[1], secondaryWeaponName, secondaryModContainer,
+            RefreshWeapon(playerInventory.WeaponInventory[1], secondaryWeaponName, secondaryModContainer,
                 secondaryModTexts, WeaponSlot.Secondary, secondaryWeaponSellButton);
 
             upperAugmentName.text = playerInventory.augmentInventory[0] != null
