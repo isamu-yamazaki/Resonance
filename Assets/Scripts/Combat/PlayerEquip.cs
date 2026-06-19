@@ -27,25 +27,33 @@ namespace Resonance.Combat
     [RequireComponent(typeof(WeaponStatManager))]
     public class PlayerEquip : PredictedIdentity<PlayerEquipInputData, PlayerEquipDataState>
     {
-        private PlayerStats playerStats;
-        private PlayerSkinRenderer playerSkinRenderer;
-        private WeaponStatManager weaponStatManager;
-        private PlayerAugmentEquipper playerAugmentEquipper;
-        private PlayerAbilityManager playerAbilityManager;
-        private FPArmsAnimator fpArmsAnimator;
+        private PlayerStats _playerStats;
+        private PlayerSkinRenderer _playerSkinRenderer;
+        private WeaponStatManager _weaponStatManager;
+        private PlayerAugmentEquipper _playerAugmentEquipper;
+        private PlayerAbilityManager _playerAbilityManager;
+        private FPArmsAnimator _fpArmsAnimator;
 
-        private ObservableValue<WeaponProperties> equippedWeaponObservable = new ObservableValue<WeaponProperties>();
-        public ObservableValue<WeaponProperties> EquippedWeaponObservable => equippedWeaponObservable;
+        private ObservableValue<WeaponProperties> _equippedWeaponObservable = new ObservableValue<WeaponProperties>();
+        public ObservableValue<WeaponProperties> EquippedWeaponObservable => _equippedWeaponObservable;
 
         [SerializeField] private PlayerInventory playerInventory;
-        private PlayerActionsInput playerActionsInput;
-        private PlayerState playerState;
+        private PlayerActionsInput _playerActionsInput;
+        private PlayerState _playerState;
 
-        // TODO: move to properly simulated state (somewhere, maybe not in this class)
-        private WeaponView currentWeaponView;
-        public WeaponView CurrentWeaponView => currentWeaponView;
+        public WeaponView CurrentWeaponView {
+            get
+            {
+                if (EquippedWeapon == null) return null;
 
-        private WeaponProperties[] _weapons;
+                var skinInstance = _playerSkinRenderer.CurrentMeshInstance;
+                if (skinInstance == null) return null;
+
+                var allViews = skinInstance.GetComponentsInChildren<WeaponView>(true);
+                return allViews.FirstOrDefault(v => v.WeaponKey == EquippedWeapon.WeaponMuzzleKey);
+            }
+        }
+
         public WeaponProperties EquippedWeapon => playerInventory.WeaponInventory[currentState.CurrentSlot];
 
         private const int StartingSlot = 1;
@@ -62,16 +70,15 @@ namespace Resonance.Combat
 
         protected override void LateAwake()
         {
-            playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-            playerSkinRenderer.OnNewSkinSpawned += OnNewSkinSpawned;
-            _weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
-            playerState = GetComponent<PlayerState>();
-            fpArmsAnimator = GetComponent<FPArmsAnimator>();
-            playerStats = GetComponent<PlayerStats>();
-            playerAugmentEquipper = GetComponent<PlayerAugmentEquipper>();
-            playerAbilityManager = GetComponent<PlayerAbilityManager>();
-            weaponStatManager = GetComponent<WeaponStatManager>();
-            playerActionsInput = PlayerActionsInput.Instance;
+            _playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
+            _playerSkinRenderer.OnNewSkinSpawned += OnNewSkinSpawned;
+            _playerState = GetComponent<PlayerState>();
+            _fpArmsAnimator = GetComponent<FPArmsAnimator>();
+            _playerStats = GetComponent<PlayerStats>();
+            _playerAugmentEquipper = GetComponent<PlayerAugmentEquipper>();
+            _playerAbilityManager = GetComponent<PlayerAbilityManager>();
+            _weaponStatManager = GetComponent<WeaponStatManager>();
+            _playerActionsInput = PlayerActionsInput.Instance;
         }
 
         protected override PlayerEquipDataState GetInitialState()
@@ -85,24 +92,24 @@ namespace Resonance.Combat
 
         protected override void UpdateInput(ref PlayerEquipInputData input)
         {
-            if (playerActionsInput == null) return;
+            if (_playerActionsInput == null) return;
 
-            if (playerActionsInput.SwapWeaponPressed)
+            if (_playerActionsInput.SwapWeaponPressed)
             {
                 input.SwapWeaponPressed = true;
-                playerActionsInput.SetSwapWeaponPressedFalse();
+                _playerActionsInput.SetSwapWeaponPressedFalse();
             }
 
-            if (playerActionsInput.SwapSlotOnePressed)
+            if (_playerActionsInput.SwapSlotOnePressed)
             {
                 input.SwapSlotOnePressed = true;
-                playerActionsInput.SetSlotOnePressedFalse();
+                _playerActionsInput.SetSlotOnePressedFalse();
             }
 
-            if (playerActionsInput.SwapSlotTwoPressed)
+            if (_playerActionsInput.SwapSlotTwoPressed)
             {
                 input.SwapSlotTwoPressed = true;
-                playerActionsInput.SetSlotTwoPressedFalse();
+                _playerActionsInput.SetSlotTwoPressedFalse();
             }
 
             if (_pendingWeaponKeyToEquip != null
@@ -175,20 +182,8 @@ namespace Resonance.Combat
             }
 
             SimulateOrchestrateEquipWeapon(ref state);
-            // SimulateWeaponViewUpdate();
         }
 
-        [SimulationOnly]
-        private void SimulateWeaponViewUpdate()
-        {
-            if (EquippedWeapon == null) return;
-
-            var skinInstance = playerSkinRenderer.CurrentMeshInstance;
-            if (skinInstance == null) return;
-
-            var allViews = skinInstance.GetComponentsInChildren<WeaponView>(true);
-            currentWeaponView = allViews.FirstOrDefault(v => v.WeaponKey == EquippedWeapon.WeaponMuzzleKey);
-        }
 
         [SimulationOnly]
         private void SimulateOrchestrateEquipWeapon(ref PlayerEquipDataState state)
@@ -205,23 +200,23 @@ namespace Resonance.Combat
                 if (weapon != null)
                 {
                     // TODO: add simulation variant
-                    playerState?.SetWeaponClass(weapon.Class);
+                    _playerState?.SetWeaponClass(weapon.Class);
 
                     // refresh magazine size reported in PlayerShooter
-                    if (weaponStatManager != null)
+                    if (_weaponStatManager != null)
                     {
-                        weaponStatManager.SetWeaponPropertiesToManage(weapon);
+                        _weaponStatManager.SetWeaponPropertiesToManage(weapon);
                     }
 
-                    if (equippedWeaponObservable != null)
+                    if (_equippedWeaponObservable != null)
                     {
-                        equippedWeaponObservable.Value = weapon;
+                        _equippedWeaponObservable.Value = weapon;
                     }
 
                     // TODO: add simulation variant
-                    if (playerStats != null)
+                    if (_playerStats != null)
                     {
-                        playerStats.AddSpeedModifierExternal(weaponStatManager.Mobility);
+                        _playerStats.AddSpeedModifierExternal(_weaponStatManager.Mobility);
                     }
                 }
             }
@@ -229,6 +224,56 @@ namespace Resonance.Combat
             state.LastEquippedWeapon = weaponIdentity;
         }
 
+        [SimulationOnly]
+        private void SimulateTpWeaponRefresh(GameObject skinInstance)
+        {
+            if (skinInstance == null) return;
+
+            var allMeshes = skinInstance.GetComponentsInChildren<TPWeaponMesh>(true);
+
+            foreach (var mesh in allMeshes)
+            {
+                mesh.gameObject.SetActive(false);
+            }
+
+            WeaponClass classToShow = EquippedWeapon.Class;
+            if (classToShow != WeaponClass.Pistol && classToShow != WeaponClass.Sword)
+            {
+                classToShow = WeaponClass.Rifle;
+            }
+
+            foreach (var mesh in allMeshes)
+            {
+                if (mesh.weaponClass == classToShow)
+                {
+                    if (!_playerSkinRenderer.IsTPHidden)
+                    {
+                        mesh.gameObject.SetActive(true);
+                    }
+
+                    break;
+                }
+            }
+
+
+            if (CurrentWeaponView == null)
+            {
+                Debug.LogWarning($"[PlayerEquip] No WeaponView found for key: {EquippedWeapon.WeaponMuzzleKey}", this);
+                return;
+            }
+
+            MuzzleFlashSettings flashSettings = _weaponStatManager?.GetMuzzleFlashSettings();
+            if (flashSettings != null)
+            {
+                CurrentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
+            }
+
+            WeaponAudioProperties audioProperties = _weaponStatManager?.GetAudioProperties();
+            if (audioProperties != null)
+            {
+                CurrentWeaponView.ApplyAudioProperties(audioProperties);
+            }
+        }
         #endregion
 
 
@@ -255,15 +300,10 @@ namespace Resonance.Combat
 
             if (isOwner)
             {
-                if (fpArmsAnimator != null)
+                if (_fpArmsAnimator != null)
                 {
-                    fpArmsAnimator.RequestWeaponSwap(weapon);
+                    _fpArmsAnimator.RequestWeaponSwap(weapon);
                 }
-            }
-
-            if (playerSkinRenderer.CurrentMeshInstance != null)
-            {
-                RefreshTPWeaponView(playerSkinRenderer.CurrentMeshInstance);
             }
 
             if (!_isInitialEquip)
@@ -277,68 +317,13 @@ namespace Resonance.Combat
         private void OnNewSkinSpawned(GameObject skinInstance)
         {
             if (EquippedWeapon != null)
-                RefreshTPWeaponView(skinInstance);
+                SimulateTpWeaponRefresh(skinInstance);
         }
 
-        private void RefreshTPWeaponView(GameObject skinInstance)
-        {
-            if (skinInstance == null) return;
-
-            var allMeshes = skinInstance.GetComponentsInChildren<TPWeaponMesh>(true);
-
-            foreach (var mesh in allMeshes)
-            {
-                mesh.gameObject.SetActive(false);
-            }
-
-            if (EquippedWeapon == null)
-            {
-                currentWeaponView = null;
-                return;
-            }
-
-            WeaponClass classToShow = EquippedWeapon.Class;
-            if (classToShow != WeaponClass.Pistol && classToShow != WeaponClass.Sword)
-            {
-                classToShow = WeaponClass.Rifle;
-            }
-
-            foreach (var mesh in allMeshes)
-            {
-                if (mesh.weaponClass == classToShow)
-                {
-                    if (!playerSkinRenderer.IsTPHidden)
-                    {
-                        mesh.gameObject.SetActive(true);
-                    }
-
-                    break;
-                }
-            }
-
-
-            if (currentWeaponView == null)
-            {
-                Debug.LogWarning($"[PlayerEquip] No WeaponView found for key: {EquippedWeapon.WeaponMuzzleKey}", this);
-                return;
-            }
-
-            MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
-            if (flashSettings != null)
-            {
-                currentWeaponView.ApplyMuzzleFlashSettings(flashSettings);
-            }
-
-            WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
-            if (audioProperties != null)
-            {
-                currentWeaponView.ApplyAudioProperties(audioProperties);
-            }
-        }
 
         private void PlayEquipEffects()
         {
-            currentWeaponView?.PlayEquip();
+            CurrentWeaponView?.PlayEquip();
 
 #if !UNITY_SERVER
             if (AudioSourceTracker.Instance != null)
@@ -360,26 +345,24 @@ namespace Resonance.Combat
 
             if (EquippedWeapon == existing)
             {
-                if (playerStats != null)
+                if (_playerStats != null)
                 {
-                    playerStats.RemoveSpeedModifierExternal(existing.Mobility);
+                    _playerStats.RemoveSpeedModifierExternal(existing.Mobility);
                 }
 
-                if (weaponStatManager != null)
+                if (_weaponStatManager != null)
                 {
-                    weaponStatManager.SetWeaponToManageExternal(null);
+                    _weaponStatManager.SetWeaponToManageExternal(null);
                 }
 
-                if (equippedWeaponObservable != null)
+                if (_equippedWeaponObservable != null)
                 {
-                    equippedWeaponObservable.Value = null;
+                    _equippedWeaponObservable.Value = null;
                 }
 
-                currentWeaponView = null;
-
-                if (playerSkinRenderer.CurrentMeshInstance != null)
+                if (_playerSkinRenderer.CurrentMeshInstance != null)
                 {
-                    RefreshTPWeaponView(playerSkinRenderer.CurrentMeshInstance);
+                    // RefreshTpWeaponView(_playerSkinRenderer.CurrentMeshInstance);
                 }
             }
 
@@ -393,9 +376,9 @@ namespace Resonance.Combat
             }
         }
 
-        public void EquipAugment(AugmentProperties augment)
+        public void EquipAugmentExternal(AugmentProperties augment)
         {
-            if (augment == null || playerAugmentEquipper == null) return;
+            if (augment == null || _playerAugmentEquipper == null) return;
 
             switch (augment.Slot)
             {
@@ -406,8 +389,8 @@ namespace Resonance.Combat
                     }
 
                     playerInventory.AddAugment(augment);
-                    playerAugmentEquipper.ApplyAugmentStats(augment);
-                    playerAbilityManager.OnAugmentEquipped(augment);
+                    _playerAugmentEquipper.ApplyAugmentStats(augment);
+                    _playerAbilityManager.OnAugmentEquipped(augment);
                     break;
                 case AugmentSlot.Lower:
                     if (playerInventory.augmentInventory[1] != null)
@@ -416,16 +399,16 @@ namespace Resonance.Combat
                     }
 
                     playerInventory.AddAugment(augment);
-                    playerAugmentEquipper.ApplyAugmentStats(augment);
-                    playerAbilityManager.OnAugmentEquipped(augment);
+                    _playerAugmentEquipper.ApplyAugmentStats(augment);
+                    _playerAbilityManager.OnAugmentEquipped(augment);
                     break;
             }
         }
 
         public void RemoveAugmentExternal(AugmentProperties augment)
         {
-            playerAbilityManager.OnAugmentRemoved(augment);
-            playerAugmentEquipper.RemoveAugmentStats(augment);
+            _playerAbilityManager.OnAugmentRemoved(augment);
+            _playerAugmentEquipper.RemoveAugmentStats(augment);
             if (augment.Slot == AugmentSlot.Upper)
             {
                 _pendingUpperAugmentRemoval = true;

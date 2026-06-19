@@ -21,7 +21,14 @@ namespace Resonance.PlayerController
 
         [SerializeField] private int testSkinIndexToRequest = 0;
 
+        /// <summary>
+        /// Current mesh instance based on the simulated verified tick.
+        /// </summary>
         public GameObject CurrentMeshInstance { get; private set; }
+
+        /// <summary>
+        /// Currently loaded skin data based on the simulated verified tick.
+        /// </summary>
         public SkinData CurrentlyLoadedSkinData { get; private set; }
 
         private GameObject _skillArmsInstance;
@@ -33,10 +40,10 @@ namespace Resonance.PlayerController
         private Dictionary<WeaponClass, GameObject> _fpArmsInstances = new Dictionary<WeaponClass, GameObject>();
         public IReadOnlyDictionary<WeaponClass, GameObject> FPArmsInstances => _fpArmsInstances;
 
+        private bool _fpArmsSpawned;
         private bool _tpHidden;
+        private bool _pendingSkinRequest;
         public bool IsTPHidden => _tpHidden;
-
-        private PlayerSkinRendererDataState? _previousStateFromServer;
 
         public bool ShouldRenderArmsOnlyBasedOnCachedMatchState
         {
@@ -45,71 +52,36 @@ namespace Resonance.PlayerController
                 var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
                 if (roundManager != null)
                 {
-                    if (roundManager.IsMatchActive)
-                        return isOwner;
-                    else
-                        return false;
+                    return roundManager.IsMatchActive && isOwner;
                 }
+
                 return isOwner;
             }
         }
 
-        public async Task<bool> ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState()
+        private async Task<bool> ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState()
         {
             var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
             if (roundManager != null)
             {
                 var matchState = await roundManager.GetMatchState();
 
-                if ((BaseMatchState)matchState == BaseMatchState.MatchActive)
-                    return isOwner;
-                else
-                    return false;
+                return (BaseMatchState)matchState == BaseMatchState.MatchActive && isOwner;
             }
+
             return isOwner;
         }
 
-        private void Awake()
-        {
-            if (MatchLogicNetworkAdapter.Instance != null)
-            {
-                MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring += HandleFinishedConfiguring;
-
-                if (MatchLogicNetworkAdapter.Instance.HasFinishedConfiguring)
-                    HandleFinishedConfiguring();
-            }
-        }
-
-        protected override void OnDestroy()
-        {
-            if (MatchLogicNetworkAdapter.Instance != null)
-                MatchLogicNetworkAdapter.Instance.OnFinishedConfiguring -= HandleFinishedConfiguring;
-
-            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
-            if (roundManager != null)
-                roundManager.OnMatchStateChange -= HandleOnMatchStateChange;
-        }
-
-        private void HandleFinishedConfiguring()
-        {
-            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
-            if (roundManager != null)
-                roundManager.OnMatchStateChange += HandleOnMatchStateChange;
-        }
-
-        private void HandleOnMatchStateChange(BaseMatchState first, BaseMatchState second)
-        {
-            // Match state changes switch between FP arms / TP model without changing the
-            // skin index, so bypass the dedup guard and reapply directly.
-            ApplySkin(currentState.SkinIndex);
-        }
-
-        #region PredictedIdentity overrides
+        #region Lifecycle
 
         protected override PlayerSkinRendererDataState GetInitialState()
         {
-            return new PlayerSkinRendererDataState { SkinIndex = 0 };
+            return new PlayerSkinRendererDataState { SkinIndex = 0, LastSkinIndex = -1 };
         }
+
+        #endregion
+
+        #region Input
 
         protected override void GetFinalInput(ref PlayerSkinRendererInputData input)
         {
@@ -118,50 +90,45 @@ namespace Resonance.PlayerController
             input.SkinIndex = SkinIndexProvider.Instance.SkinIndex;
         }
 
-        protected override void Simulate(PlayerSkinRendererInputData input, ref PlayerSkinRendererDataState state, float delta)
+        #endregion
+
+        #region Simulation
+
+        protected override void Simulate(PlayerSkinRendererInputData input, ref PlayerSkinRendererDataState state,
+            float delta)
         {
             if (input.HasSkinRequest && skinCatalog != null
-                && input.SkinIndex >= 0 && input.SkinIndex < skinCatalog.Count)
+                                     && input.SkinIndex >= 0 && input.SkinIndex < skinCatalog.Count)
             {
                 state.SkinIndex = input.SkinIndex;
             }
 
             if (predictionManager.isVerified)
             {
-                if (_previousStateFromServer?.SkinIndex != state.SkinIndex)
-                {
-                    _ = ApplySkin(state.SkinIndex);
-                }
-
-                _previousStateFromServer = state;
+                SimulateVerifiedTick(ref state);
             }
         }
 
-        protected override PlayerSkinRendererDataState Interpolate(
-            PlayerSkinRendererDataState from,
-            PlayerSkinRendererDataState to,
-            float t)
+        /// <summary>
+        /// Run client-side and server-side logic, including side effects like
+        /// actually applying a skin, behind a verified tick.
+        /// </summary>
+        /// <param name="state"></param>
+        private void SimulateVerifiedTick(ref PlayerSkinRendererDataState state)
         {
-            return to;
+            if (state.LastSkinIndex != state.SkinIndex)
+            {
+                ApplySkinAsSideEffectOfVerifiedTick(state.SkinIndex);
+            }
+
+            state.LastSkinIndex = state.SkinIndex;
         }
 
-        protected override void UpdateView(PlayerSkinRendererDataState viewState, PlayerSkinRendererDataState? verified)
+        [SimulationOnly]
+        private void ApplySkinAsSideEffectOfVerifiedTick(int index)
         {
-        }
-
-        #endregion
-
-        #region Skin application
-
-        [ContextMenu("Try request skin")]
-        public void TryRequestSkin() => SkinIndexProvider.Instance?.SetSkinIndex(testSkinIndexToRequest);
-
-        private async Task ApplySkin(int index)
-        {
-            var shouldRenderArmsOnly = await ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState();
-
 #if UNITY_EDITOR
-            Debug.Log($"[SkinRenderer] ApplySkin called. _tpHidden: {_tpHidden}, ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState: {shouldRenderArmsOnly}");
+            Debug.Log("[PlayerSkinRenderer] ApplySkinAsSideEffectOfVerifiedTick called");
 #endif
             if (skinCatalog == null || skinCatalog.Count == 0)
                 return;
@@ -180,6 +147,7 @@ namespace Resonance.PlayerController
             {
                 if (kvp.Value != null) Destroy(kvp.Value);
             }
+
             _fpArmsInstances.Clear();
 
             if (_skillArmsInstance != null)
@@ -196,29 +164,60 @@ namespace Resonance.PlayerController
 
             CurrentlyLoadedSkinData = skinData;
 
-            if (shouldRenderArmsOnly)
-            {
-                SpawnFPArmsVariants(skinData);
-                ApplyMeshPrefabAndAvatar(skinData.bodyMeshPrefab, skinData.bodyAvatar);
-            }
-            else
-            {
-                ApplyMeshPrefabAndAvatar(skinData.bodyMeshPrefab, skinData.bodyAvatar);
-            }
+            ApplyMeshPrefabAndAvatar(skinData.bodyMeshPrefab, skinData.bodyAvatar);
 
             animator.Rebind();
             OnNewSkinSpawned.Invoke(CurrentMeshInstance);
+        }
+
+
+        private void ApplyMeshPrefabAndAvatar(GameObject meshPrefab, Avatar avatar)
+        {
+            CurrentMeshInstance = Instantiate(meshPrefab, transform);
+
+            var innerAnimator = CurrentMeshInstance.GetComponent<Animator>();
+            Destroy(innerAnimator);
+
+            if (avatar != null)
+                animator.avatar = avatar;
+        }
+
+        #endregion
+
+        #region Local view updates
+
+        protected override void UpdateView(PlayerSkinRendererDataState viewState, PlayerSkinRendererDataState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            var shouldRenderArmsOnly = ShouldRenderArmsOnlyBasedOnCachedMatchState;
+            var skinData = skinCatalog.Get(v.SkinIndex);
+
+            if (!_fpArmsSpawned && shouldRenderArmsOnly && skinData != null)
+            {
+                SpawnFPArmsVariants(skinData);
+                _fpArmsSpawned = true;
+            }
 
             if (shouldRenderArmsOnly && !_tpHidden)
             {
                 HideTPBody();
+                _tpHidden = true;
             }
 
             if (_tpHidden)
             {
-                HideTPBody();
                 GetComponent<FPArmsManager>()?.RefreshArms();
             }
+        }
+
+        public void HideTPBody()
+        {
+            if (CurrentMeshInstance == null) return;
+
+            foreach (var smr in CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
+                smr.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
         }
 
         private void SpawnFPArmsVariants(SkinData skinData)
@@ -275,25 +274,20 @@ namespace Resonance.PlayerController
             }
         }
 
-        private void ApplyMeshPrefabAndAvatar(GameObject meshPrefab, Avatar avatar)
+        protected override PlayerSkinRendererDataState Interpolate(
+            PlayerSkinRendererDataState from,
+            PlayerSkinRendererDataState to,
+            float t)
         {
-            CurrentMeshInstance = Instantiate(meshPrefab, transform);
-
-            var innerAnimator = CurrentMeshInstance.GetComponent<Animator>();
-            Destroy(innerAnimator);
-
-            if (avatar != null)
-                animator.avatar = avatar;
+            return to;
         }
 
-        public void HideTPBody()
-        {
-            _tpHidden = true;
-            if (CurrentMeshInstance == null) return;
+        #endregion
 
-            foreach (var smr in CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
-                smr.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
-        }
+        #region Debugging
+
+        [ContextMenu("Try request skin")]
+        public void TryRequestSkin() => SkinIndexProvider.Instance?.SetSkinIndex(testSkinIndexToRequest);
 
         #endregion
     }
