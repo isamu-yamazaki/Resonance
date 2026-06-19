@@ -19,13 +19,23 @@ namespace Resonance.PlayerController
             _skinRenderer = GetComponent<PlayerSkinRenderer>();
             _playerState = GetComponent<PlayerState>();
             _playerState.OnWeaponClassChanged += OnWeaponClassChanged;
-            _skinRenderer.OnNewSkinSpawned += _ => RefreshArms();
+        }
+
+        private void Start()
+        {
+            // PredictedEvent exists only after PlayerSkinRenderer's LateAwake, which runs
+            // before Start — so subscribe here, not in Awake.
+            _skinRenderer.OnNewSkinSpawned.AddListener(OnSkinSpawned);
         }
 
         private void OnDestroy()
         {
             _playerState.OnWeaponClassChanged -= OnWeaponClassChanged;
+            if (_skinRenderer != null)
+                _skinRenderer.OnNewSkinSpawned?.RemoveListener(OnSkinSpawned);
         }
+
+        private void OnSkinSpawned(GameObject _) => RefreshArms();
 
         private void OnWeaponClassChanged(WeaponClass weaponClass)
         {

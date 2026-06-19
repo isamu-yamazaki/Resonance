@@ -66,11 +66,17 @@ namespace Resonance.PlayerController
             }
 
             _playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-            _playerSkinRenderer.OnNewSkinSpawned += UpdateMeshesToRender;
         }
 
         private void Start()
         {
+            // Read the current skin's renderers directly (previously delivered via the
+            // OnNewSkinSpawned event). Null-guarded for the case where the skin has not been
+            // applied yet on a verified tick.
+            _meshesToCopy = _playerSkinRenderer.CurrentMeshInstance != null
+                ? _playerSkinRenderer.CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>()
+                : Array.Empty<SkinnedMeshRenderer>();
+
             // Pre-instantiate ghost pool
             for (int i = 0; i < maxGhosts; i++)
             {
@@ -157,14 +163,6 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Ghost Management
-        public void UpdateMeshesToRender(GameObject root)
-        {
-            _meshesToCopy = root.GetComponentsInChildren<SkinnedMeshRenderer>();
-#if UNITY_EDITOR
-            Debug.Log("[OverdriveTrailEffect] Updating trail effect based on new skin");
-#endif
-        }
-
         private void SpawnGhost()
         {
             if (Vector3.Distance(transform.position, _lastGhostPosition) < minGhostSpawnDistance) return;

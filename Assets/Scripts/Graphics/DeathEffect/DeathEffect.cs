@@ -48,7 +48,7 @@ namespace Resonance.VFX
 
             if (_skinRenderer != null)
             {
-                _skinRenderer.OnNewSkinSpawned += OnSkinSpawned;
+                _skinRenderer.OnNewSkinSpawned.AddListener(OnSkinSpawned);
 
                 if (_skinRenderer.CurrentMeshInstance != null)
                     OnSkinSpawned(_skinRenderer.CurrentMeshInstance);
@@ -80,7 +80,7 @@ namespace Resonance.VFX
         private void OnDestroy()
         {
             if (_skinRenderer != null)
-                _skinRenderer.OnNewSkinSpawned -= OnSkinSpawned;
+                _skinRenderer.OnNewSkinSpawned?.RemoveListener(OnSkinSpawned);
         }
 
         private void OnSkinSpawned(GameObject skinRoot)

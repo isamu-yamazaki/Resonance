@@ -66,12 +66,16 @@ namespace Resonance.Combat
         private bool _pendingLowerAugmentRemoval;
         private string _pendingWeaponIdToEquip;
 
+        // Last TP skin mesh instance we refreshed the TP weapon for. A Unity-side artifact
+        // (not deterministic state), only ever reassigned on a verified tick, so comparing it
+        // against the renderer's CurrentMeshInstance reproduces the old OnNewSkinSpawned edge.
+        private GameObject _lastTpRefreshedSkinInstance;
+
         #region Lifecycle
 
         protected override void LateAwake()
         {
             _playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-            _playerSkinRenderer.OnNewSkinSpawned += OnNewSkinSpawned;
             _playerState = GetComponent<PlayerState>();
             _fpArmsAnimator = GetComponent<FPArmsAnimator>();
             _playerStats = GetComponent<PlayerStats>();
@@ -182,6 +186,21 @@ namespace Resonance.Combat
             }
 
             SimulateOrchestrateEquipWeapon(ref state);
+            SimulateOrchestrateEquipAugment(ref state);
+
+            if (predictionManager.isVerified)
+            {
+                // PlayerSkinRenderer (exec order -2) applies the new skin earlier this tick;
+                // detect the fresh mesh instance by reference and refresh the TP weapon view.
+                // Gated on isVerified so this side effect stays off predicted resim ticks.
+                var skinInstance = _playerSkinRenderer.CurrentMeshInstance;
+                if (skinInstance != _lastTpRefreshedSkinInstance)
+                {
+                    _lastTpRefreshedSkinInstance = skinInstance;
+                    if (skinInstance != null && EquippedWeapon != null)
+                        SimulateTpWeaponRefresh(skinInstance);
+                }
+            }
         }
 
 
@@ -223,6 +242,13 @@ namespace Resonance.Combat
 
             state.LastEquippedWeapon = weaponIdentity;
         }
+
+        [SimulationOnly]
+        private void SimulateOrchestrateEquipAugment(ref PlayerEquipDataState state)
+        {
+
+        }
+
 
         [SimulationOnly]
         private void SimulateTpWeaponRefresh(GameObject skinInstance)
@@ -313,13 +339,6 @@ namespace Resonance.Combat
 
             _isInitialEquip = false;
         }
-
-        private void OnNewSkinSpawned(GameObject skinInstance)
-        {
-            if (EquippedWeapon != null)
-                SimulateTpWeaponRefresh(skinInstance);
-        }
-
 
         private void PlayEquipEffects()
         {

@@ -17,9 +17,10 @@ namespace Resonance.PlayerController
         [SerializeField] private SkinCatalog skinCatalog;
         [SerializeField] private Animator animator;
         [SerializeField] private Transform fpArmsRoot;
-        public Action<GameObject> OnNewSkinSpawned;
 
         [SerializeField] private int testSkinIndexToRequest = 0;
+
+        public PredictedEvent<GameObject> OnNewSkinSpawned { get; private set; }
 
         /// <summary>
         /// Current mesh instance based on the simulated verified tick.
@@ -77,6 +78,14 @@ namespace Resonance.PlayerController
         protected override PlayerSkinRendererDataState GetInitialState()
         {
             return new PlayerSkinRendererDataState { SkinIndex = 0, LastSkinIndex = -1 };
+        }
+
+        protected override void LateAwake()
+        {
+            // Build once and reuse across pool reuse so listeners that subscribed in their
+            // own Start() survive. LateAwake runs after predictionManager is assigned and
+            // before any Simulate (and thus before the first Invoke).
+            OnNewSkinSpawned ??= new PredictedEvent<GameObject>(predictionManager, this);
         }
 
         #endregion
@@ -167,7 +176,7 @@ namespace Resonance.PlayerController
             ApplyMeshPrefabAndAvatar(skinData.bodyMeshPrefab, skinData.bodyAvatar);
 
             animator.Rebind();
-            OnNewSkinSpawned.Invoke(CurrentMeshInstance);
+            OnNewSkinSpawned?.Invoke(CurrentMeshInstance);
         }
 
 
@@ -196,7 +205,7 @@ namespace Resonance.PlayerController
 
             if (!_fpArmsSpawned && shouldRenderArmsOnly && skinData != null)
             {
-                SpawnFPArmsVariants(skinData);
+                SpawnFpArmsVariants(skinData);
                 _fpArmsSpawned = true;
             }
 
@@ -220,7 +229,7 @@ namespace Resonance.PlayerController
                 smr.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
         }
 
-        private void SpawnFPArmsVariants(SkinData skinData)
+        private void SpawnFpArmsVariants(SkinData skinData)
         {
             if (fpArmsRoot == null || skinData.fpArmsVariants == null)
                 return;

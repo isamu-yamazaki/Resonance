@@ -34,7 +34,7 @@ namespace Resonance.Abilities.SonarDisc
         {
             if (_skinRenderer != null)
             {
-                _skinRenderer.OnNewSkinSpawned += OnSkinSpawned;
+                _skinRenderer.OnNewSkinSpawned.AddListener(OnSkinSpawned);
 
                 if (_skinRenderer.CurrentMeshInstance != null)
                     OnSkinSpawned(_skinRenderer.CurrentMeshInstance);
@@ -48,7 +48,7 @@ namespace Resonance.Abilities.SonarDisc
         protected override void OnDestroy()
         {
             if (_skinRenderer != null)
-                _skinRenderer.OnNewSkinSpawned -= OnSkinSpawned;
+                _skinRenderer.OnNewSkinSpawned?.RemoveListener(OnSkinSpawned);
         }
 
         private void OnSkinSpawned(GameObject skinRoot)
