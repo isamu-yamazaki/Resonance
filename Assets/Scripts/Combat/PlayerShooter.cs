@@ -121,7 +121,7 @@ namespace Resonance.Combat
 
             // 2. Detect weapon change (slot swap OR a new weapon equipped in the current slot)
             int currentSlot = playerEquip.currentState.CurrentSlot;
-            string currentWeaponId = playerEquip.currentState.EquippedWeaponId;
+            string currentWeaponId = playerEquip.EquippedWeapon.Id;
             ref string trackedWeaponId = ref (currentSlot == 0 ? ref state.WeaponIdSlot0 : ref state.WeaponIdSlot1);
 
             bool slotChanged = state.LastEquippedSlot != currentSlot;

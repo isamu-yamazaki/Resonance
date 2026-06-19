@@ -1,18 +1,15 @@
 using PurrNet.Prediction;
+using Resonance.Combat.Weapons;
 
 namespace Resonance.Combat
 {
     public struct PlayerEquipDataState : IPredictedData<PlayerEquipDataState>
     {
         /// <summary>
-        /// Maps to the type of weapon that is equipped.
+        /// Weapon identity equipped on the last tick.
+        /// Currently equipped weapon info comes from player inventory.
         /// </summary>
-        public string EquippedWeaponKey;
-
-        /// <summary>
-        /// Maps to a unique instance of the equipped weapon.
-        /// </summary>
-        public string EquippedWeaponId;
+        public WeaponIdentity? LastEquippedWeapon;
 
         public int CurrentSlot;
         public int LastSlot;

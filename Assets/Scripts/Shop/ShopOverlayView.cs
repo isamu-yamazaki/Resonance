@@ -605,7 +605,9 @@ namespace Resonance.Shop
 
                 equip.RemoveWeapon(weapon.Slot);
                 inventory.AddWeapon(weapon);
-                equip.EquipWeaponExternal(weapon);
+
+                // equip now reads directly from inventory for auth. weapon state
+                // equip.EquipWeaponExternal(weapon);
             }
             else
             {

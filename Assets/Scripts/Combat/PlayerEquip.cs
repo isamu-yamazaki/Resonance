@@ -13,6 +13,10 @@ using UnityEngine;
 
 namespace Resonance.Combat
 {
+    /// <summary>
+    /// Manage authoritative state about the current weapon slot,
+    /// and orchestrate weapon equips based on dependency data.
+    /// </summary>
     [DefaultExecutionOrder(-1)]
     [RequireComponent(typeof(PlayerSkinRenderer))]
     [RequireComponent(typeof(PlayerState))]
@@ -33,27 +37,28 @@ namespace Resonance.Combat
         private ObservableValue<WeaponProperties> equippedWeaponObservable = new ObservableValue<WeaponProperties>();
         public ObservableValue<WeaponProperties> EquippedWeaponObservable => equippedWeaponObservable;
 
-        [SerializeField] PlayerInventory playerInventory;
-        public PlayerInventory PlayerInventory => playerInventory;
-
+        [SerializeField] private PlayerInventory playerInventory;
         private PlayerActionsInput playerActionsInput;
         private PlayerState playerState;
 
+        // TODO: move to properly simulated state (somewhere, maybe not in this class)
         private WeaponView currentWeaponView;
         public WeaponView CurrentWeaponView => currentWeaponView;
 
         private WeaponProperties[] _weapons;
-        public WeaponProperties EquippedWeapon => Array.Find(_weapons, w => w.Key == currentState.EquippedWeaponKey);
+        public WeaponProperties EquippedWeapon => playerInventory.WeaponInventory[currentState.CurrentSlot];
 
+        private const int StartingSlot = 1;
         private bool _isInitialEquip = true;
         private int _lastViewedSlot = int.MinValue;
-        private const int StartingSlot = 1;
         private string _pendingWeaponKeyToEquip;
         private bool _pendingPrimaryWeaponSlotRemoval;
         private bool _pendingSecondaryWeaponSlotRemoval;
         private bool _pendingUpperAugmentRemoval;
         private bool _pendingLowerAugmentRemoval;
         private string _pendingWeaponIdToEquip;
+
+        #region Lifecycle
 
         protected override void LateAwake()
         {
@@ -74,6 +79,10 @@ namespace Resonance.Combat
             return new PlayerEquipDataState { CurrentSlot = StartingSlot };
         }
 
+        #endregion
+
+        #region Input
+
         protected override void UpdateInput(ref PlayerEquipInputData input)
         {
             if (playerActionsInput == null) return;
@@ -83,11 +92,13 @@ namespace Resonance.Combat
                 input.SwapWeaponPressed = true;
                 playerActionsInput.SetSwapWeaponPressedFalse();
             }
+
             if (playerActionsInput.SwapSlotOnePressed)
             {
                 input.SwapSlotOnePressed = true;
                 playerActionsInput.SetSlotOnePressedFalse();
             }
+
             if (playerActionsInput.SwapSlotTwoPressed)
             {
                 input.SwapSlotTwoPressed = true;
@@ -108,22 +119,29 @@ namespace Resonance.Combat
                 input.PendingPrimaryWeaponSlotRemoval = true;
                 _pendingPrimaryWeaponSlotRemoval = false;
             }
+
             if (_pendingSecondaryWeaponSlotRemoval)
             {
                 input.PendingSecondaryWeaponSlotRemoval = true;
                 _pendingSecondaryWeaponSlotRemoval = false;
             }
+
             if (_pendingUpperAugmentRemoval)
             {
                 input.PendingUpperAugmentRemoval = true;
                 _pendingUpperAugmentRemoval = false;
             }
+
             if (_pendingLowerAugmentRemoval)
             {
                 input.PendingLowerAugmentRemoval = true;
                 _pendingLowerAugmentRemoval = false;
             }
         }
+
+        #endregion
+
+        #region Simulation
 
         protected override void Simulate(PlayerEquipInputData input, ref PlayerEquipDataState state, float delta)
         {
@@ -140,21 +158,24 @@ namespace Resonance.Combat
             {
                 playerInventory.RemoveWeapon(WeaponSlot.Primary);
             }
+
             if (input.PendingSecondaryWeaponSlotRemoval)
             {
                 playerInventory.RemoveWeapon(WeaponSlot.Secondary);
             }
+
             if (input.PendingUpperAugmentRemoval)
             {
                 playerInventory.RemoveAugment(AugmentSlot.Upper);
             }
+
             if (input.PendingLowerAugmentRemoval)
             {
                 playerInventory.RemoveAugment(AugmentSlot.Lower);
             }
 
-            SimulateEquipWeapon(input, ref state);
-            SimulateWeaponViewUpdate();
+            SimulateOrchestrateEquipWeapon(ref state);
+            // SimulateWeaponViewUpdate();
         }
 
         [SimulationOnly]
@@ -170,19 +191,19 @@ namespace Resonance.Combat
         }
 
         [SimulationOnly]
-        private void SimulateEquipWeapon(PlayerEquipInputData input, ref PlayerEquipDataState state)
+        private void SimulateOrchestrateEquipWeapon(ref PlayerEquipDataState state)
         {
-            // Fully in-simulation weapon switching
-            // In the same tick as the slot update, update the
-            // equipped weapon. Required for PlayerShooter to correctly set slot ammo
-            if (state.CurrentSlot != state.LastSlot)
+            var weapon = playerInventory.WeaponInventory[state.CurrentSlot];
+            if (weapon == null) return;
+
+            var weaponIdentity = WeaponIdentity.FromWeaponProperties(weapon);
+            if (!weaponIdentity.HasValue) return;
+
+            // detect any weapon switch, including slot switches
+            if (state.LastEquippedWeapon != weaponIdentity)
             {
-                var weapon = playerInventory.WeaponInventory[state.CurrentSlot];
                 if (weapon != null)
                 {
-                    state.EquippedWeaponKey = weapon.Key;
-                    state.EquippedWeaponId = weapon.Id;
-
                     // TODO: add simulation variant
                     playerState?.SetWeaponClass(weapon.Class);
 
@@ -205,41 +226,13 @@ namespace Resonance.Combat
                 }
             }
 
-            // This path currently runs when the player buys from the shop
-            // TODO: remove the input path entirely
-            if (input.WeaponKeyToEquip != null && input.WeaponIdToEquip != null)
-            {
-                state.EquippedWeaponKey = input.WeaponKeyToEquip;
-                state.EquippedWeaponId = input.WeaponIdToEquip;
-
-                var baseWeapon = Array.Find(_weapons, w => w.Key == input.WeaponKeyToEquip);
-                var weaponWithId = baseWeapon.Clone(state.EquippedWeaponId);
-
-                if (EquippedWeapon != null && playerStats != null)
-                {
-                    playerStats.RemoveSpeedModifierExternal(weaponStatManager.GetStat(WeaponStat.Mobility));
-                }
-
-                playerState?.SetWeaponClass(weaponWithId.Class);
-
-                if (weaponStatManager != null)
-                {
-                    weaponStatManager.SetWeaponPropertiesToManage(weaponWithId);
-                }
-
-                if (equippedWeaponObservable != null)
-                {
-                    equippedWeaponObservable.Value = weaponWithId;
-                }
-
-
-                if (playerStats != null)
-                {
-                    playerStats.AddSpeedModifierExternal(weaponStatManager.Mobility);
-                }
-            }
-
+            state.LastEquippedWeapon = weaponIdentity;
         }
+
+        #endregion
+
+
+        #region Local view update
 
         protected override PlayerEquipDataState Interpolate(
             PlayerEquipDataState from,
@@ -318,6 +311,7 @@ namespace Resonance.Combat
                     {
                         mesh.gameObject.SetActive(true);
                     }
+
                     break;
                 }
             }
@@ -342,25 +336,6 @@ namespace Resonance.Combat
             }
         }
 
-        public void ExecuteWeaponSwap(WeaponProperties weapon)
-        {
-            EquipWeaponExternal(weapon);
-        }
-
-        public void EquipWeaponExternal(WeaponProperties weapon)
-        {
-            if (weapon == null) return;
-            if (string.IsNullOrEmpty(weapon.Id))
-            {
-                Debug.LogError($"[PlayerEquip] Weapon of key {weapon.Key} is missing an ID");
-                return;
-            }
-            if (weapon.Id == EquippedWeapon?.Id) return;
-
-            _pendingWeaponKeyToEquip = weapon.Key;
-            _pendingWeaponIdToEquip = weapon.Id;
-        }
-
         private void PlayEquipEffects()
         {
             currentWeaponView?.PlayEquip();
@@ -375,7 +350,7 @@ namespace Resonance.Combat
 
         public void RemoveWeapon(WeaponSlot slot)
         {
-            // note that this is a non-simulation path currently
+            // note that this is a non-simulation path
 
             WeaponProperties existing = slot == WeaponSlot.Primary
                 ? playerInventory.WeaponInventory[0]
@@ -461,10 +436,6 @@ namespace Resonance.Combat
             }
         }
 
-        [SimulationOnly]
-        public void RemoveAugment(AugmentProperties augment)
-        {
-            playerInventory.RemoveAugment(augment.Slot);
-        }
+        #endregion
     }
 }
