@@ -383,9 +383,9 @@ namespace Resonance.Combat
             switch (augment.Slot)
             {
                 case AugmentSlot.Upper:
-                    if (playerInventory.augmentInventory[0] != null)
+                    if (playerInventory.AugmentInventory[0] != null)
                     {
-                        RemoveAugmentExternal(playerInventory.augmentInventory[0]);
+                        RemoveAugmentExternal(playerInventory.AugmentInventory[0]);
                     }
 
                     playerInventory.AddAugment(augment);
@@ -393,9 +393,9 @@ namespace Resonance.Combat
                     _playerAbilityManager.OnAugmentEquipped(augment);
                     break;
                 case AugmentSlot.Lower:
-                    if (playerInventory.augmentInventory[1] != null)
+                    if (playerInventory.AugmentInventory[1] != null)
                     {
-                        RemoveAugmentExternal(playerInventory.augmentInventory[1]);
+                        RemoveAugmentExternal(playerInventory.AugmentInventory[1]);
                     }
 
                     playerInventory.AddAugment(augment);

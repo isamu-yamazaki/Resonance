@@ -7,8 +7,7 @@ namespace Resonance.Inventory
 {
     public struct PlayerInventoryInputData : IPredictedData
     {
-        public WeaponSlot WeaponToAddSlot;
-        public WeaponIdentity? WeaponIdentityToAdd;
+        public WeaponIdentity? WeaponIdentityToSet;
 
         public string AugmentKeyToAdd;
 

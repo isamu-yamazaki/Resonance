@@ -75,17 +75,17 @@ namespace Resonance.Shop
             RefreshWeapon(playerInventory.WeaponInventory[1], secondaryWeaponName, secondaryModContainer,
                 secondaryModTexts, WeaponSlot.Secondary, secondaryWeaponSellButton);
 
-            upperAugmentName.text = playerInventory.augmentInventory[0] != null
-                ? playerInventory.augmentInventory[0].AugmentName : "Empty";
+            upperAugmentName.text = playerInventory.AugmentInventory[0] != null
+                ? playerInventory.AugmentInventory[0].AugmentName : "Empty";
             upperAugmentSellButton?.gameObject.SetActive(false);
             var upperHover = upperAugmentSellButton?.GetComponentInParent<InventoryItemHover>();
-            if (upperHover != null) upperHover.enabled = playerInventory.augmentInventory[0] != null;
+            if (upperHover != null) upperHover.enabled = playerInventory.AugmentInventory[0] != null;
             
-            lowerAugmentName.text = playerInventory.augmentInventory[1] != null
-                ? playerInventory.augmentInventory[1].AugmentName : "Empty";
+            lowerAugmentName.text = playerInventory.AugmentInventory[1] != null
+                ? playerInventory.AugmentInventory[1].AugmentName : "Empty";
             lowerAugmentSellButton?.gameObject.SetActive(false);
             var lowerHover = lowerAugmentSellButton?.GetComponentInParent<InventoryItemHover>();
-            if (lowerHover != null) lowerHover.enabled = playerInventory.augmentInventory[1] != null;
+            if (lowerHover != null) lowerHover.enabled = playerInventory.AugmentInventory[1] != null;
         }
         
         private void RefreshWeapon(WeaponProperties weapon, TextMeshProUGUI nameText,

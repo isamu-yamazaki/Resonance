@@ -1,3 +1,4 @@
+using System;
 using PurrNet.Prediction;
 using Resonance.Combat.Augments;
 using Resonance.Combat.Weapons;
@@ -40,8 +41,9 @@ namespace Resonance.Inventory
             }
         }
 
-        public AugmentProperties[] augmentInventory => new[]
+        public AugmentProperties[] AugmentInventory => new[]
         {
+            // unlike weapons, augments can be looked up solely by key
             FindAugmentByKey(currentState.AugmentKeyUpper),
             FindAugmentByKey(currentState.AugmentKeyLower),
         };
@@ -50,18 +52,18 @@ namespace Resonance.Inventory
 
         [SerializeField] WeaponProperties startingWeapon;
 
-        private WeaponProperties[] _weaponResources;
-        private AugmentProperties[] _augmentResources;
+        private WeaponProperties[] _weapons;
+        private AugmentProperties[] _augments;
 
         // Pending operations queued by the public mutator API; drained by UpdateInput each frame.
-        private WeaponIdentity? _pendingWeaponIdentityAdd;
+        private WeaponIdentity? _pendingWeaponIdentitySet;
         private WeaponSlot _pendingWeaponAddSlot;
         private string _pendingAugmentKeyAdd;
 
         protected override void LateAwake()
         {
-            _weaponResources = Resources.LoadAll<WeaponProperties>("Content/Weapons");
-            _augmentResources = Resources.LoadAll<AugmentProperties>("Content/Augments");
+            _weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
+            _augments = Resources.LoadAll<AugmentProperties>("Content/Augments");
         }
 
         protected override PlayerInventoryDataState GetInitialState()
@@ -85,11 +87,10 @@ namespace Resonance.Inventory
             return state;
         }
 
-        public void AddWeapon(WeaponProperties weaponToAdd)
+        public void SetWeaponExternal(WeaponProperties weaponToSet)
         {
-            if (weaponToAdd == null) return;
-            _pendingWeaponIdentityAdd = WeaponIdentity.FromWeaponProperties(weaponToAdd);
-            _pendingWeaponAddSlot = weaponToAdd.Slot;
+            if (weaponToSet == null) return;
+            _pendingWeaponIdentitySet = WeaponIdentity.FromWeaponProperties(weaponToSet);
         }
 
         [SimulationOnly]
@@ -128,11 +129,10 @@ namespace Resonance.Inventory
 
         protected override void GetFinalInput(ref PlayerInventoryInputData input)
         {
-            if (_pendingWeaponIdentityAdd != null)
+            if (_pendingWeaponIdentitySet != null)
             {
-                input.WeaponIdentityToAdd = _pendingWeaponIdentityAdd;
-                input.WeaponToAddSlot = _pendingWeaponAddSlot;
-                _pendingWeaponIdentityAdd = null;
+                input.WeaponIdentityToSet = _pendingWeaponIdentitySet;
+                _pendingWeaponIdentitySet = null;
             }
             if (_pendingAugmentKeyAdd != null)
             {
@@ -143,10 +143,11 @@ namespace Resonance.Inventory
 
         protected override void Simulate(PlayerInventoryInputData input, ref PlayerInventoryDataState state, float delta)
         {
-            if (input.WeaponIdentityToAdd.HasValue)
+            if (input.WeaponIdentityToSet.HasValue)
             {
-                var weaponIdentity = input.WeaponIdentityToAdd.Value;
-                switch (input.WeaponToAddSlot)
+                var weaponIdentity = input.WeaponIdentityToSet.Value;
+                var baseWeapon = FindWeaponByKey(weaponIdentity.Key);
+                switch (baseWeapon.Slot)
                 {
                     case WeaponSlot.Primary:
                         state.WeaponPrimaryIdentity = weaponIdentity;
@@ -154,6 +155,8 @@ namespace Resonance.Inventory
                     case WeaponSlot.Secondary:
                         state.WeaponSecondaryIdentity = weaponIdentity;
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 
@@ -168,6 +171,8 @@ namespace Resonance.Inventory
                     case AugmentSlot.Lower:
                         state.AugmentKeyLower = input.AugmentKeyToAdd;
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             else if (input.AugmentKeyToAdd != null)
@@ -203,14 +208,14 @@ namespace Resonance.Inventory
 
         private WeaponProperties FindWeaponByKey(string key)
         {
-            if (string.IsNullOrEmpty(key) || _weaponResources == null) return null;
-            return System.Array.Find(_weaponResources, w => w.Key == key);
+            if (string.IsNullOrEmpty(key) || _weapons == null) return null;
+            return System.Array.Find(_weapons, w => w.Key == key);
         }
 
         private AugmentProperties FindAugmentByKey(string key)
         {
-            if (string.IsNullOrEmpty(key) || _augmentResources == null) return null;
-            return System.Array.Find(_augmentResources, a => a.Key == key);
+            if (string.IsNullOrEmpty(key) || _augments == null) return null;
+            return System.Array.Find(_augments, a => a.Key == key);
         }
     }
 }

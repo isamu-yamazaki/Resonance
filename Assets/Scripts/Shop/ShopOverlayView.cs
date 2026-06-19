@@ -602,17 +602,10 @@ namespace Resonance.Shop
                         PlayerMoney.LocalInstance?.AddFunds(mod.ModCost * SellRefundRate);
                 }
                 PlayerMoney.LocalInstance?.AddFunds(oldWeapon.WeaponCost * SellRefundRate);
-
-                equip.RemoveWeapon(weapon.Slot);
-                inventory.AddWeapon(weapon);
-
-                // equip now reads directly from inventory for auth. weapon state
-                // equip.EquipWeaponExternal(weapon);
             }
-            else
-            {
-                inventory.AddWeapon(weapon);
-            }
+
+            // equip now reads directly from inventory for auth weapon state
+            inventory.SetWeaponExternal(weapon);
 
 #if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
@@ -642,8 +635,8 @@ namespace Resonance.Shop
             }
 
             AugmentProperties existing = augment.Slot == AugmentSlot.Upper
-                ? inventory.augmentInventory[0]
-                : inventory.augmentInventory[1];
+                ? inventory.AugmentInventory[0]
+                : inventory.AugmentInventory[1];
 
             if (existing != null)
                 PlayerMoney.LocalInstance?.AddFunds(existing.AugmentCost * SellRefundRate);
@@ -764,8 +757,8 @@ namespace Resonance.Shop
             if (equip == null || inventory == null) return;
 
             AugmentProperties augment = slot == AugmentSlot.Upper
-                ? inventory.augmentInventory[0]
-                : inventory.augmentInventory[1];
+                ? inventory.AugmentInventory[0]
+                : inventory.AugmentInventory[1];
 
             if (augment == null) return;
 

@@ -144,7 +144,7 @@ namespace Resonance.Combat
         [SimulationOnly]
         private void TryUseUpperActiveAbility()
         {
-            IAugmentAbility ability = GetAbility(inventory.augmentInventory[0]?.AbilityKey);
+            IAugmentAbility ability = GetAbility(inventory.AugmentInventory[0]?.AbilityKey);
             if (ability == null) return;
             if (!ability.AbilityReady) return;
 
@@ -160,7 +160,7 @@ namespace Resonance.Combat
         [SimulationOnly]
         private void TryUseLowerActiveAbility()
         {
-            IAugmentAbility ability = GetAbility(inventory.augmentInventory[1]?.AbilityKey);
+            IAugmentAbility ability = GetAbility(inventory.AugmentInventory[1]?.AbilityKey);
             if (ability == null || !ability.AbilityReady) return;
 
             // if (ability is AbilityGrappleHook)
