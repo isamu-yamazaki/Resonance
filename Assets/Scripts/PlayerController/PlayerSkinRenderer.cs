@@ -36,7 +36,6 @@ namespace Resonance.PlayerController
         private bool _tpHidden;
         public bool IsTPHidden => _tpHidden;
 
-        private int _lastAppliedSkinIndex = -1;
         private PlayerSkinRendererDataState? _previousStateFromServer;
 
         public bool ShouldRenderArmsOnlyBasedOnCachedMatchState
@@ -131,7 +130,7 @@ namespace Resonance.PlayerController
             {
                 if (_previousStateFromServer?.SkinIndex != state.SkinIndex)
                 {
-                    ApplySkin(state.SkinIndex);
+                    _ = ApplySkin(state.SkinIndex);
                 }
 
                 _previousStateFromServer = state;
@@ -148,11 +147,6 @@ namespace Resonance.PlayerController
 
         protected override void UpdateView(PlayerSkinRendererDataState viewState, PlayerSkinRendererDataState? verified)
         {
-            if (!verified.HasValue) return;
-            var v = verified.Value;
-            if (v.SkinIndex == _lastAppliedSkinIndex) return;
-            _lastAppliedSkinIndex = v.SkinIndex;
-            ApplySkin(v.SkinIndex);
         }
 
         #endregion
@@ -162,7 +156,7 @@ namespace Resonance.PlayerController
         [ContextMenu("Try request skin")]
         public void TryRequestSkin() => SkinIndexProvider.Instance?.SetSkinIndex(testSkinIndexToRequest);
 
-        private async void ApplySkin(int index)
+        private async Task ApplySkin(int index)
         {
             var shouldRenderArmsOnly = await ShouldRenderArmsOnlyBasedOnAuthoritativeMatchState();
 
