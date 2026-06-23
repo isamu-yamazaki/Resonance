@@ -256,6 +256,7 @@ namespace Resonance.Combat
         {
             if (skinInstance == null) return;
 
+
             var allMeshes = skinInstance.GetComponentsInChildren<TPWeaponMesh>(true);
 
             foreach (var mesh in allMeshes)
@@ -271,15 +272,9 @@ namespace Resonance.Combat
 
             foreach (var mesh in allMeshes)
             {
-                if (mesh.weaponClass == classToShow)
-                {
-                    if (!_playerSkinRenderer.IsTPHidden)
-                    {
-                        mesh.gameObject.SetActive(true);
-                    }
-
-                    break;
-                }
+                if (mesh.weaponClass != classToShow) continue;
+                mesh.gameObject.SetActive(true);
+                break;
             }
 
 
@@ -326,13 +321,8 @@ namespace Resonance.Combat
 
             _lastViewedSlot = viewState.CurrentSlot;
 
-            if (isOwner)
-            {
-                if (_fpArmsAnimator != null)
-                {
-                    _fpArmsAnimator.RequestWeaponSwap(weapon);
-                }
-            }
+            HideTpMeshIfOwner();
+            RequestFpWeaponSwapIfOwner(weapon);
 
             if (!_isInitialEquip)
             {
@@ -340,6 +330,33 @@ namespace Resonance.Combat
             }
 
             _isInitialEquip = false;
+        }
+
+        private void HideTpMeshIfOwner()
+        {
+            var skinInstance = _playerSkinRenderer.CurrentMeshInstance;
+            var allMeshes = skinInstance.GetComponentsInChildren<TPWeaponMesh>(true);
+            WeaponClass? classToShow = EquippedWeapon?.Class;
+
+            if (!classToShow.HasValue) return;
+
+            foreach (var mesh in allMeshes)
+            {
+                if (mesh.weaponClass != classToShow) continue;
+                mesh.gameObject.SetActive(false);
+                break;
+            }
+        }
+
+        private void RequestFpWeaponSwapIfOwner(WeaponProperties weapon)
+        {
+            if (isOwner)
+            {
+                if (_fpArmsAnimator != null)
+                {
+                    _fpArmsAnimator.RequestWeaponSwap(weapon);
+                }
+            }
         }
 
         private void PlayEquipEffects()

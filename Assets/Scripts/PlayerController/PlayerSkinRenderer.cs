@@ -42,9 +42,9 @@ namespace Resonance.PlayerController
         public IReadOnlyDictionary<WeaponClass, GameObject> FPArmsInstances => _fpArmsInstances;
 
         private bool _fpArmsSpawned;
-        private bool _tpHidden;
         private bool _pendingSkinRequest;
-        public bool IsTPHidden => _tpHidden;
+
+        private bool _tpHiddenLocally;
 
         public bool ShouldRenderArmsOnlyBasedOnCachedMatchState
         {
@@ -209,13 +209,13 @@ namespace Resonance.PlayerController
                 _fpArmsSpawned = true;
             }
 
-            if (shouldRenderArmsOnly && !_tpHidden)
+            if (shouldRenderArmsOnly && !_tpHiddenLocally)
             {
                 HideTPBody();
-                _tpHidden = true;
+                _tpHiddenLocally = true;
             }
 
-            if (_tpHidden)
+            if (_tpHiddenLocally)
             {
                 GetComponent<FPArmsManager>()?.RefreshArms();
             }
