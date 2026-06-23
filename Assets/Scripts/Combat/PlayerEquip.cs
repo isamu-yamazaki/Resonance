@@ -61,8 +61,6 @@ namespace Resonance.Combat
         private bool _isInitialEquip = true;
         private int _lastViewedSlot = int.MinValue;
         private string _pendingWeaponKeyToEquip;
-        private bool _pendingUpperAugmentRemoval;
-        private bool _pendingLowerAugmentRemoval;
         private string _pendingWeaponIdToEquip;
 
         // Last TP skin mesh instance we refreshed the TP weapon for. A Unity-side artifact
@@ -114,18 +112,6 @@ namespace Resonance.Combat
                 input.SwapSlotTwoPressed = true;
                 _playerActionsInput.SetSlotTwoPressedFalse();
             }
-
-            if (_pendingUpperAugmentRemoval)
-            {
-                input.PendingUpperAugmentRemoval = true;
-                _pendingUpperAugmentRemoval = false;
-            }
-
-            if (_pendingLowerAugmentRemoval)
-            {
-                input.PendingLowerAugmentRemoval = true;
-                _pendingLowerAugmentRemoval = false;
-            }
         }
 
         #endregion
@@ -142,16 +128,6 @@ namespace Resonance.Combat
                 state.CurrentSlot = 0;
             else if (input.SwapSlotTwoPressed)
                 state.CurrentSlot = 1;
-
-            if (input.PendingUpperAugmentRemoval)
-            {
-                playerInventory.RemoveAugment(AugmentSlot.Upper);
-            }
-
-            if (input.PendingLowerAugmentRemoval)
-            {
-                playerInventory.RemoveAugment(AugmentSlot.Lower);
-            }
 
             var weapon = playerInventory.WeaponInventory[state.CurrentSlot];
             if (weapon == null && state.LastEquippedWeapon != null && state.LastSlot == state.CurrentSlot)
@@ -248,6 +224,40 @@ namespace Resonance.Combat
         [SimulationOnly]
         private void SimulateOrchestrateEquipAugment(ref PlayerEquipDataState state)
         {
+            // Augment auth state lives in PlayerInventory; diff each slot against the last-equipped
+            // key (carried in predicted state, so this is resim-safe) and emit side effects on edges.
+            var augments = playerInventory.AugmentInventory;
+
+            state.LastEquippedUpperAugmentKey =
+                SimulateOrchestrateAugmentSlot(augments[0], state.LastEquippedUpperAugmentKey);
+            state.LastEquippedLowerAugmentKey =
+                SimulateOrchestrateAugmentSlot(augments[1], state.LastEquippedLowerAugmentKey);
+        }
+
+        // Diffs one augment slot against its last-equipped key, applying remove/apply stat and
+        // ability side effects on equip/swap/remove edges. Returns the new last-equipped key.
+        private string SimulateOrchestrateAugmentSlot(AugmentProperties current, string lastKey)
+        {
+            string currentKey = current?.Key;
+            if (currentKey == lastKey) return lastKey;
+
+            if (!string.IsNullOrEmpty(lastKey))
+            {
+                var previous = playerInventory.FindAugmentByKey(lastKey);
+                if (previous != null)
+                {
+                    _playerAugmentEquipper?.RemoveAugmentStats(previous);
+                    _playerAbilityManager?.OnAugmentRemoved(previous);
+                }
+            }
+
+            if (current != null)
+            {
+                _playerAugmentEquipper?.ApplyAugmentStats(current);
+                _playerAbilityManager?.OnAugmentEquipped(current);
+            }
+
+            return currentKey;
         }
 
 
@@ -369,49 +379,6 @@ namespace Resonance.Combat
                 AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
             }
 #endif
-        }
-
-        public void EquipAugmentExternal(AugmentProperties augment)
-        {
-            if (augment == null || _playerAugmentEquipper == null) return;
-
-            switch (augment.Slot)
-            {
-                case AugmentSlot.Upper:
-                    if (playerInventory.AugmentInventory[0] != null)
-                    {
-                        RemoveAugmentExternal(playerInventory.AugmentInventory[0]);
-                    }
-
-                    playerInventory.AddAugment(augment);
-                    _playerAugmentEquipper.ApplyAugmentStats(augment);
-                    _playerAbilityManager.OnAugmentEquipped(augment);
-                    break;
-                case AugmentSlot.Lower:
-                    if (playerInventory.AugmentInventory[1] != null)
-                    {
-                        RemoveAugmentExternal(playerInventory.AugmentInventory[1]);
-                    }
-
-                    playerInventory.AddAugment(augment);
-                    _playerAugmentEquipper.ApplyAugmentStats(augment);
-                    _playerAbilityManager.OnAugmentEquipped(augment);
-                    break;
-            }
-        }
-
-        public void RemoveAugmentExternal(AugmentProperties augment)
-        {
-            _playerAbilityManager.OnAugmentRemoved(augment);
-            _playerAugmentEquipper.RemoveAugmentStats(augment);
-            if (augment.Slot == AugmentSlot.Upper)
-            {
-                _pendingUpperAugmentRemoval = true;
-            }
-            else
-            {
-                _pendingLowerAugmentRemoval = true;
-            }
         }
 
         #endregion

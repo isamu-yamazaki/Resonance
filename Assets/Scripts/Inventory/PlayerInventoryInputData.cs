@@ -11,6 +11,7 @@ namespace Resonance.Inventory
         public WeaponIdentity? WeaponIdentityToRemove;
 
         public string AugmentKeyToAdd;
+        public string AugmentKeyToRemove;
 
         public void Dispose() { }
     }

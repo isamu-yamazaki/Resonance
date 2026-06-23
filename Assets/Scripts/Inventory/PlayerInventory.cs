@@ -59,6 +59,7 @@ namespace Resonance.Inventory
         private WeaponIdentity? _pendingWeaponIdentitySet;
         private WeaponIdentity? _pendingWeaponIdentityRemove;
         private string _pendingAugmentKeyAdd;
+        private string _pendingAugmentKeyRemove;
 
         protected override void LateAwake()
         {
@@ -120,18 +121,10 @@ namespace Resonance.Inventory
             _pendingAugmentKeyAdd = augmentToAdd.Key;
         }
 
-        [SimulationOnly]
-        public void RemoveAugment(AugmentSlot slot)
+        public void RemoveAugmentExternal(AugmentProperties augmentToRemove)
         {
-            switch (slot)
-            {
-                case AugmentSlot.Upper:
-                    currentState.AugmentKeyUpper = null;
-                    break;
-                case AugmentSlot.Lower:
-                    currentState.AugmentKeyLower = null;
-                    break;
-            }
+            if (augmentToRemove == null) return;
+            _pendingAugmentKeyRemove = augmentToRemove.Key;
         }
 
         protected override void GetFinalInput(ref PlayerInventoryInputData input)
@@ -146,6 +139,12 @@ namespace Resonance.Inventory
             {
                 input.AugmentKeyToAdd = _pendingAugmentKeyAdd;
                 _pendingAugmentKeyAdd = null;
+            }
+
+            if (_pendingAugmentKeyRemove != null)
+            {
+                input.AugmentKeyToRemove = _pendingAugmentKeyRemove;
+                _pendingAugmentKeyRemove = null;
             }
 
             if (_pendingWeaponIdentityRemove != null)
@@ -193,7 +192,10 @@ namespace Resonance.Inventory
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+            }
 
+            if (input.AugmentKeyToAdd != null)
+            {
                 var augment = FindAugmentByKey(input.AugmentKeyToAdd);
                 if (augment != null)
                 {
@@ -209,10 +211,33 @@ namespace Resonance.Inventory
                             throw new ArgumentOutOfRangeException();
                     }
                 }
-                else if (input.AugmentKeyToAdd != null)
+                else
                 {
                     Debug.Log(
                         $"[PlayerInventory] Attempted to assign augment key {input.AugmentKeyToAdd}, but unable to find corresponding augment");
+                }
+            }
+
+            if (input.AugmentKeyToRemove != null)
+            {
+                var augment = FindAugmentByKey(input.AugmentKeyToRemove);
+                if (augment != null)
+                {
+                    // Clear only if the slot still holds this exact augment, so a stale removal
+                    // can't clobber an augment equipped after the sell was queued.
+                    switch (augment.Slot)
+                    {
+                        case AugmentSlot.Upper:
+                            if (state.AugmentKeyUpper == input.AugmentKeyToRemove)
+                                state.AugmentKeyUpper = null;
+                            break;
+                        case AugmentSlot.Lower:
+                            if (state.AugmentKeyLower == input.AugmentKeyToRemove)
+                                state.AugmentKeyLower = null;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
         }

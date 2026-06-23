@@ -641,7 +641,7 @@ namespace Resonance.Shop
             if (existing != null)
                 PlayerMoney.LocalInstance?.AddFunds(existing.AugmentCost * SellRefundRate);
 
-            equip.EquipAugmentExternal(augment);
+            inventory.AddAugment(augment);
 
 #if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
@@ -762,7 +762,7 @@ namespace Resonance.Shop
 
             if (augment == null) return;
 
-            equip.RemoveAugmentExternal(augment);
+            inventory.RemoveAugmentExternal(augment);
             PlayerMoney.LocalInstance?.AddFunds(augment.AugmentCost * SellRefundRate);
 
 #if !UNITY_SERVER

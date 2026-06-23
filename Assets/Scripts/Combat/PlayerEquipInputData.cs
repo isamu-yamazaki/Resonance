@@ -8,9 +8,6 @@ namespace Resonance.Combat
         public bool SwapSlotOnePressed;
         public bool SwapSlotTwoPressed;
 
-        public bool PendingUpperAugmentRemoval;
-        public bool PendingLowerAugmentRemoval;
-
         public readonly void Dispose() { }
     }
 }
