@@ -22,7 +22,7 @@ namespace Resonance.Inventory
                 {
                     var primaryIdentity = currentState.WeaponPrimaryIdentity.Value;
                     var primaryBaseWeapon = FindWeaponByKey(primaryIdentity.Key);
-                    primaryWeapon = primaryBaseWeapon.Clone(primaryIdentity.Id);
+                    if (primaryBaseWeapon != null) primaryWeapon = primaryBaseWeapon.Clone(primaryIdentity.Id);
                 }
 
                 WeaponProperties secondaryWeapon = null;
@@ -30,7 +30,7 @@ namespace Resonance.Inventory
                 {
                     var secondaryIdentity = currentState.WeaponSecondaryIdentity.Value;
                     var secondaryBaseWeapon = FindWeaponByKey(secondaryIdentity.Key);
-                    secondaryWeapon = secondaryBaseWeapon.Clone(secondaryIdentity.Id);
+                    if (secondaryBaseWeapon != null) secondaryWeapon = secondaryBaseWeapon.Clone(secondaryIdentity.Id);
                 }
 
                 return new[]

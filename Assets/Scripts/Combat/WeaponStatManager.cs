@@ -36,7 +36,8 @@ namespace Resonance.Combat
                 if (!currentState.WeaponIdentity.HasValue) return null;
                 var weaponIdentity = currentState.WeaponIdentity.Value;
                 var weapon = Array.Find(_weapons, w => w.Key == weaponIdentity.Key);
-                return weapon.Clone(weaponIdentity.Id);
+
+                return weapon != null ? weapon.Clone(weaponIdentity.Id) : null;
             }
         }
 
