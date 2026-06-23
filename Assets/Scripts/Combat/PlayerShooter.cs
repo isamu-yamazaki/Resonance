@@ -107,7 +107,7 @@ namespace Resonance.Combat
 
         protected override void Simulate(PlayerShooterInputData input, ref PlayerShooterDataState state, float delta)
         {
-            if (playerEquip == null || weaponStatManager == null) return;
+            if (playerEquip == null || weaponStatManager == null || playerEquip.EquippedWeapon == null) return;
 
             // 1. Decrement timers
             state.FireCooldown = Mathf.Max(0f, state.FireCooldown - delta);

@@ -41,7 +41,8 @@ namespace Resonance.Combat
         private PlayerActionsInput _playerActionsInput;
         private PlayerState _playerState;
 
-        public WeaponView CurrentWeaponView {
+        public WeaponView CurrentWeaponView
+        {
             get
             {
                 if (EquippedWeapon == null) return null;
@@ -60,8 +61,6 @@ namespace Resonance.Combat
         private bool _isInitialEquip = true;
         private int _lastViewedSlot = int.MinValue;
         private string _pendingWeaponKeyToEquip;
-        private bool _pendingPrimaryWeaponSlotRemoval;
-        private bool _pendingSecondaryWeaponSlotRemoval;
         private bool _pendingUpperAugmentRemoval;
         private bool _pendingLowerAugmentRemoval;
         private string _pendingWeaponIdToEquip;
@@ -116,27 +115,6 @@ namespace Resonance.Combat
                 _playerActionsInput.SetSlotTwoPressedFalse();
             }
 
-            if (_pendingWeaponKeyToEquip != null
-                && !string.IsNullOrEmpty(_pendingWeaponIdToEquip))
-            {
-                input.WeaponKeyToEquip = _pendingWeaponKeyToEquip;
-                input.WeaponIdToEquip = _pendingWeaponIdToEquip;
-                _pendingWeaponKeyToEquip = null;
-                _pendingWeaponIdToEquip = null;
-            }
-
-            if (_pendingPrimaryWeaponSlotRemoval)
-            {
-                input.PendingPrimaryWeaponSlotRemoval = true;
-                _pendingPrimaryWeaponSlotRemoval = false;
-            }
-
-            if (_pendingSecondaryWeaponSlotRemoval)
-            {
-                input.PendingSecondaryWeaponSlotRemoval = true;
-                _pendingSecondaryWeaponSlotRemoval = false;
-            }
-
             if (_pendingUpperAugmentRemoval)
             {
                 input.PendingUpperAugmentRemoval = true;
@@ -165,16 +143,6 @@ namespace Resonance.Combat
             else if (input.SwapSlotTwoPressed)
                 state.CurrentSlot = 1;
 
-            if (input.PendingPrimaryWeaponSlotRemoval)
-            {
-                playerInventory.RemoveWeapon(WeaponSlot.Primary);
-            }
-
-            if (input.PendingSecondaryWeaponSlotRemoval)
-            {
-                playerInventory.RemoveWeapon(WeaponSlot.Secondary);
-            }
-
             if (input.PendingUpperAugmentRemoval)
             {
                 playerInventory.RemoveAugment(AugmentSlot.Upper);
@@ -185,22 +153,29 @@ namespace Resonance.Combat
                 playerInventory.RemoveAugment(AugmentSlot.Lower);
             }
 
-            SimulateOrchestrateEquipWeapon(ref state);
+            var weapon = playerInventory.WeaponInventory[state.CurrentSlot];
+            if (weapon == null && state.LastEquippedWeapon != null && state.LastSlot == state.CurrentSlot)
+            {
+                SimulateOrchestrateRemoveWeapon(ref state);
+            }
+            else
+            {
+                SimulateOrchestrateEquipWeapon(ref state);
+            }
+
             SimulateOrchestrateEquipAugment(ref state);
 
-            if (predictionManager.isVerified)
-            {
-                // PlayerSkinRenderer (exec order -2) applies the new skin earlier this tick;
-                // detect the fresh mesh instance by reference and refresh the TP weapon view.
-                // Gated on isVerified so this side effect stays off predicted resim ticks.
-                var skinInstance = _playerSkinRenderer.CurrentMeshInstance;
-                if (skinInstance != _lastTpRefreshedSkinInstance)
-                {
-                    _lastTpRefreshedSkinInstance = skinInstance;
-                    if (skinInstance != null && EquippedWeapon != null)
-                        SimulateTpWeaponRefresh(skinInstance);
-                }
-            }
+            if (!predictionManager.isVerified) return;
+
+            // PlayerSkinRenderer (exec order -2) applies the new skin earlier this tick;
+            // detect the fresh mesh instance by reference and refresh the TP weapon view.
+            // Gated on isVerified so this side effect stays off predicted resim ticks.
+            var skinInstance = _playerSkinRenderer.CurrentMeshInstance;
+            if (skinInstance == _lastTpRefreshedSkinInstance) return;
+
+            _lastTpRefreshedSkinInstance = skinInstance;
+            if (skinInstance != null && EquippedWeapon != null)
+                SimulateTpWeaponRefresh(skinInstance);
         }
 
 
@@ -208,35 +183,34 @@ namespace Resonance.Combat
         private void SimulateOrchestrateEquipWeapon(ref PlayerEquipDataState state)
         {
             var weapon = playerInventory.WeaponInventory[state.CurrentSlot];
-            if (weapon == null) return;
+            if (weapon == null)
+            {
+                return;
+            }
 
             var weaponIdentity = WeaponIdentity.FromWeaponProperties(weapon);
-            if (!weaponIdentity.HasValue) return;
 
             // detect any weapon switch, including slot switches
             if (state.LastEquippedWeapon != weaponIdentity)
             {
-                if (weapon != null)
+                // TODO: add simulation variant
+                _playerState?.SetWeaponClass(weapon.Class);
+
+                // refresh magazine size reported in PlayerShooter
+                if (_weaponStatManager != null)
                 {
-                    // TODO: add simulation variant
-                    _playerState?.SetWeaponClass(weapon.Class);
+                    _weaponStatManager.SetWeaponPropertiesToManage(weapon);
+                }
 
-                    // refresh magazine size reported in PlayerShooter
-                    if (_weaponStatManager != null)
-                    {
-                        _weaponStatManager.SetWeaponPropertiesToManage(weapon);
-                    }
+                if (_equippedWeaponObservable != null)
+                {
+                    _equippedWeaponObservable.Value = weapon;
+                }
 
-                    if (_equippedWeaponObservable != null)
-                    {
-                        _equippedWeaponObservable.Value = weapon;
-                    }
-
-                    // TODO: add simulation variant
-                    if (_playerStats != null)
-                    {
-                        _playerStats.AddSpeedModifierExternal(_weaponStatManager.Mobility);
-                    }
+                // TODO: add simulation variant
+                if (_playerStats != null)
+                {
+                    _playerStats.AddSpeedModifierExternal(_weaponStatManager.Mobility);
                 }
             }
 
@@ -244,9 +218,36 @@ namespace Resonance.Combat
         }
 
         [SimulationOnly]
+        private void SimulateOrchestrateRemoveWeapon(ref PlayerEquipDataState state)
+        {
+            // we're just accounting for the case where the weapon in the current slot disappears
+            var currentWeapon = playerInventory.WeaponInventory[state.CurrentSlot];
+            if (currentWeapon != null || state.LastEquippedWeapon == null ||
+                state.LastSlot != state.CurrentSlot) return;
+
+            var baseLastWeapon = playerInventory.FindWeaponByKey(state.LastEquippedWeapon.Value.Key);
+            if (_playerStats != null)
+            {
+                // TODO: use simulation variant
+                _playerStats.RemoveSpeedModifierExternal(baseLastWeapon.Mobility);
+            }
+
+            if (_weaponStatManager != null)
+            {
+                _weaponStatManager.SetWeaponPropertiesToManage(null);
+            }
+
+            if (_equippedWeaponObservable != null)
+            {
+                _equippedWeaponObservable.Value = null;
+            }
+
+            state.LastEquippedWeapon = null;
+        }
+
+        [SimulationOnly]
         private void SimulateOrchestrateEquipAugment(ref PlayerEquipDataState state)
         {
-
         }
 
 
@@ -300,6 +301,7 @@ namespace Resonance.Combat
                 CurrentWeaponView.ApplyAudioProperties(audioProperties);
             }
         }
+
         #endregion
 
 
@@ -350,49 +352,6 @@ namespace Resonance.Combat
                 AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
             }
 #endif
-        }
-
-        public void RemoveWeapon(WeaponSlot slot)
-        {
-            // note that this is a non-simulation path
-
-            WeaponProperties existing = slot == WeaponSlot.Primary
-                ? playerInventory.WeaponInventory[0]
-                : playerInventory.WeaponInventory[1];
-
-            if (existing == null) return;
-
-            if (EquippedWeapon == existing)
-            {
-                if (_playerStats != null)
-                {
-                    _playerStats.RemoveSpeedModifierExternal(existing.Mobility);
-                }
-
-                if (_weaponStatManager != null)
-                {
-                    _weaponStatManager.SetWeaponToManageExternal(null);
-                }
-
-                if (_equippedWeaponObservable != null)
-                {
-                    _equippedWeaponObservable.Value = null;
-                }
-
-                if (_playerSkinRenderer.CurrentMeshInstance != null)
-                {
-                    // RefreshTpWeaponView(_playerSkinRenderer.CurrentMeshInstance);
-                }
-            }
-
-            if (slot == WeaponSlot.Primary)
-            {
-                _pendingPrimaryWeaponSlotRemoval = true;
-            }
-            else
-            {
-                _pendingSecondaryWeaponSlotRemoval = true;
-            }
         }
 
         public void EquipAugmentExternal(AugmentProperties augment)

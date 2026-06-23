@@ -698,7 +698,6 @@ namespace Resonance.Shop
         public void SellWeapon(WeaponSlot slot)
         {
             PlayerInventory inventory = GetPlayerInventory();
-            PlayerEquip equip = GetPlayerEquip();
 
             if (inventory == null) return;
 
@@ -715,7 +714,8 @@ namespace Resonance.Shop
             }
 
             PlayerMoney.LocalInstance?.AddFunds(weapon.WeaponCost * SellRefundRate);
-            equip?.RemoveWeapon(slot);
+            inventory.RemoveWeaponExternal(weapon);
+            // equip?.RemoveWeapon(slot);
 
 #if !UNITY_SERVER
             if (shopItemSellEvent != null && shopItemSellEvent.IsValid())

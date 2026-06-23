@@ -15,6 +15,8 @@ namespace Resonance.Combat.Weapons
 
         public static WeaponIdentity? FromWeaponProperties(WeaponProperties weapon)
         {
+            if (weapon == null) return null;
+
             if (string.IsNullOrEmpty(weapon.Id) || string.IsNullOrEmpty(weapon.Key))
             {
                 return null;
