@@ -535,6 +535,7 @@ MonoBehaviour:
   _extrapolateInput: 1
   _characterController: {fileID: 3494420511587806199}
   _virtualCamera: {fileID: 3024070534968682805}
+  _firstPersonViewRoot: {fileID: 6485822093017100666}
   _config:
     baseCrouchAcceleration: 25
     baseCrouchSpeed: 2

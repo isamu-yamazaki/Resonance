@@ -23,6 +23,11 @@ namespace Resonance.PlayerController
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private CinemachineCamera _virtualCamera;
 
+        [Tooltip("Shared parent of the first-person camera and FP arms. Driven from the " +
+                 "interpolated PredictedTransform.graphics so the local view feels as smooth " +
+                 "as the third-person skin, instead of stepping with the raw simulated root.")]
+        [SerializeField] private Transform _firstPersonViewRoot;
+
         [Header("Config")]
         [SerializeField] private PlayerConfig _config;
 
@@ -41,6 +46,14 @@ namespace Resonance.PlayerController
         private AbilityGrappleHook _grapple;
         private float _stepOffset;
         private float _cameraPitch;
+
+        /// <summary>
+        /// The first-person view root's offset relative to the raw simulated root, captured once
+        /// in root-local space. Reapplied each frame on top of the interpolated graphics position
+        /// so the eye height/offset is preserved without compounding.
+        /// </summary>
+        private Vector3 _firstPersonViewRootOffsetFromRoot;
+        private bool _hasFirstPersonViewRoot;
 
         #endregion
 
@@ -119,6 +132,16 @@ namespace Resonance.PlayerController
 
             if (_virtualCamera != null)
                 _virtualCamera.gameObject.SetActive(isOwner);
+
+            _hasFirstPersonViewRoot = _firstPersonViewRoot != null;
+            if (_hasFirstPersonViewRoot)
+            {
+                // Capture the view root's current offset from the simulated root in root-local
+                // space (authored eye height/offset). Reapplied every frame against the smooth
+                // graphics position; computing in root-local space keeps it correct under body yaw.
+                _firstPersonViewRootOffsetFromRoot =
+                    Quaternion.Inverse(transform.rotation) * (_firstPersonViewRoot.position - transform.position);
+            }
         }
 
         #endregion
@@ -257,6 +280,15 @@ namespace Resonance.PlayerController
                 _config.lookLimitV);
 
             _virtualCamera.transform.rotation = Quaternion.Euler(_cameraPitch, viewState.CameraYaw, 0f);
+
+            // Drive the first-person view root (camera + FP arms) from the interpolated graphics
+            // position instead of the raw simulated root, so local movement reads as smooth. The
+            // captured offset is reapplied fresh each frame so it never compounds.
+            if (_hasFirstPersonViewRoot && _predictedTransform != null && _predictedTransform.graphics != null)
+            {
+                _firstPersonViewRoot.position =
+                    _predictedTransform.graphics.position + transform.rotation * _firstPersonViewRootOffsetFromRoot;
+            }
 
             // Body yaw is driven in Simulate and owned by PredictedTransform; UpdateView only
             // handles the owner camera/FOV (kept crisp on the simulated root).
