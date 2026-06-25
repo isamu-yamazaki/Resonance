@@ -1,19 +1,18 @@
 using System.Linq;
 using PurrNet;
+using PurrNet.Prediction;
 using Resonance.Assemblies.Player;
 using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    public class PlayerAnimation : MonoBehaviour
+    public class PlayerAnimation : PredictedIdentity<PlayerAnimationInput, PlayerAnimationState>
     {
         [SerializeField] private Animator _animator;
-        [SerializeField] private NetworkAnimator _networkAnimator;
         [SerializeField] private float locomotionBlendSpeed = 4f;
 
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
-        private PlayerActionsInput _playerActionsInput;
 
         private static int inputXHash = Animator.StringToHash("inputX");
         private static int inputYHash = Animator.StringToHash("inputY");
@@ -31,23 +30,53 @@ namespace Resonance.PlayerController
         private static int verticalAimHash = Animator.StringToHash("verticalAim");
 
         private int[] actionHashes;
-        private Vector3 _currentBlendInput = Vector3.zero;
 
-        private void Awake()
+        #region Lifecycle
+
+        protected override void LateAwake()
         {
             _playerLocomotionInput = PlayerLocomotionInput.Instance;
             _playerState = GetComponent<PlayerState>();
-            _playerActionsInput = PlayerActionsInput.Instance;
 
             actionHashes = new int[] { isAttackingHash, isReloadingHash };
         }
 
-        private void Update()
+        #endregion
+
+        #region Input
+
+        protected override void GetFinalInput(ref PlayerAnimationInput input)
         {
-            UpdateAnimationState();
+            input.MovementInput = _playerLocomotionInput.MovementInput;
         }
 
-        private void UpdateAnimationState()
+        #endregion
+
+        #region Simulation
+
+        protected override void Simulate(PlayerAnimationInput input, ref PlayerAnimationState state, float delta)
+        {
+            var movementState = _playerState.CurrentPlayerMovementState;
+            Vector2 inputTarget =
+                movementState switch
+                {
+                    PlayerMovementState.Sliding => Vector2.zero,
+                    PlayerMovementState.Sprinting => input.MovementInput * 1.5f,
+                    PlayerMovementState.Running => input.MovementInput * 1.0f,
+                    _ => input.MovementInput * 0.5f
+                };
+
+            state.BlendInput = Vector2.Lerp(state.BlendInput, inputTarget, locomotionBlendSpeed * delta);
+        }
+
+        #endregion
+
+        #region Local view updates
+
+        protected override PlayerAnimationState Interpolate(PlayerAnimationState from, PlayerAnimationState to, float t)
+            => new() { BlendInput = Vector2.Lerp(from.BlendInput, to.BlendInput, t) };
+
+        protected override void UpdateView(PlayerAnimationState viewState, PlayerAnimationState? verified)
         {
             bool isIdling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Idling;
             bool isRunning = _playerState.CurrentPlayerMovementState == PlayerMovementState.Running;
@@ -59,36 +88,49 @@ namespace Resonance.PlayerController
             bool isGrounded = _playerState.InGroundedState();
             bool isPlayingAction = actionHashes.Any(hash => _animator.GetBool(hash));
 
-            Vector2 inputTarget = isSliding ? Vector2.zero :
-                                  isSprinting ? _playerLocomotionInput.MovementInput * 1.5f :
-                                  isRunning ? _playerLocomotionInput.MovementInput * 1f :
-                                  _playerLocomotionInput.MovementInput * 0.5f;
-
-            _currentBlendInput = Vector3.Lerp(_currentBlendInput, inputTarget, locomotionBlendSpeed * Time.deltaTime);
-
             Vector2 clampedInput = new Vector2(
-                Mathf.Abs(_currentBlendInput.x) < 0.1f ? 0f : _currentBlendInput.x,
-                Mathf.Abs(_currentBlendInput.y) < 0.1f ? 0f : _currentBlendInput.y
+                Mathf.Abs(viewState.BlendInput.x) < 0.1f ? 0f : viewState.BlendInput.x,
+                Mathf.Abs(viewState.BlendInput.y) < 0.1f ? 0f : viewState.BlendInput.y
             );
 
             float pitch = Camera.main != null ? Camera.main.transform.localEulerAngles.x : 0f;
             if (pitch > 180f) pitch -= 360f;
             float verticalAim = pitch / 90f;
 
-            _networkAnimator.SetBool(isGroundedHash, isGrounded);
-            _networkAnimator.SetBool(isIdlingHash, isIdling);
-            _networkAnimator.SetBool(isFallingHash, isFalling);
-            _networkAnimator.SetBool(isJumpingHash, isJumping);
-            _networkAnimator.SetBool(isCrouchingHash, isCrouching);
-            _networkAnimator.SetBool(isSlidingHash, isSliding);
-            _networkAnimator.SetBool(isAttackingHash, _playerState.IsAttacking);
-            _networkAnimator.SetBool(isReloadingHash, _playerState.IsReloading);
-            _networkAnimator.SetBool(isPlayingActionHash, isPlayingAction);
-            _networkAnimator.SetBool(weaponClassInitializedHash, _playerState.WeaponClassInitialized);
-            _networkAnimator.SetInt(weaponClassHash, (int)_playerState.CurrentWeaponClass);
-            _networkAnimator.SetFloat(inputXHash, clampedInput.x);
-            _networkAnimator.SetFloat(inputYHash, clampedInput.y);
-            _networkAnimator.SetFloat(verticalAimHash, verticalAim);
+            _animator.SetBool(isGroundedHash, isGrounded);
+            _animator.SetBool(isIdlingHash, isIdling);
+            _animator.SetBool(isFallingHash, isFalling);
+            _animator.SetBool(isJumpingHash, isJumping);
+            _animator.SetBool(isCrouchingHash, isCrouching);
+            _animator.SetBool(isSlidingHash, isSliding);
+            _animator.SetBool(isAttackingHash, _playerState.IsAttacking);
+            _animator.SetBool(isReloadingHash, _playerState.IsReloading);
+            _animator.SetBool(isPlayingActionHash, isPlayingAction);
+            _animator.SetBool(weaponClassInitializedHash, _playerState.WeaponClassInitialized);
+            _animator.SetInteger(weaponClassHash, (int)_playerState.CurrentWeaponClass);
+            _animator.SetFloat(inputXHash, clampedInput.x);
+            _animator.SetFloat(inputYHash, clampedInput.y);
+            _animator.SetFloat(verticalAimHash, verticalAim);
+        }
+
+        #endregion
+    }
+
+    public struct PlayerAnimationInput : IPredictedData
+    {
+        public Vector2 MovementInput;
+
+        public void Dispose()
+        {
+        }
+    }
+
+    public struct PlayerAnimationState : IPredictedData<PlayerAnimationState>
+    {
+        public Vector2 BlendInput;
+
+        public void Dispose()
+        {
         }
     }
 }
