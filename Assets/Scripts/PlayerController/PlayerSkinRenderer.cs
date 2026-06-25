@@ -11,6 +11,7 @@ using UnityEngine.Rendering;
 
 namespace Resonance.PlayerController
 {
+    [RequireComponent(typeof(PredictedTransform))]
     [DefaultExecutionOrder(-2)]
     public class PlayerSkinRenderer : PredictedIdentity<PlayerSkinRendererInputData, PlayerSkinRendererDataState>
     {
@@ -19,6 +20,8 @@ namespace Resonance.PlayerController
         [SerializeField] private Transform fpArmsRoot;
 
         [SerializeField] private int testSkinIndexToRequest = 0;
+
+        private PredictedTransform _predictedTransform;
 
         public PredictedEvent<GameObject> OnNewSkinSpawned { get; private set; }
 
@@ -43,7 +46,6 @@ namespace Resonance.PlayerController
 
         private bool _fpArmsSpawned;
         private bool _pendingSkinRequest;
-
         private bool _tpHiddenLocally;
 
         public bool ShouldRenderArmsOnlyBasedOnCachedMatchState
@@ -86,6 +88,7 @@ namespace Resonance.PlayerController
             // own Start() survive. LateAwake runs after predictionManager is assigned and
             // before any Simulate (and thus before the first Invoke).
             OnNewSkinSpawned ??= new PredictedEvent<GameObject>(predictionManager, this);
+            _predictedTransform = GetComponent<PredictedTransform>();
         }
 
         #endregion
@@ -185,7 +188,7 @@ namespace Resonance.PlayerController
             // Parent the third-person body under the interpolated graphics root (owned by the
             // sibling PredictedTransform, exposed via the movement controller) so it follows the
             // smooth transform rather than the raw simulated root. Falls back to this transform.
-            var bodyParent = GetComponent<PlayerPredictedController>()?.GraphicsRoot ?? transform;
+            var bodyParent = _predictedTransform.graphics ?? transform;
             CurrentMeshInstance = Instantiate(meshPrefab, bodyParent);
 
             var innerAnimator = CurrentMeshInstance.GetComponent<Animator>();
