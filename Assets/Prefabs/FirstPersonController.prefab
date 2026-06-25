@@ -400,6 +400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7264354477965666744}
+  - component: {fileID: 2544147265793740102}
   - component: {fileID: 625382980807758898}
   - component: {fileID: 3494420511587806199}
   - component: {fileID: 186030322157751487}
@@ -469,6 +470,23 @@ Transform:
   - {fileID: 5434481047200221691}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2544147265793740102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98dbb08343eac044895b9b52872bcb49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PurrNet.Prediction::PurrNet.Prediction.PredictedTransform
+  _graphics: {fileID: 0}
+  _floatAccuracy: 1
+  _interpolationSettings: {fileID: 11400000, guid: 4a8aa8e44e23cfd4a8d4387ef3f36173, type: 2}
+  _unparentGraphics: 0
+  _characterControllerPatch: 1
 --- !u!114 &625382980807758898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -927,6 +945,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e5b738d0ae3f5a4e971816bbc9221d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.WeaponStatManager
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
 --- !u!114 &-2009204506129055193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,6 +971,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e5b738d0ae3f5a4e971816bbc9221d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.WeaponStatManager
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
 --- !u!114 &5575042648507424026
 MonoBehaviour:
   m_ObjectHideFlags: 0

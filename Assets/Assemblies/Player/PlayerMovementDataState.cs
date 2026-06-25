@@ -8,8 +8,8 @@ namespace Resonance.Assemblies.Player
     /// </summary>
     public struct PlayerMovementDataState : IPredictedData<PlayerMovementDataState>
     {
-        // may move into a PredictedTransform later to share between additional components
-        public Vector3 Position;
+        // Position+rotation are owned by the sibling PurrNet PredictedTransform component,
+        // which also drives interpolation. This state only carries movement-derived data.
         public Vector3 Velocity;
 
         /// <summary>

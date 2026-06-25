@@ -182,7 +182,11 @@ namespace Resonance.PlayerController
 
         private void ApplyMeshPrefabAndAvatar(GameObject meshPrefab, Avatar avatar)
         {
-            CurrentMeshInstance = Instantiate(meshPrefab, transform);
+            // Parent the third-person body under the interpolated graphics root (owned by the
+            // sibling PredictedTransform, exposed via the movement controller) so it follows the
+            // smooth transform rather than the raw simulated root. Falls back to this transform.
+            var bodyParent = GetComponent<PlayerPredictedController>()?.GraphicsRoot ?? transform;
+            CurrentMeshInstance = Instantiate(meshPrefab, bodyParent);
 
             var innerAnimator = CurrentMeshInstance.GetComponent<Animator>();
             Destroy(innerAnimator);

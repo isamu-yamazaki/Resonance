@@ -264,7 +264,8 @@ namespace Resonance.Assemblies.Player
         public static void TickCharacterControllerMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
             ctx.CharacterController.Move((state.Velocity + ctx.Dependency.TrainVelocityOffset) * ctx.Delta);
-            state.Position = ctx.CharacterController.transform.position;
+            // The resulting transform position is captured by the sibling PredictedTransform
+            // via GetUnityState after simulation+physics each tick.
         }
 
         /// <summary>

@@ -48,6 +48,24 @@ namespace Resonance.PlayerController
 
         public static PlayerPredictedController LocalPlayer { get; private set; }
 
+        /// <summary>
+        /// The sibling PredictedTransform that owns this player's networked position+rotation and
+        /// interpolation. This controller drives CharacterController.Move each tick and
+        /// PredictedTransform captures the resulting transform; repositioning is funneled through
+        /// this controller's simulation methods (see <see cref="SimulatePlaceAtRespawnPoint"/>).
+        /// </summary>
+        private PredictedTransform _predictedTransform;
+
+        /// <summary>
+        /// The interpolated transform that player visuals (e.g. the third-person body) should
+        /// parent under so they follow the smooth transform rather than the raw simulated root.
+        /// Falls back to the simulated root until PredictedTransform/_graphics is wired.
+        /// </summary>
+        public Transform GraphicsRoot =>
+            _predictedTransform != null && _predictedTransform.graphics != null
+                ? _predictedTransform.graphics
+                : transform;
+
         public float RotationMismatch { get; private set; }
         public bool IsRotatingToTarget { get; private set; }
         public bool IsPlayerDead { get; set; }
@@ -89,6 +107,7 @@ namespace Resonance.PlayerController
             _playerStats = GetComponent<PlayerStats>();
             _trainPassengerPhysics = GetComponent<TrainPassengerPhysics>();
             _grapple = GetComponent<AbilityGrappleHook>();
+            _predictedTransform = GetComponent<PredictedTransform>();
 
             _stepOffset = _characterController != null ? _characterController.stepOffset : 0f;
 
@@ -110,7 +129,6 @@ namespace Resonance.PlayerController
         {
             return new PlayerMovementDataState
             {
-                Position = transform.position,
                 Velocity = Vector3.zero,
                 CameraYaw = transform.eulerAngles.y,
                 GrappleImpulse = Vector3.zero,
@@ -119,24 +137,6 @@ namespace Resonance.PlayerController
                 SimulatedMovementStateResult = PlayerMovementState.Falling,
                 SlideTimer = 0f,
             };
-        }
-
-        protected override void GetUnityState(ref PlayerMovementDataState state)
-        {
-            state.Position = transform.position;
-        }
-
-        protected override void SetUnityState(PlayerMovementDataState state)
-        {
-            // CharacterController patch: disable around teleport so it doesn't snap-back.
-            bool wasEnabled = _characterController.enabled;
-            _characterController.enabled = false;
-            transform.position = state.Position;
-
-            Quaternion targetBodyRotation = Quaternion.Euler(0f, state.CameraYaw, 0f);
-            transform.rotation = targetBodyRotation;
-
-            _characterController.enabled = wasEnabled;
         }
 
         protected override void UpdateInput(ref PlayerInputData input)
@@ -197,23 +197,35 @@ namespace Resonance.PlayerController
                 delta);
 
             PlayerSimulation.Step(ctx, ref state);
-            
+
+            // Body yaw is owned by PredictedTransform: set it here in simulation so it is
+            // captured (GetUnityState), replicated, and interpolated for remote players.
+            transform.rotation = Quaternion.Euler(0f, state.CameraYaw, 0f);
+
             _playerState.SetSimulatedPlayerMovementState(state.SimulatedMovementStateResult);
         }
 
         /// <summary>
-        /// Because player position is owned by PlayerPredictedController,
-        /// position setting must go through here.
+        /// Repositions the player during simulation. Must run inside the prediction loop so the
+        /// sibling PredictedTransform (which owns position+rotation) captures the new transform.
         /// </summary>
         [SimulationOnly]
         public void SimulatePlaceAtRespawnPoint(Vector3 position, Quaternion rotation)
         {
-            currentState.Position = position;
-            currentState.CameraYaw = rotation.x;
+            // CameraYaw is the source of truth for the owner camera, movement direction, and
+            // the body yaw written in Simulate, so seed it from the spawn rotation's yaw.
+            currentState.CameraYaw = rotation.eulerAngles.y;
 
-            // ensure Unity state is updated
-            transform.rotation = rotation;
-            transform.position = position;
+            // Position+rotation are owned by PredictedTransform. Reposition the transform with
+            // the CharacterController disabled so it doesn't fight the teleport; PredictedTransform
+            // captures the new transform after simulation this tick.
+            bool wasEnabled = _characterController.enabled;
+            _characterController.enabled = false;
+            transform.SetPositionAndRotation(position, rotation);
+            _characterController.enabled = wasEnabled;
+
+            // Snap the interpolation so the large respawn jump isn't smeared from the old location.
+            _predictedTransform?.ResetInterpolation();
         }
 
         protected override PlayerMovementDataState Interpolate(
@@ -223,7 +235,6 @@ namespace Resonance.PlayerController
         {
             return new PlayerMovementDataState
             {
-                Position = Vector3.Lerp(from.Position, to.Position, t),
                 Velocity = Vector3.Lerp(from.Velocity, to.Velocity, t),
                 CameraYaw = Mathf.LerpAngle(from.CameraYaw, to.CameraYaw, t),
                 GrappleImpulse = Vector3.Lerp(from.GrappleImpulse, to.GrappleImpulse, t),
@@ -247,9 +258,8 @@ namespace Resonance.PlayerController
 
             _virtualCamera.transform.rotation = Quaternion.Euler(_cameraPitch, viewState.CameraYaw, 0f);
 
-            Quaternion targetBodyRotation = Quaternion.Euler(0f, viewState.CameraYaw, 0f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetBodyRotation, _config.playerModelRotationSpeed * Time.deltaTime);
-
+            // Body yaw is driven in Simulate and owned by PredictedTransform; UpdateView only
+            // handles the owner camera/FOV (kept crisp on the simulated root).
             Vector3 camForwardXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
             Vector3 cross = Vector3.Cross(transform.forward, camForwardXZ);
             RotationMismatch = Mathf.Sign(Vector3.Dot(cross, transform.up)) * Vector3.Angle(transform.forward, camForwardXZ);
