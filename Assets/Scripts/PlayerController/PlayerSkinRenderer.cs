@@ -125,7 +125,7 @@ namespace Resonance.PlayerController
         /// <param name="state"></param>
         private void SimulateVerifiedTick(ref PlayerSkinRendererDataState state)
         {
-            if (state.LastSkinIndex != state.SkinIndex)
+            if (CurrentMeshInstance == null || state.LastSkinIndex != state.SkinIndex)
             {
                 ApplySkinAsSideEffectOfVerifiedTick(state.SkinIndex);
             }
@@ -200,7 +200,7 @@ namespace Resonance.PlayerController
             if (!verified.HasValue) return;
             var v = verified.Value;
 
-            var shouldRenderArmsOnly = ShouldRenderArmsOnlyBasedOnCachedMatchState;
+            var shouldRenderArmsOnly = ShouldRenderArmsOnlyBasedOnCachedMatchState && isOwner;
             var skinData = skinCatalog.Get(v.SkinIndex);
 
             if (!_fpArmsSpawned && shouldRenderArmsOnly && skinData != null)
