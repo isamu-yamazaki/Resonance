@@ -14,6 +14,11 @@ namespace Resonance.PlayerController
         private bool _suppressRefresh = false;
         private WeaponClass _currentWeaponClass;
 
+        // The FP-arms instance currently shown (SetActive true). Single source of truth for "which
+        // arms are visible", decoupled from the predicted/verified weapon class.
+        private WeaponClass _shownClass;
+        private bool _hasShownClass;
+
         private void Awake()
         {
             _skinRenderer = GetComponent<PlayerSkinRenderer>();
@@ -35,7 +40,7 @@ namespace Resonance.PlayerController
                 _skinRenderer.OnNewSkinSpawned?.RemoveListener(OnSkinSpawned);
         }
 
-        private void OnSkinSpawned(GameObject _) => RefreshArms();
+        private void OnSkinSpawned(GameObject _) => RefreshArmsForCurrentWeaponInState();
 
         private void OnWeaponClassChanged(WeaponClass weaponClass)
         {
@@ -45,40 +50,59 @@ namespace Resonance.PlayerController
                 _suppressRefresh = false;
                 return;
             }
-            RefreshArms();
+            RefreshArmsForCurrentWeaponInState();
         }
 
-        public void RefreshArms()
+        public void RefreshArmsForCurrentWeaponInState()
+        {
+            ShowClass(_currentWeaponClass);
+        }
+
+        /// <summary>
+        /// Activates only the FP-arms instance for the given weapon class (bucketed) and deactivates
+        /// the rest, recording it as the shown class.
+        /// </summary>
+        public void ShowClass(WeaponClass weaponClass)
         {
             if (_skinRenderer?.FPArmsInstances == null) return;
-            
-            WeaponClass classToShow = _currentWeaponClass;
-            if (classToShow != WeaponClass.Pistol && classToShow != WeaponClass.Sword)
-                classToShow = WeaponClass.Rifle;
-            
-#if UNITY_EDITOR
-            Debug.Log("Class to show" + classToShow.ToString());
-#endif
+
+            WeaponClass classToShow = BucketForFpArms(weaponClass);
+
+            Debug.Log($"[FPArmsDiag] f{Time.frameCount} ShowClass requested={weaponClass} show={classToShow}");
 
             foreach (var kvp in _skinRenderer.FPArmsInstances)
             {
-#if UNITY_EDITOR
-                Debug.Log(kvp.Key);
-#endif
                 if (kvp.Value != null)
                     kvp.Value.SetActive(kvp.Key == classToShow);
             }
+
+            _shownClass = classToShow;
+            _hasShownClass = true;
+        }
+
+        /// <summary>
+        /// The Animator on the currently-shown FP-arms instance, or null if none is shown yet.
+        /// </summary>
+        public Animator GetShownAnimator()
+        {
+            if (!_hasShownClass || _skinRenderer?.FPArmsInstances == null) return null;
+            if (_skinRenderer.FPArmsInstances.TryGetValue(_shownClass, out GameObject instance))
+                return instance != null ? instance.GetComponent<Animator>() : null;
+            return null;
+        }
+
+        private static WeaponClass BucketForFpArms(WeaponClass weaponClass)
+        {
+            if (weaponClass == WeaponClass.Pistol || weaponClass == WeaponClass.Sword)
+                return weaponClass;
+            return WeaponClass.Rifle;
         }
         
         public WeaponView GetActiveFPWeaponView()
         {
-            if (_skinRenderer?.FPArmsInstances == null) return null;
+            if (!_hasShownClass || _skinRenderer?.FPArmsInstances == null) return null;
 
-            WeaponClass classToShow = _currentWeaponClass;
-            if (classToShow != WeaponClass.Pistol && classToShow != WeaponClass.Sword)
-                classToShow = WeaponClass.Rifle;
-
-            if (_skinRenderer.FPArmsInstances.TryGetValue(classToShow, out GameObject arms) && arms != null)
+            if (_skinRenderer.FPArmsInstances.TryGetValue(_shownClass, out GameObject arms) && arms != null)
                 return arms.GetComponentInChildren<WeaponView>(true);
 
             return null;

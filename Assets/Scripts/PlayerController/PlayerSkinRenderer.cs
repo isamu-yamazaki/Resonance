@@ -217,7 +217,7 @@ namespace Resonance.PlayerController
             }
 
             HideTPBody();
-            GetComponent<FPArmsManager>()?.RefreshArms();
+            GetComponent<FPArmsManager>()?.RefreshArmsForCurrentWeaponInState();
 
             _hasRenderedArmsOnce = true;
         }

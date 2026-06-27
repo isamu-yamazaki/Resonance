@@ -290,7 +290,7 @@ public class PreMatchCameraController : MonoBehaviour
             fpArmsAnimator?.ResetForMatchStart();
 
             var fpArmsManager = target.GetComponent<FPArmsManager>();
-            fpArmsManager?.RefreshArms();
+            fpArmsManager?.RefreshArmsForCurrentWeaponInState();
 
             Animator active = null;
             float timeout = 2f;

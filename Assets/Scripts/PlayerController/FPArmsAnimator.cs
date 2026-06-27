@@ -67,24 +67,46 @@ namespace Resonance.Combat
 
             _pendingWeapon = weapon;
             _pendingFirstBuy = isNew;
-            _hasPendingSwap = true;
+
+            // The outgoing weapon is whatever is genuinely shown right now. Resolve it from the
+            // active instance, NOT the predicted weapon class — by the time this runs on the view
+            // tick the predicted class has already flipped to the incoming weapon.
+            Animator outgoing = GetActiveAnimator();
+            bool canHolster = outgoing != null && outgoing.gameObject.activeInHierarchy;
 
             if (isHolstered)
             {
+                // This class was previously holstered: bring it straight back, no holster step.
                 _holsteredClasses.Remove(bucketed);
-                _hasPendingSwap = false;
-                // TODO: restore if needed
-                // GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(weapon);
-                _fpArmsManager.RefreshArms();
-                TriggerOnActiveAnimator(isNew ? IsFirstBuyHash : IsDrawHash);
-                _pendingFirstBuy = false;
-                _playerState.SetExternalWeaponState(WeaponState.Drawing);
+                DrawIncomingImmediately(bucketed, isNew);
+            }
+            else if (!canHolster)
+            {
+                // Nothing to holster (e.g. first equip): show the incoming arms and draw at once.
+                DrawIncomingImmediately(bucketed, isNew);
             }
             else
             {
+                // Normal swap: holster the currently-shown weapon. The incoming arms are activated
+                // and drawn in OnHolsterCompleteRoutine. Suppress the verified-class RefreshArms so
+                // it can't deactivate the outgoing instance out from under the holster animation.
+                _hasPendingSwap = true;
+                _fpArmsManager.SuppressNextRefresh();
                 _playerState.SetExternalWeaponState(WeaponState.Holstering);
                 TriggerOnActiveAnimator(IsHolsterHash);
             }
+        }
+
+        // Activates the incoming arms now and plays its draw (or first-buy) animation with no
+        // holster step. Used on first equip and when re-drawing a previously-holstered class.
+        private void DrawIncomingImmediately(WeaponClass bucketed, bool isNew)
+        {
+            _hasPendingSwap = false;
+            _pendingWeapon = null;
+            _pendingFirstBuy = false;
+            _fpArmsManager.ShowClass(bucketed);
+            TriggerOnActiveAnimator(isNew ? IsFirstBuyHash : IsDrawHash);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         private void OnWeaponClassChanged(WeaponClass newClass)
@@ -192,11 +214,8 @@ namespace Resonance.Combat
             _holsteredClasses.Add(bucketed);
             _hasPendingSwap = false;
 
-            _fpArmsManager.SuppressNextRefresh();
-            // TODO: restore if needed
-            // GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(_pendingWeapon);
-
-            _fpArmsManager.RefreshArms();
+            // Outgoing weapon has finished holstering: activate the incoming arms now, then draw.
+            _fpArmsManager.ShowClass(bucketed);
 
             yield return null;
 
@@ -228,22 +247,20 @@ namespace Resonance.Combat
         private void TriggerOnActiveAnimator(int hash)
         {
             Animator active = GetActiveAnimator();
-            if (active == null) return;
+            if (active == null)
+            {
+                return;
+            }
             active.SetTrigger(hash);
         }
 
+        // The active animator is the genuinely-shown FP-arms instance (owned by FPArmsManager), NOT
+        // the one implied by the predicted weapon class. Those diverge during a swap: the predicted
+        // class can point at an instance that has not been SetActive(true) yet, and a one-shot
+        // SetTrigger on an inactive Animator is silently lost.
         private Animator GetActiveAnimator()
         {
-            if (_skinRenderer?.FPArmsInstances == null) return null;
-
-            WeaponClass classToCheck = BucketClass(_playerState.CurrentWeaponClass);
-
-            if (_skinRenderer.FPArmsInstances.TryGetValue(classToCheck, out GameObject instance))
-            {
-                return instance?.GetComponent<Animator>();
-            }
-
-            return null;
+            return _fpArmsManager != null ? _fpArmsManager.GetShownAnimator() : null;
         }
 
         private WeaponClass BucketClass(WeaponClass weaponClass)
@@ -343,7 +360,7 @@ namespace Resonance.Combat
                 _activeSkillArms = null;
             }
 
-            _fpArmsManager.RefreshArms();
+            _fpArmsManager.RefreshArmsForCurrentWeaponInState();
 
             yield return null;
 
@@ -380,7 +397,7 @@ namespace Resonance.Combat
                 _activeSkillArms = null;
             }
 
-            _fpArmsManager.RefreshArms();
+            _fpArmsManager.RefreshArmsForCurrentWeaponInState();
 
             yield return null;
 
