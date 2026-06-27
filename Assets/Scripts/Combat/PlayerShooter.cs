@@ -259,7 +259,7 @@ namespace Resonance.Combat
             int count = weaponStatManager.ProjectilesPerShot;
             if (count < 1) count = 1;
 
-            WeaponPayload payload = BuildBasePayload(weapon);
+            WeaponPayload payload = BuildBasePayload();
 
             state.LastShotHitPlayer = false;
             state.LastShotDamage = 0f;
@@ -270,35 +270,35 @@ namespace Resonance.Combat
                 Vector3 baseDirection = GetAimDirectionFromInput(input);
                 FireHitscan(weapon, view, payload, baseDirection, count, input, ref state);
             }
-            else
-            {
-                Vector3 projectileDirection = GetProjectileAimDirection(view.Muzzle);
-                FireProjectile(weapon, view, payload, projectileDirection, count, state.CurrentSpread);
-            }
+            // else
+            // {
+            //     Vector3 projectileDirection = GetProjectileAimDirection(view.Muzzle);
+            //     FireProjectile(weapon, view, payload, projectileDirection, count, state.CurrentSpread);
+            // }
 
             state.ShotCount++;
         }
 
 
-        [SimulationOnly]
-        private void FireProjectile(WeaponProperties weapon, WeaponView view, WeaponPayload payload,
-            Vector3 baseDirection, int count, float spread)
-        {
-            BulletProperties bullet = weaponStatManager.GetBulletProperties();
-            if (bullet == null || bullet.BulletPrefab == null) return;
-
-            float speedMultiplier = weaponStatManager.MuzzleVelocity;
-            float finalBulletSpeed = bullet.BulletBaseSpeed * speedMultiplier;
-
-            payload.BulletSpeed = finalBulletSpeed;
-            payload.BulletGravity = bullet.BulletGravity;
-
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 direction = ApplySpread(baseDirection, spread);
-                SpawnProjectile(bullet.BulletPrefab, view.Muzzle, payload, direction);
-            }
-        }
+        // [SimulationOnly]
+        // private void FireProjectile(WeaponProperties weapon, WeaponView view, WeaponPayload payload,
+        //     Vector3 baseDirection, int count, float spread)
+        // {
+        //     BulletProperties bullet = weaponStatManager.GetBulletProperties();
+        //     if (bullet == null || bullet.BulletPrefab == null) return;
+        //
+        //     float speedMultiplier = weaponStatManager.MuzzleVelocity;
+        //     float finalBulletSpeed = bullet.BulletBaseSpeed * speedMultiplier;
+        //
+        //     payload.BulletSpeed = finalBulletSpeed;
+        //     payload.BulletGravity = bullet.BulletGravity;
+        //
+        //     for (int i = 0; i < count; i++)
+        //     {
+        //         Vector3 direction = ApplySpread(baseDirection, spread);
+        //         SpawnProjectile(bullet.BulletPrefab, view.Muzzle, payload, direction);
+        //     }
+        // }
 
         [SimulationOnly]
         private void FireHitscan(WeaponProperties weapon, WeaponView view, WeaponPayload payload, Vector3 baseDirection,
@@ -345,22 +345,36 @@ namespace Resonance.Combat
             }
         }
 
-        private Vector3 GetProjectileAimDirection(Transform muzzle)
-        {
-            if (playerCamera == null) return muzzle.forward;
+        // private Vector3 GetProjectileAimDirection(Transform muzzle)
+        // {
+        //     if (playerCamera == null) return muzzle.forward;
+        //
+        //     Vector3 cameraOrigin = playerCamera.transform.position;
+        //     Vector3 cameraForward = playerCamera.transform.forward;
+        //
+        //     Vector3 targetPoint;
+        //     if (Physics.Raycast(cameraOrigin, cameraForward, out RaycastHit hit, weaponStatManager.Range,
+        //             hitscanLayerMask, QueryTriggerInteraction.Ignore))
+        //         targetPoint = hit.point;
+        //     else
+        //         targetPoint = cameraOrigin + cameraForward * weaponStatManager.Range;
+        //
+        //     return (targetPoint - muzzle.position).normalized;
+        // }
 
-            Vector3 cameraOrigin = playerCamera.transform.position;
-            Vector3 cameraForward = playerCamera.transform.forward;
-
-            Vector3 targetPoint;
-            if (Physics.Raycast(cameraOrigin, cameraForward, out RaycastHit hit, weaponStatManager.Range,
-                    hitscanLayerMask, QueryTriggerInteraction.Ignore))
-                targetPoint = hit.point;
-            else
-                targetPoint = cameraOrigin + cameraForward * weaponStatManager.Range;
-
-            return (targetPoint - muzzle.position).normalized;
-        }
+        // private void SpawnProjectile(GameObject prefab, Transform muzzle, WeaponPayload payload, Vector3 direction)
+        // {
+        //     GameObject go = Instantiate(prefab, muzzle.position, Quaternion.LookRotation(direction));
+        //
+        //     WeaponProjectile projectile = go.GetComponent<WeaponProjectile>();
+        //     if (projectile == null)
+        //     {
+        //         Debug.LogError("BulletPrefab is missing WeaponProjectile component.", go);
+        //         return;
+        //     }
+        //
+        //     projectile.Initialize(payload, direction);
+        // }
 
 
         private void NotifyMissOnServer()
@@ -512,21 +526,6 @@ namespace Resonance.Combat
             _lastViewedEmptyTriggerCount = viewState.EmptyTriggerCount;
         }
 
-        // TODO: call from UpdateView path
-        private void SpawnProjectile(GameObject prefab, Transform muzzle, WeaponPayload payload, Vector3 direction)
-        {
-            GameObject go = Instantiate(prefab, muzzle.position, Quaternion.LookRotation(direction));
-
-            WeaponProjectile projectile = go.GetComponent<WeaponProjectile>();
-            if (projectile == null)
-            {
-                Debug.LogError("BulletPrefab is missing WeaponProjectile component.", go);
-                return;
-            }
-
-            projectile.Initialize(payload, direction);
-        }
-
         // TODO: migrate to simulation
         public void CancelReload()
         {
@@ -578,7 +577,7 @@ namespace Resonance.Combat
 
         #region Helpers
 
-        private WeaponPayload BuildBasePayload(WeaponProperties weapon)
+        private WeaponPayload BuildBasePayload()
         {
             return new WeaponPayload
             {
