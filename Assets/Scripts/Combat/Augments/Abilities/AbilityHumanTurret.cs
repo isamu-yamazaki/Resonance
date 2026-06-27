@@ -114,7 +114,6 @@ namespace Resonance.Combat.Augments
 
             playerStats.AddDamageReductionModifier(damageReduction);
             weaponStatManager.AddAugmentMod(turretMod);
-            playerShooter.RefreshWeaponStats();
         }
 
         private void DeactivateTurret()
@@ -128,7 +127,6 @@ namespace Resonance.Combat.Augments
 
             playerStats.RemoveDamageReductionModifier(damageReduction);
             weaponStatManager.RemoveAugmentMod(turretMod);
-            playerShooter.RefreshWeaponStats();
         }
     }
 }

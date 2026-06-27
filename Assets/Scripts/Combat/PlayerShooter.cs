@@ -555,25 +555,6 @@ namespace Resonance.Combat
 
         #endregion
 
-        #region Weapon Refresh
-
-        public void RefreshWeaponStats()
-        {
-            if (playerEquip == null || weaponStatManager == null) return;
-            int slot = playerEquip.currentState.CurrentSlot;
-            int magazineSize = weaponStatManager.MagazineSize;
-            if (magazineSize > 0)
-            {
-                if (slot == 0)
-                    currentState.AmmoSlot0 = Mathf.Min(currentState.AmmoSlot0 == 0 ? magazineSize : currentState.AmmoSlot0, magazineSize);
-                else
-                    currentState.AmmoSlot1 = Mathf.Min(currentState.AmmoSlot1 == 0 ? magazineSize : currentState.AmmoSlot1, magazineSize);
-            }
-            viewModel?.SetAmmo(CurrentAmmo, MagazineSize);
-        }
-
-        #endregion
-
         #region Aim
 
         private Vector3 GetAimDirection(Transform muzzle)

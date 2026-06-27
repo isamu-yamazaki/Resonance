@@ -679,7 +679,6 @@ namespace Resonance.Shop
             }
 
             targetWeapon.ModList.Add(mod);
-            GetPlayerShooter()?.RefreshWeaponStats();
 
 #if !UNITY_SERVER
             if (shopItemBuyEvent != null && shopItemBuyEvent.IsValid())
@@ -739,7 +738,6 @@ namespace Resonance.Shop
             if (mod == null) return;
 
             weapon.ModList.Remove(mod);
-            GetPlayerShooter()?.RefreshWeaponStats();
             PlayerMoney.LocalInstance?.AddFunds(mod.ModCost * SellRefundRate);
 
 #if !UNITY_SERVER
