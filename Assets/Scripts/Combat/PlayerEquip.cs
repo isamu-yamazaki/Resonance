@@ -331,7 +331,7 @@ namespace Resonance.Combat
             _lastViewedSlot = viewState.CurrentSlot;
 
             HideTpMeshIfOwner();
-            // RequestFpWeaponSwapIfOwner(weapon);
+            RequestFpWeaponSwapIfOwner(weapon);
 
             if (!_isInitialEquip)
             {

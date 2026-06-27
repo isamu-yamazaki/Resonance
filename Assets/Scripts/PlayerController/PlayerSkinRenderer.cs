@@ -44,9 +44,8 @@ namespace Resonance.PlayerController
         private Dictionary<WeaponClass, GameObject> _fpArmsInstances = new Dictionary<WeaponClass, GameObject>();
         public IReadOnlyDictionary<WeaponClass, GameObject> FPArmsInstances => _fpArmsInstances;
 
-        private bool _fpArmsSpawned;
         private bool _pendingSkinRequest;
-        private bool _tpHiddenLocally;
+        private bool _hasRenderedArmsOnce;
 
         public bool ShouldRenderArmsOnlyBasedOnCachedMatchState
         {
@@ -207,25 +206,20 @@ namespace Resonance.PlayerController
             if (!verified.HasValue) return;
             var v = verified.Value;
 
-            var shouldRenderArmsOnly = ShouldRenderArmsOnlyBasedOnCachedMatchState && isOwner;
+            var shouldSpawnArmsBasedOnMatchState = ShouldRenderArmsOnlyBasedOnCachedMatchState && isOwner;
             var skinData = skinCatalog.Get(v.SkinIndex);
 
-            if (!_fpArmsSpawned && shouldRenderArmsOnly && skinData != null)
+            if ((!shouldSpawnArmsBasedOnMatchState || _hasRenderedArmsOnce) && v.LastSkinIndex == v.SkinIndex) return;
+
+            if (skinData != null)
             {
                 SpawnFpArmsVariants(skinData);
-                _fpArmsSpawned = true;
             }
 
-            if (shouldRenderArmsOnly && !_tpHiddenLocally)
-            {
-                HideTPBody();
-                _tpHiddenLocally = true;
-            }
+            HideTPBody();
+            GetComponent<FPArmsManager>()?.RefreshArms();
 
-            if (_tpHiddenLocally)
-            {
-                GetComponent<FPArmsManager>()?.RefreshArms();
-            }
+            _hasRenderedArmsOnce = true;
         }
 
         public void HideTPBody()
