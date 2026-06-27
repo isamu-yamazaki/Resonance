@@ -169,8 +169,7 @@ namespace Resonance.Combat
             // detect any weapon switch, including slot switches
             if (state.LastEquippedWeapon != weaponIdentity)
             {
-                // TODO: add simulation variant
-                _playerState?.SetWeaponClass(weapon.Class);
+                _playerState?.SetSimulatedWeaponClass(weapon.Class);
 
                 // refresh magazine size reported in PlayerShooter
                 if (_weaponStatManager != null)
@@ -332,7 +331,7 @@ namespace Resonance.Combat
             _lastViewedSlot = viewState.CurrentSlot;
 
             HideTpMeshIfOwner();
-            RequestFpWeaponSwapIfOwner(weapon);
+            // RequestFpWeaponSwapIfOwner(weapon);
 
             if (!_isInitialEquip)
             {

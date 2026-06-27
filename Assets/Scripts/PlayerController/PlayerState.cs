@@ -20,10 +20,8 @@ namespace Resonance.PlayerController
         public event Action<WeaponClass> OnWeaponClassChanged;
 
         #region External input accumulators
-        private WeaponClass pendingWeaponClass;
         private WeaponState pendingWeaponState;
         private PlayerMovementState pendingMovementState;
-        private bool requestWeaponClassUpdate;
         private bool requestWeaponStateUpdate;
         private bool requestMovementStateUpdate;
         private PlayerStateData? previousVerifiedState;
@@ -48,6 +46,12 @@ namespace Resonance.PlayerController
         public void SetSimulatedPlayerMovementState(PlayerMovementState playerMovementState)
         {
             currentState.MovementState = playerMovementState;
+        }
+
+        [SimulationOnly]
+        public void SetSimulatedWeaponClass(WeaponClass weaponClass)
+        {
+            currentState.WeaponClass = weaponClass;
         }
 
         private bool IsValidTransition(WeaponState from, WeaponState to)
@@ -104,25 +108,17 @@ namespace Resonance.PlayerController
                    CurrentPlayerMovementState == PlayerMovementState.MatchEndedFrozen;
         }
 
-        public void SetWeaponClass(WeaponClass weaponClass)
-        {
-            pendingWeaponClass = weaponClass;
-            requestWeaponClassUpdate = true;
-        }
 
         #region Server-auth methods
 
         protected override void GetFinalInput(ref PlayerStateInput input)
         {
             input.RequestExternalPlayerMovementStateUpdate = requestMovementStateUpdate;
-            input.RequestExternalWeaponClassUpdate = requestWeaponClassUpdate;
             input.RequestExternalWeaponStateUpdate = requestWeaponStateUpdate;
             input.RequestedPlayerMovementState = pendingMovementState;
-            input.RequestedWeaponClass = pendingWeaponClass;
             input.RequestedWeaponState = pendingWeaponState;
 
             requestMovementStateUpdate = false;
-            requestWeaponClassUpdate = false;
             requestWeaponStateUpdate = false;
         }
 
@@ -135,11 +131,6 @@ namespace Resonance.PlayerController
             if (input.RequestExternalWeaponStateUpdate)
             {
                 state.WeaponState = input.RequestedWeaponState;
-            }
-            if (input.RequestExternalWeaponClassUpdate)
-            {
-                state.WeaponClass = input.RequestedWeaponClass;
-                state.WeaponClassInitialized = true;
             }
         }
 
