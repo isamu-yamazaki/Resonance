@@ -11,8 +11,7 @@ namespace Resonance.PlayerController
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerSkinRenderer _skinRenderer;
 
-        private bool _suppressRefresh = false;
-        private WeaponClass _currentWeaponClass;
+        private bool _suppressRefresh;
 
         // The FP-arms instance currently shown (SetActive true). Single source of truth for "which
         // arms are visible", decoupled from the predicted/verified weapon class.
@@ -40,22 +39,21 @@ namespace Resonance.PlayerController
                 _skinRenderer.OnNewSkinSpawned?.RemoveListener(OnSkinSpawned);
         }
 
-        private void OnSkinSpawned(GameObject _) => RefreshArmsForCurrentWeaponInState();
+        private void OnSkinSpawned(GameObject _) => RefreshArmsForCurrentWeaponInPlayerState();
 
         private void OnWeaponClassChanged(WeaponClass weaponClass)
         {
-            _currentWeaponClass = weaponClass;
             if (_suppressRefresh)
             {
                 _suppressRefresh = false;
                 return;
             }
-            RefreshArmsForCurrentWeaponInState();
+            RefreshArmsForCurrentWeaponInPlayerState();
         }
 
-        public void RefreshArmsForCurrentWeaponInState()
+        public void RefreshArmsForCurrentWeaponInPlayerState()
         {
-            ShowClass(_currentWeaponClass);
+            ShowClass(_playerState.CurrentWeaponClass);
         }
 
         /// <summary>

@@ -360,7 +360,7 @@ namespace Resonance.Combat
                 _activeSkillArms = null;
             }
 
-            _fpArmsManager.RefreshArmsForCurrentWeaponInState();
+            _fpArmsManager.RefreshArmsForCurrentWeaponInPlayerState();
 
             yield return null;
 
@@ -397,7 +397,7 @@ namespace Resonance.Combat
                 _activeSkillArms = null;
             }
 
-            _fpArmsManager.RefreshArmsForCurrentWeaponInState();
+            _fpArmsManager.RefreshArmsForCurrentWeaponInPlayerState();
 
             yield return null;
 
