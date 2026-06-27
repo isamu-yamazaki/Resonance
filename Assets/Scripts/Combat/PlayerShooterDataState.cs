@@ -21,6 +21,7 @@ namespace Resonance.Combat
         public Vector3 LastShotEndPoint;
         public bool LastShotHitPlayer;
         public float LastShotDamage;
+        public bool WasDeadLastTick;
 
         public readonly void Dispose() { }
     }

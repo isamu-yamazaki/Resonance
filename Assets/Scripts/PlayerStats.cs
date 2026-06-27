@@ -321,7 +321,6 @@ namespace Resonance.Player
 
                 _playerState?.SetExternalPlayerMovementState(PlayerMovementState.Dead);
                 _playerState?.SetExternalWeaponState(WeaponState.Idle);
-                GetComponent<PlayerShooter>()?.CancelReloadAndRefill();
 
                 if (_playerController != null)
                     _playerController.enabled = false;

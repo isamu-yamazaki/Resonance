@@ -13,9 +13,9 @@ namespace Resonance.Combat
 {
     public class PlayerShooter : PredictedIdentity<PlayerShooterInputData, PlayerShooterDataState>
     {
-        [Header("References")] private PlayerEquip playerEquip;
-        private FPArmsManager fpArmsManager;
-        private PlayerActionsInput playerActionsInput;
+        [Header("References")] private PlayerEquip _playerEquip;
+        private FPArmsManager _fpArmsManager;
+        private PlayerActionsInput _playerActionsInput;
         [SerializeField] private Camera playerCamera;
 
         [SerializeField] private DamageNumber damageNumberPrefab;
@@ -25,17 +25,17 @@ namespace Resonance.Combat
 
         [SerializeField] private LayerMask hitscanLayerMask;
 
-        private PlayerViewModel viewModel;
-        private WeaponStatManager weaponStatManager;
-        private PlayerState playerState;
+        private PlayerViewModel _viewModel;
+        private WeaponStatManager _weaponStatManager;
+        private PlayerState _playerState;
 
         private int MagazineSize
         {
             get
             {
-                if (playerEquip == null) return 0;
-                if (playerEquip.EquippedWeapon == null) return 0;
-                return weaponStatManager != null ? weaponStatManager.MagazineSize : 0;
+                if (_playerEquip == null) return 0;
+                if (_playerEquip.EquippedWeapon == null) return 0;
+                return _weaponStatManager != null ? _weaponStatManager.MagazineSize : 0;
             }
         }
 
@@ -44,8 +44,8 @@ namespace Resonance.Combat
         {
             get
             {
-                if (playerEquip == null) return 0;
-                int slot = playerEquip.currentState.CurrentSlot;
+                if (_playerEquip == null) return 0;
+                int slot = _playerEquip.currentState.CurrentSlot;
                 return slot == 0 ? currentState.AmmoSlot0 : currentState.AmmoSlot1;
             }
         }
@@ -59,19 +59,19 @@ namespace Resonance.Combat
 
         protected override void LateAwake()
         {
-            viewModel = GetComponent<PlayerViewModel>();
-            playerState = GetComponent<PlayerState>();
-            playerActionsInput = PlayerActionsInput.Instance;
-            playerEquip = GetComponent<PlayerEquip>();
-            fpArmsManager = GetComponent<FPArmsManager>();
+            _viewModel = GetComponent<PlayerViewModel>();
+            _playerState = GetComponent<PlayerState>();
+            _playerActionsInput = PlayerActionsInput.Instance;
+            _playerEquip = GetComponent<PlayerEquip>();
+            _fpArmsManager = GetComponent<FPArmsManager>();
 
             if (playerCamera == null && !isServer)
                 playerCamera = Camera.main;
 
-            weaponStatManager = GetComponent<WeaponStatManager>();
+            _weaponStatManager = GetComponent<WeaponStatManager>();
 
-            if (viewModel != null)
-                viewModel.InitializeAmmo(MagazineSize);
+            if (_viewModel != null)
+                _viewModel.InitializeAmmo(MagazineSize);
         }
 
         protected override PlayerShooterDataState GetInitialState()
@@ -90,20 +90,20 @@ namespace Resonance.Combat
 
         protected override void GetFinalInput(ref PlayerShooterInputData input)
         {
-            if (playerActionsInput == null) return;
+            if (_playerActionsInput == null) return;
 
-            if (playerActionsInput.AttackPressed)
+            if (_playerActionsInput.AttackPressed)
             {
                 input.AttackPressed = true;
-                playerActionsInput.SetAttackPressedFalse();
+                _playerActionsInput.SetAttackPressedFalse();
             }
 
-            input.AttackHeld = playerActionsInput.AttackHeld;
+            input.AttackHeld = _playerActionsInput.AttackHeld;
 
-            if (playerActionsInput.ReloadPressed)
+            if (_playerActionsInput.ReloadPressed)
             {
                 input.ReloadPressed = true;
-                playerActionsInput.SetReloadPressedFalse();
+                _playerActionsInput.SetReloadPressedFalse();
             }
 
             input.PlayerCameraPosition = playerCamera.transform.position;
@@ -116,9 +116,9 @@ namespace Resonance.Combat
 
         protected override void Simulate(PlayerShooterInputData input, ref PlayerShooterDataState state, float delta)
         {
-            if (playerEquip == null || weaponStatManager == null || playerEquip.EquippedWeapon == null) return;
+            if (_playerEquip == null || _weaponStatManager == null || _playerEquip.EquippedWeapon == null) return;
 
-            // 1. Decrement timers
+            // Decrement timers
             state.FireCooldown = Mathf.Max(0f, state.FireCooldown - delta);
 
             bool wasReloading = state.ReloadTimer > 0f;
@@ -128,9 +128,9 @@ namespace Resonance.Combat
                 if (state.ReloadTimer < 0f) state.ReloadTimer = 0f;
             }
 
-            // 2. Detect weapon change (slot swap OR a new weapon equipped in the current slot)
-            int currentSlot = playerEquip.currentState.CurrentSlot;
-            string currentWeaponId = playerEquip.EquippedWeapon.Id;
+            // Detect weapon change (slot swap OR a new weapon equipped in the current slot)
+            int currentSlot = _playerEquip.currentState.CurrentSlot;
+            string currentWeaponId = _playerEquip.EquippedWeapon.Id;
             ref string trackedWeaponId = ref (currentSlot == 0 ? ref state.WeaponIdSlot0 : ref state.WeaponIdSlot1);
 
             bool slotChanged = state.LastEquippedSlot != currentSlot;
@@ -139,7 +139,7 @@ namespace Resonance.Combat
             if (slotChanged || weaponChanged)
             {
                 state.LastEquippedSlot = currentSlot;
-                state.CurrentSpread = weaponStatManager.Spread;
+                state.CurrentSpread = _weaponStatManager.Spread;
                 state.ReloadTimer = 0f;
                 ref int slotAmmo = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
 
@@ -148,61 +148,83 @@ namespace Resonance.Combat
                 {
                     // A new/different weapon now occupies this slot (e.g. just bought) → start full.
                     trackedWeaponId = currentWeaponId;
-                    slotAmmo = weaponStatManager.MagazineSize;
+                    slotAmmo = _weaponStatManager.MagazineSize;
                 }
                 // otherwise, don't update slot ammo
             }
 
-            // 3. Finish reload when timer expires
+            // Cancel reload + refill if player died
+            if (!state.WasDeadLastTick && _playerState.IsDead())
+            {
+                CancelReloadAndRefill(ref state);
+            }
+
+            // Finish reload when timer expires
             if (wasReloading && state.ReloadTimer <= 0f)
             {
                 ref int reloadedAmmo = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
-                reloadedAmmo = weaponStatManager.MagazineSize;
-                state.CurrentSpread = weaponStatManager.Spread;
+                reloadedAmmo = _weaponStatManager.MagazineSize;
+                state.CurrentSpread = _weaponStatManager.Spread;
                 state.ReloadEndCount++;
             }
 
-            // 4. Spread recovery when not firing
+            // Spread recovery when not firing
             if (!input.AttackHeld && !input.AttackPressed)
             {
                 state.CurrentSpread = Mathf.Max(
-                    weaponStatManager.Spread,
-                    state.CurrentSpread - weaponStatManager.SpreadRecoveryRate * delta
+                    _weaponStatManager.Spread,
+                    state.CurrentSpread - _weaponStatManager.SpreadRecoveryRate * delta
                 );
             }
 
-            // 5. Reload input
+            // Reload input
             if (input.ReloadPressed && state.ReloadTimer <= 0f)
             {
                 TrySimulateReload(ref state, currentSlot);
                 return;
             }
 
-            // 6. Shoot input
+            // Shoot input
             if ((input.AttackPressed || input.AttackHeld) && state.ReloadTimer <= 0f && state.FireCooldown <= 0f)
             {
                 TrySimulateShoot(input, ref state, currentSlot);
             }
+
+            state.WasDeadLastTick = _playerState.IsDead();
+        }
+
+        [SimulationOnly]
+        private void CancelReloadAndRefill(ref PlayerShooterDataState state)
+        {
+            if (_playerEquip == null) return;
+            if (currentState.ReloadTimer <= 0f) return;
+            state.ReloadTimer = 0f;
+
+            int slot = _playerEquip.currentState.CurrentSlot;
+            if (slot == 0)
+                state.AmmoSlot0 = _weaponStatManager.MagazineSize;
+            else
+                state.AmmoSlot1 = _weaponStatManager.MagazineSize;
         }
 
         [SimulationOnly]
         private void TrySimulateReload(ref PlayerShooterDataState state, int currentSlot)
         {
-            WeaponProperties weapon = playerEquip.EquippedWeapon;
+            WeaponProperties weapon = _playerEquip.EquippedWeapon;
             if (weapon == null) return;
-            if (weaponStatManager.MagazineSize <= 0) return;
+            if (_weaponStatManager.MagazineSize <= 0) return;
 
             int currentAmmo = currentSlot == 0 ? state.AmmoSlot0 : state.AmmoSlot1;
-            if (currentAmmo >= weaponStatManager.MagazineSize) return;
+            if (currentAmmo >= _weaponStatManager.MagazineSize) return;
 
             bool isEmpty = currentAmmo <= 0;
             AnimationClip clip = isEmpty ? weapon.EmptyReloadClip : weapon.ReloadClip;
-            float reloadTime = clip != null ? clip.length : weaponStatManager.ReloadTime;
+            float reloadTime = clip != null ? clip.length : _weaponStatManager.ReloadTime;
 
             if (reloadTime <= 0f)
             {
                 ref int ammoRef = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
-                ammoRef = weaponStatManager.MagazineSize;
+                ammoRef = _weaponStatManager.MagazineSize;
                 state.ReloadEndCount++;
                 return;
             }
@@ -221,49 +243,49 @@ namespace Resonance.Combat
         private void TrySimulateShoot(in PlayerShooterInputData input, ref PlayerShooterDataState state,
             int currentSlot)
         {
-            if (playerState.IsMatchFrozen()) return;
+            if (_playerState.IsMatchFrozen()) return;
 
-            WeaponProperties weapon = playerEquip.EquippedWeapon;
+            WeaponProperties weapon = _playerEquip.EquippedWeapon;
             if (weapon == null) return;
 
             WeaponView view = GetActiveWeaponView();
             if (view == null || view.Muzzle == null) return;
 
-            float fireRate = weaponStatManager.FireRate;
+            float fireRate = _weaponStatManager.FireRate;
             if (fireRate > 0f)
                 state.FireCooldown = 1f / fireRate;
 
-            if (weaponStatManager.MagazineSize > 0)
+            if (_weaponStatManager.MagazineSize > 0)
             {
                 ref int ammoRef = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
 
                 if (ammoRef <= 0)
                 {
                     state.EmptyTriggerCount++;
-                    if (playerActionsInput != null)
-                        playerActionsInput.RequestReload();
+                    if (_playerActionsInput != null)
+                        _playerActionsInput.RequestReload();
                     return;
                 }
 
                 ammoRef--;
 
-                state.CurrentSpread += weaponStatManager.SpreadPerShot;
-                state.CurrentSpread = Mathf.Min(state.CurrentSpread, weaponStatManager.MaxSpread);
+                state.CurrentSpread += _weaponStatManager.SpreadPerShot;
+                state.CurrentSpread = Mathf.Min(state.CurrentSpread, _weaponStatManager.MaxSpread);
 
 #if UNITY_EDITOR
                 if (debugAmmoLogs)
-                    Debug.Log($"[Shooter] Fired. Ammo: {ammoRef}/{weaponStatManager.MagazineSize}", this);
+                    Debug.Log($"[Shooter] Fired. Ammo: {ammoRef}/{_weaponStatManager.MagazineSize}", this);
 #endif
             }
 
-            int count = weaponStatManager.ProjectilesPerShot;
+            int count = _weaponStatManager.ProjectilesPerShot;
             if (count < 1) count = 1;
 
             WeaponPayload payload = BuildBasePayload();
 
             state.LastShotHitPlayer = false;
             state.LastShotDamage = 0f;
-            state.LastShotEndPoint = view.Muzzle.position + GetAimDirectionFromInput(input) * weaponStatManager.Range;
+            state.LastShotEndPoint = view.Muzzle.position + GetAimDirectionFromInput(input) * _weaponStatManager.Range;
 
             if (weapon.FiringType == WeaponFiringType.Hitscan)
             {
@@ -305,7 +327,7 @@ namespace Resonance.Combat
             int count, in PlayerShooterInputData input, ref PlayerShooterDataState state)
         {
             Vector3 rayOrigin = input.PlayerCameraPosition;
-            float hitscanMaxDistance = weaponStatManager.Range;
+            float hitscanMaxDistance = _weaponStatManager.Range;
 
             for (int i = 0; i < count; i++)
             {
@@ -404,7 +426,7 @@ namespace Resonance.Combat
 
         protected override void UpdateView(PlayerShooterDataState viewState, PlayerShooterDataState? verified)
         {
-            if (playerEquip == null) return;
+            if (_playerEquip == null) return;
 
             int newShots = viewState.ShotCount - _lastViewedShotCount;
             int newReloadStarts = viewState.ReloadStartCount - _lastViewedReloadStartCount;
@@ -414,42 +436,42 @@ namespace Resonance.Combat
             // Update weapon animation state
             if (viewState.ReloadTimer > 0f)
             {
-                playerState?.SetExternalWeaponState(viewState.IsEmptyReload
+                _playerState?.SetExternalWeaponState(viewState.IsEmptyReload
                     ? WeaponState.EmptyReloading
                     : WeaponState.Reloading);
             }
             else if (newShots > 0)
             {
-                playerState?.SetExternalWeaponState(WeaponState.Shooting);
+                _playerState?.SetExternalWeaponState(WeaponState.Shooting);
             }
             else
             {
-                if (playerState?.CurrentWeaponState == WeaponState.Shooting ||
-                    playerState?.CurrentWeaponState == WeaponState.Reloading ||
-                    playerState?.CurrentWeaponState == WeaponState.EmptyReloading)
+                if (_playerState?.CurrentWeaponState == WeaponState.Shooting ||
+                    _playerState?.CurrentWeaponState == WeaponState.Reloading ||
+                    _playerState?.CurrentWeaponState == WeaponState.EmptyReloading)
                 {
-                    playerState.SetExternalWeaponState(WeaponState.Idle);
+                    _playerState.SetExternalWeaponState(WeaponState.Idle);
                 }
             }
 
             // Update ammo UI
-            int currentSlot = playerEquip.currentState.CurrentSlot;
+            int currentSlot = _playerEquip.currentState.CurrentSlot;
             int displayAmmo = currentSlot == 0 ? viewState.AmmoSlot0 : viewState.AmmoSlot1;
-            viewModel?.SetAmmo(displayAmmo, MagazineSize);
-            viewModel?.SetReloadState(viewState.ReloadTimer > 0f);
+            _viewModel?.SetAmmo(displayAmmo, MagazineSize);
+            _viewModel?.SetReloadState(viewState.ReloadTimer > 0f);
 
-            if (viewState.ReloadTimer > 0f && weaponStatManager != null)
+            if (viewState.ReloadTimer > 0f && _weaponStatManager != null)
             {
-                WeaponProperties weapon = playerEquip.EquippedWeapon;
+                WeaponProperties weapon = _playerEquip.EquippedWeapon;
                 AnimationClip clip = viewState.IsEmptyReload ? weapon?.EmptyReloadClip : weapon?.ReloadClip;
-                float reloadDuration = clip != null ? clip.length : weaponStatManager.ReloadTime;
+                float reloadDuration = clip != null ? clip.length : _weaponStatManager.ReloadTime;
                 if (reloadDuration > 0f)
-                    viewModel?.SetReloadProgress(Mathf.Clamp01(1f - (viewState.ReloadTimer / reloadDuration)));
+                    _viewModel?.SetReloadProgress(Mathf.Clamp01(1f - (viewState.ReloadTimer / reloadDuration)));
             }
             else if (newReloadEnds > 0)
             {
-                viewModel?.SetReloadProgress(1f);
-                viewModel?.SetReloadState(false);
+                _viewModel?.SetReloadProgress(1f);
+                _viewModel?.SetReloadState(false);
             }
 
             // Shot effects
@@ -458,11 +480,11 @@ namespace Resonance.Combat
                 WeaponView currentView = GetActiveWeaponView();
                 if (currentView != null)
                 {
-                    WeaponAudioProperties audioProperties = weaponStatManager?.GetAudioProperties();
+                    WeaponAudioProperties audioProperties = _weaponStatManager?.GetAudioProperties();
                     if (audioProperties != null)
                         currentView.ApplyAudioProperties(audioProperties);
 
-                    MuzzleFlashSettings flashSettings = weaponStatManager?.GetMuzzleFlashSettings();
+                    MuzzleFlashSettings flashSettings = _weaponStatManager?.GetMuzzleFlashSettings();
                     if (flashSettings != null)
                         currentView.ApplyMuzzleFlashSettings(flashSettings);
 
@@ -491,12 +513,12 @@ namespace Resonance.Combat
                 }
 
                 // Bullet trail
-                BulletProperties hitscanBullet = weaponStatManager?.GetBulletProperties();
+                BulletProperties hitscanBullet = _weaponStatManager?.GetBulletProperties();
                 if (hitscanBullet?.BulletTrailPrefab != null)
                 {
                     Vector3 startPos = isOwner
-                        ? (fpArmsManager?.GetActiveFPWeaponView()?.Muzzle.position ?? viewState.LastShotEndPoint)
-                        : (playerEquip.CurrentWeaponView?.Muzzle.position ?? viewState.LastShotEndPoint);
+                        ? (_fpArmsManager?.GetActiveFPWeaponView()?.Muzzle.position ?? viewState.LastShotEndPoint)
+                        : (_playerEquip.CurrentWeaponView?.Muzzle.position ?? viewState.LastShotEndPoint);
                     StartCoroutine(SpawnTrail(startPos, viewState.LastShotEndPoint, hitscanBullet.BulletTrailPrefab));
                 }
             }
@@ -505,18 +527,18 @@ namespace Resonance.Combat
             if (newReloadStarts > 0)
             {
                 WeaponView reloadView = isOwner
-                    ? fpArmsManager?.GetActiveFPWeaponView()
-                    : playerEquip.CurrentWeaponView;
+                    ? _fpArmsManager?.GetActiveFPWeaponView()
+                    : _playerEquip.CurrentWeaponView;
                 reloadView?.PlayReload();
-                viewModel?.SetReloadProgress(0f);
+                _viewModel?.SetReloadProgress(0f);
             }
 
             // Empty trigger effects
             if (newEmptyTriggers > 0)
             {
                 WeaponView triggerView = isOwner
-                    ? fpArmsManager?.GetActiveFPWeaponView()
-                    : playerEquip.CurrentWeaponView;
+                    ? _fpArmsManager?.GetActiveFPWeaponView()
+                    : _playerEquip.CurrentWeaponView;
                 triggerView?.PlayEmptyTrigger();
             }
 
@@ -526,28 +548,6 @@ namespace Resonance.Combat
             _lastViewedEmptyTriggerCount = viewState.EmptyTriggerCount;
         }
 
-        // TODO: migrate to simulation
-        public void CancelReload()
-        {
-            if (currentState.ReloadTimer <= 0f) return;
-            currentState.ReloadTimer = 0f;
-            viewModel?.SetReloadState(false);
-            viewModel?.SetReloadProgress(0f);
-        }
-
-        // TODO: migrate to simulation
-        public void CancelReloadAndRefill()
-        {
-            if (!isOwner) return;
-            if (playerEquip == null) return;
-            CancelReload();
-            int slot = playerEquip.currentState.CurrentSlot;
-            if (slot == 0)
-                currentState.AmmoSlot0 = weaponStatManager.MagazineSize;
-            else
-                currentState.AmmoSlot1 = weaponStatManager.MagazineSize;
-            viewModel?.SetAmmo(CurrentAmmo, MagazineSize);
-        }
 
         private IEnumerator SpawnTrail(Vector3 start, Vector3 end, TrailRenderer trailPrefab)
         {
@@ -582,14 +582,14 @@ namespace Resonance.Combat
             return new WeaponPayload
             {
                 Shooter = gameObject,
-                Damage = weaponStatManager.Damage,
+                Damage = _weaponStatManager.Damage,
             };
         }
 
 
         private float ComputeDamageWithFalloff(float payloadDamage, float distance, WeaponProperties weapon)
         {
-            if (distance > weaponStatManager.Range / 2)
+            if (distance > _weaponStatManager.Range / 2)
                 return payloadDamage / 2;
 
             return payloadDamage;
@@ -598,10 +598,10 @@ namespace Resonance.Combat
 
         private WeaponView GetActiveWeaponView()
         {
-            if (isOwner && fpArmsManager != null)
-                return fpArmsManager.GetActiveFPWeaponView();
+            if (isOwner && _fpArmsManager != null)
+                return _fpArmsManager.GetActiveFPWeaponView();
 
-            return playerEquip?.CurrentWeaponView;
+            return _playerEquip?.CurrentWeaponView;
         }
 
         private Vector3 ApplySpread(Vector3 dir, float spreadDegrees)
