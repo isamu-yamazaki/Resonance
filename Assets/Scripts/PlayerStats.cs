@@ -45,7 +45,7 @@ namespace Resonance.Player
 
         public IReadOnlyList<float> DamageReductionModifiers => currentState.DamageReductionModifiers;
         public IReadOnlyList<float> SpeedModifiers => currentState.SpeedModifiers;
-        public IReadOnlyList<float> RegenModifiers => regenModifiers;
+        public IReadOnlyList<float> RegenModifiers => currentState.RegenModifiers;
 
         #endregion
 
@@ -91,6 +91,13 @@ namespace Resonance.Player
 
         private float? _pendingDamageReductionModifierToAdd;
         private float? _pendingDamageReductionModifierToRemove;
+
+        #endregion
+
+        #region External regen modifiers
+
+        private float? _pendingRegenModifierToAdd;
+        private float? _pendingRegenModifierToRemove;
 
         #endregion
 
@@ -150,6 +157,7 @@ namespace Resonance.Player
 
                 SpeedModifiers = DisposableList<float>.Create(),
                 DamageReductionModifiers = DisposableList<float>.Create(),
+                RegenModifiers = DisposableList<float>.Create(),
             };
         }
 
@@ -166,6 +174,8 @@ namespace Resonance.Player
             input.ExternalSpeedModifierToRemove = _pendingSpeedModifierToRemove;
             input.ExternalDamageReductionModifierToAdd = _pendingDamageReductionModifierToAdd;
             input.ExternalDamageReductionModifierToRemove = _pendingDamageReductionModifierToRemove;
+            input.ExternalRegenModifierToAdd = _pendingRegenModifierToAdd;
+            input.ExternalRegenModifierToRemove = _pendingRegenModifierToRemove;
 
             _pendingExternalHeal = 0f;
             _pendingExternalDamage = 0f;
@@ -173,6 +183,8 @@ namespace Resonance.Player
             _pendingSpeedModifierToRemove = null;
             _pendingDamageReductionModifierToAdd = null;
             _pendingDamageReductionModifierToRemove = null;
+            _pendingRegenModifierToAdd = null;
+            _pendingRegenModifierToRemove = null;
         }
 
         public void AddSpeedModifierExternal(float modifier)
@@ -193,6 +205,16 @@ namespace Resonance.Player
         public void RemoveDamageReductionModifierExternal(float modifier)
         {
             _pendingDamageReductionModifierToRemove = modifier;
+        }
+
+        public void AddRegenModifierExternal(float modifier)
+        {
+            _pendingRegenModifierToAdd = modifier;
+        }
+
+        public void RemoveRegenModifierExternal(float modifier)
+        {
+            _pendingRegenModifierToRemove = modifier;
         }
 
         #endregion
@@ -226,6 +248,10 @@ namespace Resonance.Player
                 SimulateAddDamageReductionModifier(ref state, input.ExternalDamageReductionModifierToAdd.Value);
             if (input.ExternalDamageReductionModifierToRemove.HasValue)
                 SimulateRemoveDamageReductionModifier(ref state, input.ExternalDamageReductionModifierToRemove.Value);
+            if (input.ExternalRegenModifierToAdd.HasValue)
+                SimulateAddRegenModifier(ref state, input.ExternalRegenModifierToAdd.Value);
+            if (input.ExternalRegenModifierToRemove.HasValue)
+                SimulateRemoveRegenModifier(ref state, input.ExternalRegenModifierToRemove.Value);
 
             // Death check
             if (state.CurrentHealth <= 0f && !state.IsDead)
@@ -313,6 +339,35 @@ namespace Resonance.Player
         {
             float reduction = state.DamageReductionModifiers.Aggregate(baseDamageReduction, (combined, next) => combined + next);
             state.CurrentDamageReduction = Mathf.Clamp(reduction, 0f, maxDamageReduction);
+        }
+
+        [SimulationOnly]
+        public void SimulateAddRegenModifier(float modifier)
+        {
+            SimulateAddRegenModifier(ref currentState, modifier);
+        }
+
+        private void SimulateAddRegenModifier(ref PlayerStatsDataState state, float modifier)
+        {
+            state.RegenModifiers.Add(modifier);
+            CalculateRegen(ref state);
+        }
+
+        [SimulationOnly]
+        public void SimulateRemoveRegenModifier(float modifier)
+        {
+            SimulateRemoveRegenModifier(ref currentState, modifier);
+        }
+
+        private void SimulateRemoveRegenModifier(ref PlayerStatsDataState state, float modifier)
+        {
+            state.RegenModifiers.Remove(modifier);
+            CalculateRegen(ref state);
+        }
+
+        private void CalculateRegen(ref PlayerStatsDataState state)
+        {
+            state.CurrentHealthRegen = baseHealthRegen + state.RegenModifiers.Aggregate(0f, (combined, next) => combined + next);
         }
 
         private void CalculateSpeed(ref PlayerStatsDataState state)
@@ -487,29 +542,6 @@ namespace Resonance.Player
 
         #region Damage Reduction Management
 
-
-        #endregion
-
-        #region Regen Management
-
-        private List<float> regenModifiers = new List<float>();
-
-        public void AddRegenModifier(float modifier)
-        {
-            regenModifiers.Add(modifier);
-            CalculateRegen();
-        }
-
-        public void RemoveRegenModifier(float modifier)
-        {
-            regenModifiers.Remove(modifier);
-            CalculateRegen();
-        }
-
-        private void CalculateRegen()
-        {
-            currentState.CurrentHealthRegen = baseHealthRegen + regenModifiers.Sum();
-        }
 
         #endregion
     }

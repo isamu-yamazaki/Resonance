@@ -18,11 +18,13 @@ namespace Resonance.Player
 
         public DisposableList<float> SpeedModifiers;
         public DisposableList<float> DamageReductionModifiers;
+        public DisposableList<float> RegenModifiers;
 
         public void Dispose()
         {
             SpeedModifiers.Dispose();
             DamageReductionModifiers.Dispose();
+            RegenModifiers.Dispose();
         }
     }
 }

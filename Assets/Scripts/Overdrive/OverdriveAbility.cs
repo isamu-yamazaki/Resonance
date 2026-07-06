@@ -164,7 +164,7 @@ namespace Resonance.PlayerController
             if (_playerStats != null)
             {
                 _playerStats.AddSpeedModifierExternal(overdriveSpeedMultiplier);
-                _playerStats.AddRegenModifier(overdriveRegenAmount);
+                _playerStats.AddRegenModifierExternal(overdriveRegenAmount);
                 _playerStats.AddDamageReductionModifierExternal(overdriveDamageReductionAmount);
                 _playerStats.Heal(overdriveHealAmount);
 #if UNITY_EDITOR
@@ -185,7 +185,7 @@ namespace Resonance.PlayerController
             CooldownTimeRemaining = overdriveCooldown;
             
             _playerStats.RemoveSpeedModifierExternal(overdriveSpeedMultiplier);
-            _playerStats.RemoveRegenModifier(overdriveRegenAmount);
+            _playerStats.RemoveRegenModifierExternal(overdriveRegenAmount);
             _playerStats.RemoveDamageReductionModifierExternal(overdriveDamageReductionAmount);
 #if UNITY_EDITOR
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");

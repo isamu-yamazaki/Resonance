@@ -401,14 +401,14 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (!float.TryParse(_regenModifierAmount, out float val)) { Debug.LogWarning("Invalid regen modifier"); return; }
             _activeRegenModifier = val;
-            _playerStats.AddRegenModifier(val);
+            _playerStats.AddRegenModifierExternal(val);
             Debug.Log($"Added regen modifier: {val}");
         }
 
         private void RemoveRegenModifier()
         {
             if (_playerStats == null || !_activeRegenModifier.HasValue) return;
-            _playerStats.RemoveRegenModifier(_activeRegenModifier.Value);
+            _playerStats.RemoveRegenModifierExternal(_activeRegenModifier.Value);
             Debug.Log($"Removed regen modifier: {_activeRegenModifier.Value}");
             _activeRegenModifier = null;
         }

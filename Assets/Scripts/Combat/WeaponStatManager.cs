@@ -130,20 +130,55 @@ namespace Resonance.Combat
             currentState.WeaponIdentity = identity;
         }
 
+        [SimulationOnly]
+        public void SimulateAddAugmentMod(WeaponModProperties mod)
+        {
+            if (mod == null) return;
+            SimulateAddAugmentMod(ref currentState, mod.Key);
+        }
+
+        private void SimulateAddAugmentMod(ref WeaponStatManagerState state, string key)
+        {
+            state.AugmentModKeys.Add(key);
+        }
+
+        [SimulationOnly]
+        public void SimulateRemoveAugmentMod(WeaponModProperties mod)
+        {
+            if (mod == null) return;
+            SimulateRemoveAugmentMod(ref currentState, mod.Key);
+        }
+
+        private void SimulateRemoveAugmentMod(ref WeaponStatManagerState state, string key)
+        {
+            // Remove the first matching key so multiplicity (e.g. two augments sharing a mod) is preserved.
+            state.AugmentModKeys.Remove(key);
+        }
+
+        [SimulationOnly]
+        public void SimulateClearAugmentMods()
+        {
+            SimulateClearAugmentMods(ref currentState);
+        }
+
+        private void SimulateClearAugmentMods(ref WeaponStatManagerState state)
+        {
+            state.AugmentModKeys.Clear();
+        }
+
         protected override void Simulate(WeaponStatManagerInput input, ref WeaponStatManagerState state, float delta)
         {
             if (input.ManageWeapon)
                 state.WeaponIdentity = input.WeaponToManage;
 
             if (input.ClearAugmentMods)
-                state.AugmentModKeys.Clear();
+                SimulateClearAugmentMods(ref state);
 
-            // Remove the first matching key so multiplicity (e.g. two augments sharing a mod) is preserved.
             if (input.AugmentKeyToRemove != null)
-                state.AugmentModKeys.Remove(input.AugmentKeyToRemove);
+                SimulateRemoveAugmentMod(ref state, input.AugmentKeyToRemove);
 
             if (input.AugmentKeyToAdd != null)
-                state.AugmentModKeys.Add(input.AugmentKeyToAdd);
+                SimulateAddAugmentMod(ref state, input.AugmentKeyToAdd);
         }
 
         #endregion

@@ -25,7 +25,7 @@ namespace Resonance.Combat
                 return;
             }
 
-            //Player Stats first
+            // Player Stats first
             if (augment.Speed != 0)
             {
                 augmentedPlayerStatTarget.SimulateAddSpeedModifier(augment.Speed);
@@ -38,13 +38,13 @@ namespace Resonance.Combat
             
             if (augment.Regen != 0)
             {
-                augmentedPlayerStatTarget.AddRegenModifier(augment.Regen);
+                augmentedPlayerStatTarget.SimulateAddRegenModifier(augment.Regen);
             }
             
-            //Then handle weapon stats
+            // Then handle weapon stats
             if (augment.ModProperties != null)
             {
-                augmentedWeaponStatTarget.AddAugmentMod(augment.ModProperties);
+                augmentedWeaponStatTarget.SimulateAddAugmentMod(augment.ModProperties);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Resonance.Combat
                 return;
             }
 
-            //Player Stats first
+            // Player Stats first
             if (augment.Speed != 0)
             {
                 augmentedPlayerStatTarget.SimulateRemoveSpeedModifier(augment.Speed);
@@ -70,13 +70,13 @@ namespace Resonance.Combat
             
             if (augment.Regen != 0)
             {
-                augmentedPlayerStatTarget.RemoveRegenModifier(augment.Regen);
+                augmentedPlayerStatTarget.SimulateRemoveRegenModifier(augment.Regen);
             }
             
-            //Then handle weapon stats
+            // Then handle weapon stats
             if (augment.ModProperties != null)
             {
-                augmentedWeaponStatTarget.RemoveAugmentMod(augment.ModProperties);
+                augmentedWeaponStatTarget.SimulateRemoveAugmentMod(augment.ModProperties);
             }
         }
     }

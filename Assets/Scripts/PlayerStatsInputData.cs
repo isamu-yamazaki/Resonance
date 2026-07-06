@@ -12,6 +12,8 @@ namespace Resonance.Player
         public float? ExternalSpeedModifierToRemove;
         public float? ExternalDamageReductionModifierToAdd;
         public float? ExternalDamageReductionModifierToRemove;
+        public float? ExternalRegenModifierToAdd;
+        public float? ExternalRegenModifierToRemove;
 
         public readonly void Dispose() { }
     }
