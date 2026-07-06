@@ -15,11 +15,14 @@ namespace Resonance.Player
         public Vector3 LastDamageAttackerPos;
         public Vector3 SpawnPosition;
         public Quaternion SpawnRotation;
+
         public DisposableList<float> SpeedModifiers;
+        public DisposableList<float> DamageReductionModifiers;
 
         public void Dispose()
         {
             SpeedModifiers.Dispose();
+            DamageReductionModifiers.Dispose();
         }
     }
 }

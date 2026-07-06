@@ -10,6 +10,8 @@ namespace Resonance.Player
         public Vector3 ExternalAttackerPosition;
         public float? ExternalSpeedModifierToAdd;
         public float? ExternalSpeedModifierToRemove;
+        public float? ExternalDamageReductionModifierToAdd;
+        public float? ExternalDamageReductionModifierToRemove;
 
         public readonly void Dispose() { }
     }

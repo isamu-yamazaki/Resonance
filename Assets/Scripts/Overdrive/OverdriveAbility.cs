@@ -165,7 +165,7 @@ namespace Resonance.PlayerController
             {
                 _playerStats.AddSpeedModifierExternal(overdriveSpeedMultiplier);
                 _playerStats.AddRegenModifier(overdriveRegenAmount);
-                _playerStats.AddDamageReductionModifier(overdriveDamageReductionAmount);
+                _playerStats.AddDamageReductionModifierExternal(overdriveDamageReductionAmount);
                 _playerStats.Heal(overdriveHealAmount);
 #if UNITY_EDITOR
                 Debug.Log($"Overdrive ACTIVATED! Healed {overdriveHealAmount} HP");
@@ -186,7 +186,7 @@ namespace Resonance.PlayerController
             
             _playerStats.RemoveSpeedModifierExternal(overdriveSpeedMultiplier);
             _playerStats.RemoveRegenModifier(overdriveRegenAmount);
-            _playerStats.RemoveDamageReductionModifier(overdriveDamageReductionAmount);
+            _playerStats.RemoveDamageReductionModifierExternal(overdriveDamageReductionAmount);
 #if UNITY_EDITOR
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");
 #endif

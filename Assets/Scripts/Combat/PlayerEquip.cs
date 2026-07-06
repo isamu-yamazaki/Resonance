@@ -255,15 +255,23 @@ namespace Resonance.Combat
                 var previous = playerInventory.FindAugmentByKey(lastKey);
                 if (previous != null)
                 {
-                    _playerAugmentEquipper?.RemoveAugmentStats(previous);
-                    _playerAbilityManager?.OnAugmentRemoved(previous);
+                    _playerAugmentEquipper?.SimulateRemoveAugmentStats(previous);
+                    _playerAbilityManager?.SimulateRemoveAugment(new AugmentLookupArguments()
+                    {
+                        AbilityKey = previous.AbilityKey,
+                        Key = previous.Key
+                    });
                 }
             }
 
             if (current != null)
             {
-                _playerAugmentEquipper?.ApplyAugmentStats(current);
-                _playerAbilityManager?.OnAugmentEquipped(current);
+                _playerAugmentEquipper?.SimulateApplyAugmentStats(current);
+                _playerAbilityManager?.SimulateEquipAugment(new AugmentLookupArguments()
+                {
+                    AbilityKey = current.AbilityKey,
+                    Key = current.Key
+                });
             }
 
             return currentKey;

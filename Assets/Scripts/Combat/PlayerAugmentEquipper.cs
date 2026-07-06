@@ -1,23 +1,25 @@
+using PurrNet.Prediction;
 using Resonance.Combat.Augments;
 using Resonance.Player;
-using UnityEngine;
 
 namespace Resonance.Combat
 {
     
-    public class PlayerAugmentEquipper : MonoBehaviour
+    public class PlayerAugmentEquipper : PredictedIdentity<PlayerAugmentEquipperState>
     {
         private WeaponStatManager augmentedWeaponStatTarget;
         private PlayerStats augmentedPlayerStatTarget;
 
-        private void Awake()
+        protected override void LateAwake()
         {
             augmentedPlayerStatTarget = GetComponent<PlayerStats>();
             augmentedWeaponStatTarget = GetComponent<WeaponStatManager>();
         }
 
-        public void ApplyAugmentStats(AugmentProperties augment)
+        [SimulationOnly]
+        public void SimulateApplyAugmentStats(AugmentProperties augment)
         {
+            // TODO: fully simulate
             if (augment == null)
             {
                 return;
@@ -26,12 +28,12 @@ namespace Resonance.Combat
             //Player Stats first
             if (augment.Speed != 0)
             {
-                augmentedPlayerStatTarget.AddSpeedModifierExternal(augment.Speed);
+                augmentedPlayerStatTarget.SimulateAddSpeedModifier(augment.Speed);
             }
             
             if (augment.DamageReduction != 0)
             {
-                augmentedPlayerStatTarget.AddDamageReductionModifier(augment.DamageReduction);
+                augmentedPlayerStatTarget.SimulateAddDamageReductionModifier(augment.DamageReduction);
             }
             
             if (augment.Regen != 0)
@@ -45,9 +47,11 @@ namespace Resonance.Combat
                 augmentedWeaponStatTarget.AddAugmentMod(augment.ModProperties);
             }
         }
-        
-        public void RemoveAugmentStats(AugmentProperties augment)
+
+        [SimulationOnly]
+        public void SimulateRemoveAugmentStats(AugmentProperties augment)
         {
+            // TODO: fully simulate
             if (augment == null)
             {
                 return;
@@ -56,12 +60,12 @@ namespace Resonance.Combat
             //Player Stats first
             if (augment.Speed != 0)
             {
-                augmentedPlayerStatTarget.RemoveSpeedModifierExternal(augment.Speed);
+                augmentedPlayerStatTarget.SimulateRemoveSpeedModifier(augment.Speed);
             }
             
             if (augment.DamageReduction != 0)
             {
-                augmentedPlayerStatTarget.RemoveDamageReductionModifier(augment.DamageReduction);
+                augmentedPlayerStatTarget.SimulateRemoveDamageReductionModifier(augment.DamageReduction);
             }
             
             if (augment.Regen != 0)
@@ -74,6 +78,13 @@ namespace Resonance.Combat
             {
                 augmentedWeaponStatTarget.RemoveAugmentMod(augment.ModProperties);
             }
+        }
+    }
+
+    public struct PlayerAugmentEquipperState : IPredictedData<PlayerAugmentEquipperState>
+    {
+        public void Dispose()
+        {
         }
     }
 }

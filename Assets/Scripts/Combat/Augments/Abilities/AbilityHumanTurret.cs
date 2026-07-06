@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Resonance.Combat.Augments
 {
+    // TODO: re-implement as a predicted ability
     public class AbilityHumanTurret : MonoBehaviour, IAugmentAbility, IEquippableAbility
     {
         [SerializeField] private float timeToActivate = 2f;
@@ -112,7 +113,7 @@ namespace Resonance.Combat.Augments
 
             isTurretActive = true;
 
-            playerStats.AddDamageReductionModifier(damageReduction);
+            playerStats.AddDamageReductionModifierExternal(damageReduction);
             weaponStatManager.AddAugmentMod(turretMod);
         }
 
@@ -125,7 +126,7 @@ namespace Resonance.Combat.Augments
 
             isTurretActive = false;
 
-            playerStats.RemoveDamageReductionModifier(damageReduction);
+            playerStats.RemoveDamageReductionModifierExternal(damageReduction);
             weaponStatManager.RemoveAugmentMod(turretMod);
         }
     }

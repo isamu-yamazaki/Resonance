@@ -20,9 +20,6 @@ namespace Resonance.Combat
 
         private AugmentProperties[] _augmentResources;
 
-        private AugmentLookupArguments? _pendingAugmentToEquip;
-        private AugmentLookupArguments? _pendingAugmentToRemove;
-
         #endregion
 
         #region Startup
@@ -50,38 +47,6 @@ namespace Resonance.Combat
 
         #endregion
 
-        #region External state-setters
-
-        public void OnAugmentEquipped(AugmentProperties augment)
-        {
-            if (augment == null || string.IsNullOrEmpty(augment.AbilityKey))
-            {
-                return;
-            }
-
-            _pendingAugmentToEquip = new AugmentLookupArguments
-            {
-                AbilityKey = augment.AbilityKey,
-                Key = augment.Key
-            };
-        }
-
-        public void OnAugmentRemoved(AugmentProperties augment)
-        {
-            if (augment == null || string.IsNullOrEmpty(augment.AbilityKey))
-            {
-                return;
-            }
-
-            _pendingAugmentToRemove = new AugmentLookupArguments()
-            {
-                AbilityKey = augment.AbilityKey,
-                Key = augment.Key
-            };
-        }
-
-        #endregion
-
         #region Simulation loop
 
         protected override void GetFinalInput(ref PlayerAbilityManagerInput input)
@@ -89,12 +54,6 @@ namespace Resonance.Combat
             if (!isOwner) return;
             input.AbilityUpperPressed = playerActionsInput.AbilityUpperPressed;
             input.AbilityLowerPressed =  playerActionsInput.AbilityLowerPressed;
-
-            input.PendingAugmentToEquip = _pendingAugmentToEquip;
-            input.PendingAugmentToRemove = _pendingAugmentToRemove;
-
-            _pendingAugmentToEquip = null;
-            _pendingAugmentToRemove = null;
         }
 
         protected override void Simulate(PlayerAbilityManagerInput input, ref PlayerAbilityManagerState state, float delta)
@@ -108,18 +67,20 @@ namespace Resonance.Combat
             {
                 TryUseLowerActiveAbility();
             }
+        }
 
-            if (input.PendingAugmentToEquip != null)
-            {
-                TryEquipAugment(input.PendingAugmentToEquip.Value.AbilityKey);
-            }
-            state.AugmentEquippedThisTick = input.PendingAugmentToEquip;
+        [SimulationOnly]
+        public void SimulateRemoveAugment(AugmentLookupArguments augment)
+        {
+            TryRemoveAugment(augment.AbilityKey);
+            currentState.AugmentRemovedThisTick = augment;
+        }
 
-            if (input.PendingAugmentToRemove != null)
-            {
-                TryRemoveAugment(input.PendingAugmentToRemove.Value.AbilityKey);
-            }
-            state.AugmentRemovedThisTick = input.PendingAugmentToRemove;
+        [SimulationOnly]
+        public void SimulateEquipAugment(AugmentLookupArguments augment)
+        {
+            TryEquipAugment(augment.AbilityKey);
+            currentState.AugmentEquippedThisTick = augment;
         }
 
         [SimulationOnly]
@@ -264,8 +225,6 @@ namespace Resonance.Combat
     {
         public bool AbilityUpperPressed;
         public bool AbilityLowerPressed;
-        public AugmentLookupArguments? PendingAugmentToEquip;
-        public AugmentLookupArguments? PendingAugmentToRemove;
 
         public void Dispose()
         {

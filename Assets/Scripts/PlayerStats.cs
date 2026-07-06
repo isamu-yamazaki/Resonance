@@ -5,7 +5,6 @@ using System.Linq;
 using PurrNet.Pooling;
 using PurrNet.Prediction;
 using Resonance.Assemblies.Player;
-using Resonance.Combat;
 using Resonance.Helper;
 using Resonance.Match;
 using Resonance.PlayerController;
@@ -44,7 +43,7 @@ namespace Resonance.Player
         public float BaseSpeed { get => playerBaseSpeed; set => playerBaseSpeed = value; }
         public bool IsDead => currentState.IsDead;
 
-        public IReadOnlyList<float> DamageReductionModifiers => damageReductionModifiers;
+        public IReadOnlyList<float> DamageReductionModifiers => currentState.DamageReductionModifiers;
         public IReadOnlyList<float> SpeedModifiers => currentState.SpeedModifiers;
         public IReadOnlyList<float> RegenModifiers => regenModifiers;
 
@@ -79,13 +78,19 @@ namespace Resonance.Player
         private float _pendingExternalHeal;
         private Vector3 _pendingAttackerPos;
 
-
         #endregion
 
         #region External speed modifiers
 
         private float? _pendingSpeedModifierToAdd;
         private float? _pendingSpeedModifierToRemove;
+
+        #endregion
+
+        #region External damage reduction modifiers
+
+        private float? _pendingDamageReductionModifierToAdd;
+        private float? _pendingDamageReductionModifierToRemove;
 
         #endregion
 
@@ -144,6 +149,7 @@ namespace Resonance.Player
                 // spurious behaviors. Do not make the same mistake, I beg you.
 
                 SpeedModifiers = DisposableList<float>.Create(),
+                DamageReductionModifiers = DisposableList<float>.Create(),
             };
         }
 
@@ -158,11 +164,15 @@ namespace Resonance.Player
             input.ExternalAttackerPosition = _pendingAttackerPos;
             input.ExternalSpeedModifierToAdd = _pendingSpeedModifierToAdd;
             input.ExternalSpeedModifierToRemove = _pendingSpeedModifierToRemove;
+            input.ExternalDamageReductionModifierToAdd = _pendingDamageReductionModifierToAdd;
+            input.ExternalDamageReductionModifierToRemove = _pendingDamageReductionModifierToRemove;
 
             _pendingExternalHeal = 0f;
             _pendingExternalDamage = 0f;
             _pendingSpeedModifierToAdd = null;
             _pendingSpeedModifierToRemove = null;
+            _pendingDamageReductionModifierToAdd = null;
+            _pendingDamageReductionModifierToRemove = null;
         }
 
         public void AddSpeedModifierExternal(float modifier)
@@ -175,7 +185,19 @@ namespace Resonance.Player
             _pendingSpeedModifierToRemove = modifier;
         }
 
+        public void AddDamageReductionModifierExternal(float modifier)
+        {
+            _pendingDamageReductionModifierToAdd = modifier;
+        }
+
+        public void RemoveDamageReductionModifierExternal(float modifier)
+        {
+            _pendingDamageReductionModifierToRemove = modifier;
+        }
+
         #endregion
+
+        #region Simulation
 
         protected override void Simulate(PlayerStatsInputData input, ref PlayerStatsDataState state, float delta)
         {
@@ -200,6 +222,10 @@ namespace Resonance.Player
                 SimulateAddSpeedModifier(ref state, input.ExternalSpeedModifierToAdd.Value);
             if (input.ExternalSpeedModifierToRemove.HasValue)
                 SimulateRemoveSpeedModifier(ref state, input.ExternalSpeedModifierToRemove.Value);
+            if (input.ExternalDamageReductionModifierToAdd.HasValue)
+                SimulateAddDamageReductionModifier(ref state, input.ExternalDamageReductionModifierToAdd.Value);
+            if (input.ExternalDamageReductionModifierToRemove.HasValue)
+                SimulateRemoveDamageReductionModifier(ref state, input.ExternalDamageReductionModifierToRemove.Value);
 
             // Death check
             if (state.CurrentHealth <= 0f && !state.IsDead)
@@ -256,10 +282,45 @@ namespace Resonance.Player
             CalculateSpeed(ref state);
         }
 
+        [SimulationOnly]
+        public void SimulateAddDamageReductionModifier(float modifier)
+        {
+            SimulateAddDamageReductionModifier(ref currentState, modifier);
+        }
+
+        private void SimulateAddDamageReductionModifier(ref PlayerStatsDataState state, float modifier)
+        {
+#if UNITY_EDITOR
+            Debug.Log($"[PlayerStats] SimulateAddDamageReductionModifier called with: {modifier}");
+#endif
+            state.DamageReductionModifiers.Add(modifier);
+            CalculateDamageReduction(ref state);
+        }
+
+        [SimulationOnly]
+        public void SimulateRemoveDamageReductionModifier(float modifier)
+        {
+            SimulateRemoveDamageReductionModifier(ref currentState, modifier);
+        }
+
+        private void SimulateRemoveDamageReductionModifier(ref PlayerStatsDataState state, float modifier)
+        {
+            state.DamageReductionModifiers.Remove(modifier);
+            CalculateDamageReduction(ref state);
+        }
+
+        private void CalculateDamageReduction(ref PlayerStatsDataState state)
+        {
+            float reduction = state.DamageReductionModifiers.Aggregate(baseDamageReduction, (combined, next) => combined + next);
+            state.CurrentDamageReduction = Mathf.Clamp(reduction, 0f, maxDamageReduction);
+        }
+
         private void CalculateSpeed(ref PlayerStatsDataState state)
         {
             state.CurrentSpeed = playerBaseSpeed * state.SpeedModifiers.Aggregate(1f, (combined, next) => combined * next);
         }
+
+        #endregion
 
         protected override PlayerStatsDataState Interpolate(PlayerStatsDataState from, PlayerStatsDataState to, float t)
         {
@@ -424,35 +485,8 @@ namespace Resonance.Player
 
         #endregion
 
-        #region Speed Management
-
-
-        #endregion
-
         #region Damage Reduction Management
 
-        private List<float> damageReductionModifiers = new List<float>();
-
-        public void AddDamageReductionModifier(float modifier)
-        {
-#if UNITY_EDITOR
-            Debug.Log($"[PlayerStats] AddDamageReductionModifier called with: {modifier}");
-#endif
-            damageReductionModifiers.Add(modifier);
-            CalculateDamageReduction();
-        }
-
-        public void RemoveDamageReductionModifier(float modifier)
-        {
-            damageReductionModifiers.Remove(modifier);
-            CalculateDamageReduction();
-        }
-
-        private void CalculateDamageReduction()
-        {
-            float reduction = damageReductionModifiers.Aggregate(baseDamageReduction, (combined, next) => combined + next);
-            currentState.CurrentDamageReduction = Mathf.Clamp(reduction, 0f, maxDamageReduction);
-        }
 
         #endregion
 

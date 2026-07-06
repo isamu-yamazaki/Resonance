@@ -384,14 +384,14 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (!float.TryParse(_drModifierAmount, out float val)) { Debug.LogWarning("Invalid DR modifier"); return; }
             _activeDRModifier = val;
-            _playerStats.AddDamageReductionModifier(val);
+            _playerStats.AddDamageReductionModifierExternal(val);
             Debug.Log($"Added DR modifier: {val}");
         }
 
         private void RemoveDRModifier()
         {
             if (_playerStats == null || !_activeDRModifier.HasValue) return;
-            _playerStats.RemoveDamageReductionModifier(_activeDRModifier.Value);
+            _playerStats.RemoveDamageReductionModifierExternal(_activeDRModifier.Value);
             Debug.Log($"Removed DR modifier: {_activeDRModifier.Value}");
             _activeDRModifier = null;
         }
