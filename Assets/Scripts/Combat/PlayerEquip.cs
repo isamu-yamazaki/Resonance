@@ -184,9 +184,17 @@ namespace Resonance.Combat
 
                 if (_playerStats != null)
                 {
+                    if (state.LastEquippedWeapon.HasValue)
+                    {
+                        var lastEquippedWeapon = state.LastEquippedWeapon.Value;
+                        var baseWeapon = playerInventory.FindWeaponByKey(lastEquippedWeapon.Key);
+                        var mobilityToRemove = baseWeapon.Mobility;
+                        _playerStats.SimulateRemoveSpeedModifier(mobilityToRemove);
+                    }
                     _playerStats.SimulateAddSpeedModifier(_weaponStatManager.Mobility);
                 }
             }
+
 
             state.LastEquippedWeapon = weaponIdentity;
         }
@@ -214,6 +222,7 @@ namespace Resonance.Combat
             {
                 _equippedWeaponObservable.Value = null;
             }
+
 
             state.LastEquippedWeapon = null;
         }
