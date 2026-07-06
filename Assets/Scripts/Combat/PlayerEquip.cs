@@ -187,10 +187,11 @@ namespace Resonance.Combat
                     if (state.LastEquippedWeapon.HasValue)
                     {
                         var lastEquippedWeapon = state.LastEquippedWeapon.Value;
-                        var baseWeapon = playerInventory.FindWeaponByKey(lastEquippedWeapon.Key);
+                        var baseWeapon = WeaponResolver.FindBaseWeaponByKey(lastEquippedWeapon.Key);
                         var mobilityToRemove = baseWeapon.Mobility;
                         _playerStats.SimulateRemoveSpeedModifier(mobilityToRemove);
                     }
+
                     _playerStats.SimulateAddSpeedModifier(_weaponStatManager.Mobility);
                 }
             }
@@ -207,11 +208,13 @@ namespace Resonance.Combat
             if (currentWeapon != null || state.LastEquippedWeapon == null ||
                 state.LastSlot != state.CurrentSlot) return;
 
-            var baseLastWeapon = playerInventory.FindWeaponByKey(state.LastEquippedWeapon.Value.Key);
+            var baseLastWeapon = WeaponResolver.FindBaseWeaponByKey(state.LastEquippedWeapon.Value.Key);
             if (_playerStats != null)
             {
-                _playerStats.SimulateRemoveSpeedModifier(baseLastWeapon.Mobility);
+                if (baseLastWeapon != null)
+                    _playerStats.SimulateRemoveSpeedModifier(baseLastWeapon.Mobility);
             }
+
 
             if (_weaponStatManager != null)
             {

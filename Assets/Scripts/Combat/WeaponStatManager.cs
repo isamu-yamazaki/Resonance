@@ -13,7 +13,6 @@ namespace Resonance.Combat
 {
     public class WeaponStatManager : PredictedIdentity<WeaponStatManagerInput, WeaponStatManagerState>
     {
-        private WeaponProperties[] _weapons;
         private WeaponModProperties[] _mods;
 
         // Pending augment-mod operations queued by the non-predicted mutator API
@@ -31,21 +30,13 @@ namespace Resonance.Combat
         [CanBeNull]
         public WeaponProperties ManagedWeapon
         {
-            get
-            {
-                if (!currentState.WeaponIdentity.HasValue) return null;
-                var weaponIdentity = currentState.WeaponIdentity.Value;
-                var weapon = Array.Find(_weapons, w => w.Key == weaponIdentity.Key);
-
-                return weapon != null ? weapon.Clone(weaponIdentity.Id) : null;
-            }
+            get => WeaponResolver.ResolveWeapon(currentState.WeaponIdentity);
         }
 
         #region Lifecycle
 
         protected override void LateAwake()
         {
-            _weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
             _mods = Resources.LoadAll<WeaponModProperties>("Content/Mods");
 
             // Augment-mod changes are one-shot keys carried in the input; repeating (extrapolating)

@@ -17,26 +17,10 @@ namespace Resonance.Inventory
         {
             get
             {
-                WeaponProperties primaryWeapon = null;
-                if (currentState.WeaponPrimaryIdentity.HasValue)
-                {
-                    var primaryIdentity = currentState.WeaponPrimaryIdentity.Value;
-                    var primaryBaseWeapon = FindWeaponByKey(primaryIdentity.Key);
-                    if (primaryBaseWeapon != null) primaryWeapon = primaryBaseWeapon.Clone(primaryIdentity.Id);
-                }
-
-                WeaponProperties secondaryWeapon = null;
-                if (currentState.WeaponSecondaryIdentity.HasValue)
-                {
-                    var secondaryIdentity = currentState.WeaponSecondaryIdentity.Value;
-                    var secondaryBaseWeapon = FindWeaponByKey(secondaryIdentity.Key);
-                    if (secondaryBaseWeapon != null) secondaryWeapon = secondaryBaseWeapon.Clone(secondaryIdentity.Id);
-                }
-
                 return new[]
                 {
-                    primaryWeapon,
-                    secondaryWeapon,
+                    WeaponResolver.ResolveWeapon(currentState.WeaponPrimaryIdentity),
+                    WeaponResolver.ResolveWeapon(currentState.WeaponSecondaryIdentity),
                 };
             }
         }
@@ -52,7 +36,6 @@ namespace Resonance.Inventory
 
         [SerializeField] WeaponProperties startingWeapon;
 
-        private WeaponProperties[] _weapons;
         private AugmentProperties[] _augments;
 
         // Pending operations queued by the public mutator API; drained by UpdateInput each frame.
@@ -63,7 +46,6 @@ namespace Resonance.Inventory
 
         protected override void LateAwake()
         {
-            _weapons = Resources.LoadAll<WeaponProperties>("Content/Weapons");
             _augments = Resources.LoadAll<AugmentProperties>("Content/Augments");
         }
 
@@ -267,10 +249,9 @@ namespace Resonance.Inventory
             _previousVerifiedState = v;
         }
 
-        public WeaponProperties FindWeaponByKey(string key)
+        private static WeaponProperties FindWeaponByKey(string key)
         {
-            if (string.IsNullOrEmpty(key) || _weapons == null) return null;
-            return Array.Find(_weapons, w => w.Key == key);
+            return WeaponResolver.FindBaseWeaponByKey(key);
         }
 
         public AugmentProperties FindAugmentByKey(string key)

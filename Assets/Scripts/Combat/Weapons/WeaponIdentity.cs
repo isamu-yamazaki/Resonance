@@ -22,7 +22,7 @@ namespace Resonance.Combat.Weapons
                 return null;
             }
 
-            return new WeaponIdentity()
+            return new WeaponIdentity
             {
                 Id = weapon.Id,
                 Key = weapon.Key
