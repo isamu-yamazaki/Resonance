@@ -182,10 +182,9 @@ namespace Resonance.Combat
                     _equippedWeaponObservable.Value = weapon;
                 }
 
-                // TODO: add simulation variant
                 if (_playerStats != null)
                 {
-                    _playerStats.AddSpeedModifierExternal(_weaponStatManager.Mobility);
+                    _playerStats.SimulateAddSpeedModifier(_weaponStatManager.Mobility);
                 }
             }
 
@@ -203,8 +202,7 @@ namespace Resonance.Combat
             var baseLastWeapon = playerInventory.FindWeaponByKey(state.LastEquippedWeapon.Value.Key);
             if (_playerStats != null)
             {
-                // TODO: use simulation variant
-                _playerStats.RemoveSpeedModifierExternal(baseLastWeapon.Mobility);
+                _playerStats.SimulateRemoveSpeedModifier(baseLastWeapon.Mobility);
             }
 
             if (_weaponStatManager != null)
