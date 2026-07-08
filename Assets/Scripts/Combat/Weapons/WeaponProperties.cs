@@ -1,9 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Resonance.Combat.Mods;
 using Resonance.Combat.Weapons.Enums;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Resonance.Combat.Weapons
 {
@@ -151,7 +150,7 @@ namespace Resonance.Combat.Weapons
             clone.emptyReloadClip = emptyReloadClip;
             clone.fireClip = fireClip;
 
-            clone.Id = id ?? GUID.Generate().ToString();
+            clone.Id = id ?? Guid.NewGuid().ToString();
 
             return clone;
         }
