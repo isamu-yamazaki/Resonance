@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using PurrNet.Packing;
 using PurrNet.Prediction;
 using Resonance.Combat.Augments;
-using Resonance.Combat.Augments.UI;
 using Resonance.Inventory;
 using Resonance.PlayerController;
 using UnityEngine;
@@ -22,7 +21,7 @@ namespace Resonance.Combat
         private AugmentProperties[] _augmentResources;
 
         public event Action<AugmentSlot> OnAbilityUsed;
-        public event Action<AugmentSlot> OnAugmentEquipped;
+        public event Action<AugmentProperties, IAugmentAbility> OnAugmentEquipped;
         public event Action<AugmentSlot> OnAugmentRemoved;
 
         #endregion
@@ -176,7 +175,7 @@ namespace Resonance.Combat
                 var augment = FindAugmentByKey(lookupArgs.Key);
                 if (augment != null && ability != null)
                 {
-                    OnAugmentEquipped?.Invoke(augment.Slot);
+                    OnAugmentEquipped?.Invoke(augment, ability);
                 }
             }
 
