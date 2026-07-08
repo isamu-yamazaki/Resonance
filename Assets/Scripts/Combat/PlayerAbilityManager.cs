@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PurrNet.Packing;
 using PurrNet.Prediction;
@@ -19,6 +20,10 @@ namespace Resonance.Combat
         private Dictionary<string, IAugmentAbility> abilityMap = new();
 
         private AugmentProperties[] _augmentResources;
+
+        public event Action<AugmentSlot> OnAbilityUsed;
+        public event Action<AugmentSlot> OnAugmentEquipped;
+        public event Action<AugmentSlot> OnAugmentRemoved;
 
         #endregion
 
@@ -156,12 +161,12 @@ namespace Resonance.Combat
 
             if (v.UpperAbilityFired)
             {
-                AugmentHUDManager.Instance.OnAbilityUsed(AugmentSlot.Upper);
+                OnAbilityUsed?.Invoke(AugmentSlot.Upper);
             }
 
             if (v.LowerAbilityFired)
             {
-                AugmentHUDManager.Instance.OnAbilityUsed(AugmentSlot.Lower);
+                OnAbilityUsed?.Invoke(AugmentSlot.Lower);
             }
 
             if (v.AugmentEquippedThisTick.HasValue)
@@ -171,7 +176,7 @@ namespace Resonance.Combat
                 var augment = FindAugmentByKey(lookupArgs.Key);
                 if (augment != null && ability != null)
                 {
-                    AugmentHUDManager.Instance.OnAugmentEquipped(augment, ability);
+                    OnAugmentEquipped?.Invoke(augment.Slot);
                 }
             }
 
@@ -181,8 +186,9 @@ namespace Resonance.Combat
                 var augment = FindAugmentByKey(lookupArgs.Key);
                 if (augment != null)
                 {
-                    AugmentHUDManager.Instance.OnAugmentRemoved(augment.Slot);
+                    OnAugmentRemoved?.Invoke(augment.Slot);
                 }
+
             }
         }
         #endregion
