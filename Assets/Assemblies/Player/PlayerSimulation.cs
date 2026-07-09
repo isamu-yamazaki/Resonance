@@ -131,9 +131,9 @@ namespace Resonance.Assemblies.Player
 
             Vector3 movementDelta = movementDirection * lateralAcceleration * ctx.Delta;
             Vector3 localVelocity = new Vector3(
-                state.Velocity.x - ctx.Dependency.TrainVelocityOffset.x,
+                state.Velocity.x,
                 0f,
-                state.Velocity.z - ctx.Dependency.TrainVelocityOffset.z);
+                state.Velocity.z);
             Vector3 newVelocity = localVelocity + movementDelta;
 
             // Add drag to player

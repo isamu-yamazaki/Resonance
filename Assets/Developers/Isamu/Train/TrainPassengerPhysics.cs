@@ -102,10 +102,6 @@ namespace Resonance.Train
             }
             else if (state.IsOnTrain && _trainController != null)
             {
-                // TEMPORARY: reads server-replicated TrainController.Velocity (lags by RTT + send interval).
-                // Causes a small drift between the player and the train's interpolated visual during
-                // accel/brake transitions. Proper fix is to migrate velocity to a PredictedIdentity so
-                // velocity is locally predicted each tick.
                 Vector3 trainVelocity = _trainController.Velocity;
                 trainVelocity.y = 0f;
                 state.TickOffset = trainVelocity;
