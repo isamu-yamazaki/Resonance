@@ -1,11 +1,12 @@
 using PurrNet;
+using PurrNet.Prediction;
 using Resonance.Assemblies.Train;
 using UnityEngine;
 
 namespace Resonance.Train
 {
     [RequireComponent(typeof(CharacterController))]
-    public class TrainPassengerPhysics : NetworkBehaviour
+    public class TrainPassengerPhysics : PredictedIdentity<TrainPassengerPhysicsState>
     {
         [Header("Train Reference")]
         [SerializeField] private TrainController _trainController;
@@ -17,58 +18,51 @@ namespace Resonance.Train
         [SerializeField] private float _inertiaDecay = 4f;
         [SerializeField] private float _maxInertiaSpeed = 18f;
 
-        public bool IsOnTrain { get; private set; }
-
-        public Vector3 GetFrameVelocityOffset() => _frameOffset;
-
-        public void ClearInertia()
-        {
-            _inertiaVelocity = Vector3.zero;
-            _frameOffset = Vector3.zero;
-            _isKnockedBack = false;
-        }
-
-        public void ApplyKnockback(Vector3 force)
-        {
-            _knockbackVelocity = new Vector3(force.x, 0f, force.z);
-            _knockbackVertical = force.y;
-            _isKnockedBack = true;
-        }
-
         private CharacterController _characterController;
-        private Vector3 _frameOffset = Vector3.zero;
-        private Vector3 _inertiaVelocity = Vector3.zero;
-        private Vector3 _knockbackVelocity = Vector3.zero;
-        private float _knockbackVertical = 0f;
-        private bool _wasOnTrainLastFrame = false;
-        private bool _isKnockedBack = false;
 
-        public float GetKnockbackVertical()
-        {
-            float value = _knockbackVertical;
-            _knockbackVertical = 0f;
-            return value;
-        }
+        public Vector3 GetTickVelocityOffset() => currentState.TickOffset;
+        public float GetKnockbackVertical() => currentState.KnockbackVertical;
 
-        private void Awake()
-        {
-            _characterController = GetComponent<CharacterController>();
-
-        }
-
-        protected override void OnSpawned()
+        #region Lifecycle
+        protected override void LateAwake()
         {
             if (_trainController == null)
                 _trainController = FindFirstObjectByType<TrainController>();
-        }
 
-        private void FixedUpdate()
+            _characterController = GetComponent<CharacterController>();
+        }
+        #endregion
+
+        #region Simulation
+        [SimulationOnly]
+        public void SimulateClearInertia()
         {
-            UpdateBoardingState();
-            ComputeFrameOffset();
+            currentState.InertiaVelocity = Vector3.zero;
+            currentState.TickOffset = Vector3.zero;
+            currentState.IsKnockedBack = false;
         }
 
-        private void UpdateBoardingState()
+        [SimulationOnly]
+        public void SimulateApplyKnockback(Vector3 force)
+        {
+            currentState.KnockbackVelocity = new Vector3(force.x, 0f, force.z);
+            currentState.KnockbackVertical = force.y;
+            currentState.IsKnockedBack = true;
+        }
+
+        [SimulationOnly]
+        public void SimulateClearKnockbackVertical()
+        {
+            currentState.KnockbackVertical = 0f;
+        }
+
+        protected override void Simulate(ref TrainPassengerPhysicsState state, float delta)
+        {
+            UpdateBoardingState(ref state);
+            ComputeTickOffset(ref state, delta);
+        }
+
+        private void UpdateBoardingState(ref TrainPassengerPhysicsState state)
         {
             Vector3 feetPos = transform.position + _characterController.center - Vector3.up * (_characterController.height * 0.5f - _characterController.radius);
             Collider[] hits = Physics.OverlapSphere(feetPos, _characterController.radius + 0.05f);
@@ -83,30 +77,30 @@ namespace Resonance.Train
                 }
             }
 
-            if (_wasOnTrainLastFrame && !onTrain && _trainController != null)
+            if (state.WasOnTrainLastTick && !onTrain && _trainController != null)
             {
                 Vector3 trainVelocity = _trainController.Velocity;
                 trainVelocity.y = 0f;
-                _inertiaVelocity = Vector3.ClampMagnitude(trainVelocity, _maxInertiaSpeed);
+                state.InertiaVelocity = Vector3.ClampMagnitude(trainVelocity, _maxInertiaSpeed);
             }
 
-            IsOnTrain = onTrain;
-            _wasOnTrainLastFrame = onTrain;
+            state.IsOnTrain = onTrain;
+            state.WasOnTrainLastTick = onTrain;
         }
 
-        private void ComputeFrameOffset()
+        private void ComputeTickOffset(ref TrainPassengerPhysicsState state, float delta)
         {
-            _frameOffset = Vector3.zero;
+            state.TickOffset = Vector3.zero;
 
-            if (_isKnockedBack)
+            if (state.IsKnockedBack)
             {
-                _frameOffset = _knockbackVelocity;
-                _knockbackVelocity = Vector3.MoveTowards(_knockbackVelocity, Vector3.zero, _inertiaDecay * Time.fixedDeltaTime);
+                state.TickOffset = state.KnockbackVelocity;
+                state.KnockbackVelocity = Vector3.MoveTowards(state.KnockbackVelocity, Vector3.zero, _inertiaDecay * delta);
 
-                if (_knockbackVelocity.sqrMagnitude <= 0.001f)
-                    _isKnockedBack = false;
+                if (state.KnockbackVelocity.sqrMagnitude <= 0.001f)
+                    state.IsKnockedBack = false;
             }
-            else if (IsOnTrain && _trainController != null)
+            else if (state.IsOnTrain && _trainController != null)
             {
                 // TEMPORARY: reads server-replicated TrainController.Velocity (lags by RTT + send interval).
                 // Causes a small drift between the player and the train's interpolated visual during
@@ -114,13 +108,29 @@ namespace Resonance.Train
                 // velocity is locally predicted each tick.
                 Vector3 trainVelocity = _trainController.Velocity;
                 trainVelocity.y = 0f;
-                _frameOffset = trainVelocity;
+                state.TickOffset = trainVelocity;
             }
-            else if (_inertiaVelocity.sqrMagnitude > 0.001f)
+            else if (state.InertiaVelocity.sqrMagnitude > 0.001f)
             {
-                _frameOffset = _inertiaVelocity;
-                _inertiaVelocity = Vector3.MoveTowards(_inertiaVelocity, Vector3.zero, _inertiaDecay * Time.fixedDeltaTime);
+                state.TickOffset = state.InertiaVelocity;
+                state.InertiaVelocity = Vector3.MoveTowards(state.InertiaVelocity, Vector3.zero, _inertiaDecay * delta);
             }
         }
+        #endregion
+    }
+
+    public struct TrainPassengerPhysicsState : IPredictedData<TrainPassengerPhysicsState>
+    {
+        public void Dispose()
+        {
+        }
+
+        public bool IsOnTrain;
+        public bool WasOnTrainLastTick;
+        public Vector3 InertiaVelocity;
+        public Vector3 KnockbackVelocity;
+        public float KnockbackVertical;
+        public Vector3 TickOffset;
+        public bool IsKnockedBack;
     }
 }

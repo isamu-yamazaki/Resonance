@@ -157,7 +157,7 @@ namespace Resonance.PlayerController
                 _characterController.stepOffset = _stepOffset;
             }
 
-            _trainPassengerPhysics?.ClearInertia();
+            _trainPassengerPhysics?.SimulateClearInertia();
         }
         #endregion
 
@@ -347,7 +347,7 @@ namespace Resonance.PlayerController
             Vector3 movementDirection = cameraRightXZ * _playerLocomotionInput.MovementInput.x + cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
             
             Vector3 movementDelta = movementDirection * lateralAcceleration * Time.deltaTime;
-            Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetFrameVelocityOffset() : Vector3.zero;
+            Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetTickVelocityOffset() : Vector3.zero;
             Vector3 localVelocity = _characterController.velocity - trainOffset;
             Vector3 newVelocity = localVelocity + movementDelta;
             
@@ -428,7 +428,7 @@ namespace Resonance.PlayerController
             Vector3 slideVelocity = _slideDirection * currentSlideSpeed;
             slideVelocity.y = _verticalVelocity;
     
-            Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetFrameVelocityOffset() : Vector3.zero;
+            Vector3 trainOffset = _trainPassengerPhysics != null ? _trainPassengerPhysics.GetTickVelocityOffset() : Vector3.zero;
             _characterController.Move((slideVelocity + trainOffset) * Time.deltaTime);
         }
 
@@ -525,7 +525,7 @@ namespace Resonance.PlayerController
 
         private bool IsMovingLaterally()
         {
-            if (_trainPassengerPhysics != null && _trainPassengerPhysics.IsOnTrain)
+            if (_trainPassengerPhysics != null && _trainPassengerPhysics.currentState.IsOnTrain)
             {
                 return _playerLocomotionInput.MovementInput != Vector2.zero;
             }

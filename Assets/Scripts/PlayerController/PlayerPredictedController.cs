@@ -105,7 +105,7 @@ namespace Resonance.PlayerController
             if (_characterController != null)
                 _characterController.stepOffset = _stepOffset;
 
-            _trainPassengerPhysics?.ClearInertia();
+            _trainPassengerPhysics?.SimulateClearInertia();
         }
 
         #endregion
@@ -199,7 +199,7 @@ namespace Resonance.PlayerController
                 MovementSpeedMultiplier = _playerStats.PlayerSpeed,
                 CurrentPlayerMovementState = _playerState.CurrentPlayerMovementState,
                 TrainVelocityOffset = _trainPassengerPhysics != null
-                    ? _trainPassengerPhysics.GetFrameVelocityOffset()
+                    ? _trainPassengerPhysics.GetTickVelocityOffset()
                     : Vector3.zero,
                 TrainKnockbackVertical = _trainPassengerPhysics != null
                     ? _trainPassengerPhysics.GetKnockbackVertical()
@@ -211,6 +211,8 @@ namespace Resonance.PlayerController
                 GrappleVelocity = _grapple != null ? _grapple.ReelVelocity : Vector3.zero,
                 GrappleExitImpulse = _grapple != null ? _grapple.ExitImpulse : Vector3.zero,
             };
+            // preserve old behavior formerly in GetKnockbackVertical
+            _trainPassengerPhysics.SimulateClearKnockbackVertical();
 
             var ctx = new PlayerSimulationContext(
                 input,

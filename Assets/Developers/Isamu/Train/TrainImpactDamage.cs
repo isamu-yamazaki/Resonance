@@ -81,7 +81,7 @@ namespace Resonance.Train
             Vector3 pushDirection = trackPerp * side;
 
             Vector3 knockbackDirection = pushDirection + Vector3.up * _knockbackUpward;
-            passengerPhysics.ApplyKnockback(knockbackDirection.normalized * _knockbackForce);
+            passengerPhysics.SimulateApplyKnockback(knockbackDirection.normalized * _knockbackForce);
         }
     }
 }
