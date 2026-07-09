@@ -1,11 +1,11 @@
 using System;
-using PurrNet;
+using PurrNet.Prediction;
 using UnityEngine;
 
 namespace Resonance.Assemblies.Train
 {
     [DefaultExecutionOrder(-10)]
-    public class TrainController : NetworkBehaviour
+    public class TrainController : PredictedIdentity<TrainState>
     {
         [Header("Stations")]
         [SerializeField] private TrainStation[] _stations;
@@ -20,32 +20,22 @@ namespace Resonance.Assemblies.Train
         public event Action<TrainMovementState> OnStateChanged;
         public event Action OnFirstVerifiedViewStateIsAlreadyMoving;
 
-        public TrainMovementState CurrentState => _state.movementState;
-        public TrainDirection Direction => _state.direction;
-        public int CurrentStationIndex => _state.currentStationIndex;
-        public int NextStationIndex => _state.nextStationIndex;
+        public TrainMovementState CurrentState => currentState.movementState;
+        public TrainDirection Direction => currentState.direction;
+        public int CurrentStationIndex => currentState.currentStationIndex;
+        public int NextStationIndex => currentState.nextStationIndex;
         public float CurrentSpeed => Velocity.magnitude;
         public float NormalizedSpeed => _config.maxSpeed > 0f ? CurrentSpeed / _config.maxSpeed : 0f;
-        public Vector3 Velocity => _velocity.value;
+        public Vector3 Velocity => currentState.velocity;
         public Vector3 MoveDirection => Velocity.sqrMagnitude > 1e-6f ? Velocity.normalized : Vector3.zero;
         public string NextStationDisplayName => IsValidIndex(NextStationIndex)
             ? _stations[NextStationIndex].DisplayName
             : string.Empty;
 
-        // TEMPORARY: server-replicated velocity, derived from authoritative state's per-tick position delta.
-        // Lags by network RTT + send interval, so consumers requiring frame-accurate predicted velocity
-        // (e.g. TrainPassengerPhysics) will see a small drift relative to the train's interpolated visual.
-        // Proper fix is to run velocity calculation in a PredictedIdentity<TrainState> so velocity runs locally
-        // each client tick.
-        private SyncVar<Vector3> _velocity = new SyncVar<Vector3>();
-
-        private TrainState _state;
         private TrainStationData[] _stationData = Array.Empty<TrainStationData>();
-        private TrainState _prevTickState;
-        private bool _hasPrevTickState;
-        private bool _hasReceivedFirstSnapshot;
+        private TrainState? _previousVerifiedState;
 
-        private void Awake()
+        protected override void LateAwake()
         {
             if (_stations == null || _stations.Length < 2)
             {
@@ -53,17 +43,16 @@ namespace Resonance.Assemblies.Train
             }
 
             BuildStationDataSnapshot();
-            _state = BuildInitialState();
-            transform.position = _state.position;
         }
 
-        private TrainState BuildInitialState()
+        protected override TrainState GetInitialState()
         {
             Vector3 startPos = IsValidIndex(0) ? _stations[0].StopPosition : transform.position;
 
             return new TrainState
             {
                 position = startPos,
+                velocity = Vector3.zero,
                 currentSpeed = 0f,
                 movementState = TrainMovementState.StoppedAtStation,
                 direction = TrainDirection.Forward,
@@ -92,126 +81,59 @@ namespace Resonance.Assemblies.Train
             }
         }
 
-        private void FixedUpdate()
+        protected override void Simulate(ref TrainState state, float delta)
         {
-            if (!isServer)
+            Vector3 previousPosition = state.position;
+
+            TrainSimulation.Step(ref state, _config, _stationData, delta);
+            transform.position = state.position;  // syncs to predicted transform
+
+            // updates once per simulation tick
+            state.velocity = delta > 0f
+                ? (state.position - previousPosition) / delta
+                : Vector3.zero;
+        }
+
+        protected override void UpdateView(TrainState viewState, TrainState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            if (!_previousVerifiedState.HasValue)
             {
+                _previousVerifiedState = v;
+                if (v.movementState != TrainMovementState.StoppedAtStation)
+                {
+                    OnFirstVerifiedViewStateIsAlreadyMoving?.Invoke();
+                }
                 return;
             }
 
-            if (!_hasPrevTickState)
-            {
-                _prevTickState = _state;
-                _hasPrevTickState = true;
-            }
-
-            TrainSimulation.Step(ref _state, _config, _stationData, Time.fixedDeltaTime);
-            transform.position = _state.position;
-
-            float dt = Time.fixedDeltaTime;
-            _velocity.value = dt > 0f
-                ? (_state.position - _prevTickState.position) / dt
-                : Vector3.zero;
-
-            DetectAndBroadcastTransitions(_prevTickState, _state);
-            _prevTickState = _state;
-        }
-
-        protected override void OnObserverAdded(PlayerID player)
-        {
-            base.OnObserverAdded(player);
-            SendInitialSnapshotTargetRpc(
-                player,
-                _state.movementState,
-                _state.direction,
-                _state.currentStationIndex,
-                _state.nextStationIndex,
-                _state.preDepartFired);
+            DetectAndBroadcastTransitions(_previousVerifiedState.Value, v);
+            _previousVerifiedState = v;
         }
 
         private void DetectAndBroadcastTransitions(in TrainState prev, in TrainState next)
         {
             if (next.movementState != prev.movementState)
-                BroadcastStateChangedRpc(next.movementState);
+                OnStateChanged?.Invoke(next.movementState);
 
             if (next.currentStationIndex != prev.currentStationIndex
                 && IsValidIndex(next.currentStationIndex))
-                BroadcastArrivedRpc(next.currentStationIndex);
+                OnArrivedAtStation?.Invoke(next.currentStationIndex, _stations[next.currentStationIndex]);
 
             if (prev.movementState == TrainMovementState.StoppedAtStation
                 && next.movementState == TrainMovementState.Accelerating
                 && IsValidIndex(next.currentStationIndex))
-                BroadcastDepartedRpc(next.currentStationIndex);
+                OnDepartedStation?.Invoke(next.currentStationIndex, _stations[next.currentStationIndex]);
 
             if (!prev.preDepartFired && next.preDepartFired
                 && IsValidIndex(next.currentStationIndex))
-                BroadcastPreDepartRpc(next.currentStationIndex);
+                OnPreDepart?.Invoke(next.currentStationIndex, _stations[next.currentStationIndex]);
 
             if (next.nextStationIndex != prev.nextStationIndex
                 && IsValidIndex(next.nextStationIndex))
-                BroadcastNextStationChangedRpc(next.nextStationIndex, next.direction);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastStateChangedRpc(TrainMovementState movementState)
-        {
-            _state.movementState = movementState;
-            OnStateChanged?.Invoke(movementState);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastArrivedRpc(int stationIndex)
-        {
-            if (!IsValidIndex(stationIndex)) return;
-            _state.currentStationIndex = stationIndex;
-            OnArrivedAtStation?.Invoke(stationIndex, _stations[stationIndex]);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastDepartedRpc(int stationIndex)
-        {
-            if (!IsValidIndex(stationIndex)) return;
-            OnDepartedStation?.Invoke(stationIndex, _stations[stationIndex]);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastPreDepartRpc(int stationIndex)
-        {
-            if (!IsValidIndex(stationIndex)) return;
-            OnPreDepart?.Invoke(stationIndex, _stations[stationIndex]);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastNextStationChangedRpc(int nextIndex, TrainDirection direction)
-        {
-            if (!IsValidIndex(nextIndex)) return;
-            _state.nextStationIndex = nextIndex;
-            _state.direction = direction;
-            OnNextStationChanged?.Invoke(nextIndex, _stations[nextIndex]);
-        }
-
-        [TargetRpc]
-        private void SendInitialSnapshotTargetRpc(
-            PlayerID target,
-            TrainMovementState movementState,
-            TrainDirection direction,
-            int currentStationIndex,
-            int nextStationIndex,
-            bool preDepartFired)
-        {
-            _state.movementState = movementState;
-            _state.direction = direction;
-            _state.currentStationIndex = currentStationIndex;
-            _state.nextStationIndex = nextStationIndex;
-            _state.preDepartFired = preDepartFired;
-
-            if (_hasReceivedFirstSnapshot) return;
-            _hasReceivedFirstSnapshot = true;
-
-            if (movementState != TrainMovementState.StoppedAtStation)
-            {
-                OnFirstVerifiedViewStateIsAlreadyMoving?.Invoke();
-            }
+                OnNextStationChanged?.Invoke(next.nextStationIndex, _stations[next.nextStationIndex]);
         }
 
         private bool IsValidIndex(int index)
