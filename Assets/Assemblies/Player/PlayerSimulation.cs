@@ -131,9 +131,9 @@ namespace Resonance.Assemblies.Player
 
             Vector3 movementDelta = movementDirection * lateralAcceleration * ctx.Delta;
             Vector3 localVelocity = new Vector3(
-                state.Velocity.x,
+                state.Velocity.x - ctx.Dependency.TrainVelocityOffset.x,
                 0f,
-                state.Velocity.z);
+                state.Velocity.z - ctx.Dependency.TrainVelocityOffset.z);
             Vector3 newVelocity = localVelocity + movementDelta;
 
             // Add drag to player
@@ -148,6 +148,9 @@ namespace Resonance.Assemblies.Player
 
             state.Velocity = newVelocity;
             state.Velocity.y += ctx.Dependency.TrainKnockbackVertical;
+
+            // Apply train velocity offset to authoritative player velocity
+            state.Velocity += ctx.Dependency.TrainVelocityOffset;
 
             TickImpulse(ctx, ref state);
         }
@@ -263,7 +266,7 @@ namespace Resonance.Assemblies.Player
 
         public static void TickCharacterControllerMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
-            ctx.CharacterController.Move((state.Velocity + ctx.Dependency.TrainVelocityOffset) * ctx.Delta);
+            ctx.CharacterController.Move(state.Velocity * ctx.Delta);
             // The resulting transform position is captured by the sibling PredictedTransform
             // via GetUnityState after simulation+physics each tick.
         }
