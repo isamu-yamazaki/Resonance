@@ -45,7 +45,10 @@ namespace Resonance.PlayerController
         private TrainPassengerPhysics _trainPassengerPhysics;
         private AbilityGrappleHook _grapple;
         private float _stepOffset;
+
+        // Both yaw and pitch are fully local for better responsiveness
         private float _cameraPitch;
+        private float _cameraYaw;
 
         /// <summary>
         /// The first-person view root's offset relative to the raw simulated root, captured once
@@ -168,14 +171,19 @@ namespace Resonance.PlayerController
             input.JumpPressed |= _playerLocomotionInput.JumpPressed;
             input.SprintToggledOn |= _playerLocomotionInput.SprintToggledOn;
             input.CrouchToggledOn |= _playerLocomotionInput.CrouchToggledOn;
+
+            _cameraYaw += _playerLocomotionInput.LookInput.x * _config.lookSensitivityH;
+            _cameraPitch = Mathf.Clamp(
+                _cameraPitch - _config.lookSensitivityV * _playerLocomotionInput.LookInput.y,
+                -_config.lookLimitV,
+                _config.lookLimitV);
         }
 
         protected override void GetFinalInput(ref PlayerInputData input)
         {
             if (!isOwner) return;
             input.MovementInput = _playerLocomotionInput.MovementInput;
-            input.LookInput = _playerLocomotionInput.LookInput;
-            // input.JumpPressed = _playerLocomotionInput.JumpPressed;
+            input.CameraYaw = _cameraYaw;
         }
 
 
@@ -276,12 +284,7 @@ namespace Resonance.PlayerController
             if (!isOwner || IsPlayerDead) return;
             if (_virtualCamera == null || _playerLocomotionInput == null) return;
 
-            _cameraPitch = Mathf.Clamp(
-                _cameraPitch - _config.lookSensitivityV * _playerLocomotionInput.LookInput.y,
-                -_config.lookLimitV,
-                _config.lookLimitV);
-
-            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraPitch, viewState.CameraYaw, 0f);
+            _virtualCamera.transform.rotation = Quaternion.Euler(_cameraPitch, _cameraYaw, 0f);
 
             // Drive the first-person view root (camera + FP arms) from the interpolated graphics
             // position instead of the raw simulated root, so local movement reads as smooth. The
