@@ -48,11 +48,17 @@ namespace Resonance.PlayerController
         protected override void GetFinalInput(ref PlayerAnimationInput input)
         {
             input.MovementInput = _playerLocomotionInput.MovementInput;
+            input.CameraPitch = Camera.main != null ? Camera.main.transform.localEulerAngles.x : 0f;
         }
 
         #endregion
 
         #region Simulation
+
+        protected override void SanitizeInput(ref PlayerAnimationInput input)
+        {
+            if (input.CameraPitch > 180f) input.CameraPitch -= 360f;
+        }
 
         protected override void Simulate(PlayerAnimationInput input, ref PlayerAnimationState state, float delta)
         {
@@ -67,6 +73,7 @@ namespace Resonance.PlayerController
                 };
 
             state.BlendInput = Vector2.Lerp(state.BlendInput, inputTarget, locomotionBlendSpeed * delta);
+            state.CameraPitch = input.CameraPitch;
         }
 
         #endregion
@@ -74,7 +81,11 @@ namespace Resonance.PlayerController
         #region Local view updates
 
         protected override PlayerAnimationState Interpolate(PlayerAnimationState from, PlayerAnimationState to, float t)
-            => new() { BlendInput = Vector2.Lerp(from.BlendInput, to.BlendInput, t) };
+            => new()
+            {
+                BlendInput = Vector2.Lerp(from.BlendInput, to.BlendInput, t),
+                CameraPitch = Mathf.Lerp(from.CameraPitch, to.CameraPitch, t),
+            };
 
         protected override void UpdateView(PlayerAnimationState viewState, PlayerAnimationState? verified)
         {
@@ -93,8 +104,7 @@ namespace Resonance.PlayerController
                 Mathf.Abs(viewState.BlendInput.y) < 0.1f ? 0f : viewState.BlendInput.y
             );
 
-            float pitch = Camera.main != null ? Camera.main.transform.localEulerAngles.x : 0f;
-            if (pitch > 180f) pitch -= 360f;
+            float pitch = viewState.CameraPitch;
             float verticalAim = pitch / 90f;
 
             _animator.SetBool(isGroundedHash, isGrounded);
@@ -119,6 +129,7 @@ namespace Resonance.PlayerController
     public struct PlayerAnimationInput : IPredictedData
     {
         public Vector2 MovementInput;
+        public float CameraPitch;
 
         public void Dispose()
         {
@@ -128,6 +139,7 @@ namespace Resonance.PlayerController
     public struct PlayerAnimationState : IPredictedData<PlayerAnimationState>
     {
         public Vector2 BlendInput;
+        public float CameraPitch;
 
         public void Dispose()
         {
