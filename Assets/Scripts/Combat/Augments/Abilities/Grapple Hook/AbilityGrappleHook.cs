@@ -34,6 +34,10 @@ namespace Resonance.Combat.Augments
         // Owner-only view bookkeeping for detecting the grapple-end transition.
         private bool _wasGrappling;
 
+        // Previous verified state, so the one-shot broadcast flags can be edge-detected instead of
+        // re-firing every render frame that resamples the same verified tick.
+        private AbilityGrappleHookState? _previousVerifiedState;
+
         #region IAugmentAbility
 
         public string AbilityKey => "ability_grappleHook";
@@ -116,8 +120,10 @@ namespace Resonance.Combat.Augments
             if (!verified.HasValue) return;
             var v = verified.Value;
 
+            var previous = _previousVerifiedState;
+
 #if !UNITY_SERVER
-            if (v.BroadcastShootAndTravel)
+            if (v.BroadcastShootAndTravel && !(previous?.BroadcastShootAndTravel ?? false))
             {
                 if (shootEvent != null && shootEvent.IsValid())
                     shootEvent.Post(gameObject);
@@ -126,25 +132,27 @@ namespace Resonance.Combat.Augments
                     travelLoopEvent.Post(gameObject);
             }
 
-            if (v.BroadcastGrappleRegistration)
+            if (v.BroadcastGrappleRegistration && !(previous?.BroadcastGrappleRegistration ?? false))
             {
                 if (AudioSourceTracker.Instance != null)
                     AudioSourceTracker.Instance.RegisterSound(v.GrappleRegistrationPosition, 1f);
             }
 
-            if (v.BroadcastStopTravel)
+            if (v.BroadcastStopTravel && !(previous?.BroadcastStopTravel ?? false))
             {
                 if (stopTravelEvent != null && stopTravelEvent.IsValid())
                     stopTravelEvent.Post(gameObject);
             }
 
-            if (v.BroadcastRelease)
+            if (v.BroadcastRelease && !(previous?.BroadcastRelease ?? false))
             {
                 if (releaseEvent != null && releaseEvent.IsValid())
                     releaseEvent.Post(gameObject);
             }
 #endif
 
+            _wasGrappling = v.IsGrappling;
+            _previousVerifiedState = v;
             if (!isOwner) return;
 
             // Drive the rope renderer's owner-authority SyncVars so the rope replicates to all clients.
@@ -159,7 +167,6 @@ namespace Resonance.Combat.Augments
             if (_wasGrappling && !v.IsGrappling)
                 fpArmsAnimator?.TriggerGrappleEnd();
 
-            _wasGrappling = v.IsGrappling;
         }
         #endregion
 
