@@ -11,7 +11,6 @@ namespace Resonance.Combat.Augments
         float CurrentCooldown { get; }
         bool AbilityReady { get; }
 
-        void ActivateAbilityExternal();
         void SimulateActivateAbility();
     }
 }

@@ -16,17 +16,30 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
             // Per-tick outputs are consumed each tick, never accumulated.
             state.ReelVelocity = Vector3.zero;
             state.ExitImpulse = Vector3.zero;
+            state.BroadcastShootAndTravel = false;
+            state.BroadcastGrappleRegistration = false;
+            state.BroadcastStopTravel = false;
+            state.BroadcastRelease = false;
 
             // Mirror the owner camera pose into state so SimulationOnly code (SimulateActivateAbility)
             // can read it outside the input frame.
             state.CameraPosition = input.CameraPosition;
             state.CameraForward = input.CameraForward;
 
-            if (input.ActivatePressed && !state.IsGrappling)
+            if (state.GrappleNextTick)
             {
-                state.IsGrappling = true;
-                state.HookPoint = input.HookPoint;
-                state.ReelTime = 0f;
+                state.GrappleNextTick = false;
+
+                Ray ray = new Ray(state.CameraPosition, state.CameraForward);
+                if (Physics.Raycast(ray, out RaycastHit hit, config.maxRange, config.grappleLayerMask))
+                {
+                    state.IsGrappling = true;
+                    state.HookPoint = hit.point;
+                    state.ReelTime = 0f;
+                    state.BroadcastShootAndTravel = true;
+                    state.BroadcastGrappleRegistration = true;
+                    state.GrappleRegistrationPosition = state.CameraPosition;
+                }
             }
 
             if (!state.IsGrappling)
@@ -65,6 +78,8 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
         )
         {
             state.IsGrappling = false;
+            state.BroadcastStopTravel = true;
+            state.BroadcastRelease = true;
 
             if (earlyExit)
             {

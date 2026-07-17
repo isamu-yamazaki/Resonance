@@ -1,5 +1,6 @@
 using PurrNet.Prediction;
 using Resonance.Assemblies.AbilitySimulation.GrappleHook;
+using Resonance.Audio;
 using Resonance.PlayerController;
 using UnityEngine;
 
@@ -18,15 +19,17 @@ namespace Resonance.Combat.Augments
         [Header("Config")] [SerializeField] private GrappleHookConfig config;
         private LayerMask grappleLayerMask => config.grappleLayerMask;
 
+#if !UNITY_SERVER
+        [Header("Wwise Events")] [SerializeField] private AK.Wwise.Event shootEvent;
+        [SerializeField] private AK.Wwise.Event travelLoopEvent;
+        [SerializeField] private AK.Wwise.Event stopTravelEvent;
+        [SerializeField] private AK.Wwise.Event releaseEvent;
+#endif
+
         private PlayerLocomotionInput playerLocomotionInput;
         private Camera playerCamera;
         private GrappleRopeRenderer ropeRenderer;
         private FPArmsAnimator fpArmsAnimator;
-        private AbilityGrappleHookAudioBroadcast _audioBroadcast;
-
-        // Owner-only input accumulators, flushed in GetFinalInput.
-        private bool _pendingActivate;
-        private Vector3 _pendingHookPoint;
 
         // Owner-only view bookkeeping for detecting the grapple-end transition.
         private bool _wasGrappling;
@@ -42,47 +45,13 @@ namespace Resonance.Combat.Augments
 
         public bool AbilityReady => CurrentCooldown <= 0f && !currentState.IsGrappling;
 
-        /// <summary>
-        /// Invoked externally by FPArmsAnimator.OnGrappleFireHook once the holster animation reaches
-        /// the fire-hook event. Performs the camera raycast and, on a hit, queues a predicted activation
-        /// request.
-        /// </summary>
-        public void ActivateAbilityExternal()
-        {
-            if (!AbilityReady) return;
-            if (playerCamera == null) return;
-
-            Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-
-            if (!Physics.Raycast(ray, out RaycastHit hit, config.maxRange, grappleLayerMask))
-            {
-                fpArmsAnimator?.TriggerGrappleEnd();
-                return;
-            }
-
-            _pendingHookPoint = hit.point;
-            _pendingActivate = true;
-
-            _audioBroadcast.RequestExternalBroadcastShootAndTravel();
-            _audioBroadcast.RequestExternalBroadcastGrappleRegistration(transform.position);
-        }
-
         [SimulationOnly]
         public void SimulateActivateAbility()
         {
-            // modify the current state in-place instead of going through the input cycle
-            
-            if (!AbilityReady) return;
-            Ray ray = new Ray(currentState.CameraPosition, currentState.CameraForward);
-            if (!Physics.Raycast(ray, out RaycastHit hit, config.maxRange, grappleLayerMask))
-            {
-                fpArmsAnimator?.TriggerGrappleEnd();
-                return;
-            }
-
-            currentState.IsGrappling = true;
-            currentState.HookPoint = hit.point;
-            currentState.ReelTime = 0f;
+            // Request activation for this system's own next Simulate call, rather than mutating
+            // currentState directly here. Readiness is already gated upstream by the caller
+            // (PlayerAbilityManager checks AbilityReady before invoking this).
+            currentState.GrappleNextTick = true;
         }
 
         public bool CanGrapple()
@@ -109,8 +78,7 @@ namespace Resonance.Combat.Augments
             playerLocomotionInput = PlayerLocomotionInput.Instance;
             ropeRenderer = GetComponent<GrappleRopeRenderer>();
             fpArmsAnimator = GetComponent<FPArmsAnimator>();
-            _audioBroadcast = GetComponent<AbilityGrappleHookAudioBroadcast>();
-            
+
             if (isOwner)
                 playerCamera = Camera.main;
         }
@@ -123,8 +91,6 @@ namespace Resonance.Combat.Augments
         {
             if (!isOwner) return;
 
-            input.ActivatePressed = _pendingActivate;
-            input.HookPoint = _pendingHookPoint;
             input.JumpPressed = playerLocomotionInput != null && playerLocomotionInput.JumpPressed;
 
             if (playerCamera != null)
@@ -134,8 +100,6 @@ namespace Resonance.Combat.Augments
             }
 
             input.LocalTransformPosition = transform.position;
-
-            _pendingActivate = false;
         }
 
         protected override void Simulate(AbilityGrappleHookInput input, ref AbilityGrappleHookState state, float delta)
@@ -149,10 +113,39 @@ namespace Resonance.Combat.Augments
         #region Local view updates
         protected override void UpdateView(AbilityGrappleHookState viewState, AbilityGrappleHookState? verified)
         {
-            if (!isOwner) return;
-
             if (!verified.HasValue) return;
             var v = verified.Value;
+
+#if !UNITY_SERVER
+            if (v.BroadcastShootAndTravel)
+            {
+                if (shootEvent != null && shootEvent.IsValid())
+                    shootEvent.Post(gameObject);
+
+                if (travelLoopEvent != null && travelLoopEvent.IsValid())
+                    travelLoopEvent.Post(gameObject);
+            }
+
+            if (v.BroadcastGrappleRegistration)
+            {
+                if (AudioSourceTracker.Instance != null)
+                    AudioSourceTracker.Instance.RegisterSound(v.GrappleRegistrationPosition, 1f);
+            }
+
+            if (v.BroadcastStopTravel)
+            {
+                if (stopTravelEvent != null && stopTravelEvent.IsValid())
+                    stopTravelEvent.Post(gameObject);
+            }
+
+            if (v.BroadcastRelease)
+            {
+                if (releaseEvent != null && releaseEvent.IsValid())
+                    releaseEvent.Post(gameObject);
+            }
+#endif
+
+            if (!isOwner) return;
 
             // Drive the rope renderer's owner-authority SyncVars so the rope replicates to all clients.
             if (ropeRenderer != null)
@@ -162,13 +155,9 @@ namespace Resonance.Combat.Augments
                     ropeRenderer.HookPoint.value = v.HookPoint;
             }
 
-            // Detect the grapple-end transition to start the cooldown and fire end-of-grapple feedback.
+            // Detect the grapple-end transition to fire end-of-grapple arm animation feedback.
             if (_wasGrappling && !v.IsGrappling)
-            {
                 fpArmsAnimator?.TriggerGrappleEnd();
-                _audioBroadcast.RequestExternalBroadcastStopTravel();
-                _audioBroadcast.RequestExternalBroadcastRelease();
-            }
 
             _wasGrappling = v.IsGrappling;
         }

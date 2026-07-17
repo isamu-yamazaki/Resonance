@@ -5,6 +5,7 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
 {
     public struct AbilityGrappleHookState : IPredictedData<AbilityGrappleHookState>
     {
+        public bool GrappleNextTick;
         public bool IsGrappling;
         public Vector3 HookPoint;
         public float ReelTime;
@@ -20,6 +21,12 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
         public Vector3 CameraForward;
 
         public float Cooldown;
+
+        public bool BroadcastShootAndTravel;
+        public bool BroadcastGrappleRegistration;
+        public bool BroadcastStopTravel;
+        public bool BroadcastRelease;
+        public Vector3 GrappleRegistrationPosition;
 
         public void Dispose() { }
     }

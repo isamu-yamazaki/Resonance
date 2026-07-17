@@ -468,7 +468,6 @@ GameObject:
   - component: {fileID: 3428471863637891944}
   - component: {fileID: -6813632310427250886}
   - component: {fileID: 2929268584548212605}
-  - component: {fileID: -2774476923640116218}
   - component: {fileID: -9158808936870234664}
   - component: {fileID: 7131106383641537564}
   - component: {fileID: 8062843662524459022}
@@ -1328,35 +1327,21 @@ MonoBehaviour:
     grappleLayerMask:
       serializedVersion: 2
       m_Bits: 256
---- !u!114 &-2774476923640116218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ad330c65434477bba90310b9d84e460, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilityGrappleHookAudioBroadcast
-  _repeatInputFactor: 0.8
-  _extrapolateInput: 1
   shootEvent:
     idInternal: 0
-    valueGuidInternal: 
+    valueGuidInternal:
     WwiseObjectReference: {fileID: 11400000, guid: ccfeef1468a60b040a86648f65fb5345, type: 2}
   travelLoopEvent:
     idInternal: 0
-    valueGuidInternal: 
+    valueGuidInternal:
     WwiseObjectReference: {fileID: 11400000, guid: 0542d3919461d10409bca7ea4847ed86, type: 2}
   stopTravelEvent:
     idInternal: 0
-    valueGuidInternal: 
+    valueGuidInternal:
     WwiseObjectReference: {fileID: 11400000, guid: 8ad66c9abd2d8c342b507553d76153c0, type: 2}
   releaseEvent:
     idInternal: 0
-    valueGuidInternal: 
+    valueGuidInternal:
     WwiseObjectReference: {fileID: 11400000, guid: 24e2f969f6ffb554eb2a07b7230a0745, type: 2}
 --- !u!114 &-9158808936870234664
 MonoBehaviour:

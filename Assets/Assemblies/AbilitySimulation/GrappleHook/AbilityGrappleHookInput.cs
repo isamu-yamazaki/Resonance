@@ -5,8 +5,6 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
 {
     public struct AbilityGrappleHookInput : IPredictedData
     {
-        public bool ActivatePressed;
-        public Vector3 HookPoint;
         public bool JumpPressed;
 
         /// <summary>Owner camera pose this tick, forwarded into state so SimulationOnly code can read it.</summary>

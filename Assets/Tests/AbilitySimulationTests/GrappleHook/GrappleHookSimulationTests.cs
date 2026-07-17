@@ -7,8 +7,6 @@ public class GrappleHookSimulationTests
     private const float Tolerance = 1e-4f;
 
     private static AbilityGrappleHookInput MakeInput(
-        bool activatePressed = false,
-        Vector3 hookPoint = default,
         bool jumpPressed = false,
         Vector3 cameraPosition = default,
         Vector3 cameraForward = default,
@@ -17,10 +15,8 @@ public class GrappleHookSimulationTests
     {
         return new AbilityGrappleHookInput
         {
-            ActivatePressed = activatePressed,
             CameraForward = cameraForward,
             CameraPosition = cameraPosition,
-            HookPoint = hookPoint,
             JumpPressed = jumpPressed,
             LocalTransformPosition = localTransformPosition
         };
@@ -34,7 +30,12 @@ public class GrappleHookSimulationTests
         Vector3 exitImpulse = default,
         Vector3 cameraPosition = default,
         Vector3 cameraForward = default,
-        float cooldown = 0
+        float cooldown = 0,
+        bool broadcastShootAndTravel = false,
+        bool broadcastGrappleRegistration = false,
+        bool broadcastStopTravel = false,
+        bool broadcastRelease = false,
+        Vector3 grappleRegistrationPosition = default
     )
     {
         return new AbilityGrappleHookState()
@@ -46,7 +47,12 @@ public class GrappleHookSimulationTests
             ExitImpulse = exitImpulse,
             CameraPosition = cameraPosition,
             CameraForward = cameraForward,
-            Cooldown = cooldown
+            Cooldown = cooldown,
+            BroadcastShootAndTravel = broadcastShootAndTravel,
+            BroadcastGrappleRegistration = broadcastGrappleRegistration,
+            BroadcastStopTravel = broadcastStopTravel,
+            BroadcastRelease = broadcastRelease,
+            GrappleRegistrationPosition = grappleRegistrationPosition
         };
     }
 
@@ -91,59 +97,6 @@ public class GrappleHookSimulationTests
 
         GrappleHookSimulation.Step(ctx, ref state);
         Assert.AreEqual(expectedDirectionVelocity, state.ReelVelocity.normalized);
-    }
-
-    [Test]
-    public void StepStartsGrapplingWhenActivatePressedAndNotAlreadyGrappling()
-    {
-        var input = MakeInput(
-            activatePressed: true,
-            hookPoint: new Vector3(10f, 10f, 10f)
-        );
-        var state = MakeState(
-            isGrappling: false
-        );
-        var config = MakeConfig();
-
-        const float delta = 0.1f;
-        var ctx = new GrappleHookSimulationContext(
-            input, config, delta);
-
-        GrappleHookSimulation.Step(ctx, ref state);
-
-        Assert.IsTrue(state.IsGrappling);
-        Assert.AreEqual(input.HookPoint, state.HookPoint);
-
-        // expect the reel time to start out incremented by the delta
-        Assert.AreEqual(0f + delta, state.ReelTime, Tolerance);
-    }
-
-    [Test]
-    public void StepDoesNotUpdateHookPointOrReelTimeIfAlreadyGrappling()
-    {
-        var input = MakeInput(
-            activatePressed: true,
-            hookPoint: new Vector3(10f, 10f, 10f)
-        );
-        const float preExistingReelTime = 4f;
-        var preExistingHookPoint = new Vector3(20f, 20f, 20f);
-        var state = MakeState(
-            isGrappling: true,
-            hookPoint: preExistingHookPoint,
-            reelTime: preExistingReelTime
-        );
-        var config = MakeConfig(
-            maxReelTime: 10f
-        );
-
-        const float delta = 0.1f;
-        var ctx = new GrappleHookSimulationContext(
-            input, config, delta);
-
-        GrappleHookSimulation.Step(ctx, ref state);
-
-        Assert.AreEqual(preExistingHookPoint, state.HookPoint);
-        Assert.AreEqual(preExistingReelTime + delta, state.ReelTime, Tolerance);
     }
 
     [Test]
@@ -281,5 +234,103 @@ public class GrappleHookSimulationTests
 
         var expectedVelocity = (hookPoint - input.LocalTransformPosition).normalized * config.reelSpeed;
         Assert.AreEqual(expectedVelocity, state.ReelVelocity);
+    }
+
+    [Test]
+    public void StepSetsStopAndReleaseFlagsOnJumpExit()
+    {
+        var input = MakeInput(
+            jumpPressed: true
+        );
+        var state = MakeState(
+            isGrappling: true
+        );
+        var config = MakeConfig();
+
+        var ctx = new GrappleHookSimulationContext(
+            input, config, delta: 0.1f);
+
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.IsTrue(state.BroadcastStopTravel);
+        Assert.IsTrue(state.BroadcastRelease);
+        Assert.IsFalse(state.IsGrappling);
+    }
+
+    [Test]
+    public void StepSetsStopAndReleaseFlagsOnMaxReelTimeExit()
+    {
+        var input = MakeInput();
+        var state = MakeState(
+            isGrappling: true,
+            reelTime: 10f
+        );
+        var config = MakeConfig(
+            maxReelTime: 10f
+        );
+
+        var ctx = new GrappleHookSimulationContext(
+            input, config, delta: 0.1f);
+
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.IsTrue(state.BroadcastStopTravel);
+        Assert.IsTrue(state.BroadcastRelease);
+    }
+
+    [Test]
+    public void StepLeavesAllBroadcastFlagsFalseOnSteadyGrapplingTick()
+    {
+        var input = MakeInput(
+            localTransformPosition: new Vector3(0f, 0f, 0f)
+        );
+        var state = MakeState(
+            isGrappling: true,
+            reelTime: 1f,
+            hookPoint: new Vector3(30f, 30f, 30f)
+        );
+        var config = MakeConfig(
+            maxReelTime: 10f
+        );
+
+        var ctx = new GrappleHookSimulationContext(
+            input, config, delta: 0.1f);
+
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.IsFalse(state.BroadcastShootAndTravel);
+        Assert.IsFalse(state.BroadcastGrappleRegistration);
+        Assert.IsFalse(state.BroadcastStopTravel);
+        Assert.IsFalse(state.BroadcastRelease);
+    }
+
+    [Test]
+    public void StepResetsStalePreviousBroadcastFlags()
+    {
+        var input = MakeInput(
+            localTransformPosition: new Vector3(0f, 0f, 0f)
+        );
+        var state = MakeState(
+            isGrappling: true,
+            reelTime: 1f,
+            hookPoint: new Vector3(30f, 30f, 30f),
+            broadcastShootAndTravel: true,
+            broadcastGrappleRegistration: true,
+            broadcastStopTravel: true,
+            broadcastRelease: true
+        );
+        var config = MakeConfig(
+            maxReelTime: 10f
+        );
+
+        var ctx = new GrappleHookSimulationContext(
+            input, config, delta: 0.1f);
+
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.IsFalse(state.BroadcastShootAndTravel);
+        Assert.IsFalse(state.BroadcastGrappleRegistration);
+        Assert.IsFalse(state.BroadcastStopTravel);
+        Assert.IsFalse(state.BroadcastRelease);
     }
 }

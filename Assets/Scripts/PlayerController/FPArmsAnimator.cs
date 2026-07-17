@@ -381,7 +381,8 @@ namespace Resonance.Combat
 
         public void OnGrappleFireHook()
         {
-            _grappleHook?.ActivateAbilityExternal();
+            // TODO: implement simulation timeout path
+            // _grappleHook?.ActivateAbilityExternal();
         }
 
         public void OnGrappleComplete()
