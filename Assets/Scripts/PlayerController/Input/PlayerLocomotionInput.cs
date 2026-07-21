@@ -1,13 +1,15 @@
-using PurrNet;
+using Resonance.Assemblies.Player;
+using Resonance.Helper;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Resonance.PlayerController
 {
     [DefaultExecutionOrder(-2)]
-    public class PlayerLocomotionInput : NetworkBehaviour, PlayerControls.IPlayerLocomotionMapActions
-
+    public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomotionMapActions
     {
+        public static PlayerLocomotionInput Instance { get; private set; }
+
         #region Class Variables
         [SerializeField] private bool holdToSprint = true;
         public Vector2 MovementInput { get; private set; }
@@ -16,28 +18,28 @@ namespace Resonance.PlayerController
         public bool SprintToggledOn { get; private set; }
         public bool CrouchToggledOn { get; private set; }
 
-        private PlayerState _playerState;
-        private bool wasPreviouslyOwner;
+        private PlayerState _cachedPlayerStateReference;
         #endregion
 
         #region Startup
 
         private void Awake()
         {
-            _playerState = GetComponent<PlayerState>();
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.AddCallbacks(this);
         }
 
-        protected override void OnSpawned()
+        private void OnDestroy()
         {
-            base.OnSpawned();
-            enabled = isOwner;
-            wasPreviouslyOwner = isOwner;
-
-            if (isOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Enable();
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.AddCallbacks(this);
-            }
+            if (Instance == this) Instance = null;
         }
 
         private void OnEnable()
@@ -57,22 +59,29 @@ namespace Resonance.PlayerController
                 return;
             }
 
-            if (wasPreviouslyOwner)
-            {
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Disable();
-                PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.RemoveCallbacks(this);
-            }
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.Disable();
+            PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.RemoveCallbacks(this);
+        }
+
+        private void TryCachePlayerComponentReferences()
+        {
+            if (_cachedPlayerStateReference != null) return;
+
+            var gameObject = OwnerFinder.FindGameObjectOfOwnedPlayerPredictedController();
+            if (gameObject == null) return;
+
+            _cachedPlayerStateReference = gameObject.GetComponent<PlayerState>();
         }
         #endregion
 
         #region Late Update Logic
         private void LateUpdate()
         {
-            JumpPressed = false;
+            if (_cachedPlayerStateReference == null) return;
 
             // Disable crouch when airborne (jumping or falling)
-            bool isAirborne = _playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping ||
-                              _playerState.CurrentPlayerMovementState == PlayerMovementState.Falling;
+            bool isAirborne = _cachedPlayerStateReference.CurrentPlayerMovementState == PlayerMovementState.Jumping ||
+                              _cachedPlayerStateReference.CurrentPlayerMovementState == PlayerMovementState.Falling;
 
             if (isAirborne && CrouchToggledOn)
             {
@@ -91,7 +100,8 @@ namespace Resonance.PlayerController
         #region Input Callbacks
         public void OnMovement(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
+            TryCachePlayerComponentReferences();
+            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen()))
             {
                 MovementInput = Vector2.zero;
                 return;
@@ -102,7 +112,9 @@ namespace Resonance.PlayerController
 
         public void OnLook(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen())
+            TryCachePlayerComponentReferences();
+
+            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen()))
             {
                 LookInput = Vector2.zero;
                 return;
@@ -113,7 +125,9 @@ namespace Resonance.PlayerController
 
         public void OnToggleSprint(InputAction.CallbackContext context)
         {
-            if (_playerState.IsDead() || _playerState.IsMatchFrozen()) return;
+            TryCachePlayerComponentReferences();
+
+            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen())) return;
 
             if (context.performed)
             {
@@ -127,16 +141,24 @@ namespace Resonance.PlayerController
 
         public void OnJump(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
+            TryCachePlayerComponentReferences();
+
+            if (!context.performed)
+            {
+                JumpPressed = false;
                 return;
+            }
+            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen())) return;
 
             JumpPressed = true;
         }
 
         public void OnToggleCrouch(InputAction.CallbackContext context)
         {
-            if (!context.performed || _playerState.IsDead() || _playerState.IsMatchFrozen())
-                return;
+            TryCachePlayerComponentReferences();
+
+            if (!context.performed) return;
+            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen())) return;
 
             CrouchToggledOn = !CrouchToggledOn;
         }

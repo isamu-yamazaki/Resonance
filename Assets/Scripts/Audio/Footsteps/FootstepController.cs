@@ -1,4 +1,5 @@
 using UnityEngine;
+using Resonance.Assemblies.Player;
 using Resonance.PlayerController;
 using PurrNet;
 

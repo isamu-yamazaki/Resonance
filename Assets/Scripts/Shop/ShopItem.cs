@@ -60,9 +60,9 @@ namespace Resonance.Shop
 
         public void RefreshAffordability()
         {
-            if (PlayerMoney.Instance == null) return;
+            if (PlayerMoney.LocalInstance == null) return;
 
-            bool canAfford = PlayerMoney.Instance.CanAfford(itemCost);
+            bool canAfford = PlayerMoney.LocalInstance.CanAfford(itemCost);
             button.interactable = canAfford;
             itemCostText.color = canAfford ? Color.white : Color.red;
         }

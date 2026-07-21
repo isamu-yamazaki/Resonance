@@ -1,19 +1,16 @@
 using System.Collections;
-using PurrNet;
-using Resonance.Audio;
 using Resonance.Helper;
 using UnityEngine;
 using Resonance.Player;
 
 namespace Resonance.PlayerController
 {
-    public class OverdriveAbility : NetworkBehaviour
+    public class OverdriveAbility : MonoBehaviour
     {
         #region Class Variables
         [Header("Audio")]
 #if !UNITY_SERVER
         [SerializeField] private AK.Wwise.Event activateEvent;
-        [SerializeField] private AK.Wwise.Event activateWorldEvent;
 #endif
 
         [Header("Overdrive Settings")]
@@ -43,6 +40,7 @@ namespace Resonance.PlayerController
 
         private PlayerState _playerState;
         private PlayerStats _playerStats;
+        private OverdriveWorldActivateBroadcast _audioBroadcast;
         #endregion
 
         #region Startup
@@ -50,6 +48,7 @@ namespace Resonance.PlayerController
         {
             _playerState = GetComponent<PlayerState>();
             _playerStats = GetComponent<PlayerStats>();
+            _audioBroadcast = GetComponent<OverdriveWorldActivateBroadcast>();
             
             State = new ObservableValue<OverdriveState>(OverdriveState.Ready);
             CooldownRemaining = new ObservableValue<float>(0f);
@@ -65,7 +64,7 @@ namespace Resonance.PlayerController
                 _playerStats.OnPlayerRespawn += HandlePlayerRespawn;
             }
             
-            OverdriveHUD hud = FindObjectOfType<OverdriveHUD>();
+            OverdriveHUD hud = FindFirstObjectByType<OverdriveHUD>();
             if (hud != null)
             {
                 hud.SetOverdriveAbility(this);
@@ -160,13 +159,13 @@ namespace Resonance.PlayerController
 
             AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 70f);
 #endif
-            RequestActivateWorldOnServer();
+            _audioBroadcast.RequestAudioBroadcastNextTick();
             
             if (_playerStats != null)
             {
-                _playerStats.AddSpeedModifier(overdriveSpeedMultiplier);
-                _playerStats.AddRegenModifier(overdriveRegenAmount);
-                _playerStats.AddDamageReductionModifier(overdriveDamageReductionAmount);
+                _playerStats.AddSpeedModifierExternal(overdriveSpeedMultiplier);
+                _playerStats.AddRegenModifierExternal(overdriveRegenAmount);
+                _playerStats.AddDamageReductionModifierExternal(overdriveDamageReductionAmount);
                 _playerStats.Heal(overdriveHealAmount);
 #if UNITY_EDITOR
                 Debug.Log($"Overdrive ACTIVATED! Healed {overdriveHealAmount} HP");
@@ -185,9 +184,9 @@ namespace Resonance.PlayerController
             SetState(OverdriveState.Cooldown);
             CooldownTimeRemaining = overdriveCooldown;
             
-            _playerStats.RemoveSpeedModifier(overdriveSpeedMultiplier);
-            _playerStats.RemoveRegenModifier(overdriveRegenAmount);
-            _playerStats.RemoveDamageReductionModifier(overdriveDamageReductionAmount);
+            _playerStats.RemoveSpeedModifierExternal(overdriveSpeedMultiplier);
+            _playerStats.RemoveRegenModifierExternal(overdriveRegenAmount);
+            _playerStats.RemoveDamageReductionModifierExternal(overdriveDamageReductionAmount);
 #if UNITY_EDITOR
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");
 #endif
@@ -244,28 +243,6 @@ namespace Resonance.PlayerController
             AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 0f);
         }
         #endif
-
-        #region Audio RPCs
-
-        [ServerRpc]
-        private void RequestActivateWorldOnServer()
-        {
-            BroadcastActivateWorld();
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastActivateWorld()
-        {
-#if !UNITY_SERVER
-            if (activateWorldEvent != null && activateWorldEvent.IsValid())
-                activateWorldEvent.Post(gameObject);
-
-            if (AudioSourceTracker.Instance != null)
-                AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
-#endif
-        }
-
-        #endregion
 
         public enum OverdriveState
         {

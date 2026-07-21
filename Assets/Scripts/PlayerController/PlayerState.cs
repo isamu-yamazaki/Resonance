@@ -1,18 +1,17 @@
 using System;
-using PurrNet;
+using PurrNet.Prediction;
+using Resonance.Assemblies.Player;
 using Resonance.Combat.Weapons.Enums;
-using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    public class PlayerState : NetworkBehaviour
+    public class PlayerState : PredictedIdentity<PlayerStateInput, PlayerStateData>
     {
-        [field: SerializeField]
-        public PlayerMovementState CurrentPlayerMovementState { get; private set; } = PlayerMovementState.Idling;
-        public WeaponClass CurrentWeaponClass { get; private set; }
-        public bool WeaponClassInitialized { get; private set; }
+        public PlayerMovementState CurrentPlayerMovementState => currentState.MovementState;
+        public WeaponClass CurrentWeaponClass => currentState.WeaponClass;
+        public bool WeaponClassInitialized => currentState.WeaponClassInitialized;
 
-        public WeaponState CurrentWeaponState { get; private set; } = WeaponState.Idle;
+        public WeaponState CurrentWeaponState => currentState.WeaponState;
 
         public bool IsReloading => CurrentWeaponState == WeaponState.Reloading || CurrentWeaponState == WeaponState.EmptyReloading;
         public bool IsAttacking => CurrentWeaponState == WeaponState.Shooting;
@@ -20,13 +19,39 @@ namespace Resonance.PlayerController
         public event Action<WeaponState> OnWeaponStateChanged;
         public event Action<WeaponClass> OnWeaponClassChanged;
 
-        public void SetWeaponState(WeaponState state)
+        #region External input accumulators
+        private WeaponState pendingWeaponState;
+        private PlayerMovementState pendingMovementState;
+        private bool requestWeaponStateUpdate;
+        private bool requestMovementStateUpdate;
+        private PlayerStateData? previousVerifiedState;
+        #endregion
+
+        public void SetExternalWeaponState(WeaponState state)
         {
             if (CurrentWeaponState == state) return;
             if (!IsValidTransition(CurrentWeaponState, state)) return;
             
-            CurrentWeaponState = state;
-            OnWeaponStateChanged?.Invoke(state);
+            pendingWeaponState = state;
+            requestWeaponStateUpdate = true;
+        }
+
+        public void SetExternalPlayerMovementState(PlayerMovementState playerMovementState)
+        {
+            pendingMovementState = playerMovementState;
+            requestMovementStateUpdate = true;
+        }
+
+        [SimulationOnly]
+        public void SetSimulatedPlayerMovementState(PlayerMovementState playerMovementState)
+        {
+            currentState.MovementState = playerMovementState;
+        }
+
+        [SimulationOnly]
+        public void SetSimulatedWeaponClass(WeaponClass weaponClass)
+        {
+            currentState.WeaponClass = weaponClass;
         }
 
         private bool IsValidTransition(WeaponState from, WeaponState to)
@@ -56,24 +81,10 @@ namespace Resonance.PlayerController
             }
         }
 
-        public void SetPlayerMovementState(PlayerMovementState playerMovementState)
-        {
-            if (!isOwner) return;
-            CurrentPlayerMovementState = playerMovementState;
-        }
 
         public bool InGroundedState()
         {
-            return IsStateGroundedState(CurrentPlayerMovementState);
-        }
-
-        public bool IsStateGroundedState(PlayerMovementState movementState)
-        {
-            return movementState == PlayerMovementState.Idling ||
-                   movementState == PlayerMovementState.Crouching ||
-                   movementState == PlayerMovementState.Running ||
-                   movementState == PlayerMovementState.Sprinting ||
-                   movementState == PlayerMovementState.Sliding;
+            return PlayerMovementStateUtils.IsStateGroundedState(CurrentPlayerMovementState);
         }
 
         public bool IsDead()
@@ -97,28 +108,48 @@ namespace Resonance.PlayerController
                    CurrentPlayerMovementState == PlayerMovementState.MatchEndedFrozen;
         }
 
-        public void SetWeaponClass(WeaponClass weaponClass)
-        {
-            CurrentWeaponClass = weaponClass;
-            WeaponClassInitialized = true;
-            OnWeaponClassChanged?.Invoke(weaponClass);
-        }
-    }
 
-    public enum PlayerMovementState
-    {
-        Idling = 0,
-        Crouching = 1,
-        Running = 2,
-        Sprinting = 3,
-        Jumping = 4,
-        Falling = 5,
-        Sliding = 6,
-        Dead = 7,
-        Ziplining = 8,
-        PreMatchFrozen = 9,
-        MatchEndedFrozen = 10,
-        Grappling = 11,
+        #region Server-auth methods
+
+        protected override void GetFinalInput(ref PlayerStateInput input)
+        {
+            input.RequestExternalPlayerMovementStateUpdate = requestMovementStateUpdate;
+            input.RequestExternalWeaponStateUpdate = requestWeaponStateUpdate;
+            input.RequestedPlayerMovementState = pendingMovementState;
+            input.RequestedWeaponState = pendingWeaponState;
+
+            requestMovementStateUpdate = false;
+            requestWeaponStateUpdate = false;
+        }
+
+        protected override void Simulate(PlayerStateInput input, ref PlayerStateData state, float delta)
+        {
+            if (input.RequestExternalPlayerMovementStateUpdate)
+            {
+                state.MovementState = input.RequestedPlayerMovementState;
+            }
+            if (input.RequestExternalWeaponStateUpdate)
+            {
+                state.WeaponState = input.RequestedWeaponState;
+            }
+        }
+
+        protected override void UpdateView(PlayerStateData viewState, PlayerStateData? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            if (!previousVerifiedState.HasValue || (previousVerifiedState.Value.WeaponClass != v.WeaponClass))
+                OnWeaponClassChanged?.Invoke(v.WeaponClass);
+            
+            if (!previousVerifiedState.HasValue || (previousVerifiedState.Value.WeaponState != v.WeaponState))
+                OnWeaponStateChanged?.Invoke(v.WeaponState);
+
+            previousVerifiedState = v;
+        }
+
+        #endregion
+        
     }
 
     public enum WeaponState

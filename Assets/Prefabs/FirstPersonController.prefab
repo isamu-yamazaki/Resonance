@@ -185,6 +185,37 @@ MonoBehaviour:
   clearColor: {r: 0, g: 1, b: 0, a: 1}
   occludedColor: {r: 1, g: 0, b: 0, a: 1}
   diffractionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+--- !u!1 &3829262655727171640
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3438122033682293585}
+  m_Layer: 6
+  m_Name: SkinRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3438122033682293585
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3829262655727171640}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7264354477965666744}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5642366538942606948
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,20 +431,17 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7264354477965666744}
-  - component: {fileID: 8603361819792898361}
-  - component: {fileID: 8323531065397955590}
-  - component: {fileID: 3887967411063251530}
-  - component: {fileID: -3134566903920560379}
+  - component: {fileID: 2544147265793740102}
+  - component: {fileID: 625382980807758898}
   - component: {fileID: 3494420511587806199}
   - component: {fileID: 186030322157751487}
   - component: {fileID: 6986822269938596396}
   - component: {fileID: 1227219239304027150}
   - component: {fileID: 7288220896636920470}
+  - component: {fileID: 5486924316632066744}
   - component: {fileID: 566397693469419020}
   - component: {fileID: 1639472579186224973}
   - component: {fileID: 6663562861641907931}
-  - component: {fileID: 442510756705436988}
-  - component: {fileID: 5378828892324781899}
   - component: {fileID: 3601999263526900247}
   - component: {fileID: 4363601593636969602}
   - component: {fileID: 7304100629892152196}
@@ -425,7 +453,6 @@ GameObject:
   - component: {fileID: -6562338477815478662}
   - component: {fileID: -2009204506129055193}
   - component: {fileID: 1243582744159536647}
-  - component: {fileID: 8627360394267033834}
   - component: {fileID: 5575042648507424026}
   - component: {fileID: -4161255406100890942}
   - component: {fileID: 2324411731792430973}
@@ -447,6 +474,7 @@ GameObject:
   - component: {fileID: 1942585291339358380}
   - component: {fileID: 5684997356607948869}
   - component: {fileID: 573185485124298836}
+  - component: {fileID: 6546640426539019072}
   m_Layer: 6
   m_Name: FirstPersonController
   m_TagString: Player
@@ -467,12 +495,13 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3438122033682293585}
   - {fileID: 6485822093017100666}
   - {fileID: 7506896322233803167}
   - {fileID: 5434481047200221691}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8603361819792898361
+--- !u!114 &2544147265793740102
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -481,116 +510,63 @@ MonoBehaviour:
   m_GameObject: {fileID: 6809321870534573542}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90833cdbb5a985c479c712b698d07a62, type: 3}
+  m_Script: {fileID: 11500000, guid: 98dbb08343eac044895b9b52872bcb49, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
+  m_EditorClassIdentifier: PurrNet.Prediction::PurrNet.Prediction.PredictedTransform
+  _graphics: {fileID: 3438122033682293585}
+  _floatAccuracy: 1
+  _interpolationSettings: {fileID: 11400000, guid: 4a8aa8e44e23cfd4a8d4387ef3f36173, type: 2}
+  _unparentGraphics: 0
+  _characterControllerPatch: 1
+--- !u!114 &625382980807758898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb44ab50c506c1040a35e29eb483f20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerPredictedController
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   _characterController: {fileID: 3494420511587806199}
   _virtualCamera: {fileID: 3024070534968682805}
-  baseCrouchAcceleration: 25
-  baseCrouchSpeed: 2
-  baseRunAcceleration: 35
-  baseRunSpeed: 4
-  baseSprintAcceleration: 50
-  baseSprintSpeed: 7
-  baseInAirAcceleration: 25
-  baseDrag: 20
-  gravity: 25
-  terminalVelocity: 50
-  jumpSpeed: 1
-  movingThreshold: 0.01
-  baseSlideSpeed: 8
-  baseMinSlideSpeed: 2
-  slideDuration: 1
-  slideDeceleration: 8
-  slopeAngleThreshold: 15
-  uphillSlideDecelerationMultiplier: 2
-  downhillSlideSpeedBoost: 1.2
-  playerModelRotationSpeed: 10
-  rotateToTargetTime: 1
-  lookSensitivityH: 0.1
-  lookSensitivityV: 0.1
-  lookLimitV: 70
-  baseFOV: 75
-  sprintFOV: 85
-  overdriveFOV: 95
-  fovTransitionSpeed: 10
+  _firstPersonViewRoot: {fileID: 6485822093017100666}
+  _config:
+    baseCrouchAcceleration: 25
+    baseCrouchSpeed: 2
+    baseRunAcceleration: 35
+    baseRunSpeed: 4
+    baseSprintAcceleration: 50
+    baseSprintSpeed: 7
+    baseInAirAcceleration: 25
+    baseDrag: 20
+    gravity: 25
+    terminalVelocity: 50
+    jumpSpeed: 1
+    movingThreshold: 0.01
+    baseSlideSpeed: 8
+    baseMinSlideSpeed: 2
+    slideDuration: 1
+    slideDeceleration: 8
+    slopeAngleThreshold: 15
+    uphillSlideDecelerationMultiplier: 2
+    downhillSlideSpeedBoost: 1.2
+    playerModelRotationSpeed: 10
+    rotateToTargetTime: 1
+    lookSensitivityH: 0.1
+    lookSensitivityV: 0.1
+    lookLimitV: 70
+    baseFOV: 75
+    sprintFOV: 85
+    overdriveFOV: 95
+    fovTransitionSpeed: 10
   _groundLayers:
     serializedVersion: 2
     m_Bits: 257
-  grappleImpulseDecay: 10
---- !u!114 &8323531065397955590
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9baf2753d051ed5429094497e7e104e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerLocomotionInput
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  holdToSprint: 1
---- !u!114 &3887967411063251530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9013b3fa3d70ab04c93dacdd173ebf4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerActionsInput
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
---- !u!114 &-3134566903920560379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aa942677aede4bedb6c2938011e8a2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.InGameUIActionsInput
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
 --- !u!143 &3494420511587806199
 CharacterController:
   m_ObjectHideFlags: 0
@@ -624,7 +600,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 3d1a4c18f8f56418791267507e284a67, type: 3}
   m_Controller: {fileID: 9100000, guid: 426398b47b199354ea9880f3fac1ef80, type: 2}
   m_CullingMode: 0
@@ -650,16 +626,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50898351a65ff4848b3a068352164aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerState
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  <CurrentPlayerMovementState>k__BackingField: 0
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
 --- !u!114 &1227219239304027150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -672,17 +640,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca641dc478de5f4fae60cf9f7cd1016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   _animator: {fileID: 186030322157751487}
-  _networkAnimator: {fileID: 5378828892324781899}
   locomotionBlendSpeed: 10
 --- !u!114 &7288220896636920470
 MonoBehaviour:
@@ -696,29 +656,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c38e9634aee9db4684b50e737ad0cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveAbility
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   activateEvent:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: c5b3619e4bff0c44d8779ca1e0d84562, type: 2}
-  activateWorldEvent:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 7d7f96cb21ef4204eb7d687c634973e6, type: 2}
   overdriveDuration: 8
   overdriveCooldown: 1
   overdriveSpeedMultiplier: 1.5
   overdriveHealAmount: 50
   overdriveRegenAmount: 5
   overdriveDamageReductionAmount: 0.25
+--- !u!114 &5486924316632066744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ca31240ded0e4d409d11da5f4acfc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveAudioBroadcast
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
+  activateWorldEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 7d7f96cb21ef4204eb7d687c634973e6, type: 2}
 --- !u!114 &566397693469419020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,15 +696,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88a2f7b50c8598b40b30e939fae75a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.OverdriveTrailEffect
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   _overdriveTrailMaterial: {fileID: 2100000, guid: 37d9cfc044673f944947aaf8c2f56d0f, type: 2}
   spawnInterval: 0.1
   ghostLifetime: 1
@@ -791,25 +749,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306b386571bb40847b079fec30bc047a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   maxHealth: 100
   baseHealthRegen: 0
   maxDamageReduction: 0.75
   baseDamageReduction: 0
   playerBaseSpeed: 1
   respawnOnDeath: 1
-  CurrentHealth:
-    _value: 0
-    _ownerAuth: 0
-    _sendIntervalInSeconds: 0
 --- !u!114 &6663562861641907931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -824,62 +771,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.VFX.PlayerDeathEffect
   deathGlitchMaterial: {fileID: 2100000, guid: b9a1d38ab4565463ab4661a1743f1780, type: 2}
   effectDuration: 0.5
---- !u!114 &442510756705436988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 817fe5016bd0a2a49a95b6eb338bb132, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkTransform
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  _syncPosition: 1
-  _syncRotation: 1
-  _syncScale: 1
-  _syncParent: 1
-  _interpolateSettings: 7
-  _minBufferSize: 1
-  _maxBufferSize: 2
-  _characterControllerPatch: 0
-  _ownerAuth: 1
-  _interpolationTiming: 0
---- !u!114 &5378828892324781899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7b598b9d8509d64abb9fdaf07fa3f6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkAnimator
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  _animator: {fileID: 186030322157751487}
-  _ownerAuth: 1
-  _autoSyncParameters: 0
-  _dontSyncParameters: []
 --- !u!114 &3601999263526900247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -892,17 +783,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9f65672025fa5d4abac8993a47b6afd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerEquip
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   playerInventory: {fileID: 7304100629892152196}
-  playerActionsInput: {fileID: 3887967411063251530}
 --- !u!114 &4363601593636969602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -915,15 +798,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20ea97cdb3e312945afe919a15f3110b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.ProjectileShooter
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   playerCamera: {fileID: 0}
   damageNumberPrefab: {fileID: 2474898762247100464, guid: 325d2b673ea625b4d984c4618506fb81, type: 3}
   debugAimRays: 1
@@ -943,22 +819,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2551c363f8a16b948b7ff20b467041d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Inventory.PlayerInventory
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  weaponInventory:
-  - {fileID: 0}
-  - {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   startingWeapon: {fileID: 11400000, guid: 28cadf78b26d3a1489c2a936a55f1575, type: 2}
-  augmentInventory:
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &8505458450555133255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1115,6 +978,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e5b738d0ae3f5a4e971816bbc9221d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.WeaponStatManager
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
 --- !u!114 &-2009204506129055193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1139,28 +1004,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e5b738d0ae3f5a4e971816bbc9221d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.WeaponStatManager
---- !u!114 &8627360394267033834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809321870534573542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b21598ce5503427c8b738711e1c16f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerSkinApplicator
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  skinRenderer: {fileID: 5575042648507424026}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
 --- !u!114 &5575042648507424026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1173,22 +1018,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a917e9c7c544d59a5c1b09bc598baa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.PlayerController.PlayerSkinRenderer
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   skinCatalog: {fileID: 11400000, guid: 8ae0f4c6a27d046fca8c89e7e0b26426, type: 2}
   animator: {fileID: 186030322157751487}
   fpArmsRoot: {fileID: 1482643949032794281}
-  skinIndex:
-    _value: 0
-    _ownerAuth: 0
-    _sendIntervalInSeconds: 0
   testSkinIndexToRequest: 0
 --- !u!114 &-4161255406100890942
 MonoBehaviour:
@@ -1202,6 +1036,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bda92ce9f3864754a8fed28b007ed58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainPassengerPhysics
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _trainController: {fileID: 0}
   _trainFloorTag: Train
   _inertiaDecay: 4
@@ -1353,6 +1196,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e563d196eb249d44b9c3aabda3ba9ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.PlayerAugmentManager
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
 --- !u!114 &5294477622813519415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1365,11 +1210,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1791d882e5a61fb4b943aef66559ae98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilitySprintBurst
-  maxBurstSpeed: 2
-  minBurstSpeed: 1.2
-  maxMeter: 5
-  meterRecoverySpeed: 1
-  timeUntilRecovery: 0.5
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
+  config:
+    maxBurstSpeed: 2
+    minBurstSpeed: 1.2
+    maxMeter: 5
+    meterRecoverySpeed: 1
+    timeUntilRecovery: 0.5
 --- !u!114 &-8132299845463937113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1382,18 +1230,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f101be1c3ebfe47c797c61afb81cd5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.SonarDiscAbility
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   augmentProperties: {fileID: 11400000, guid: 7ccee1832ce824258abe079e5d607225, type: 2}
   sonarDiscPrefab: {fileID: 5617757003934067384, guid: ae6d8f4a902ef43b1820c02a8c4e6d36, type: 3}
-  cooldown: 1
+  config:
+    cooldown: 12
 --- !u!114 &-291350223014566401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1473,39 +1315,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 756697708992c6b4ba888e216e9886b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Combat.Augments.AbilityGrappleHook
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  maxRange: 40
-  reelSpeed: 30
-  maxReelTime: 1.5
-  exitBoost: 5
-  upwardBias: 0.25
-  cooldown: 1
-  grappleLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
+  config:
+    maxRange: 30
+    reelSpeed: 20
+    maxReelTime: 3
+    exitBoost: 5
+    upwardBias: 0.25
+    cooldown: 10
+    grappleLayerMask:
+      serializedVersion: 2
+      m_Bits: 256
   shootEvent:
     idInternal: 0
-    valueGuidInternal: 
+    valueGuidInternal:
     WwiseObjectReference: {fileID: 11400000, guid: ccfeef1468a60b040a86648f65fb5345, type: 2}
   travelLoopEvent:
     idInternal: 0
-    valueGuidInternal: 
+    valueGuidInternal:
     WwiseObjectReference: {fileID: 11400000, guid: 0542d3919461d10409bca7ea4847ed86, type: 2}
   stopTravelEvent:
     idInternal: 0
-    valueGuidInternal: 
+    valueGuidInternal:
     WwiseObjectReference: {fileID: 11400000, guid: 8ad66c9abd2d8c342b507553d76153c0, type: 2}
   releaseEvent:
     idInternal: 0
-    valueGuidInternal: 
+    valueGuidInternal:
     WwiseObjectReference: {fileID: 11400000, guid: 24e2f969f6ffb554eb2a07b7230a0745, type: 2}
 --- !u!114 &-9158808936870234664
 MonoBehaviour:
@@ -1541,18 +1377,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c9b65a90592be42910be98e69f32a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.BubbleShield.AbilityBubbleShield
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  lobForce: 6
-  upwardLobBias: 0.4
-  cooldown: 1
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
+  config:
+    lobForce: 6
+    upwardLobBias: 0.4
+    cooldown: 5
   bubbleShieldPrefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
   throwSoundEvent:
     idInternal: 0
@@ -1596,15 +1426,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9f1a2183787b15469d6633826859cd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Economy.PlayerMoney
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _repeatInputFactor: 0.8
+  _extrapolateInput: 1
   startingBalance: 5000
 --- !u!114 &573185485124298836
 MonoBehaviour:
@@ -1630,6 +1453,26 @@ MonoBehaviour:
   normalFOV: 80
   zoomedFOV: 20
   zoomSpeed: 10
+--- !u!114 &6546640426539019072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809321870534573542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03700931d6590b49a1a6d643c69e1f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.SonarDisc.LocalSonarListener
+  scanConfirmedEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: cefad1e1f9c484e0e9e9590d30fa1560, type: 2}
+  scannedWarningEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!1 &9074476893389208830
 GameObject:
   m_ObjectHideFlags: 0

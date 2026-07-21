@@ -1,79 +1,90 @@
+using PurrNet.Prediction;
 using Resonance.Combat.Augments;
 using Resonance.Player;
-using UnityEngine;
 
 namespace Resonance.Combat
 {
     
-    public class PlayerAugmentEquipper : MonoBehaviour
+    public class PlayerAugmentEquipper : PredictedIdentity<PlayerAugmentEquipperState>
     {
         private WeaponStatManager augmentedWeaponStatTarget;
         private PlayerStats augmentedPlayerStatTarget;
 
-        private void Awake()
+        protected override void LateAwake()
         {
             augmentedPlayerStatTarget = GetComponent<PlayerStats>();
             augmentedWeaponStatTarget = GetComponent<WeaponStatManager>();
         }
 
-        public void ApplyAugmentStats(AugmentProperties augment)
+        [SimulationOnly]
+        public void SimulateApplyAugmentStats(AugmentProperties augment)
         {
+            // TODO: fully simulate
             if (augment == null)
             {
                 return;
             }
 
-            //Player Stats first
+            // Player Stats first
             if (augment.Speed != 0)
             {
-                augmentedPlayerStatTarget.AddSpeedModifier(augment.Speed);
+                augmentedPlayerStatTarget.SimulateAddSpeedModifier(augment.Speed);
             }
             
             if (augment.DamageReduction != 0)
             {
-                augmentedPlayerStatTarget.AddDamageReductionModifier(augment.DamageReduction);
+                augmentedPlayerStatTarget.SimulateAddDamageReductionModifier(augment.DamageReduction);
             }
             
             if (augment.Regen != 0)
             {
-                augmentedPlayerStatTarget.AddRegenModifier(augment.Regen);
+                augmentedPlayerStatTarget.SimulateAddRegenModifier(augment.Regen);
             }
             
-            //Then handle weapon stats
+            // Then handle weapon stats
             if (augment.ModProperties != null)
             {
-                augmentedWeaponStatTarget.AddAugmentMod(augment.ModProperties);
+                augmentedWeaponStatTarget.SimulateAddAugmentMod(augment.ModProperties);
             }
         }
-        
-        public void RemoveAugmentStats(AugmentProperties augment)
+
+        [SimulationOnly]
+        public void SimulateRemoveAugmentStats(AugmentProperties augment)
         {
+            // TODO: fully simulate
             if (augment == null)
             {
                 return;
             }
 
-            //Player Stats first
+            // Player Stats first
             if (augment.Speed != 0)
             {
-                augmentedPlayerStatTarget.RemoveSpeedModifier(augment.Speed);
+                augmentedPlayerStatTarget.SimulateRemoveSpeedModifier(augment.Speed);
             }
             
             if (augment.DamageReduction != 0)
             {
-                augmentedPlayerStatTarget.RemoveDamageReductionModifier(augment.DamageReduction);
+                augmentedPlayerStatTarget.SimulateRemoveDamageReductionModifier(augment.DamageReduction);
             }
             
             if (augment.Regen != 0)
             {
-                augmentedPlayerStatTarget.RemoveRegenModifier(augment.Regen);
+                augmentedPlayerStatTarget.SimulateRemoveRegenModifier(augment.Regen);
             }
             
-            //Then handle weapon stats
+            // Then handle weapon stats
             if (augment.ModProperties != null)
             {
-                augmentedWeaponStatTarget.RemoveAugmentMod(augment.ModProperties);
+                augmentedWeaponStatTarget.SimulateRemoveAugmentMod(augment.ModProperties);
             }
+        }
+    }
+
+    public struct PlayerAugmentEquipperState : IPredictedData<PlayerAugmentEquipperState>
+    {
+        public void Dispose()
+        {
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Resonance.UI
 
         private IEnumerator Start()
         {
-            while (PlayerController.PlayerController.LocalPlayer == null)
+            while (PlayerPredictedController.LocalPlayer == null)
                 yield return null;
 
             _camera = Camera.main;

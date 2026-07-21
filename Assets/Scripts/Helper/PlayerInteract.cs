@@ -20,7 +20,7 @@ public class PlayerInteract : NetworkBehaviour
     private void Awake()
     {
         player = gameObject;
-        _playerActionsInput = GetComponent<PlayerActionsInput>();
+        _playerActionsInput = PlayerActionsInput.Instance;
         _playerState = GetComponent<PlayerState>();
     }
 

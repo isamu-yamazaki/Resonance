@@ -1,3 +1,8 @@
+# Normalize line endings to LF in the repo, regardless of editor/OS.
+* text=auto eol=lf
+# Binary assets: never touch line endings.
+*.tga -text
+
 *.unity merge=unityyamlmerge
 *.prefab merge=unityyamlmerge
 *.asset merge=unityyamlmerge

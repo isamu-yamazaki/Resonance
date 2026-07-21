@@ -38,7 +38,7 @@ namespace Resonance.Combat
 
         private void Start()
         {
-            actions = GetComponent<PlayerActionsInput>();
+            actions = PlayerActionsInput.Instance;
             playerStats = GetComponent<PlayerStats>();
 
             currentCharges = maxCharges;

@@ -1,3 +1,4 @@
+using Resonance.Assemblies.Train;
 using UnityEngine;
 
 namespace Resonance.Train
@@ -49,7 +50,7 @@ namespace Resonance.Train
             if (_trainController == null) return;
 
             bool movingForward = _trainController.Direction == TrainDirection.Forward
-                                 && _trainController.CurrentState != TrainState.StoppedAtStation;
+                                 && _trainController.CurrentState != TrainMovementState.StoppedAtStation;
 
             SetActive(_forwardSideCollider, movingForward);
             SetActive(_backwardSideCollider, !movingForward);

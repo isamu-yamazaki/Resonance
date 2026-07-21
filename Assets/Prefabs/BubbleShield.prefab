@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6572433336360983696}
   - component: {fileID: 4357762363121204753}
-  - component: {fileID: 697816106320107227}
+  - component: {fileID: -3372984348831897311}
   - component: {fileID: 4031546689813097154}
   - component: {fileID: 5417536949196746570}
+  - component: {fileID: -8466848652156360324}
   m_Layer: 10
   m_Name: BubbleShield
   m_TagString: Untagged
@@ -64,7 +65,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 2
---- !u!114 &697816106320107227
+--- !u!114 &-3372984348831897311
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,28 +74,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5617757003934067384}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 817fe5016bd0a2a49a95b6eb338bb132, type: 3}
+  m_Script: {fileID: 11500000, guid: 939517533de889a4f948d4e2041fb798, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkTransform
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  _syncPosition: 1
-  _syncRotation: 1
-  _syncScale: 1
-  _syncParent: 1
-  _interpolateSettings: 7
-  _minBufferSize: 1
-  _maxBufferSize: 2
-  _characterControllerPatch: 0
-  _ownerAuth: 1
-  _interpolationTiming: 0
+  m_EditorClassIdentifier: PurrNet.Prediction::PurrNet.Prediction.PredictedRigidbody
+  _rigidbody: {fileID: 4357762363121204753}
+  _floatAccuracy: 1
+  _eventMask: 63
+  _ignoreTriggerOnTrigger: 0
 --- !u!114 &4031546689813097154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,20 +93,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0891df84c76ae624a8a862c1fe6089e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Abilities.BubbleShield.BubbleShieldProjectile
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  shieldHealth: 100
-  shieldDuration: 10
+  config:
+    shieldHealth: 100
+    shieldDuration: 10
+    despawnAnimDuration: 0.6
+    groundMask:
+      serializedVersion: 2
+      m_Bits: 256
+    groundProbeRadius: 0.1
+    groundProbeDistance: 0.1
   dome: {fileID: 6511987792387078936}
   domeVisuals: {fileID: 5126844197665518584}
-  despawnAnimDuration: 0.6
 --- !u!65 &5417536949196746570
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -142,6 +125,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.3, y: 0.1, z: 0.3}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-8466848652156360324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5617757003934067384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98dbb08343eac044895b9b52872bcb49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PurrNet.Prediction::PurrNet.Prediction.PredictedTransform
+  _graphics: {fileID: 0}
+  _floatAccuracy: 1
+  _interpolationSettings: {fileID: 11400000, guid: 4a8aa8e44e23cfd4a8d4387ef3f36173, type: 2}
+  _unparentGraphics: 0
+  _characterControllerPatch: 1
 --- !u!1 &6511987792387078936
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,7 +161,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8101480709627138822
 Transform:
   m_ObjectHideFlags: 0

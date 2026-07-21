@@ -14,12 +14,12 @@ public class Compass : MonoBehaviour
 
     private IEnumerator Start()
     {
-        while (PlayerController.LocalPlayer == null || Camera.main == null)
+        while (PlayerPredictedController.LocalPlayer == null || Camera.main == null)
         {
             yield return null;
         }
 
-        player = PlayerController.LocalPlayer.transform;
+        player = PlayerPredictedController.LocalPlayer.transform;
         cam = Camera.main.transform;
 
         Debug.Log("[Compass] Bound to camera");

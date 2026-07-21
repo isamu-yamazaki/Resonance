@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Resonance.Combat.Mods;
 using Resonance.Combat.Weapons.Enums;
@@ -8,6 +9,11 @@ namespace Resonance.Combat.Weapons
     [CreateAssetMenu(fileName = "New Weapon Properties", menuName = "Resonance/Weapons/Weapon Properties")]
     public class WeaponProperties : ScriptableObject
     {
+        /// <summary>
+        /// The internal ID of a weapon that is populated when a weapon is cloned.
+        /// </summary>
+        public string Id { get; private set; }
+
         [Tooltip("Unique identifier.")]
         [SerializeField] private string key;
         public string Key => key;
@@ -83,13 +89,13 @@ namespace Resonance.Combat.Weapons
 
         [SerializeField] private float handling;
         public float Handling => handling;
-        
+
         [SerializeField] private AnimationClip reloadClip;
         public AnimationClip ReloadClip => reloadClip;
 
         [SerializeField] private AnimationClip emptyReloadClip;
         public AnimationClip EmptyReloadClip => emptyReloadClip;
-        
+
         [SerializeField] private AnimationClip fireClip;
         public AnimationClip FireClip => fireClip;
         [Header("Ammo Stats")]
@@ -105,12 +111,12 @@ namespace Resonance.Combat.Weapons
         [Header("Mod List")]
         [SerializeField] private List<WeaponModProperties> modList;
         public List<WeaponModProperties> ModList => modList;
-        
+
         [Header("Economy Stats")]
         [SerializeField] private float weaponCost;
         public float WeaponCost => weaponCost;
 
-        public WeaponProperties Clone()
+        public WeaponProperties Clone(string id = null)
         {
             WeaponProperties clone = CreateInstance<WeaponProperties>();
 
@@ -143,7 +149,9 @@ namespace Resonance.Combat.Weapons
             clone.reloadClip = reloadClip;
             clone.emptyReloadClip = emptyReloadClip;
             clone.fireClip = fireClip;
-            
+
+            clone.Id = id ?? Guid.NewGuid().ToString();
+
             return clone;
         }
     }

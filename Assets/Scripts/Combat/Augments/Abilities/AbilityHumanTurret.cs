@@ -5,10 +5,11 @@ using UnityEngine;
 
 namespace Resonance.Combat.Augments
 {
-    public class AbilityHumanTurret : MonoBehaviour, IAugmentAbility
+    // TODO: re-implement as a predicted ability
+    public class AbilityHumanTurret : MonoBehaviour, IAugmentAbility, IEquippableAbility
     {
         [SerializeField] private float timeToActivate = 2f;
-        
+
         [SerializeField] private float damageReduction = 0.25f;
         [SerializeField] private WeaponModProperties turretMod;
 
@@ -19,6 +20,10 @@ namespace Resonance.Combat.Augments
 
         private float timeStandingStill;
         private bool isTurretActive;
+
+        // This component stays permanently enabled; "equipped" is tracked here instead of via the
+        // Unity `enabled` flag (see IEquippableAbility / PlayerAbilityManager).
+        private bool _isEquipped;
 
         public string AbilityKey => "ability_humanTurret";
         public string Name => "Human Turret";
@@ -31,12 +36,28 @@ namespace Resonance.Combat.Augments
         }
         public bool AbilityReady => false;
 
-        public void ActivateAbility() { }
+        public void ActivateAbilityExternal() { }
+        public void SimulateActivateAbility()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetEquipped(bool equipped)
+        {
+            if (_isEquipped == equipped) return;
+
+            _isEquipped = equipped;
+
+            // Unequipping must tear down the turret effect; OnDisable used to do this, but the
+            // component no longer gets disabled.
+            if (!equipped)
+                DeactivateTurret();
+        }
 
         private void Awake()
         {
             playerStats = GetComponent<PlayerStats>();
-            playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            playerLocomotionInput = PlayerLocomotionInput.Instance;
             weaponStatManager = GetComponent<WeaponStatManager>();
             playerShooter = GetComponent<PlayerShooter>();
             timeStandingStill = 0f;
@@ -45,7 +66,7 @@ namespace Resonance.Combat.Augments
 
         private void Update()
         {
-            
+            if (!_isEquipped) return;
 
             if (playerLocomotionInput.MovementInput == Vector2.zero)
             {
@@ -92,9 +113,8 @@ namespace Resonance.Combat.Augments
 
             isTurretActive = true;
 
-            playerStats.AddDamageReductionModifier(damageReduction);
+            playerStats.AddDamageReductionModifierExternal(damageReduction);
             weaponStatManager.AddAugmentMod(turretMod);
-            playerShooter.RefreshWeaponStats();
         }
 
         private void DeactivateTurret()
@@ -106,9 +126,8 @@ namespace Resonance.Combat.Augments
 
             isTurretActive = false;
 
-            playerStats.RemoveDamageReductionModifier(damageReduction);
+            playerStats.RemoveDamageReductionModifierExternal(damageReduction);
             weaponStatManager.RemoveAugmentMod(turretMod);
-            playerShooter.RefreshWeaponStats();
         }
     }
 }

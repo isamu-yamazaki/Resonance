@@ -4,6 +4,7 @@ using Resonance.Combat.Augments;
 using Resonance.Combat.Mods;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
+using Resonance.Helper;
 using Resonance.Inventory;
 using TMPro;
 using UnityEngine;
@@ -39,39 +40,52 @@ namespace Resonance.Shop
 
         private void Awake()
         {
-            if (playerInventory == null || !playerInventory.isOwner)
-                playerInventory = FindObjectsOfType<PlayerInventory>().FirstOrDefault(p => p.isOwner);
-
             primaryWeaponSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellWeapon(WeaponSlot.Primary));
             secondaryWeaponSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellWeapon(WeaponSlot.Secondary));
             upperAugmentSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellAugment(AugmentSlot.Upper));
             lowerAugmentSellButton?.onClick.AddListener(() => ShopOverlayView.Instance.SellAugment(AugmentSlot.Lower));
         }
 
-        public void Refresh()
+        private void OnEnable()
+        {
+            if (playerInventory == null)
+                playerInventory = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerInventory>();
+            if (playerInventory == null) return;
+
+            playerInventory.OnInventoryChanged += Refresh;
+            Refresh();
+        }
+
+        private void OnDisable()
+        {
+            if (playerInventory != null)
+                playerInventory.OnInventoryChanged -= Refresh;
+        }
+
+        private void Refresh()
         {
             if (playerInventory == null || !playerInventory.isOwner)
             {
-                playerInventory = FindObjectsOfType<PlayerInventory>().FirstOrDefault(p => p.isOwner);
+                playerInventory = OwnerFinder.FindFirstOwnedPredictedObjectByType<PlayerInventory>();
                 if (playerInventory == null) return;
             }
 
-            RefreshWeapon(playerInventory.weaponInventory[0], primaryWeaponName, primaryModContainer,
+            RefreshWeapon(playerInventory.WeaponInventory[0], primaryWeaponName, primaryModContainer,
                 primaryModTexts, WeaponSlot.Primary, primaryWeaponSellButton);
-            RefreshWeapon(playerInventory.weaponInventory[1], secondaryWeaponName, secondaryModContainer,
+            RefreshWeapon(playerInventory.WeaponInventory[1], secondaryWeaponName, secondaryModContainer,
                 secondaryModTexts, WeaponSlot.Secondary, secondaryWeaponSellButton);
 
-            upperAugmentName.text = playerInventory.augmentInventory[0] != null
-                ? playerInventory.augmentInventory[0].AugmentName : "Empty";
+            upperAugmentName.text = playerInventory.AugmentInventory[0] != null
+                ? playerInventory.AugmentInventory[0].AugmentName : "Empty";
             upperAugmentSellButton?.gameObject.SetActive(false);
             var upperHover = upperAugmentSellButton?.GetComponentInParent<InventoryItemHover>();
-            if (upperHover != null) upperHover.enabled = playerInventory.augmentInventory[0] != null;
+            if (upperHover != null) upperHover.enabled = playerInventory.AugmentInventory[0] != null;
             
-            lowerAugmentName.text = playerInventory.augmentInventory[1] != null
-                ? playerInventory.augmentInventory[1].AugmentName : "Empty";
+            lowerAugmentName.text = playerInventory.AugmentInventory[1] != null
+                ? playerInventory.AugmentInventory[1].AugmentName : "Empty";
             lowerAugmentSellButton?.gameObject.SetActive(false);
             var lowerHover = lowerAugmentSellButton?.GetComponentInParent<InventoryItemHover>();
-            if (lowerHover != null) lowerHover.enabled = playerInventory.augmentInventory[1] != null;
+            if (lowerHover != null) lowerHover.enabled = playerInventory.AugmentInventory[1] != null;
         }
         
         private void RefreshWeapon(WeaponProperties weapon, TextMeshProUGUI nameText,

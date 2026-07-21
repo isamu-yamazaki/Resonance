@@ -1,4 +1,5 @@
 using System.Collections;
+using Resonance.Assemblies.Player;
 using Resonance.Combat.Weapons.Enums;
 using Resonance.PlayerController;
 using System.Collections.Generic;
@@ -14,7 +15,6 @@ namespace Resonance.Combat
         private PlayerShooter _playerShooter;
         private FPArmsManager _fpArmsManager;
         private PlayerSkinRenderer _skinRenderer;
-        private PlayerActionsInput _playerActionsInput;
         private GameObject _skillArmsInstance;
         private OverdriveAbility _overdriveAbility;
         private PlayerHealthStim _playerHealthStim;
@@ -45,7 +45,6 @@ namespace Resonance.Combat
             _playerShooter = GetComponent<PlayerShooter>();
             _fpArmsManager = GetComponent<FPArmsManager>();
             _skinRenderer = GetComponent<PlayerSkinRenderer>();
-            _playerActionsInput = GetComponent<PlayerActionsInput>();
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerHealthStim = GetComponent<PlayerHealthStim>();
             _grappleHook = GetComponent<AbilityGrappleHook>();
@@ -68,23 +67,46 @@ namespace Resonance.Combat
 
             _pendingWeapon = weapon;
             _pendingFirstBuy = isNew;
-            _hasPendingSwap = true;
+
+            // The outgoing weapon is whatever is genuinely shown right now. Resolve it from the
+            // active instance, NOT the predicted weapon class — by the time this runs on the view
+            // tick the predicted class has already flipped to the incoming weapon.
+            Animator outgoing = GetActiveAnimator();
+            bool canHolster = outgoing != null && outgoing.gameObject.activeInHierarchy;
 
             if (isHolstered)
             {
+                // This class was previously holstered: bring it straight back, no holster step.
                 _holsteredClasses.Remove(bucketed);
-                _hasPendingSwap = false;
-                GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(weapon);
-                _fpArmsManager.RefreshArms();
-                TriggerOnActiveAnimator(isNew ? IsFirstBuyHash : IsDrawHash);
-                _pendingFirstBuy = false;
-                _playerState.SetWeaponState(WeaponState.Drawing);
+                DrawIncomingImmediately(bucketed, isNew);
+            }
+            else if (!canHolster)
+            {
+                // Nothing to holster (e.g. first equip): show the incoming arms and draw at once.
+                DrawIncomingImmediately(bucketed, isNew);
             }
             else
             {
-                _playerState.SetWeaponState(WeaponState.Holstering);
+                // Normal swap: holster the currently-shown weapon. The incoming arms are activated
+                // and drawn in OnHolsterCompleteRoutine. Suppress the verified-class RefreshArms so
+                // it can't deactivate the outgoing instance out from under the holster animation.
+                _hasPendingSwap = true;
+                _fpArmsManager.SuppressNextRefresh();
+                _playerState.SetExternalWeaponState(WeaponState.Holstering);
                 TriggerOnActiveAnimator(IsHolsterHash);
             }
+        }
+
+        // Activates the incoming arms now and plays its draw (or first-buy) animation with no
+        // holster step. Used on first equip and when re-drawing a previously-holstered class.
+        private void DrawIncomingImmediately(WeaponClass bucketed, bool isNew)
+        {
+            _hasPendingSwap = false;
+            _pendingWeapon = null;
+            _pendingFirstBuy = false;
+            _fpArmsManager.ShowClass(bucketed);
+            TriggerOnActiveAnimator(isNew ? IsFirstBuyHash : IsDrawHash);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         private void OnWeaponClassChanged(WeaponClass newClass)
@@ -111,7 +133,18 @@ namespace Resonance.Combat
             if (weapon?.FireClip != null)
             {
                 float fireRate = GetComponent<WeaponStatManager>()?.FireRate ?? 1f;
-                active.SetFloat(FireSpeedHash, _playerActionsInput.AttackHeld ? weapon.FireClip.length * fireRate : 1f);
+                active.SetFloat(FireSpeedHash, PlayerActionsInput.Instance.AttackHeld ? weapon.FireClip.length * fireRate : 1f);
+            }
+
+            if (PlayerActionsInput.Instance.OverdrivePressed)
+            {
+                RequestOverdriveActivation();
+                PlayerActionsInput.Instance.SetOverdrivePressedFales();
+            }
+            if (PlayerActionsInput.Instance.StimPressed)
+            {
+                RequestStimActivation();
+                PlayerActionsInput.Instance.SetStimPressedFalse();
             }
         }
 
@@ -146,7 +179,7 @@ namespace Resonance.Combat
                     kvp.Value.SetActive(false);
             }
 
-            _playerState.SetWeaponState(skillState);
+            _playerState.SetExternalWeaponState(skillState);
 
             if (skillState != WeaponState.Grappling)
             {
@@ -181,57 +214,53 @@ namespace Resonance.Combat
             _holsteredClasses.Add(bucketed);
             _hasPendingSwap = false;
 
-            _fpArmsManager.SuppressNextRefresh();
-            GetComponent<PlayerEquip>()?.ExecuteWeaponSwap(_pendingWeapon);
-
-            _fpArmsManager.RefreshArms();
+            // Outgoing weapon has finished holstering: activate the incoming arms now, then draw.
+            _fpArmsManager.ShowClass(bucketed);
 
             yield return null;
 
             TriggerOnActiveAnimator(_pendingFirstBuy ? IsFirstBuyHash : IsDrawHash);
             _pendingFirstBuy = false;
             _pendingWeapon = null;
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         public void OnDrawComplete()
         {
-            _playerState.SetWeaponState(WeaponState.Idle);
+            _playerState.SetExternalWeaponState(WeaponState.Idle);
         }
 
         public void TriggerFirstBuy()
         {
             _holsteredClasses.Remove(BucketClass(_playerState.CurrentWeaponClass));
             TriggerOnActiveAnimator(IsFirstBuyHash);
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         public void TriggerDraw()
         {
             _holsteredClasses.Remove(BucketClass(_playerState.CurrentWeaponClass));
             TriggerOnActiveAnimator(IsDrawHash);
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         private void TriggerOnActiveAnimator(int hash)
         {
             Animator active = GetActiveAnimator();
-            if (active == null) return;
+            if (active == null)
+            {
+                return;
+            }
             active.SetTrigger(hash);
         }
 
+        // The active animator is the genuinely-shown FP-arms instance (owned by FPArmsManager), NOT
+        // the one implied by the predicted weapon class. Those diverge during a swap: the predicted
+        // class can point at an instance that has not been SetActive(true) yet, and a one-shot
+        // SetTrigger on an inactive Animator is silently lost.
         private Animator GetActiveAnimator()
         {
-            if (_skinRenderer?.FPArmsInstances == null) return null;
-
-            WeaponClass classToCheck = BucketClass(_playerState.CurrentWeaponClass);
-
-            if (_skinRenderer.FPArmsInstances.TryGetValue(classToCheck, out GameObject instance))
-            {
-                return instance?.GetComponent<Animator>();
-            }
-
-            return null;
+            return _fpArmsManager != null ? _fpArmsManager.GetShownAnimator() : null;
         }
 
         private WeaponClass BucketClass(WeaponClass weaponClass)
@@ -251,7 +280,7 @@ namespace Resonance.Combat
             _pendingWeapon = null;
             _seenWeaponClasses.Clear();
             _holsteredClasses.Clear();
-            _playerState.SetWeaponState(WeaponState.Idle);
+            _playerState.SetExternalWeaponState(WeaponState.Idle);
         }
         
         public void RequestOverdriveActivation()
@@ -265,7 +294,7 @@ namespace Resonance.Combat
             if (_playerState.CurrentWeaponState == WeaponState.Stimming) return;
 
             _pendingSkillState = WeaponState.Casting;
-            _playerState.SetWeaponState(WeaponState.Holstering);
+            _playerState.SetExternalWeaponState(WeaponState.Holstering);
             TriggerOnActiveAnimator(IsHolsterHash);
         }
 
@@ -280,13 +309,13 @@ namespace Resonance.Combat
             if (_playerState.CurrentWeaponState == WeaponState.Stimming) return;
 
             _pendingSkillState = WeaponState.Stimming;
-            _playerState.SetWeaponState(WeaponState.Holstering);
+            _playerState.SetExternalWeaponState(WeaponState.Holstering);
             TriggerOnActiveAnimator(IsHolsterHash);
         }
 
         private IEnumerator SkillActivationRoutine(WeaponState skillState)
         {
-            _playerState.SetWeaponState(WeaponState.Holstering);
+            _playerState.SetExternalWeaponState(WeaponState.Holstering);
             TriggerOnActiveAnimator(IsHolsterHash);
 
             while (_playerState.CurrentWeaponState == WeaponState.Holstering)
@@ -296,7 +325,7 @@ namespace Resonance.Combat
             if (_skillArmsInstance == null) yield break;
 
             _skillArmsInstance.SetActive(true);
-            _playerState.SetWeaponState(skillState);
+            _playerState.SetExternalWeaponState(skillState);
 
             Animator skillAnimator = _skillArmsInstance.GetComponent<Animator>();
             if (skillAnimator != null)
@@ -331,12 +360,12 @@ namespace Resonance.Combat
                 _activeSkillArms = null;
             }
 
-            _fpArmsManager.RefreshArms();
+            _fpArmsManager.RefreshArmsForCurrentWeaponInPlayerState();
 
             yield return null;
 
             TriggerOnActiveAnimator(IsDrawHash);
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
         
         public void RequestGrappleActivation()
@@ -346,13 +375,14 @@ namespace Resonance.Combat
             if (!_grappleHook.CanGrapple()) return;
 
             _pendingSkillState = WeaponState.Grappling;
-            _playerState.SetWeaponState(WeaponState.Holstering);
+            _playerState.SetExternalWeaponState(WeaponState.Holstering);
             TriggerOnActiveAnimator(IsHolsterHash);
         }
 
         public void OnGrappleFireHook()
         {
-            _grappleHook?.ActivateAbility();
+            // TODO: implement simulation timeout path
+            // _grappleHook?.ActivateAbilityExternal();
         }
 
         public void OnGrappleComplete()
@@ -368,12 +398,12 @@ namespace Resonance.Combat
                 _activeSkillArms = null;
             }
 
-            _fpArmsManager.RefreshArms();
+            _fpArmsManager.RefreshArmsForCurrentWeaponInPlayerState();
 
             yield return null;
 
             TriggerOnActiveAnimator(IsDrawHash);
-            _playerState.SetWeaponState(WeaponState.Drawing);
+            _playerState.SetExternalWeaponState(WeaponState.Drawing);
         }
 
         public void TriggerGrappleEnd()

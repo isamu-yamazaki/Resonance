@@ -7,7 +7,7 @@ namespace Resonance.DebugTools
     public class PlayerDebugPanel : MonoBehaviour
     {
         #region Class Variables
-        private PlayerController.PlayerController _playerController;
+        private PlayerPredictedController _playerController;
         private PlayerState _playerState;
         private PlayerLocomotionInput _playerInput;
         private OverdriveAbility _overdriveAbility;
@@ -56,9 +56,9 @@ namespace Resonance.DebugTools
                 return;
             }
 
-            _playerController = player.GetComponent<PlayerController.PlayerController>();
+            _playerController = player.GetComponent<PlayerPredictedController>();
             _playerState = player.GetComponent<PlayerState>();
-            _playerInput = player.GetComponent<PlayerLocomotionInput>();
+            _playerInput = PlayerLocomotionInput.Instance;
             _overdriveAbility = player.GetComponent<OverdriveAbility>();
             _characterController = player.GetComponent<CharacterController>();
             _playerStats = player.GetComponent<PlayerStats>();
@@ -137,21 +137,7 @@ namespace Resonance.DebugTools
                 GUILayout.Space(5);
                 GUILayout.Label($"Base Speed: {_playerStats.BaseSpeed:F2}");
                 GUILayout.Label($"Effective Speed Multiplier: {_playerStats.PlayerSpeed:F2}");
-                var verticalVelocity = typeof(PlayerController.PlayerController)
-                    .GetField("_verticalVelocity", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    ?.GetValue(_playerController);
-
-                var antiBump = typeof(PlayerController.PlayerController)
-                    .GetField("_antiBump", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    ?.GetValue(_playerController);
-
-                var lastAppliedAntiBump = typeof(PlayerController.PlayerController)
-                    .GetField("_lastAppliedAntiBump", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    ?.GetValue(_playerController);
-
-                GUILayout.Label($"Vertical Velocity: {verticalVelocity:F3}");
-                GUILayout.Label($"AntiBump: {antiBump:F3}");
-                GUILayout.Label($"Last Applied AntiBump: {lastAppliedAntiBump:F3}");
+                GUILayout.Label($"Vertical Velocity: {_playerController.currentState.Velocity.y:F3}");
             }
 
             if (_playerInput != null)
@@ -209,7 +195,7 @@ namespace Resonance.DebugTools
 
             GUILayout.BeginVertical("box");
 
-            GUILayout.Label($"Current Health: {_playerStats.CurrentHealth.value:F0} / {_playerStats.MaxHealth:F0}");
+            GUILayout.Label($"Current Health: {_playerStats.CurrentHealth:F0} / {_playerStats.MaxHealth:F0}");
             GUILayout.Label($"Health Regen: {_playerStats.CurrentHealthRegen:F1}/s (base: {_playerStats.BaseHealthRegen:F1})");
             GUILayout.Label($"Damage Reduction: {_playerStats.DamageReduction:F1}%");
 
@@ -381,14 +367,14 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (!float.TryParse(_speedModifierAmount, out float val)) { Debug.LogWarning("Invalid speed modifier"); return; }
             _activeSpeedModifier = val;
-            _playerStats.AddSpeedModifier(val);
+            _playerStats.AddSpeedModifierExternal(val);
             Debug.Log($"Added speed modifier: {val}");
         }
 
         private void RemoveSpeedModifier()
         {
             if (_playerStats == null || !_activeSpeedModifier.HasValue) return;
-            _playerStats.RemoveSpeedModifier(_activeSpeedModifier.Value);
+            _playerStats.RemoveSpeedModifierExternal(_activeSpeedModifier.Value);
             Debug.Log($"Removed speed modifier: {_activeSpeedModifier.Value}");
             _activeSpeedModifier = null;
         }
@@ -398,14 +384,14 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (!float.TryParse(_drModifierAmount, out float val)) { Debug.LogWarning("Invalid DR modifier"); return; }
             _activeDRModifier = val;
-            _playerStats.AddDamageReductionModifier(val);
+            _playerStats.AddDamageReductionModifierExternal(val);
             Debug.Log($"Added DR modifier: {val}");
         }
 
         private void RemoveDRModifier()
         {
             if (_playerStats == null || !_activeDRModifier.HasValue) return;
-            _playerStats.RemoveDamageReductionModifier(_activeDRModifier.Value);
+            _playerStats.RemoveDamageReductionModifierExternal(_activeDRModifier.Value);
             Debug.Log($"Removed DR modifier: {_activeDRModifier.Value}");
             _activeDRModifier = null;
         }
@@ -415,14 +401,14 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (!float.TryParse(_regenModifierAmount, out float val)) { Debug.LogWarning("Invalid regen modifier"); return; }
             _activeRegenModifier = val;
-            _playerStats.AddRegenModifier(val);
+            _playerStats.AddRegenModifierExternal(val);
             Debug.Log($"Added regen modifier: {val}");
         }
 
         private void RemoveRegenModifier()
         {
             if (_playerStats == null || !_activeRegenModifier.HasValue) return;
-            _playerStats.RemoveRegenModifier(_activeRegenModifier.Value);
+            _playerStats.RemoveRegenModifierExternal(_activeRegenModifier.Value);
             Debug.Log($"Removed regen modifier: {_activeRegenModifier.Value}");
             _activeRegenModifier = null;
         }
@@ -434,7 +420,7 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (float.TryParse(_damageAmount, out float damage))
             {
-                _playerStats.TakeDamage(damage);
+                _playerStats.TakeExternalDamage(damage);
                 Debug.Log($"Applied {damage} damage via debug tools");
             }
             else Debug.LogWarning("Invalid damage amount");

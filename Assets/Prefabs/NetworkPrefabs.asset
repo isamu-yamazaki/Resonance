@@ -18,24 +18,8 @@ MonoBehaviour:
   folder: {fileID: 102900000, guid: 1709392cd6333784a81881432164a92c, type: 3}
   linkedNetworkPrefabs: []
   prefabs:
-  - guid: 3beb74802a435e54da51d4fd0f95b9b8
-    prefab: {fileID: 6809321870534573542, guid: 3beb74802a435e54da51d4fd0f95b9b8, type: 3}
-    pooled: 0
-    warmupCount: 5
-  - guid: ae6d8f4a902ef43b1820c02a8c4e6d36
-    prefab: {fileID: 5617757003934067384, guid: ae6d8f4a902ef43b1820c02a8c4e6d36, type: 3}
-    pooled: 0
-    warmupCount: 5
-  - guid: 458bf60b5e24dd14895631cbd4e208fd
-    prefab: {fileID: 5617757003934067384, guid: 458bf60b5e24dd14895631cbd4e208fd, type: 3}
-    pooled: 0
-    warmupCount: 5
   - guid: 4ba10f2705f9fbf4d85771a3a1675367
     prefab: {fileID: 7643646926158781204, guid: 4ba10f2705f9fbf4d85771a3a1675367, type: 3}
-    pooled: 0
-    warmupCount: 5
-  - guid: 73f0dd99433b7f64fa51b3520140d6bf
-    prefab: {fileID: 3592926597777073106, guid: 73f0dd99433b7f64fa51b3520140d6bf, type: 3}
     pooled: 0
     warmupCount: 5
   - guid: 04d0949d9004b41809f6afb03d64c70e
@@ -44,6 +28,10 @@ MonoBehaviour:
     warmupCount: 5
   - guid: 311cf1b46c5504d2ba94e30722177803
     prefab: {fileID: 3554544901488903259, guid: 311cf1b46c5504d2ba94e30722177803, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: 3beb74802a435e54da51d4fd0f95b9b8
+    prefab: {fileID: 6809321870534573542, guid: 3beb74802a435e54da51d4fd0f95b9b8, type: 3}
     pooled: 0
     warmupCount: 5
   - guid: 6864f8c258a2f4748800f171d3215bce

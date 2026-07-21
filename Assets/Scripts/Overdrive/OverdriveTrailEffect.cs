@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using PurrNet;
+using PurrNet.Prediction;
 using Resonance.Combat.Weapons;
 using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    public class OverdriveTrailEffect : NetworkBehaviour
+    public class OverdriveTrailEffect : PredictedIdentity<OverdriveTrailEffectInput, OverdriveTrailEffectState>
     {
         #region Class Variables
         [Header("Trail Settings")]
@@ -30,8 +30,6 @@ namespace Resonance.PlayerController
         [SerializeField] private Gradient colorGradient;
         [SerializeField] private bool useGradientOverLifetime = true;
 
-        private SyncVar<bool> shouldSpawnGhostsForEveryone = new(false, ownerAuth: true);
-        private SyncVar<DateTime> ghostSpawningStartTime = new(ownerAuth: true);
         private SkinnedMeshRenderer[] _meshesToCopy;
         private PlayerSkinRenderer _playerSkinRenderer;
         private OverdriveAbility _overdriveAbility;
@@ -68,11 +66,17 @@ namespace Resonance.PlayerController
             }
 
             _playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-            _playerSkinRenderer.OnNewSkinSpawned += UpdateMeshesToRender;
         }
 
         private void Start()
         {
+            // Read the current skin's renderers directly (previously delivered via the
+            // OnNewSkinSpawned event). Null-guarded for the case where the skin has not been
+            // applied yet on a verified tick.
+            _meshesToCopy = _playerSkinRenderer.CurrentMeshInstance != null
+                ? _playerSkinRenderer.CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>()
+                : Array.Empty<SkinnedMeshRenderer>();
+
             // Pre-instantiate ghost pool
             for (int i = 0; i < maxGhosts; i++)
             {
@@ -82,28 +86,27 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Update Logic
-        private void Update()
+        protected override void GetFinalInput(ref OverdriveTrailEffectInput input)
         {
-            if (_overdriveAbility == null || _meshesToCopy == null || _meshesToCopy.Length == 0) return;
+            input.ShouldSpawnGhostsForEveryone = _overdriveAbility.IsInOverdrive;
+        }
 
-            if (isOwner && _overdriveAbility.IsInOverdrive)
+        protected override void Simulate(OverdriveTrailEffectInput input, ref OverdriveTrailEffectState state, float delta)
+        {
+            if (input.ShouldSpawnGhostsForEveryone && !state.SpawnGhosts)
             {
-                bool isMoving = _playerState.CurrentPlayerMovementState == PlayerMovementState.Running ||
-                                _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
-
-                if (isMoving && !shouldSpawnGhostsForEveryone.value)
-                {
-                    ghostSpawningStartTime.value = DateTime.Now.AddSeconds(ghostSpawningDelaySeconds);
-                }
-
-                shouldSpawnGhostsForEveryone.value = isMoving;
-            }
-            else if (isOwner)
-            {
-                shouldSpawnGhostsForEveryone.value = false;
+                state.GhostSpawningStartTime = DateTime.Now.AddSeconds(ghostSpawningDelaySeconds);
             }
 
-            if (shouldSpawnGhostsForEveryone.value && ghostSpawningStartTime.value <= DateTime.Now)
+            state.SpawnGhosts = input.ShouldSpawnGhostsForEveryone;
+        }
+
+        protected override void UpdateView(OverdriveTrailEffectState viewState, OverdriveTrailEffectState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            if (v.SpawnGhosts && v.GhostSpawningStartTime <= DateTime.Now)
             {
                 _spawnTimer += Time.deltaTime;
 
@@ -160,14 +163,6 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Ghost Management
-        public void UpdateMeshesToRender(GameObject root)
-        {
-            _meshesToCopy = root.GetComponentsInChildren<SkinnedMeshRenderer>();
-#if UNITY_EDITOR
-            Debug.Log("[OverdriveTrailEffect] Updating trail effect based on new skin");
-#endif
-        }
-
         private void SpawnGhost()
         {
             if (Vector3.Distance(transform.position, _lastGhostPosition) < minGhostSpawnDistance) return;
@@ -286,6 +281,7 @@ namespace Resonance.PlayerController
 
             _ghostPool.Enqueue(ghost);
         }
+
         #endregion
 
         #region Helper Classes

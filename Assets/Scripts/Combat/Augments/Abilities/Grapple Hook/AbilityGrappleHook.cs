@@ -1,211 +1,177 @@
-using PurrNet;
+using PurrNet.Prediction;
+using Resonance.Assemblies.AbilitySimulation.GrappleHook;
 using Resonance.Audio;
-using Resonance.Player;
 using Resonance.PlayerController;
 using UnityEngine;
 
 namespace Resonance.Combat.Augments
 {
-    public class AbilityGrappleHook : NetworkBehaviour, IAugmentAbility
+    /// <summary>
+    /// Predicted grapple hook ability. The reel motion is computed deterministically each tick in
+    /// <see cref="Simulate"/> and exposed via <see cref="ReelVelocity"/> / <see cref="ExitImpulse"/>,
+    /// which PlayerPredictedController reads into PlayerDependencyData so the actual movement is applied
+    /// inside PlayerSimulation (on both server and owner client). This component no longer touches the
+    /// CharacterController directly.
+    /// </summary>
+    public class AbilityGrappleHook
+        : PredictedIdentity<AbilityGrappleHookInput, AbilityGrappleHookState>, IAugmentAbility
     {
-        [Header("Grapple Settings")]
-        [SerializeField] private float maxRange = 30f;
-        [SerializeField] private float reelSpeed = 20f;
-        [SerializeField] private float maxReelTime = 3f;
-        [SerializeField] private float exitBoost = 5f;
-        [SerializeField] private float upwardBias = 0.25f;
-        [SerializeField] private float cooldown = 10f;
-
-        [Header("References")]
-        [SerializeField] private LayerMask grappleLayerMask;
+        [Header("Config")] [SerializeField] private GrappleHookConfig config;
+        private LayerMask grappleLayerMask => config.grappleLayerMask;
 
 #if !UNITY_SERVER
-        [Header("Wwise Events")]
-        [SerializeField] private AK.Wwise.Event shootEvent;
+        [Header("Wwise Events")] [SerializeField] private AK.Wwise.Event shootEvent;
         [SerializeField] private AK.Wwise.Event travelLoopEvent;
         [SerializeField] private AK.Wwise.Event stopTravelEvent;
         [SerializeField] private AK.Wwise.Event releaseEvent;
 #endif
 
         private PlayerLocomotionInput playerLocomotionInput;
-        private PlayerState playerState;
-        private PlayerController.PlayerController playerController;
-        private CharacterController characterController;
         private Camera playerCamera;
         private GrappleRopeRenderer ropeRenderer;
         private FPArmsAnimator fpArmsAnimator;
 
-        private float currentReelTime;
-        private float currentCooldown;
+        // Owner-only view bookkeeping for detecting the grapple-end transition.
+        private bool _wasGrappling;
+
+        // Previous verified state, so the one-shot broadcast flags can be edge-detected instead of
+        // re-firing every render frame that resamples the same verified tick.
+        private AbilityGrappleHookState? _previousVerifiedState;
+
+        #region IAugmentAbility
 
         public string AbilityKey => "ability_grappleHook";
         public string Name => "Grapple Hook";
         public string Description => "Fire a hook to pull yourself to a target point.";
-        public float MaxCooldown => cooldown;
-        public float CurrentCooldown
+        public float MaxCooldown => config.cooldown;
+
+        public float CurrentCooldown => currentState.Cooldown;
+
+        public bool AbilityReady => CurrentCooldown <= 0f && !currentState.IsGrappling;
+
+        [SimulationOnly]
+        public void SimulateActivateAbility()
         {
-            get => currentCooldown;
-            set => currentCooldown = Mathf.Clamp(value, 0f, cooldown);
+            // Request activation for this system's own next Simulate call, rather than mutating
+            // currentState directly here. Readiness is already gated upstream by the caller
+            // (PlayerAbilityManager checks AbilityReady before invoking this).
+            currentState.GrappleNextTick = true;
         }
-        public bool AbilityReady => currentCooldown <= 0f && !ropeRenderer.IsGrappling.value;
 
-        public void ActivateAbility()
+        public bool CanGrapple()
         {
-            if (!isOwner) return;
-            if (!AbilityReady) return;
-
+            if (playerCamera == null) return false;
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-
-            if (!Physics.Raycast(ray, out RaycastHit hit, maxRange, grappleLayerMask))
-            {
-                fpArmsAnimator?.TriggerGrappleEnd();
-                return;
-            }
-
-            ropeRenderer.HookPoint.value = hit.point;
-            ropeRenderer.IsGrappling.value = true;
-            currentReelTime = 0f;
-
-            playerState.SetPlayerMovementState(PlayerMovementState.Grappling);
-
-            BroadcastShootAndTravelRpc();
-            RequestGrappleRegistrationOnServer(transform.position);
+            return Physics.Raycast(ray, config.maxRange, grappleLayerMask);
         }
 
-        private void Awake()
+        #endregion
+
+        #region Exposed state
+
+        public bool IsGrappling => currentState.IsGrappling;
+        public Vector3 ReelVelocity => currentState.ReelVelocity;
+        public Vector3 ExitImpulse => currentState.ExitImpulse;
+
+        #endregion
+
+        #region Lifecycle
+
+        protected override void LateAwake()
         {
-            playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
-            playerState = GetComponent<PlayerState>();
-            playerController = GetComponent<PlayerController.PlayerController>();
-            characterController = GetComponent<CharacterController>();
+            playerLocomotionInput = PlayerLocomotionInput.Instance;
             ropeRenderer = GetComponent<GrappleRopeRenderer>();
             fpArmsAnimator = GetComponent<FPArmsAnimator>();
-        }
-
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
 
             if (isOwner)
                 playerCamera = Camera.main;
         }
 
-        private void Update()
-        {
-            if (!isOwner)
-                return;
-
-            if (currentCooldown > 0f)
-                currentCooldown -= Time.deltaTime;
-
-            if (!ropeRenderer.IsGrappling.value)
-                return;
-
-            currentReelTime += Time.deltaTime;
-
-            Vector3 directionToHook = ropeRenderer.HookPoint.value - transform.position;
-            float distanceToHook = directionToHook.magnitude;
-
-            if (playerLocomotionInput.JumpPressed)
-            {
-                ExitGrapple(earlyExit: true);
-                return;
-            }
-
-            if (currentReelTime >= maxReelTime)
-            {
-                ExitGrapple(earlyExit: false);
-                return;
-            }
-
-            if (distanceToHook < 0.5f)
-            {
-                ExitGrapple(earlyExit: false);
-                return;
-            }
-
-            Vector3 moveDirection = directionToHook.normalized * reelSpeed * Time.deltaTime;
-            characterController.Move(moveDirection);
-        }
-
-        private void OnDisable()
-        {
-            if (ropeRenderer.IsGrappling.value && isOwner)
-                ExitGrapple(earlyExit: false);
-        }
-
-        private void ExitGrapple(bool earlyExit)
-        {
-            ropeRenderer.IsGrappling.value = false;
-            currentCooldown = cooldown;
-
-            Vector3 pullDirection = (ropeRenderer.HookPoint.value - transform.position).normalized;
-            Vector3 exitDirection = Vector3.Lerp(pullDirection, Vector3.up, upwardBias).normalized;
-
-            if (earlyExit)
-                playerController.ApplyImpulse(exitDirection * (reelSpeed + exitBoost));
-
-            playerState.SetPlayerMovementState(PlayerMovementState.Falling);
-
-            fpArmsAnimator?.TriggerGrappleEnd();
-            BroadcastStopTravelRpc();
-            BroadcastReleaseRpc();
-        }
-        
-        public bool CanGrapple()
-        {
-            if (playerCamera == null) return false;
-            Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-            return Physics.Raycast(ray, maxRange, grappleLayerMask);
-        }
-
-        #region Audio RPCs
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastShootAndTravelRpc()
-        {
-#if !UNITY_SERVER
-            if (shootEvent != null && shootEvent.IsValid())
-                shootEvent.Post(gameObject);
-
-            if (travelLoopEvent != null && travelLoopEvent.IsValid())
-                travelLoopEvent.Post(gameObject);
-#endif
-        }
-
-        [ServerRpc]
-        private void RequestGrappleRegistrationOnServer(Vector3 position)
-        {
-            BroadcastGrappleRegistration(position);
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastGrappleRegistration(Vector3 position)
-        {
-#if !UNITY_SERVER
-            if (AudioSourceTracker.Instance != null)
-                AudioSourceTracker.Instance.RegisterSound(position, 1f);
-#endif
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastStopTravelRpc()
-        {
-#if !UNITY_SERVER
-            if (stopTravelEvent != null && stopTravelEvent.IsValid())
-                stopTravelEvent.Post(gameObject);
-#endif
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void BroadcastReleaseRpc()
-        {
-#if !UNITY_SERVER
-            if (releaseEvent != null && releaseEvent.IsValid())
-                releaseEvent.Post(gameObject);
-#endif
-        }
-
         #endregion
+
+        #region Simulation loop
+
+        protected override void GetFinalInput(ref AbilityGrappleHookInput input)
+        {
+            if (!isOwner) return;
+
+            input.JumpPressed = playerLocomotionInput != null && playerLocomotionInput.JumpPressed;
+
+            if (playerCamera != null)
+            {
+                input.CameraPosition = playerCamera.transform.position;
+                input.CameraForward = playerCamera.transform.forward;
+            }
+
+            input.LocalTransformPosition = transform.position;
+        }
+
+        protected override void Simulate(AbilityGrappleHookInput input, ref AbilityGrappleHookState state, float delta)
+        {
+            var ctx = new GrappleHookSimulationContext(
+                input, config, delta);
+            GrappleHookSimulation.Step(ctx, ref state);
+        }
+        #endregion
+
+        #region Local view updates
+        protected override void UpdateView(AbilityGrappleHookState viewState, AbilityGrappleHookState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            var previous = _previousVerifiedState;
+
+#if !UNITY_SERVER
+            if (v.BroadcastShootAndTravel && !(previous?.BroadcastShootAndTravel ?? false))
+            {
+                if (shootEvent != null && shootEvent.IsValid())
+                    shootEvent.Post(gameObject);
+
+                if (travelLoopEvent != null && travelLoopEvent.IsValid())
+                    travelLoopEvent.Post(gameObject);
+            }
+
+            if (v.BroadcastGrappleRegistration && !(previous?.BroadcastGrappleRegistration ?? false))
+            {
+                if (AudioSourceTracker.Instance != null)
+                    AudioSourceTracker.Instance.RegisterSound(v.GrappleRegistrationPosition, 1f);
+            }
+
+            if (v.BroadcastStopTravel && !(previous?.BroadcastStopTravel ?? false))
+            {
+                if (stopTravelEvent != null && stopTravelEvent.IsValid())
+                    stopTravelEvent.Post(gameObject);
+            }
+
+            if (v.BroadcastRelease && !(previous?.BroadcastRelease ?? false))
+            {
+                if (releaseEvent != null && releaseEvent.IsValid())
+                    releaseEvent.Post(gameObject);
+            }
+#endif
+
+            _wasGrappling = v.IsGrappling;
+            _previousVerifiedState = v;
+            if (!isOwner) return;
+
+            // Drive the rope renderer's owner-authority SyncVars so the rope replicates to all clients.
+            if (ropeRenderer != null)
+            {
+                ropeRenderer.IsGrappling.value = v.IsGrappling;
+                if (v.IsGrappling)
+                    ropeRenderer.HookPoint.value = v.HookPoint;
+            }
+
+            // Detect the grapple-end transition to fire end-of-grapple arm animation feedback.
+            if (_wasGrappling && !v.IsGrappling)
+                fpArmsAnimator?.TriggerGrappleEnd();
+
+        }
+        #endregion
+
     }
+
+
+
 }

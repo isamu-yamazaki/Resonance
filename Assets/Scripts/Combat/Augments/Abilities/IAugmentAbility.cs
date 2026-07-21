@@ -8,9 +8,9 @@ namespace Resonance.Combat.Augments
         string Name { get; }
         string Description { get; }
         float MaxCooldown { get; }
-        float CurrentCooldown { get; set; }
+        float CurrentCooldown { get; }
         bool AbilityReady { get; }
 
-        void ActivateAbility();
+        void SimulateActivateAbility();
     }
 }

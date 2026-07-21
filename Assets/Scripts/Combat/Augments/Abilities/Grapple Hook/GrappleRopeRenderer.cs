@@ -22,7 +22,6 @@ namespace Resonance.Combat.Augments
         private void Awake()
         {
             playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-            playerSkinRenderer.OnNewSkinSpawned += OnSkinSpawned;
 
             if (ropeRendererPrefab != null)
             {
@@ -33,11 +32,18 @@ namespace Resonance.Combat.Augments
             }
         }
 
+        private void Start()
+        {
+            // PredictedEvent exists only after PlayerSkinRenderer's LateAwake, which runs
+            // before Start — so subscribe here, not in Awake.
+            playerSkinRenderer.OnNewSkinSpawned.AddListener(OnSkinSpawned);
+        }
+
         private void OnDestroy()
         {
             if (playerSkinRenderer != null)
             {
-                playerSkinRenderer.OnNewSkinSpawned -= OnSkinSpawned;
+                playerSkinRenderer.OnNewSkinSpawned?.RemoveListener(OnSkinSpawned);
             }
         }
 

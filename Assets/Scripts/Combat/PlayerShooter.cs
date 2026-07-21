@@ -1,6 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using PurrNet;
+using PurrNet.Prediction;
 using Resonance.Audio;
 using Resonance.Combat.Weapons;
 using Resonance.Combat.Weapons.Enums;
@@ -11,324 +11,343 @@ using UnityEngine;
 
 namespace Resonance.Combat
 {
-    [RequireComponent(typeof(PlayerActionsInput))]
-    public class PlayerShooter : NetworkBehaviour
+    public class PlayerShooter : PredictedIdentity<PlayerShooterInputData, PlayerShooterDataState>
     {
-        #region Fields
-
-        [Header("References")]
-        private PlayerEquip playerEquip;
-        private FPArmsManager fpArmsManager;
-        private PlayerActionsInput playerActionsInput;
+        [Header("References")] private PlayerEquip _playerEquip;
+        private FPArmsManager _fpArmsManager;
+        private PlayerActionsInput _playerActionsInput;
         [SerializeField] private Camera playerCamera;
 
         [SerializeField] private DamageNumber damageNumberPrefab;
 
-        [Header("Debug")]
-        [SerializeField] private bool debugAimRays;
+        [Header("Debug")] [SerializeField] private bool debugAimRays;
         [SerializeField] private bool debugAmmoLogs;
-
-        private float nextFireTime;
-        private float reloadEndTime;
-        private float currentSpread;
-
-        private WeaponProperties lastWeapon;
-
-        private Dictionary<WeaponProperties, int> ammoByWeapon = new Dictionary<WeaponProperties, int>();
-        private Dictionary<GameObject, DamageNumber> pendingBatchedNumbers = new Dictionary<GameObject, DamageNumber>();
-
-        private int currentAmmo
-        {
-            get
-            {
-                WeaponProperties weapon = playerEquip != null ? playerEquip.EquippedWeapon : null;
-                if (weapon == null) return 0;
-
-                if (ammoByWeapon.TryGetValue(weapon, out int ammo))
-                    return ammo;
-
-                return weaponStatManager.MagazineSize;
-            }
-            set
-            {
-                WeaponProperties weapon = playerEquip != null ? playerEquip.EquippedWeapon : null;
-                if (weapon == null) return;
-                ammoByWeapon[weapon] = value;
-            }
-        }
 
         [SerializeField] private LayerMask hitscanLayerMask;
 
-        private PlayerViewModel viewModel;
-        private WeaponStatManager weaponStatManager;
-        private PlayerState playerState;
+        private PlayerViewModel _viewModel;
+        private WeaponStatManager _weaponStatManager;
+        private PlayerState _playerState;
 
-        public int CurrentAmmo => currentAmmo;
-
-        private BulletProperties[] bulletProperties;
-        private WeaponAudioProperties[] weaponAudioProperties;
-
-        #endregion
-
-        #region Network
-
-        protected override void OnSpawned()
+        private int MagazineSize
         {
-            base.OnSpawned();
-            enabled = isOwner;
+            get
+            {
+                if (_playerEquip == null) return 0;
+                if (_playerEquip.EquippedWeapon == null) return 0;
+                return _weaponStatManager != null ? _weaponStatManager.MagazineSize : 0;
+            }
         }
 
-        #endregion
 
-        #region Startup
-
-        private void Awake()
+        public int CurrentAmmo
         {
-            viewModel = GetComponent<PlayerViewModel>();
-            playerState = GetComponent<PlayerState>();
-            playerActionsInput = GetComponent<PlayerActionsInput>();
-            playerEquip = GetComponent<PlayerEquip>();
-            fpArmsManager = GetComponent<FPArmsManager>();
+            get
+            {
+                if (_playerEquip == null) return 0;
+                int slot = _playerEquip.currentState.CurrentSlot;
+                return slot == 0 ? currentState.AmmoSlot0 : currentState.AmmoSlot1;
+            }
+        }
 
-            if (playerCamera == null)
+        private int _lastViewedShotCount;
+        private int _lastViewedReloadStartCount;
+        private int _lastViewedReloadEndCount;
+        private int _lastViewedEmptyTriggerCount;
+
+        #region Lifecycle
+
+        protected override void LateAwake()
+        {
+            _viewModel = GetComponent<PlayerViewModel>();
+            _playerState = GetComponent<PlayerState>();
+            _playerActionsInput = PlayerActionsInput.Instance;
+            _playerEquip = GetComponent<PlayerEquip>();
+            _fpArmsManager = GetComponent<FPArmsManager>();
+
+            if (playerCamera == null && !isServer)
                 playerCamera = Camera.main;
 
-            hitscanLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Environment"));
-            bulletProperties = Resources.LoadAll<BulletProperties>("Content/Bullets");
-            weaponAudioProperties = Resources.LoadAll<WeaponAudioProperties>("Content/WeaponAudio");
+            _weaponStatManager = GetComponent<WeaponStatManager>();
+
+            if (_viewModel != null)
+                _viewModel.InitializeAmmo(MagazineSize);
         }
 
-        private void Start()
+        protected override PlayerShooterDataState GetInitialState()
         {
-            weaponStatManager = GetComponent<WeaponStatManager>();
-            RefreshAmmoFromEquippedWeapon(true);
-            viewModel.InitializeAmmo(MagazineSize);
+            return new PlayerShooterDataState
+            {
+                LastEquippedSlot = -1,
+                AmmoSlot0 = 0,
+                AmmoSlot1 = 0,
+            };
         }
 
         #endregion
 
-        #region Update
+        #region Input
 
-        private void Update()
+        protected override void GetFinalInput(ref PlayerShooterInputData input)
         {
-            if (playerActionsInput == null) return;
+            if (_playerActionsInput == null) return;
 
-            RefreshAmmoFromEquippedWeapon(false);
-            TickReload();
-
-            if (playerState.CurrentWeaponState == WeaponState.Shooting &&
-                !playerActionsInput.AttackHeld &&
-                !playerActionsInput.AttackPressed)
+            if (_playerActionsInput.AttackPressed)
             {
-                playerState.SetWeaponState(WeaponState.Idle);
+                input.AttackPressed = true;
+                _playerActionsInput.SetAttackPressedFalse();
             }
 
-            if (!playerActionsInput.AttackHeld && !playerActionsInput.AttackPressed)
+            input.AttackHeld = _playerActionsInput.AttackHeld;
+
+            if (_playerActionsInput.ReloadPressed)
             {
-                currentSpread = Mathf.Max(
-                    weaponStatManager.Spread,
-                    currentSpread - weaponStatManager.SpreadRecoveryRate * Time.deltaTime
+                input.ReloadPressed = true;
+                _playerActionsInput.SetReloadPressedFalse();
+            }
+
+            input.PlayerCameraPosition = playerCamera.transform.position;
+            input.PlayerCameraForward = playerCamera.transform.forward;
+        }
+
+        #endregion
+
+        #region Simulation
+
+        protected override void Simulate(PlayerShooterInputData input, ref PlayerShooterDataState state, float delta)
+        {
+            if (_playerEquip == null || _weaponStatManager == null || _playerEquip.EquippedWeapon == null) return;
+
+            // Decrement timers
+            state.FireCooldown = Mathf.Max(0f, state.FireCooldown - delta);
+
+            bool wasReloading = state.ReloadTimer > 0f;
+            if (wasReloading)
+            {
+                state.ReloadTimer -= delta;
+                if (state.ReloadTimer < 0f) state.ReloadTimer = 0f;
+            }
+
+            // Detect weapon change (slot swap OR a new weapon equipped in the current slot)
+            int currentSlot = _playerEquip.currentState.CurrentSlot;
+            string currentWeaponId = _playerEquip.EquippedWeapon.Id;
+            ref string trackedWeaponId = ref (currentSlot == 0 ? ref state.WeaponIdSlot0 : ref state.WeaponIdSlot1);
+
+            bool slotChanged = state.LastEquippedSlot != currentSlot;
+            bool weaponChanged = trackedWeaponId != currentWeaponId;
+
+            if (slotChanged || weaponChanged)
+            {
+                state.LastEquippedSlot = currentSlot;
+                state.CurrentSpread = _weaponStatManager.Spread;
+                state.ReloadTimer = 0f;
+                ref int slotAmmo = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
+
+
+                if (weaponChanged)
+                {
+                    // A new/different weapon now occupies this slot (e.g. just bought) → start full.
+                    trackedWeaponId = currentWeaponId;
+                    slotAmmo = _weaponStatManager.MagazineSize;
+                }
+                // otherwise, don't update slot ammo
+            }
+
+            // Cancel reload + refill if player died
+            if (!state.WasDeadLastTick && _playerState.IsDead())
+            {
+                CancelReloadAndRefill(ref state);
+            }
+
+            // Finish reload when timer expires
+            if (wasReloading && state.ReloadTimer <= 0f)
+            {
+                ref int reloadedAmmo = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
+                reloadedAmmo = _weaponStatManager.MagazineSize;
+                state.CurrentSpread = _weaponStatManager.Spread;
+                state.ReloadEndCount++;
+            }
+
+            // Spread recovery when not firing
+            if (!input.AttackHeld && !input.AttackPressed)
+            {
+                state.CurrentSpread = Mathf.Max(
+                    _weaponStatManager.Spread,
+                    state.CurrentSpread - _weaponStatManager.SpreadRecoveryRate * delta
                 );
             }
 
-            if (playerActionsInput.ReloadPressed)
+            // Reload input
+            if (input.ReloadPressed && state.ReloadTimer <= 0f)
             {
-                TryStartReload();
-                playerActionsInput.SetReloadPressedFalse();
+                TrySimulateReload(ref state, currentSlot);
                 return;
             }
 
-            if (playerActionsInput.AttackPressed)
+            // Shoot input
+            if ((input.AttackPressed || input.AttackHeld) && state.ReloadTimer <= 0f && state.FireCooldown <= 0f)
             {
-                TryShoot();
-                playerActionsInput.SetAttackPressedFalse();
+                TrySimulateShoot(input, ref state, currentSlot);
             }
-            else if (playerActionsInput.AttackHeld)
-            {
-                TryShoot();
-            }
+
+            state.WasDeadLastTick = _playerState.IsDead();
         }
 
-        #endregion
-
-        #region Shooting
-
-        private int _lastShootFrame;
-        
-        private void TryShoot()
+        [SimulationOnly]
+        private void CancelReloadAndRefill(ref PlayerShooterDataState state)
         {
-            if (Time.frameCount == _lastShootFrame) return;
-            _lastShootFrame = Time.frameCount;
+            if (_playerEquip == null) return;
+            if (currentState.ReloadTimer <= 0f) return;
+            state.ReloadTimer = 0f;
 
-            if (playerState.IsMatchFrozen()) return;
-            if (playerState.CurrentWeaponState != WeaponState.Idle && 
-                playerState.CurrentWeaponState != WeaponState.Shooting) return;
-            if (playerEquip == null) return;
+            int slot = _playerEquip.currentState.CurrentSlot;
+            if (slot == 0)
+                state.AmmoSlot0 = _weaponStatManager.MagazineSize;
+            else
+                state.AmmoSlot1 = _weaponStatManager.MagazineSize;
+        }
 
-            WeaponProperties weapon = playerEquip.EquippedWeapon;
+        [SimulationOnly]
+        private void TrySimulateReload(ref PlayerShooterDataState state, int currentSlot)
+        {
+            WeaponProperties weapon = _playerEquip.EquippedWeapon;
+            if (weapon == null) return;
+            if (_weaponStatManager.MagazineSize <= 0) return;
+
+            int currentAmmo = currentSlot == 0 ? state.AmmoSlot0 : state.AmmoSlot1;
+            if (currentAmmo >= _weaponStatManager.MagazineSize) return;
+
+            bool isEmpty = currentAmmo <= 0;
+            AnimationClip clip = isEmpty ? weapon.EmptyReloadClip : weapon.ReloadClip;
+            float reloadTime = clip != null ? clip.length : _weaponStatManager.ReloadTime;
+
+            if (reloadTime <= 0f)
+            {
+                ref int ammoRef = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
+                ammoRef = _weaponStatManager.MagazineSize;
+                state.ReloadEndCount++;
+                return;
+            }
+
+            state.ReloadTimer = reloadTime;
+            state.IsEmptyReload = isEmpty;
+            state.ReloadStartCount++;
+
+#if UNITY_EDITOR
+            if (debugAmmoLogs)
+                Debug.Log($"[Shooter] Reloading... {reloadTime:0.00}s", this);
+#endif
+        }
+
+        [SimulationOnly]
+        private void TrySimulateShoot(in PlayerShooterInputData input, ref PlayerShooterDataState state,
+            int currentSlot)
+        {
+            if (_playerState.IsMatchFrozen()) return;
+
+            WeaponProperties weapon = _playerEquip.EquippedWeapon;
             if (weapon == null) return;
 
             WeaponView view = GetActiveWeaponView();
             if (view == null || view.Muzzle == null) return;
 
-            float fireRate = weaponStatManager.FireRate;
+            float fireRate = _weaponStatManager.FireRate;
             if (fireRate > 0f)
-            {
-                if (Time.time < nextFireTime) return;
-                nextFireTime = Time.time + (1f / fireRate);
-            }
+                state.FireCooldown = 1f / fireRate;
 
-            if (weaponStatManager.MagazineSize > 0)
+            if (_weaponStatManager.MagazineSize > 0)
             {
-                if (currentAmmo <= 0)
+                ref int ammoRef = ref (currentSlot == 0 ? ref state.AmmoSlot0 : ref state.AmmoSlot1);
+
+                if (ammoRef <= 0)
                 {
-                    PlayEmptyTriggerOnAllClients();
-                    playerActionsInput.RequestReload();
+                    state.EmptyTriggerCount++;
+                    if (_playerActionsInput != null)
+                        _playerActionsInput.RequestReload();
                     return;
                 }
 
-                currentAmmo -= 1;
-                viewModel.SetAmmo(currentAmmo, MagazineSize);
-                playerState.SetWeaponState(WeaponState.Shooting);
+                ammoRef--;
 
-                currentSpread += weaponStatManager.SpreadPerShot;
-                currentSpread = Mathf.Min(currentSpread, weaponStatManager.MaxSpread);
+                state.CurrentSpread += _weaponStatManager.SpreadPerShot;
+                state.CurrentSpread = Mathf.Min(state.CurrentSpread, _weaponStatManager.MaxSpread);
 
 #if UNITY_EDITOR
                 if (debugAmmoLogs)
-                    Debug.Log($"[Shooter] Fired. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
+                    Debug.Log($"[Shooter] Fired. Ammo: {ammoRef}/{_weaponStatManager.MagazineSize}", this);
 #endif
             }
 
-            int count = weaponStatManager.ProjectilesPerShot;
+            int count = _weaponStatManager.ProjectilesPerShot;
             if (count < 1) count = 1;
 
-            WeaponPayload payload = BuildBasePayload(weapon);
+            WeaponPayload payload = BuildBasePayload();
+
+            state.LastShotHitPlayer = false;
+            state.LastShotDamage = 0f;
+            state.LastShotEndPoint = view.Muzzle.position + GetAimDirectionFromInput(input) * _weaponStatManager.Range;
 
             if (weapon.FiringType == WeaponFiringType.Hitscan)
             {
-                Vector3 baseDirection = GetAimDirection(view.Muzzle);
-                FireHitscan(weapon, view, payload, baseDirection, count);
+                Vector3 baseDirection = GetAimDirectionFromInput(input);
+                FireHitscan(weapon, view, payload, baseDirection, count, input, ref state);
             }
-            else
-            {
-                Vector3 projectileDirection = GetProjectileAimDirection(view.Muzzle);
-                FireProjectile(weapon, view, payload, projectileDirection, count);
-            }
+            // else
+            // {
+            //     Vector3 projectileDirection = GetProjectileAimDirection(view.Muzzle);
+            //     FireProjectile(weapon, view, payload, projectileDirection, count, state.CurrentSpread);
+            // }
 
-            WeaponAudioProperties audioProperties = weaponStatManager.GetAudioProperties();
-
-            MuzzleFlashSettings flashSettings = weaponStatManager.GetMuzzleFlashSettings();
-            if (flashSettings != null)
-                view.ApplyMuzzleFlashSettings(flashSettings);
-
-            PlayFireOnAllClients(audioProperties.Key);
-
-            if (isOwner)
-            {
-                GetActiveWeaponView()?.GetComponentInChildren<MuzzleScreenShake>()?.Shake();
-            }
+            state.ShotCount++;
         }
 
-        [ObserversRpc(runLocally: true)]
-        private void PlayFireOnAllClients(string weaponAudioPropertyKey)
+
+        // [SimulationOnly]
+        // private void FireProjectile(WeaponProperties weapon, WeaponView view, WeaponPayload payload,
+        //     Vector3 baseDirection, int count, float spread)
+        // {
+        //     BulletProperties bullet = weaponStatManager.GetBulletProperties();
+        //     if (bullet == null || bullet.BulletPrefab == null) return;
+        //
+        //     float speedMultiplier = weaponStatManager.MuzzleVelocity;
+        //     float finalBulletSpeed = bullet.BulletBaseSpeed * speedMultiplier;
+        //
+        //     payload.BulletSpeed = finalBulletSpeed;
+        //     payload.BulletGravity = bullet.BulletGravity;
+        //
+        //     for (int i = 0; i < count; i++)
+        //     {
+        //         Vector3 direction = ApplySpread(baseDirection, spread);
+        //         SpawnProjectile(bullet.BulletPrefab, view.Muzzle, payload, direction);
+        //     }
+        // }
+
+        [SimulationOnly]
+        private void FireHitscan(WeaponProperties weapon, WeaponView view, WeaponPayload payload, Vector3 baseDirection,
+            int count, in PlayerShooterInputData input, ref PlayerShooterDataState state)
         {
-            WeaponView currentView = isOwner 
-                ? fpArmsManager.GetActiveFPWeaponView() 
-                : playerEquip.CurrentWeaponView;
-
-            var audioProperties = System.Array.Find(weaponAudioProperties, w => w.Key == weaponAudioPropertyKey);
-            if (audioProperties != null)
-                currentView.ApplyAudioProperties(audioProperties);
-
-            if (currentView == null) return;
-            currentView.PlayFire();
-            currentView.PlayMuzzleFlash();
-
-#if !UNITY_SERVER
-            if (AudioSourceTracker.Instance != null)
-                AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
-#endif
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void PlayEmptyTriggerOnAllClients()
-        {
-            playerEquip.CurrentWeaponView?.PlayEmptyTrigger();
-        }
-
-        private WeaponPayload BuildBasePayload(WeaponProperties weapon)
-        {
-            WeaponPayload payload = new WeaponPayload();
-            payload.Shooter = gameObject;
-            payload.Damage = weaponStatManager.Damage;
-            return payload;
-        }
-
-        private void FireProjectile(WeaponProperties weapon, WeaponView view, WeaponPayload payload, Vector3 baseDirection, int count)
-        {
-            BulletProperties bullet = weaponStatManager.GetBulletProperties();
-            if (bullet == null || bullet.BulletPrefab == null) return;
-
-            float speedMultiplier = weaponStatManager.MuzzleVelocity;
-            float finalBulletSpeed = bullet.BulletBaseSpeed * speedMultiplier;
-
-            payload.BulletSpeed = finalBulletSpeed;
-            payload.BulletGravity = bullet.BulletGravity;
+            Vector3 rayOrigin = input.PlayerCameraPosition;
+            float hitscanMaxDistance = _weaponStatManager.Range;
 
             for (int i = 0; i < count; i++)
             {
-                Vector3 direction = ApplySpread(baseDirection, currentSpread);
-                SpawnProjectile(bullet.BulletPrefab, view.Muzzle, payload, direction);
-            }
-        }
-
-        private void FireHitscan(WeaponProperties weapon, WeaponView view, WeaponPayload payload, Vector3 baseDirection, int count)
-        {
-            if (playerCamera == null) return;
-
-            Vector3 rayOrigin = playerCamera.transform.position;
-            float hitscanMaxDistance = weaponStatManager.Range;
-            bool hitPlayer = false;
-
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 dir = ApplySpread(baseDirection, currentSpread);
+                Vector3 dir = ApplySpread(baseDirection, state.CurrentSpread);
                 Vector3 endPoint = rayOrigin + dir * hitscanMaxDistance;
 
-                if (Physics.Raycast(rayOrigin, dir, out RaycastHit hit, hitscanMaxDistance, hitscanLayerMask, QueryTriggerInteraction.Ignore))
+                if (Physics.Raycast(rayOrigin, dir, out RaycastHit hit, hitscanMaxDistance, hitscanLayerMask,
+                        QueryTriggerInteraction.Ignore))
                 {
                     float distance = hit.distance;
                     float finalDamage = ComputeDamageWithFalloff(payload.Damage, distance, weapon);
 
-                    IDamageable target = hit.collider.GetComponent<IDamageable>() ?? hit.collider.GetComponentInParent<IDamageable>();
-                    if (target != null && hit.collider.gameObject != gameObject && !hit.collider.transform.IsChildOf(transform))
+                    IDamageable target = hit.collider.GetComponent<IDamageable>() ??
+                                         hit.collider.GetComponentInParent<IDamageable>();
+                    if (target != null && hit.collider.gameObject != gameObject &&
+                        !hit.collider.transform.IsChildOf(transform))
                     {
                         target.TakeDamage(finalDamage, payload.Shooter);
-                        hitPlayer = true;
-                        if (damageNumberPrefab != null && hit.collider.GetComponent<IDamageNumberTarget>() != null)
-                        {
-                            if (count > 1)
-                            {
-                                GameObject hitRoot = hit.collider.transform.root.gameObject;
-
-                                if (pendingBatchedNumbers.TryGetValue(hitRoot, out DamageNumber existing) && existing != null && !existing.IsBatchExpired)
-                                {
-                                    existing.AddDamage(finalDamage);
-                                }
-                                else
-                                {
-                                    DamageNumber number = Instantiate(damageNumberPrefab, hit.point, Quaternion.identity);
-                                    number.InitializeBatched(finalDamage);
-                                    pendingBatchedNumbers[hitRoot] = number;
-                                }
-                            }
-                            else
-                            {
-                                DamageNumber number = Instantiate(damageNumberPrefab, hit.point, Quaternion.identity);
-                                number.Initialize(finalDamage);
-                            }
-                        }
+                        state.LastShotHitPlayer = true;
+                        state.LastShotDamage += finalDamage;
                     }
                     else
                     {
@@ -336,42 +355,199 @@ namespace Resonance.Combat
                     }
 
                     endPoint = hit.point;
-
-                    if (debugAimRays)
-                    {
-                        Debug.DrawLine(rayOrigin, hit.point, Color.yellow, 0.5f);
-                        Debug.DrawRay(hit.point, hit.normal * 0.3f, Color.cyan, 0.5f);
-                    }
                 }
 
-                BulletProperties hitscanBullet = weaponStatManager.GetBulletProperties();
-                Vector3 fpMuzzlePos = fpArmsManager.GetActiveFPWeaponView()?.Muzzle.position ?? view.Muzzle.position;
-                Vector3 tpMuzzlePos = playerEquip.CurrentWeaponView?.Muzzle.position ?? view.Muzzle.position;
-
-                if (hitscanBullet?.BulletTrailPrefab != null)
+                if (debugAimRays)
                 {
-#if UNITY_EDITOR
-                    Debug.Log($"[Shooter] Pellet {i} - trailPrefab: {hitscanBullet?.BulletTrailPrefab?.name ?? "NULL"}, key: {hitscanBullet?.Key ?? "NULL"}");
-#endif
-                    SpawnTrailOnAllClients(fpMuzzlePos, tpMuzzlePos, endPoint, hitscanBullet.Key);
+                    Debug.DrawLine(rayOrigin, hit.point, Color.yellow, 0.5f);
+                    Debug.DrawRay(hit.point, hit.normal * 0.3f, Color.cyan, 0.5f);
+                }
+
+                state.LastShotEndPoint = endPoint;
+            }
+        }
+
+        // private Vector3 GetProjectileAimDirection(Transform muzzle)
+        // {
+        //     if (playerCamera == null) return muzzle.forward;
+        //
+        //     Vector3 cameraOrigin = playerCamera.transform.position;
+        //     Vector3 cameraForward = playerCamera.transform.forward;
+        //
+        //     Vector3 targetPoint;
+        //     if (Physics.Raycast(cameraOrigin, cameraForward, out RaycastHit hit, weaponStatManager.Range,
+        //             hitscanLayerMask, QueryTriggerInteraction.Ignore))
+        //         targetPoint = hit.point;
+        //     else
+        //         targetPoint = cameraOrigin + cameraForward * weaponStatManager.Range;
+        //
+        //     return (targetPoint - muzzle.position).normalized;
+        // }
+
+        // private void SpawnProjectile(GameObject prefab, Transform muzzle, WeaponPayload payload, Vector3 direction)
+        // {
+        //     GameObject go = Instantiate(prefab, muzzle.position, Quaternion.LookRotation(direction));
+        //
+        //     WeaponProjectile projectile = go.GetComponent<WeaponProjectile>();
+        //     if (projectile == null)
+        //     {
+        //         Debug.LogError("BulletPrefab is missing WeaponProjectile component.", go);
+        //         return;
+        //     }
+        //
+        //     projectile.Initialize(payload, direction);
+        // }
+
+
+        private void NotifyMissOnServer()
+        {
+            var matchStats = MatchStatBridge.GetTemporaryReference();
+            if (matchStats != null && owner.HasValue)
+                matchStats.RecordMiss(gameObject);
+        }
+
+        private Vector3 GetAimDirectionFromInput(in PlayerShooterInputData input)
+        {
+            return input.PlayerCameraForward;
+        }
+
+        #endregion
+
+        #region Local state updates
+
+        protected override PlayerShooterDataState Interpolate(
+            PlayerShooterDataState from,
+            PlayerShooterDataState to,
+            float t)
+        {
+            return to;
+        }
+
+
+        protected override void UpdateView(PlayerShooterDataState viewState, PlayerShooterDataState? verified)
+        {
+            if (_playerEquip == null) return;
+
+            int newShots = viewState.ShotCount - _lastViewedShotCount;
+            int newReloadStarts = viewState.ReloadStartCount - _lastViewedReloadStartCount;
+            int newReloadEnds = viewState.ReloadEndCount - _lastViewedReloadEndCount;
+            int newEmptyTriggers = viewState.EmptyTriggerCount - _lastViewedEmptyTriggerCount;
+
+            // Update weapon animation state
+            if (viewState.ReloadTimer > 0f)
+            {
+                _playerState?.SetExternalWeaponState(viewState.IsEmptyReload
+                    ? WeaponState.EmptyReloading
+                    : WeaponState.Reloading);
+            }
+            else if (newShots > 0)
+            {
+                _playerState?.SetExternalWeaponState(WeaponState.Shooting);
+            }
+            else
+            {
+                if (_playerState?.CurrentWeaponState == WeaponState.Shooting ||
+                    _playerState?.CurrentWeaponState == WeaponState.Reloading ||
+                    _playerState?.CurrentWeaponState == WeaponState.EmptyReloading)
+                {
+                    _playerState.SetExternalWeaponState(WeaponState.Idle);
                 }
             }
 
-            if (!hitPlayer)
-                NotifyMissOnServer();
+            // Update ammo UI
+            int currentSlot = _playerEquip.currentState.CurrentSlot;
+            int displayAmmo = currentSlot == 0 ? viewState.AmmoSlot0 : viewState.AmmoSlot1;
+            _viewModel?.SetAmmo(displayAmmo, MagazineSize);
+            _viewModel?.SetReloadState(viewState.ReloadTimer > 0f);
+
+            if (viewState.ReloadTimer > 0f && _weaponStatManager != null)
+            {
+                WeaponProperties weapon = _playerEquip.EquippedWeapon;
+                AnimationClip clip = viewState.IsEmptyReload ? weapon?.EmptyReloadClip : weapon?.ReloadClip;
+                float reloadDuration = clip != null ? clip.length : _weaponStatManager.ReloadTime;
+                if (reloadDuration > 0f)
+                    _viewModel?.SetReloadProgress(Mathf.Clamp01(1f - (viewState.ReloadTimer / reloadDuration)));
+            }
+            else if (newReloadEnds > 0)
+            {
+                _viewModel?.SetReloadProgress(1f);
+                _viewModel?.SetReloadState(false);
+            }
+
+            // Shot effects
+            if (newShots > 0)
+            {
+                WeaponView currentView = GetActiveWeaponView();
+                if (currentView != null)
+                {
+                    WeaponAudioProperties audioProperties = _weaponStatManager?.GetAudioProperties();
+                    if (audioProperties != null)
+                        currentView.ApplyAudioProperties(audioProperties);
+
+                    MuzzleFlashSettings flashSettings = _weaponStatManager?.GetMuzzleFlashSettings();
+                    if (flashSettings != null)
+                        currentView.ApplyMuzzleFlashSettings(flashSettings);
+
+                    currentView.PlayFire();
+                    currentView.PlayMuzzleFlash();
+                }
+
+#if !UNITY_SERVER
+                if (AudioSourceTracker.Instance != null)
+                    AudioSourceTracker.Instance.RegisterSound(transform.position, 1f);
+#endif
+
+                if (isOwner)
+                {
+                    GetActiveWeaponView()?.GetComponentInChildren<MuzzleScreenShake>()?.Shake();
+
+                    if (viewState.LastShotHitPlayer && damageNumberPrefab != null)
+                    {
+                        DamageNumber number = Instantiate(damageNumberPrefab, viewState.LastShotEndPoint,
+                            Quaternion.identity);
+                        number.Initialize(viewState.LastShotDamage);
+                    }
+
+                    if (!viewState.LastShotHitPlayer)
+                        NotifyMissOnServer();
+                }
+
+                // Bullet trail
+                BulletProperties hitscanBullet = _weaponStatManager?.GetBulletProperties();
+                if (hitscanBullet?.BulletTrailPrefab != null)
+                {
+                    Vector3 startPos = isOwner
+                        ? (_fpArmsManager?.GetActiveFPWeaponView()?.Muzzle.position ?? viewState.LastShotEndPoint)
+                        : (_playerEquip.CurrentWeaponView?.Muzzle.position ?? viewState.LastShotEndPoint);
+                    StartCoroutine(SpawnTrail(startPos, viewState.LastShotEndPoint, hitscanBullet.BulletTrailPrefab));
+                }
+            }
+
+            // Reload start effects
+            if (newReloadStarts > 0)
+            {
+                WeaponView reloadView = isOwner
+                    ? _fpArmsManager?.GetActiveFPWeaponView()
+                    : _playerEquip.CurrentWeaponView;
+                reloadView?.PlayReload();
+                _viewModel?.SetReloadProgress(0f);
+            }
+
+            // Empty trigger effects
+            if (newEmptyTriggers > 0)
+            {
+                WeaponView triggerView = isOwner
+                    ? _fpArmsManager?.GetActiveFPWeaponView()
+                    : _playerEquip.CurrentWeaponView;
+                triggerView?.PlayEmptyTrigger();
+            }
+
+            _lastViewedShotCount = viewState.ShotCount;
+            _lastViewedReloadStartCount = viewState.ReloadStartCount;
+            _lastViewedReloadEndCount = viewState.ReloadEndCount;
+            _lastViewedEmptyTriggerCount = viewState.EmptyTriggerCount;
         }
 
-        [ObserversRpc(runLocally: true)]
-        private void SpawnTrailOnAllClients(Vector3 fpStart, Vector3 tpStart, Vector3 end, string bulletPropertyKey)
-        {
-            BulletProperties properties = System.Array.Find(bulletProperties, w => w.Key == bulletPropertyKey);
-#if UNITY_EDITOR
-            Debug.Log($"[Trail] key: {bulletPropertyKey}, found: {properties != null}, hasPrefab: {properties?.BulletTrailPrefab != null}");
-            Debug.Log($"[Trail] RPC received. isOwner: {isOwner}, key: {bulletPropertyKey}, properties found: {properties != null}");
-#endif
-            if (properties != null && properties.BulletTrailPrefab != null)
-                StartCoroutine(SpawnTrail(isOwner ? fpStart : tpStart, end, properties.BulletTrailPrefab));
-        }
 
         private IEnumerator SpawnTrail(Vector3 start, Vector3 end, TrailRenderer trailPrefab)
         {
@@ -397,213 +573,35 @@ namespace Resonance.Combat
 #endif
         }
 
-        [ServerRpc]
-        private void NotifyMissOnServer()
+        #endregion
+
+        #region Helpers
+
+        private WeaponPayload BuildBasePayload()
         {
-            var matchStats = MatchStatBridge.GetTemporaryReference();
-            if (matchStats != null && owner.HasValue)
-                matchStats.RecordMiss(gameObject);
+            return new WeaponPayload
+            {
+                Shooter = gameObject,
+                Damage = _weaponStatManager.Damage,
+            };
         }
+
 
         private float ComputeDamageWithFalloff(float payloadDamage, float distance, WeaponProperties weapon)
         {
-            if (distance > weaponStatManager.Range / 2)
+            if (distance > _weaponStatManager.Range / 2)
                 return payloadDamage / 2;
 
             return payloadDamage;
         }
 
-        private void SpawnProjectile(GameObject prefab, Transform muzzle, WeaponPayload payload, Vector3 direction)
-        {
-            GameObject go = Instantiate(prefab, muzzle.position, Quaternion.LookRotation(direction));
 
-            WeaponProjectile projectile = go.GetComponent<WeaponProjectile>();
-            if (projectile == null)
-            {
-                Debug.LogError("BulletPrefab is missing WeaponProjectile component.", go);
-                return;
-            }
-
-            projectile.Initialize(payload, direction);
-        }
-        
         private WeaponView GetActiveWeaponView()
         {
-            if (isOwner && fpArmsManager != null)
-                return fpArmsManager.GetActiveFPWeaponView();
+            if (isOwner && _fpArmsManager != null)
+                return _fpArmsManager.GetActiveFPWeaponView();
 
-            return playerEquip.CurrentWeaponView;
-        }
-
-        #endregion
-
-        #region Reload
-
-        private void TickReload()
-        {
-            if (!playerState.IsReloading) return;
-
-            WeaponProperties weapon = playerEquip.EquippedWeapon;
-            bool isEmpty = playerState.CurrentWeaponState == WeaponState.EmptyReloading;
-            AnimationClip clip = isEmpty ? weapon?.EmptyReloadClip : weapon?.ReloadClip;
-            float reloadDuration = clip != null ? clip.length : weaponStatManager.ReloadTime;
-            float timeRemaining = reloadEndTime - Time.time;
-
-            if (reloadDuration > 0f)
-                viewModel.SetReloadProgress(Mathf.Clamp01(1f - (timeRemaining / reloadDuration)));
-
-            if (Time.time >= reloadEndTime)
-                FinishReload();
-        }
-
-        private void TryStartReload()
-        {
-            if (playerState.CurrentWeaponState != WeaponState.Idle && 
-                playerState.CurrentWeaponState != WeaponState.Shooting) return;
-            if (playerEquip == null) return;
-
-            WeaponProperties weapon = playerEquip.EquippedWeapon;
-            if (weapon == null) return;
-            if (weaponStatManager.MagazineSize <= 0) return;
-            if (currentAmmo >= weaponStatManager.MagazineSize) return;
-
-            bool isEmpty = currentAmmo <= 0;
-            AnimationClip clip = isEmpty ? weapon.EmptyReloadClip : weapon.ReloadClip;
-            float reloadTime = clip != null ? clip.length : weaponStatManager.ReloadTime;
-
-            if (reloadTime <= 0f)
-            {
-                currentAmmo = weaponStatManager.MagazineSize;
-                viewModel.SetReloadState(false);
-                viewModel.SetReloadProgress(1f);
-                viewModel.SetAmmo(currentAmmo, MagazineSize);
-                return;
-            }
-
-            playerState.SetWeaponState(isEmpty ? WeaponState.EmptyReloading : WeaponState.Reloading);
-            reloadEndTime = Time.time + reloadTime;
-
-            PlayReloadOnAllClients();
-
-            viewModel.SetReloadState(true);
-            viewModel.SetReloadProgress(0f);
-
-#if UNITY_EDITOR
-            if (debugAmmoLogs)
-                Debug.Log($"[Shooter] Reloading... {reloadTime:0.00}s", this);
-#endif
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void PlayReloadOnAllClients()
-        {
-            playerEquip.CurrentWeaponView?.PlayReload();
-        }
-
-        private void FinishReload()
-        {
-            playerState.SetWeaponState(WeaponState.Idle);
-            if (playerEquip == null) return;
-
-            WeaponProperties weapon = playerEquip.EquippedWeapon;
-            if (weapon == null) return;
-
-            currentAmmo = weaponStatManager.MagazineSize;
-            viewModel.SetReloadState(false);
-            viewModel.SetReloadProgress(1f);
-            viewModel.SetAmmo(currentAmmo, MagazineSize);
-            
-            currentSpread = weapon.Spread;
-
-#if UNITY_EDITOR
-            if (debugAmmoLogs)
-                Debug.Log($"[Shooter] Reload complete. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
-#endif
-        }
-        
-        public void CancelReload()
-        {
-            if (!playerState.IsReloading) return;
-            playerState.SetWeaponState(WeaponState.Idle);
-            viewModel.SetReloadState(false);
-            viewModel.SetReloadProgress(0f);
-            reloadEndTime = 0f;
-        }
-        
-        public void CancelReloadAndRefill()
-        {
-            if (!isOwner) return;
-            if (playerEquip == null) return;
-            CancelReload();
-            if (playerEquip?.EquippedWeapon != null)
-                ammoByWeapon[playerEquip.EquippedWeapon] = weaponStatManager.MagazineSize;
-            viewModel.SetAmmo(currentAmmo, MagazineSize);
-        }
-
-        #endregion
-
-        #region Weapon Refresh
-
-        private void RefreshAmmoFromEquippedWeapon(bool force)
-        {
-            if (playerEquip == null) return;
-
-            WeaponProperties weapon = playerEquip.EquippedWeapon;
-            if (weapon == null) return;
-            if (!force && weapon == lastWeapon) return;
-
-            lastWeapon = weapon;
-            currentSpread = weaponStatManager.Spread;
-
-            viewModel.SetReloadState(false);
-            viewModel.SetReloadProgress(0f);
-
-            if (weaponStatManager.MagazineSize > 0)
-            {
-                if (!ammoByWeapon.ContainsKey(weapon))
-                    ammoByWeapon[weapon] = weaponStatManager.MagazineSize;
-                else if (force)
-                    ammoByWeapon[weapon] = Mathf.Min(ammoByWeapon[weapon], weaponStatManager.MagazineSize);
-            }
-
-            viewModel.SetAmmo(currentAmmo, MagazineSize);
-
-#if UNITY_EDITOR
-            if (debugAmmoLogs && weaponStatManager.MagazineSize > 0)
-                Debug.Log($"[Shooter] Equipped {weapon.name}. Ammo: {currentAmmo}/{weaponStatManager.MagazineSize}", this);
-#endif
-        }
-
-        public void RefreshWeaponStats()
-        {
-            RefreshAmmoFromEquippedWeapon(true);
-            viewModel.SetAmmo(currentAmmo, MagazineSize);
-        }
-
-        #endregion
-
-        #region Aim
-
-        private Vector3 GetAimDirection(Transform muzzle)
-        {
-            if (playerCamera == null) return muzzle.forward;
-            return playerCamera.transform.forward.normalized;
-        }
-
-        private Vector3 GetProjectileAimDirection(Transform muzzle)
-        {
-            if (playerCamera == null) return muzzle.forward;
-
-            Vector3 cameraOrigin = playerCamera.transform.position;
-            Vector3 cameraForward = playerCamera.transform.forward;
-
-            Vector3 targetPoint;
-            if (Physics.Raycast(cameraOrigin, cameraForward, out RaycastHit hit, weaponStatManager.Range, hitscanLayerMask, QueryTriggerInteraction.Ignore))
-                targetPoint = hit.point;
-            else
-                targetPoint = cameraOrigin + cameraForward * weaponStatManager.Range;
-
-            return (targetPoint - muzzle.position).normalized;
+            return _playerEquip?.CurrentWeaponView;
         }
 
         private Vector3 ApplySpread(Vector3 dir, float spreadDegrees)
@@ -617,47 +615,6 @@ namespace Resonance.Combat
             if (result.sqrMagnitude < 0.0001f) return dir;
 
             return result.normalized;
-        }
-
-        #endregion
-
-        #region Properties
-
-        public int MagazineSize
-        {
-            get
-            {
-                if (playerEquip == null) return 0;
-                if (playerEquip.EquippedWeapon == null) return 0;
-                return weaponStatManager.MagazineSize;
-            }
-        }
-
-        public float ReloadProgress01
-        {
-            get
-            {
-                if (!playerState.IsReloading) return 0f;
-                WeaponProperties weapon = playerEquip?.EquippedWeapon;
-                bool isEmpty = playerState.CurrentWeaponState == WeaponState.EmptyReloading;
-                AnimationClip clip = isEmpty ? weapon?.EmptyReloadClip : weapon?.ReloadClip;
-                float reloadDuration = clip != null ? clip.length : weaponStatManager.ReloadTime;
-                float timeRemaining = reloadEndTime - Time.time;
-                return Mathf.Clamp01(1f - (timeRemaining / reloadDuration));
-            }
-        }
-
-        public float ReloadDuration
-        {
-            get
-            {
-                if (playerEquip == null) return 0f;
-                WeaponProperties weapon = playerEquip.EquippedWeapon;
-                if (weapon == null) return 0f;
-                bool isEmpty = playerState.CurrentWeaponState == WeaponState.EmptyReloading;
-                AnimationClip clip = isEmpty ? weapon.EmptyReloadClip : weapon.ReloadClip;
-                return clip != null ? clip.length : weaponStatManager.ReloadTime;
-            }
         }
 
         #endregion

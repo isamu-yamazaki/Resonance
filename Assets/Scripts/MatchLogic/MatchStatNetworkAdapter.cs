@@ -104,7 +104,7 @@ namespace Resonance.Match
         #region Client to Server Actions (Public API)
         public void RecordKill(GameObject killer, GameObject victim)
         {
-            if (OwnerIDExtractor.TryExtractPlayerIds(killer, victim, out ulong killerId, out ulong victimId))
+            if (OwnerIDExtractor.TryExtractPredictedIdentityPlayerIds(killer, victim, out ulong killerId, out ulong victimId))
             {
 #if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Logging kill: killer={killerId}, victim={victimId}");
@@ -121,7 +121,7 @@ namespace Resonance.Match
 
         public void RecordDamage(GameObject attacker, GameObject victim, float amount)
         {
-            if (OwnerIDExtractor.TryExtractPlayerIds(attacker, victim, out ulong attackerId, out ulong victimId))
+            if (OwnerIDExtractor.TryExtractPredictedIdentityPlayerIds(attacker, victim, out ulong attackerId, out ulong victimId))
             {
 #if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Logging damage: attacker={attackerId}, victim={victimId}, amount={amount}");
@@ -138,7 +138,7 @@ namespace Resonance.Match
 
         public void RecordDeath(GameObject victim)
         {
-            if (OwnerIDExtractor.TryExtractPlayerIds(victim, out ulong id))
+            if (OwnerIDExtractor.TryExtractPredictedIdentityPlayerIds(victim, out ulong id))
             {
 #if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Logging death: id={id}");
@@ -155,7 +155,7 @@ namespace Resonance.Match
         
         public void RecordMiss(GameObject player)
         {
-            if (OwnerIDExtractor.TryExtractPlayerIds(player, out ulong id))
+            if (OwnerIDExtractor.TryExtractPredictedIdentityPlayerIds(player, out ulong id))
             {
 #if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Logging miss: id={id}");
@@ -172,7 +172,7 @@ namespace Resonance.Match
 
         public void RegisterPlayer(GameObject player)
         {
-            if (OwnerIDExtractor.TryExtractPlayerIds(player, out ulong id))
+            if (OwnerIDExtractor.TryExtractPredictedIdentityPlayerIds(player, out ulong id))
             {
 #if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Registering player: id={id}");
@@ -189,7 +189,7 @@ namespace Resonance.Match
 
         public void UnregisterPlayer(GameObject player)
         {
-            if (OwnerIDExtractor.TryExtractPlayerIds(player, out ulong id))
+            if (OwnerIDExtractor.TryExtractPredictedIdentityPlayerIds(player, out ulong id))
             {
 #if UNITY_EDITOR
                 Debug.Log($"[MatchStatNetworkAdapter] Unregistering player: id={id}");
@@ -217,7 +217,7 @@ namespace Resonance.Match
         #region Getters (Client Callable)
         public async Task<PlayerMatchStats?> GetStats(GameObject player)
         {
-            if (OwnerIDExtractor.TryExtractPlayerIds(player, out ulong playerId))
+            if (OwnerIDExtractor.TryExtractPredictedIdentityPlayerIds(player, out ulong playerId))
             {
                 return await GetStats(playerId);
             }
