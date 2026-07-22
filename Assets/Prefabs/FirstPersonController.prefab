@@ -1036,15 +1036,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bda92ce9f3864754a8fed28b007ed58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.Train.TrainPassengerPhysics
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   _trainController: {fileID: 0}
   _trainFloorTag: Train
   _inertiaDecay: 4
@@ -1318,6 +1309,7 @@ MonoBehaviour:
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
   config:
+    animationDelay: 0.5
     maxRange: 30
     reelSpeed: 20
     maxReelTime: 3
@@ -1329,19 +1321,19 @@ MonoBehaviour:
       m_Bits: 256
   shootEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: ccfeef1468a60b040a86648f65fb5345, type: 2}
   travelLoopEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 0542d3919461d10409bca7ea4847ed86, type: 2}
   stopTravelEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 8ad66c9abd2d8c342b507553d76153c0, type: 2}
   releaseEvent:
     idInternal: 0
-    valueGuidInternal:
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 24e2f969f6ffb554eb2a07b7230a0745, type: 2}
 --- !u!114 &-9158808936870234664
 MonoBehaviour:

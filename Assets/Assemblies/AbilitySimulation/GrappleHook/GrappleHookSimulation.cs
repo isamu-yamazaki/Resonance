@@ -42,12 +42,18 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
                     Ray ray = new Ray(state.CameraPosition, state.CameraForward);
                     if (Physics.Raycast(ray, out RaycastHit hit, config.maxRange, config.grappleLayerMask))
                     {
+                        state.PendingTime = 0f;
                         state.GrappleStatus = GrappleStatus.Grappling;
                         state.HookPoint = hit.point;
                         state.ReelTime = 0f;
                         state.BroadcastShootAndTravel = true;
                         state.BroadcastGrappleRegistration = true;
                         state.GrappleRegistrationPosition = state.CameraPosition;
+                    }
+                    else
+                    {
+                        state.PendingTime = 0f;
+                        state.GrappleStatus = GrappleStatus.None;
                     }
                 }
             }
@@ -90,6 +96,7 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
             state.GrappleStatus = GrappleStatus.None;
             state.BroadcastStopTravel = true;
             state.BroadcastRelease = true;
+
 
             if (earlyExit)
             {

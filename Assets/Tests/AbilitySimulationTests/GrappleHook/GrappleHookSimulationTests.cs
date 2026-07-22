@@ -1,10 +1,20 @@
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using Resonance.Assemblies.AbilitySimulation.GrappleHook;
 using UnityEngine;
 
 public class GrappleHookSimulationTests
 {
     private const float Tolerance = 1e-4f;
+
+    private GameObject _grappleTarget;
+
+    [TearDown]
+    public void DestroyGrappleTarget()
+    {
+        if (_grappleTarget != null)
+            Object.DestroyImmediate(_grappleTarget);
+    }
 
     private static AbilityGrappleHookInput MakeInput(
         bool jumpPressed = false,
@@ -24,6 +34,7 @@ public class GrappleHookSimulationTests
 
     private static AbilityGrappleHookState MakeState(
         GrappleStatus grappleStatus = default,
+        float pendingTime = 0,
         Vector3 hookPoint = default,
         float reelTime = 0,
         Vector3 reelVelocity = default,
@@ -41,6 +52,7 @@ public class GrappleHookSimulationTests
         return new AbilityGrappleHookState()
         {
             GrappleStatus = grappleStatus,
+            PendingTime = pendingTime,
             HookPoint = hookPoint,
             ReelTime = reelTime,
             ReelVelocityThisTick = reelVelocity,
@@ -57,6 +69,7 @@ public class GrappleHookSimulationTests
     }
 
     private static GrappleHookConfig MakeConfig(
+        float animationDelay = 5f,
         float maxRange = 5f,
         float reelSpeed = 2f,
         float maxReelTime = 5f,
@@ -68,6 +81,7 @@ public class GrappleHookSimulationTests
     {
         return new GrappleHookConfig()
         {
+            animationDelay = animationDelay,
             maxRange = maxRange,
             reelSpeed = reelSpeed,
             maxReelTime = maxReelTime,
@@ -161,6 +175,67 @@ public class GrappleHookSimulationTests
 
         GrappleHookSimulation.Step(ctx, ref state);
         Assert.AreEqual(0f, state.Cooldown);
+    }
+
+    [Test]
+    [TestCase(0.1f)]
+    [TestCase(0.2f)]
+    public void StepResetsIfMeetsOrExceedsConfiguredAnimationTimeAndNoRaycastHit(float delta)
+    {
+        var config = MakeConfig(
+            animationDelay: 2f
+        );
+
+        var state = MakeState(
+            grappleStatus: GrappleStatus.PendingWithDelay,
+            pendingTime: 1.9f
+        );
+
+        var ctx = new GrappleHookSimulationContext(MakeInput(), config, delta);
+        GrappleHookSimulation.Step(ctx, ref state);
+        Assert.AreEqual(0f, state.PendingTime);
+        Assert.AreEqual(GrappleStatus.None, state.GrappleStatus);
+    }
+
+    [Test]
+    [TestCase(0.1f)]
+    [TestCase(0.2f)]
+    public void StepGrapplesIfMeetsOrExceedsConfiguredAnimationTimeAndRaycastHit(float delta)
+    {
+        // Physics.Raycast has no mock seam, so we place a real collider in the edit-mode
+        // physics scene directly in front of the camera pose and within maxRange, then
+        // sync transforms so the query sees it. The camera looks down +Z from the origin
+        // at a unit cube centered at z = 3, whose front face sits at z = 2.5.
+        const int defaultLayer = 0;
+        _grappleTarget = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        _grappleTarget.layer = defaultLayer;
+        _grappleTarget.transform.position = new Vector3(0f, 0f, 3f);
+        Physics.SyncTransforms();
+
+        var input = MakeInput(
+            cameraPosition: Vector3.zero,
+            cameraForward: Vector3.forward
+        );
+        var config = MakeConfig(
+            animationDelay: 2f,
+            maxRange: 5f,
+            grappleLayerMask: 1 << defaultLayer
+        );
+
+        var state = MakeState(
+            grappleStatus: GrappleStatus.PendingWithDelay,
+            pendingTime: 1.9f
+        );
+
+        var ctx = new GrappleHookSimulationContext(input, config, delta);
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.AreEqual(GrappleStatus.Grappling, state.GrappleStatus);
+        Assert.AreEqual(0f, state.PendingTime);
+        Assert.AreEqual(2.5f, state.HookPoint.z, Tolerance);
+        Assert.IsTrue(state.BroadcastShootAndTravel);
+        Assert.IsTrue(state.BroadcastGrappleRegistration);
+        Assert.AreEqual(input.CameraPosition, state.GrappleRegistrationPosition);
     }
 
     [Test]
