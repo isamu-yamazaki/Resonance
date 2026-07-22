@@ -7,14 +7,12 @@ public class SonarDiscSimulationTests
     private const float Tolerance = 1e-4f;
 
     private static SonarDiscAbilityInput MakeInput(
-        bool activatePressed = false,
         Vector3 muzzlePosition = default,
         Vector3 muzzleForward = default
     )
     {
         return new SonarDiscAbilityInput
         {
-            ActivatePressed = activatePressed,
             MuzzlePosition = muzzlePosition,
             MuzzleForward = muzzleForward
         };
@@ -68,19 +66,6 @@ public class SonarDiscSimulationTests
         SonarDiscSimulation.Step(ctx, ref state);
 
         Assert.AreEqual(0f, state.Cooldown);
-    }
-
-    [Test]
-    public void StepDoesNotSpawnOnTheTickActivateIsPressed()
-    {
-        // Activation only arms the spawn; the disc spawns on the following tick (one-tick delay).
-        var state = MakeState(spawnDiscNextTick: false);
-        var ctx = new SonarDiscSimulationContext(MakeInput(activatePressed: true), MakeConfig(), delta: 0.1f);
-
-        SonarDiscSimulation.Step(ctx, ref state);
-
-        Assert.IsFalse(state.ShouldSpawnDisc);
-        Assert.IsTrue(state.SpawnDiscNextTick);
     }
 
     [Test]
