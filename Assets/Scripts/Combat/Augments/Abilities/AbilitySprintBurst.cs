@@ -32,7 +32,7 @@ namespace Resonance.Combat.Augments
 
         protected override AbilitySprintBurstState GetInitialState()
         {
-            return new AbilitySprintBurstState()
+            return new AbilitySprintBurstState
             {
                 CurrentMeter = config.maxMeter,
                 WasSprinting = false,
@@ -43,16 +43,11 @@ namespace Resonance.Combat.Augments
         #endregion
 
         #region Input
-        public void ActivateAbilityExternal()
-        {
-        }
 
         protected override void UpdateInput(ref AbilitySprintBurstInput input)
         {
             if (!isOwner) return;
-            // if (!currentState.IsEquipped) return;
             input.Sprinting |= playerLocomotionInput.SprintToggledOn;
-            // Debug.Log($"[AbilitySprintBurst] {input.Sprinting}");
         }
 
         protected override void GetFinalInput(ref AbilitySprintBurstInput input)
@@ -113,11 +108,9 @@ namespace Resonance.Combat.Augments
 
         private void RemovePreviousModifier(ref AbilitySprintBurstState state)
         {
-            if (state.LastAppliedSpeedMod > 0)
-            {
-                playerStats.SimulateRemoveSpeedModifier(state.LastAppliedSpeedMod);
-                state.LastAppliedSpeedMod = 0;
-            }
+            if (!(state.LastAppliedSpeedMod > 0)) return;
+            playerStats.SimulateRemoveSpeedModifier(state.LastAppliedSpeedMod);
+            state.LastAppliedSpeedMod = 0;
         }
     }
 }
