@@ -53,8 +53,7 @@ namespace Resonance.Combat.Augments
         public void SimulateActivateAbility()
         {
             // Request activation for this system's own next Simulate call, rather than mutating
-            // currentState directly here. Readiness is already gated upstream by the caller
-            // (PlayerAbilityManager checks AbilityReady before invoking this).
+            // currentState directly here. Keep the ordering consistent.
             currentState.GrappleNextTick = true;
         }
 
