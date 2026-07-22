@@ -216,7 +216,7 @@ namespace Resonance.PlayerController
                 OverdriveSpeedMultiplier = _overdriveAbility != null ? _overdriveAbility.SpeedMultiplier : 1f,
                 IsInOverdrive = _overdriveAbility != null && _overdriveAbility.IsInOverdrive,
                 IsGrappling = _grapple != null && _grapple.IsGrappling,
-                GrappleVelocity = _grapple != null ? _grapple.ReelVelocity : Vector3.zero,
+                GrappleVelocity = _grapple != null ? _grapple.ReelVelocityThisTick : Vector3.zero,
                 GrappleExitImpulse = _grapple != null ? _grapple.ExitImpulse : Vector3.zero,
             };
             // preserve old behavior formerly in GetKnockbackVertical

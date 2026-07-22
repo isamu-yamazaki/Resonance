@@ -8,7 +8,7 @@ namespace Resonance.Combat.Augments
 {
     /// <summary>
     /// Predicted grapple hook ability. The reel motion is computed deterministically each tick in
-    /// <see cref="Simulate"/> and exposed via <see cref="ReelVelocity"/> / <see cref="ExitImpulse"/>,
+    /// <see cref="Simulate"/> and exposed via <see cref="ReelVelocityThisTick"/> / <see cref="ExitImpulse"/>,
     /// which PlayerPredictedController reads into PlayerDependencyData so the actual movement is applied
     /// inside PlayerSimulation (on both server and owner client). This component no longer touches the
     /// CharacterController directly.
@@ -54,12 +54,13 @@ namespace Resonance.Combat.Augments
         {
             // Request activation for this system's own next Simulate call, rather than mutating
             // currentState directly here. Keep the ordering consistent.
-            currentState.GrappleNextTick = true;
+            currentState.StartGrappleSequenceNextTick = true;
         }
 
         public bool CanGrapple()
         {
             if (playerCamera == null) return false;
+
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
             return Physics.Raycast(ray, config.maxRange, grappleLayerMask);
         }
@@ -69,7 +70,7 @@ namespace Resonance.Combat.Augments
         #region Exposed state
 
         public bool IsGrappling => currentState.IsGrappling;
-        public Vector3 ReelVelocity => currentState.ReelVelocity;
+        public Vector3 ReelVelocityThisTick => currentState.ReelVelocityThisTick;
         public Vector3 ExitImpulse => currentState.ExitImpulse;
 
         #endregion
