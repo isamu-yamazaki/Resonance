@@ -29,8 +29,10 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
             if (state.StartGrappleSequenceNextTick)
             {
                 state.StartGrappleSequenceNextTick = false;
-                state.GrappleStatus = GrappleStatus.PendingWithDelay;
-
+                if (CanGrapple(in ctx, in state))
+                {
+                    state.GrappleStatus = GrappleStatus.PendingWithDelay;
+                }
             }
 
             if (state.GrappleStatus == GrappleStatus.PendingWithDelay)
@@ -39,7 +41,7 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
 
                 if (state.PendingTime >= config.animationDelay)
                 {
-                    Ray ray = new Ray(state.CameraPosition, state.CameraForward);
+                    Ray ray = NewRayFromCamera(state);
                     if (Physics.Raycast(ray, out RaycastHit hit, config.maxRange, config.grappleLayerMask))
                     {
                         state.PendingTime = 0f;
@@ -85,7 +87,19 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
             // Send the player according to the reel speed, in the determined direction
             state.ReelVelocityThisTick = directionToHook.normalized * config.reelSpeed;
         }
-        
+
+        private static Ray NewRayFromCamera(in AbilityGrappleHookState state)
+        {
+            return new Ray(state.CameraPosition, state.CameraForward);
+        }
+
+        private static bool CanGrapple(in GrappleHookSimulationContext ctx, in AbilityGrappleHookState state)
+        {
+            var config = ctx.Config;
+            Ray ray = NewRayFromCamera(state);
+            return Physics.Raycast(ray, config.maxRange, config.grappleLayerMask);
+        }
+
         private static void ExitGrapple(
             in GrappleHookConfig config,
             ref AbilityGrappleHookState state,

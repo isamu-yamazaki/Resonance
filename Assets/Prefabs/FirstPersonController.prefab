@@ -1309,7 +1309,7 @@ MonoBehaviour:
   _repeatInputFactor: 0.8
   _extrapolateInput: 1
   config:
-    animationDelay: 0.5
+    animationDelay: 0.8
     maxRange: 30
     reelSpeed: 20
     maxReelTime: 3

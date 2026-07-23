@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using Resonance.Assemblies.AbilitySimulation.GrappleHook;
 using UnityEngine;
 
@@ -15,6 +14,19 @@ public class GrappleHookSimulationTests
         if (_grappleTarget != null)
             Object.DestroyImmediate(_grappleTarget);
     }
+
+    private void CreateGrappleTarget(int defaultLayer)
+    {
+        // Physics.Raycast has no mock seam, so we place a real collider in the edit-mode
+        // physics scene directly in front of the camera pose and within maxRange, then
+        // sync transforms so the query sees it. The camera looks down +Z from the origin
+        // at a unit cube centered at z = 3, whose front face sits at z = 2.5.
+        _grappleTarget = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        _grappleTarget.layer = defaultLayer;
+        _grappleTarget.transform.position = new Vector3(0f, 0f, 3f);
+        Physics.SyncTransforms();
+    }
+
 
     private static AbilityGrappleHookInput MakeInput(
         bool jumpPressed = false,
@@ -34,6 +46,7 @@ public class GrappleHookSimulationTests
 
     private static AbilityGrappleHookState MakeState(
         GrappleStatus grappleStatus = default,
+        bool startGrappleSequenceNextTick = false,
         float pendingTime = 0,
         Vector3 hookPoint = default,
         float reelTime = 0,
@@ -52,6 +65,7 @@ public class GrappleHookSimulationTests
         return new AbilityGrappleHookState()
         {
             GrappleStatus = grappleStatus,
+            StartGrappleSequenceNextTick = startGrappleSequenceNextTick,
             PendingTime = pendingTime,
             HookPoint = hookPoint,
             ReelTime = reelTime,
@@ -178,9 +192,81 @@ public class GrappleHookSimulationTests
     }
 
     [Test]
+    public void StepStaysNoneAndResetsFlagIfNextTickFlagIsTrueAndNoRaycastHit()
+    {
+        var state = MakeState(
+            grappleStatus: GrappleStatus.None,
+            startGrappleSequenceNextTick: true,
+            pendingTime: 0f
+        );
+        var config = MakeConfig();
+        var ctx = new GrappleHookSimulationContext(MakeInput(), config, 0.1f);
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.AreEqual(GrappleStatus.None, state.GrappleStatus);
+        Assert.AreEqual(0f, state.PendingTime);
+        Assert.IsFalse(state.StartGrappleSequenceNextTick);
+    }
+
+    [Test]
+    public void StepSetsPendingIfNextTickFlagIsTrueAndRaycastHit()
+    {
+        const int defaultLayer = 0;
+        CreateGrappleTarget(defaultLayer);
+
+        var state = MakeState(
+            grappleStatus: GrappleStatus.None,
+            startGrappleSequenceNextTick: true,
+            pendingTime: 0f
+        );
+        var config = MakeConfig(
+            animationDelay: 2f,
+            maxRange: 5f,
+            grappleLayerMask: 1 << defaultLayer
+        );
+        var input = MakeInput(
+            cameraPosition: Vector3.zero,
+            cameraForward: Vector3.forward
+        );
+        var ctx = new GrappleHookSimulationContext(input, config, 0.1f);
+
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.AreEqual(GrappleStatus.PendingWithDelay, state.GrappleStatus);
+        Assert.AreEqual(0.1f, state.PendingTime, Tolerance);
+    }
+
+    [Test]
+    public void StepStartsGrappleImmediatelyIfNextTickFlagIsTrueWithRaycastHitAndZeroAnimationDelay()
+    {
+        const int defaultLayer = 0;
+        CreateGrappleTarget(defaultLayer);
+
+        var state = MakeState(
+            grappleStatus: GrappleStatus.None,
+            startGrappleSequenceNextTick: true,
+            pendingTime: 0f
+        );
+        var config = MakeConfig(
+            animationDelay: 0f,
+            maxRange: 5f,
+            grappleLayerMask: 1 << defaultLayer
+        );
+        var input = MakeInput(
+            cameraPosition: Vector3.zero,
+            cameraForward: Vector3.forward
+        );
+        var ctx = new GrappleHookSimulationContext(input, config, 0.1f);
+
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.AreEqual(GrappleStatus.Grappling, state.GrappleStatus);
+    }
+
+    [Test]
     [TestCase(0.1f)]
     [TestCase(0.2f)]
-    public void StepResetsIfMeetsOrExceedsConfiguredAnimationTimeAndNoRaycastHit(float delta)
+    public void StepResetsIfMeetsOrExceedsConfiguredAnimationDelayAndNoRaycastHit(float delta)
     {
         var config = MakeConfig(
             animationDelay: 2f
@@ -200,17 +286,10 @@ public class GrappleHookSimulationTests
     [Test]
     [TestCase(0.1f)]
     [TestCase(0.2f)]
-    public void StepGrapplesIfMeetsOrExceedsConfiguredAnimationTimeAndRaycastHit(float delta)
+    public void StepGrapplesIfMeetsOrExceedsConfiguredAnimationDelayAndRaycastHit(float delta)
     {
-        // Physics.Raycast has no mock seam, so we place a real collider in the edit-mode
-        // physics scene directly in front of the camera pose and within maxRange, then
-        // sync transforms so the query sees it. The camera looks down +Z from the origin
-        // at a unit cube centered at z = 3, whose front face sits at z = 2.5.
         const int defaultLayer = 0;
-        _grappleTarget = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        _grappleTarget.layer = defaultLayer;
-        _grappleTarget.transform.position = new Vector3(0f, 0f, 3f);
-        Physics.SyncTransforms();
+        CreateGrappleTarget(defaultLayer);
 
         var input = MakeInput(
             cameraPosition: Vector3.zero,
