@@ -63,15 +63,9 @@ jobs:
           - target: win64
             mode: Client
             client_config: ProductionClient
-          - target: win64
-            mode: Client
-            client_config: ProductionHost
           - target: osxuniversal
             mode: Client
             client_config: ProductionClient
-          - target: osxuniversal
-            mode: Client
-            client_config: ProductionHost
           - target: linux64
             mode: Server
     steps:

@@ -27,19 +27,14 @@ on:
         type: choice
         options:
           - DevClient
-          - DevClientLocalRelay
-          - DevHost
-          - DevHostLocalRelay
           - ProductionClient
-          - ProductionHost
       server_config:
         description: "Server config asset name (used when mode is Server)"
         required: true
-        default: Production
+        default: Default
         type: choice
         options:
-          - LocalRelay
-          - Production
+          - Default
 
 jobs:
   build:
