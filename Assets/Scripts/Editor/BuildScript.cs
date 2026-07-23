@@ -17,44 +17,17 @@ namespace Resonance.BuildTools
         [MenuItem("Build/Client/Windows/DevClient")]
         public static void BuildDevClientWindows() => Build(LoadConfig("DevClient"), BuildTarget.StandaloneWindows64);
 
-        [MenuItem("Build/Client/Windows/DevClientLocalRelay")]
-        public static void BuildDevClientLocalRelayWindows() => Build(LoadConfig("DevClientLocalRelay"), BuildTarget.StandaloneWindows64);
-
-        [MenuItem("Build/Client/Windows/DevHost")]
-        public static void BuildDevHostWindows() => Build(LoadConfig("DevHost"), BuildTarget.StandaloneWindows64);
-
-        [MenuItem("Build/Client/Windows/DevHostLocalRelay")]
-        public static void BuildDevHostLocalRelayWindows() => Build(LoadConfig("DevHostLocalRelay"), BuildTarget.StandaloneWindows64);
-
         [MenuItem("Build/Client/Windows/ProductionClient")]
         public static void BuildProductionClientWindows() => Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneWindows64);
-
-        [MenuItem("Build/Client/Windows/ProductionHost")]
-        public static void BuildProductionHostWindows() => Build(LoadConfig("ProductionHost"), BuildTarget.StandaloneWindows64);
 
         [MenuItem("Build/Client/Mac/DevClient")]
         public static void BuildDevClientMac() => Build(LoadConfig("DevClient"), BuildTarget.StandaloneOSX);
 
-        [MenuItem("Build/Client/Mac/DevClientLocalRelay")]
-        public static void BuildDevClientLocalRelayMac() => Build(LoadConfig("DevClientLocalRelay"), BuildTarget.StandaloneOSX);
-
-        [MenuItem("Build/Client/Mac/DevHost")]
-        public static void BuildDevHostMac() => Build(LoadConfig("DevHost"), BuildTarget.StandaloneOSX);
-
-        [MenuItem("Build/Client/Mac/DevHostLocalRelay")]
-        public static void BuildDevHostLocalRelayMac() => Build(LoadConfig("DevHostLocalRelay"), BuildTarget.StandaloneOSX);
-
         [MenuItem("Build/Client/Mac/ProductionClient")]
         public static void BuildProductionClientMac() => Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneOSX);
 
-        [MenuItem("Build/Client/Mac/ProductionHost")]
-        public static void BuildProductionHostMac() => Build(LoadConfig("ProductionHost"), BuildTarget.StandaloneOSX);
-
-        [MenuItem("Build/Server/Linux/LocalRelay")]
-        public static void BuildServerLocalRelayLinux() => BuildServer(LoadServerConfig("LocalRelay"), BuildTarget.StandaloneLinux64);
-
-        [MenuItem("Build/Server/Linux/Production")]
-        public static void BuildServerProductionLinux() => BuildServer(LoadServerConfig("Production"), BuildTarget.StandaloneLinux64);
+        [MenuItem("Build/Server/Linux/Default")]
+        public static void BuildServerLinux() => BuildServer(LoadServerConfig("Default"), BuildTarget.StandaloneLinux64);
 
         #endregion
 
