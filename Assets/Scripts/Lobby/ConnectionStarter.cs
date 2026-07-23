@@ -49,8 +49,8 @@ namespace Resonance.LobbySystem
                 return;
             }
 
-            if(_networkManager.transport is PurrTransport) {
-                (_networkManager.transport as PurrTransport).roomName = _lobbyDataHolder.CurrentLobby.LobbyId;
+            if (_networkManager.transport is PurrTransport transport) {
+                transport.roomName = _lobbyDataHolder.CurrentLobby.LobbyId;
             } 
             
 #if UTP_LOBBYRELAY
