@@ -17,19 +17,20 @@ namespace Resonance.Server
     /// </summary>
     public class ServerOrchestratorLobbyCreator : MonoBehaviour
     {
-        private ClientBuildConfigReceiver clientBuildConfigReceiver;
-        private LobbyDataHolder lobbyDataHolder;
-        private ClientBuildConfig buildConfig => clientBuildConfigReceiver.Config;
+        private static readonly HttpClient Client = new();
+        private ClientBuildConfigReceiver _clientBuildConfigReceiver;
+        private LobbyDataHolder _lobbyDataHolder;
+        private ClientBuildConfig BuildConfig => _clientBuildConfigReceiver.Config;
 
         private void Awake()
         {
-            clientBuildConfigReceiver = FindFirstObjectByType<ClientBuildConfigReceiver>();
-            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
+            _clientBuildConfigReceiver = FindFirstObjectByType<ClientBuildConfigReceiver>();
+            _lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
         }
 
         public void CreateAndSendCurrentLobbyIfClientModeAndLobbyHost()
         {
-            if (buildConfig.useClientServerMode && lobbyDataHolder.CurrentLobby.IsOwner(lobbyDataHolder.LocalUserId))
+            if (_lobbyDataHolder.CurrentLobby.IsOwner(_lobbyDataHolder.LocalUserId))
             {
                 _ = CreateAndSendCurrentLobbyAsync();
             }
@@ -37,14 +38,13 @@ namespace Resonance.Server
 
         private async Task CreateAndSendCurrentLobbyAsync()
         {
-            Lobby lobby = lobbyDataHolder.CurrentLobby;
+            Lobby lobby = _lobbyDataHolder.CurrentLobby;
             string json = lobby.ToJson();
 
             try
             {
-                using var client = new HttpClient();
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{buildConfig.orchestratorUrl}/lobbies/{lobby.LobbyCode}", content);
+                var response = await Client.PostAsync($"{BuildConfig.orchestratorUrl}/lobbies/{lobby.LobbyCode}", content);
 
                 if (response.IsSuccessStatusCode)
                 {
