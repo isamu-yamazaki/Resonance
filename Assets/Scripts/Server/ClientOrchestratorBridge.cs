@@ -4,18 +4,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Resonance.Assemblies.LobbySystem;
 using Resonance.BuildTools;
-using Resonance.LobbySystem;
 using UnityEngine;
 
 namespace Resonance.Server
 {
     /// <summary>
-    /// Editor/testing utility. Creates a mock lobby and POSTs it to the orchestrator server
-    /// so that <see cref="ServerStartSceneNextSceneLoader"/> can fetch it during testing.
-    /// Attach to any GameObject in the server start scene and trigger via the context menu
-    /// or a UI Button's OnClick event.
+    /// Interactor between the client and the orchestrator.
+    /// Join and leave the match at the appropriate time with the correct metadata.
     /// </summary>
-    public class ServerOrchestratorLobbyCreator : MonoBehaviour
+    public class ClientOrchestratorBridge : MonoBehaviour
     {
         private static readonly HttpClient Client = new();
         private ClientBuildConfigReceiver _clientBuildConfigReceiver;
@@ -28,12 +25,17 @@ namespace Resonance.Server
             _lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
         }
 
-        public void CreateAndSendCurrentLobbyIfClientModeAndLobbyHost()
+        public void JoinMatchFromCurrentLobby()
         {
-            if (_lobbyDataHolder.CurrentLobby.IsOwner(_lobbyDataHolder.LocalUserId))
+            if (_lobbyDataHolder.CurrentLobby.IsValid)
             {
                 _ = CreateAndSendCurrentLobbyAsync();
             }
+        }
+
+        public void LeaveMatchFromCurrentLobby()
+        {
+            // TODO: implement
         }
 
         private async Task CreateAndSendCurrentLobbyAsync()
