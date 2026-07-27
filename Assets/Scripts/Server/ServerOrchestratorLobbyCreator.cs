@@ -11,7 +11,7 @@ namespace Resonance.Server
 {
     /// <summary>
     /// Editor/testing utility. Creates a mock lobby and POSTs it to the orchestrator server
-    /// so that <see cref="ServerLobbyCodeReader"/> can fetch it during testing.
+    /// so that <see cref="ServerStartSceneNextSceneLoader"/> can fetch it during testing.
     /// Attach to any GameObject in the server start scene and trigger via the context menu
     /// or a UI Button's OnClick event.
     /// </summary>

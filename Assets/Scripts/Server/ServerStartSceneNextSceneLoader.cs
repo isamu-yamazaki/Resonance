@@ -2,19 +2,17 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Resonance.Assemblies.LobbySystem;
-using Resonance.LobbySystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Resonance.Server
 {
     /// <summary>
-    /// Runs on the dedicated server. Reads the room code from the -lobbyCode CLI argument
-    /// and the orchestrator URL from the -orchestratorUrl CLI argument. Fetches the lobby
-    /// data from the orchestrator, stores it in <see cref="LobbyDataHolder"/>, then loads
-    /// the game scene so <see cref="ConnectionBootstrapper"/> can start the network.
+    /// Load the game bootstrap scene on the dedicated server.
+    /// Previously loaded the lobby data and orchestrator URL;
+    /// no longer needed since there is no more relay.
     /// </summary>
-    public class ServerLobbyCodeReader : MonoBehaviour
+    public class ServerStartSceneNextSceneLoader : MonoBehaviour
     {
         [SerializeField] private string gameSceneName = "GameBootstrapScene";
         [SerializeField] private string editorRoomCode = "";
