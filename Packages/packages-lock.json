@@ -453,6 +453,13 @@
       "dependencies": {},
       "hash": "610157ad762084380380148ba8ce14e266a6da97"
     },
+    "dev.bchen.resonance.contracts": {
+      "version": "https://github.com/brendan-ch/ResonanceServerOrchestrator.git?path=/Resonance.Contracts#contracts-v1.0.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "3c672d9ac78884aeb3f052247fdf223ce3baa49c"
+    },
     "dev.purrnet.purrdiction": {
       "version": "https://github.com/PurrNet/PurrDiction.git?path=/Assets/PurrDiction#v1.2.3",
       "depth": 0,

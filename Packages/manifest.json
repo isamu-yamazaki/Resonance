@@ -22,6 +22,7 @@
     "com.unity.visualeffectgraph": "17.2.0",
     "com.unity.visualscripting": "1.9.7",
     "com.veriorpies.parrelsync": "https://github.com/VeriorPies/ParrelSync.git?path=/ParrelSync",
+    "dev.bchen.resonance.contracts": "https://github.com/brendan-ch/ResonanceServerOrchestrator.git?path=/Resonance.Contracts#contracts-v1.0.1",
     "dev.purrnet.purrdiction": "https://github.com/PurrNet/PurrDiction.git?path=/Assets/PurrDiction#v1.2.3",
     "dev.purrnet.purrnet": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#v1.19.1",
     "com.unity.modules.accessibility": "1.0.0",
