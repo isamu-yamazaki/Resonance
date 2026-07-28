@@ -1,0 +1,6 @@
+{
+    "name": "ClientOrchestratorBridgeTests",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
