@@ -93,7 +93,7 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
             throw new System.NotImplementedException();
         }
 
-        public async void LeaveMatch(
+        public async Task LeaveMatch(
             LeaveMatchDto leaveMatchDto
         )
         {
