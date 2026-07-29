@@ -144,6 +144,7 @@ public class ClientOrchestratorBridgeTests
         var dto = await _bridge.GetJoinMatchDtoForLobby(lobby);
 
         Assert.ThrowsAsync<HttpRequestException>(() => _bridge.JoinMatch(dto));
+        Assert.AreEqual(1, _httpHandler.CallCount);
     }
 
     #endregion
@@ -162,11 +163,37 @@ public class ClientOrchestratorBridgeTests
         var dto = await _bridge.GetLeaveMatchDtoForLobby(lobby);
 
         await _bridge.LeaveMatch(dto);
+
+        var expectedRequestMessage = new HttpRequestMessage();
+        expectedRequestMessage.Method = HttpMethod.Post;
+        expectedRequestMessage.RequestUri = new Uri($"{DedicatedServerHost}:{DedicatedServerPort}/v1/matches/leave");
+        expectedRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(dto));
+
+        Assert.AreEqual(1, _httpHandler.CallCount);
+        Assert.AreEqual(expectedRequestMessage.Method, _httpHandler.LastRequest?.Method);
+        Assert.AreEqual(expectedRequestMessage.RequestUri, _httpHandler.LastRequest?.RequestUri);
+        Assert.AreEqual(expectedRequestMessage.Content.ReadAsStringAsync().Result, _httpHandler.LastRequest?.Content.ReadAsStringAsync().Result);
     }
 
     [Test]
     public async Task LeaveMatch_ThrowsOnHttpErrorCode()
     {
+        _httpHandler = new FakeHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.InternalServerError));
+        _httpClient = new HttpClient(_httpHandler);
+        _bridge = new ClientOrchestratorBridge(_httpClient, _userResolver, Platform.Dummy);
+
+        var lobby = GenerateLobby();
+
+        var dto = await _bridge.GetLeaveMatchDtoForLobby(lobby);
+
+        Assert.ThrowsAsync<HttpRequestException>(() => _bridge.LeaveMatch(dto));
+
+        var expectedRequestMessage = new HttpRequestMessage();
+        expectedRequestMessage.Method = HttpMethod.Post;
+        expectedRequestMessage.RequestUri = new Uri($"{DedicatedServerHost}:{DedicatedServerPort}/v1/matches/leave");
+        expectedRequestMessage.Content = new StringContent(JsonConvert.SerializeObject(dto));
+
+        Assert.AreEqual(1, _httpHandler.CallCount);
     }
 
     #endregion
