@@ -22,6 +22,8 @@ public class ClientOrchestratorBridgeTests
     private const string PlatformId = "platformId";
     private const string AuthTicket = "authTicket";
     private const string ServerAuthToken = "ServerAuthToken";
+    private const string DedicatedServerHost = "http://127.0.0.1";
+    private const int DedicatedServerPort = 7777;
 
     #region Lifecycle
 
@@ -79,6 +81,23 @@ public class ClientOrchestratorBridgeTests
 
     #endregion
 
+    #region GetLeaveMatchDtoForLobby
+
+    [Test]
+    public async Task GetLeaveMatchDtoForLobby_SetsCorrectPlatformUserInformation()
+    {
+        SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
+
+        var lobby = GenerateLobby();
+        var dto = await _bridge.GetLeaveMatchDtoForLobby(lobby);
+        Assert.AreEqual(PlatformId, dto.PlatformUserInformation.PlatformUserId);
+        Assert.AreEqual(AuthTicket, dto.PlatformUserInformation.AuthenticationTicketHex);
+        Assert.AreEqual(Platform.Dummy, dto.PlatformUserInformation.Platform);
+        Assert.AreEqual(lobby.LobbyId, dto.PlatformUserInformation.PlatformLobbyId);
+    }
+
+    #endregion
+
     #region JoinMatch
 
     [Test]
@@ -94,17 +113,27 @@ public class ClientOrchestratorBridgeTests
         var lobby = GenerateLobby();
 
         var dto = await _bridge.GetJoinMatchDtoForLobby(lobby);
-        var result = _bridge.JoinMatch(dto);
+        var result = await _bridge.JoinMatch(dto);
 
         Assert.IsNotNull(result);
-
-
+        Assert.AreEqual(result.DedicatedServerHost, DedicatedServerHost);
+        Assert.AreEqual(result.DedicatedServerPort, DedicatedServerPort);
+        Assert.AreEqual(result.ServerAuthToken, ServerAuthToken);
     }
 
 
     [Test]
-    public void JoinMatch_ThrowsOnHttpErrorCode()
+    public async Task JoinMatch_ThrowsOnHttpErrorCode()
     {
+        _httpHandler = new FakeHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.InternalServerError));
+        _httpClient = new HttpClient(_httpHandler);
+        _bridge = new ClientOrchestratorBridge(_httpClient, _userResolver, Platform.Dummy);
+
+        var lobby = GenerateLobby();
+
+        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby);
+
+        Assert.ThrowsAsync<HttpRequestException>(() => _bridge.JoinMatch(dto));
     }
 
     #endregion
@@ -112,12 +141,15 @@ public class ClientOrchestratorBridgeTests
     #region LeaveMatch
 
     [Test]
-    public void LeaveMatch_CallsEndpointAndExitsIfSucceeds()
+    public async Task LeaveMatch_CallsEndpointAndExitsIfSucceeds()
     {
+        _httpHandler = new FakeHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.NoContent));
+        _httpClient = new HttpClient(_httpHandler);
+        _bridge = new ClientOrchestratorBridge(_httpClient, _userResolver, Platform.Dummy);
     }
 
     [Test]
-    public void LeaveMatch_ThrowsOnHttpErrorCode()
+    public async Task LeaveMatch_ThrowsOnHttpErrorCode()
     {
     }
 
@@ -156,8 +188,8 @@ public class ClientOrchestratorBridgeTests
     {
         var result = new JoinMatchResultDto(
             Guid.NewGuid(),
-            "http://127.0.0.1",
-            7777,
+            DedicatedServerHost,
+            DedicatedServerPort,
             ServerAuthToken
         );
 

@@ -15,7 +15,7 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
         private readonly IPlatformUserResolver _userResolver;
 
         public ClientOrchestratorBridge(
-            HttpClient client,  // intentionally no default to allow for both URL customization and DI
+            HttpClient client, // intentionally no default to allow for both URL customization and DI
             IPlatformUserResolver platformUserResolver,
             Platform platform
         )
@@ -24,6 +24,8 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
             _userResolver = platformUserResolver;
             _platform = platform;
         }
+
+        #region Converters
 
         public async Task<JoinMatchDto> GetJoinMatchDtoForLobby(
             Lobby lobby
@@ -46,6 +48,28 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
                 expectedLobbyPlayers: expectedLobbyPlayers.ToArray()
             );
         }
+
+        public async Task<LeaveMatchDto> GetLeaveMatchDtoForLobby(
+            Lobby lobby
+        )
+        {
+            var platformUserId = _userResolver.GetPlatformId();
+
+            var ticket = await _userResolver.GetAuthTicketForIdentityString(SteamAuthIdentityString);
+
+            var platformUserInformation = new PlatformUserInformationDto(
+                platform: _platform,
+                platformUserId: platformUserId,
+                platformLobbyId: lobby.LobbyId,
+                authenticationTicketHex: ticket
+            );
+
+            return new LeaveMatchDto(
+                platformUserInformation: platformUserInformation
+            );
+        }
+
+        #endregion
 
         private List<ExpectedLobbyPlayerDto> GetExpectedLobbyPlayerDtosForLobby(Lobby lobby)
         {

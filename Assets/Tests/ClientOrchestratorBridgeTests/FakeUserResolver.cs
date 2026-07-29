@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Assemblies.ClientOrchestratorBridge;
 
 public class FakeUserResolver : IPlatformUserResolver
@@ -19,8 +20,8 @@ public class FakeUserResolver : IPlatformUserResolver
         return _platformId;
     }
 
-    public string GetAuthTicketForIdentityString(string identityString)
+    public Task<string> GetAuthTicketForIdentityString(string identityString)
     {
-        return _authTicket;
+        return Task.FromResult(_authTicket);
     }
 }
