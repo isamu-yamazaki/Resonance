@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Assemblies.ClientOrchestratorBridge;
 using Resonance.Assemblies.LobbySystem;
 using Resonance.Contracts;
@@ -24,13 +25,13 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
             _platform = platform;
         }
 
-        public JoinMatchDto GetJoinMatchDtoForLobby(
+        public async Task<JoinMatchDto> GetJoinMatchDtoForLobby(
             Lobby lobby
         )
         {
             var platformUserId = _userResolver.GetPlatformId();
 
-            var ticket = _userResolver.GetAuthTicketForIdentityString(SteamAuthIdentityString);
+            var ticket = await _userResolver.GetAuthTicketForIdentityString(SteamAuthIdentityString);
             var platformUserInformation = new PlatformUserInformationDto(
                 platform: _platform,
                 platformUserId: platformUserId,
@@ -61,17 +62,18 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
             return expectedLobbyPlayers;
         }
 
-        public void JoinMatch(
+        public async Task<JoinMatchResultDto> JoinMatch(
             JoinMatchDto joinMatchDto
         )
         {
-
+            throw new System.NotImplementedException();
         }
 
-        public void LeaveMatch(
+        public async void LeaveMatch(
             LeaveMatchDto leaveMatchDto
         )
         {
+            // on success, returns 204
         }
 
         public static ClientOrchestratorBridge BuildWithPlatform(Platform platform, HttpClient client)

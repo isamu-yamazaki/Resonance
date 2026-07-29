@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using Resonance.Assemblies.ClientOrchestratorBridge;
@@ -17,6 +21,7 @@ public class ClientOrchestratorBridgeTests
 
     private const string PlatformId = "platformId";
     private const string AuthTicket = "authTicket";
+    private const string ServerAuthToken = "ServerAuthToken";
 
     #region Lifecycle
 
@@ -41,21 +46,13 @@ public class ClientOrchestratorBridgeTests
     #region GetJoinMatchDtoForLobby
 
     [Test]
-    public void GetJoinMatchDtoForLobby_ReturnsExpectedLobbyInformation()
+    public async Task GetJoinMatchDtoForLobby_ReturnsExpectedLobbyInformation()
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
-        var lobbyMemberList = GetLobbyMemberList();
-        var lobby = new Lobby
-        {
-            Name = "Test Lobby",
-            LobbyId = "1234567890",
-            IsValid = true,
-            MaxPlayers = 10,
-            Members = lobbyMemberList
-        };
-
-        var dto = _bridge.GetJoinMatchDtoForLobby(lobby);
+        var lobby = GenerateLobby();
+        var lobbyMemberList = lobby.Members;
+        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby);
 
         Assert.IsNotNull(dto);
 
@@ -68,24 +65,60 @@ public class ClientOrchestratorBridgeTests
     }
 
     [Test]
-    public void GetJoinMatchDtoForLobby_SetsCorrectPlatformUserInformation()
+    public async Task GetJoinMatchDtoForLobby_SetsCorrectPlatformUserInformation()
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
-        var lobbyMemberList = GetLobbyMemberList();
-        var lobby = new Lobby
-        {
-            Name = "Test Lobby",
-            LobbyId = "1234567890",
-            IsValid = true,
-            MaxPlayers = 10,
-            Members = lobbyMemberList
-        };
+        var lobby = GenerateLobby();
 
-        var dto = _bridge.GetJoinMatchDtoForLobby(lobby);
+        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby);
         Assert.AreEqual(PlatformId, dto.PlatformUserInformation.PlatformUserId);
         Assert.AreEqual(AuthTicket, dto.PlatformUserInformation.AuthenticationTicketHex);
         Assert.AreEqual(Platform.Dummy, dto.PlatformUserInformation.Platform);
         Assert.AreEqual(lobby.LobbyId, dto.PlatformUserInformation.PlatformLobbyId);
+    }
+
+    #endregion
+
+    #region JoinMatch
+
+    [Test]
+    public async Task JoinMatch_CallsEndpointToReturnJoinMatchResultDtoInfo()
+    {
+        _httpHandler = new FakeHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(GenerateSerializedSuccessfulJoinMatchResultDto())
+        });
+        _httpClient = new HttpClient(_httpHandler);
+        _bridge = new ClientOrchestratorBridge(_httpClient, _userResolver, Platform.Dummy);
+
+        var lobby = GenerateLobby();
+
+        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby);
+        var result = _bridge.JoinMatch(dto);
+
+        Assert.IsNotNull(result);
+
+
+    }
+
+
+    [Test]
+    public void JoinMatch_ThrowsOnHttpErrorCode()
+    {
+    }
+
+    #endregion
+
+    #region LeaveMatch
+
+    [Test]
+    public void LeaveMatch_CallsEndpointAndExitsIfSucceeds()
+    {
+    }
+
+    [Test]
+    public void LeaveMatch_ThrowsOnHttpErrorCode()
+    {
     }
 
     #endregion
@@ -117,6 +150,32 @@ public class ClientOrchestratorBridgeTests
         _httpHandler = new FakeHttpMessageHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.OK));
         _httpClient = new HttpClient(_httpHandler);
         _bridge = new ClientOrchestratorBridge(_httpClient, _userResolver, Platform.Dummy);
+    }
+
+    private static string GenerateSerializedSuccessfulJoinMatchResultDto()
+    {
+        var result = new JoinMatchResultDto(
+            Guid.NewGuid(),
+            "http://127.0.0.1",
+            7777,
+            ServerAuthToken
+        );
+
+        return JsonConvert.SerializeObject(result);
+    }
+
+    private static Lobby GenerateLobby()
+    {
+        var lobbyMemberList = GetLobbyMemberList();
+        var lobby = new Lobby
+        {
+            Name = "Test Lobby",
+            LobbyId = "1234567890",
+            IsValid = true,
+            MaxPlayers = 10,
+            Members = lobbyMemberList
+        };
+        return lobby;
     }
 
     #endregion

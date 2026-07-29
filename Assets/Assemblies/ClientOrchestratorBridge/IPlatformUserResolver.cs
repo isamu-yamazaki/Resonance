@@ -1,8 +1,10 @@
+using System.Threading.Tasks;
+
 namespace Assemblies.ClientOrchestratorBridge
 {
     public interface IPlatformUserResolver
     {
         public string GetPlatformId();
-        public string GetAuthTicketForIdentityString(string identityString);
+        public Task<string> GetAuthTicketForIdentityString(string identityString);
     }
 }
