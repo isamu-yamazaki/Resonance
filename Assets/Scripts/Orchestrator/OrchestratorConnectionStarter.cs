@@ -82,6 +82,7 @@ namespace Resonance.LobbySystem
         private IEnumerator StartServer()
         {
             throw new System.NotImplementedException();
+            // TODO: figure out environment variable handling
         }
 
         private IEnumerator StartClient()
@@ -93,7 +94,7 @@ namespace Resonance.LobbySystem
             var config = ClientBuildConfigReceiver.Instance.Config;
 
             var client = new HttpClient();
-            client.BaseAddress = new Uri("http://127.0.0.1:9000");
+            client.BaseAddress = new Uri(config.orchestratorUrl);
             var bridge = ClientOrchestratorBridge.BuildWithPlatform(
                 config.enableSteamLobby ? Platform.Steam : Platform.Dummy,
                 client

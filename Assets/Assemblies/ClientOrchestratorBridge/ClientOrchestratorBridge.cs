@@ -233,10 +233,8 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
             using var request = new HttpRequestMessage(
                 HttpMethod.Post,
                 BuildEndpointUri(_client.BaseAddress, endpointPath)
-            )
-            {
-                Content = new StringContent(serializedPayload, Encoding.UTF8, JsonMediaType)
-            };
+            );
+            request.Content = new StringContent(serializedPayload, Encoding.UTF8, JsonMediaType);
 
             try
             {
