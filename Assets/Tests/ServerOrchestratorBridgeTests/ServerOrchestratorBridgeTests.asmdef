@@ -6,14 +6,16 @@
         "UnityEditor.TestRunner",
         "Resonance.Contracts",
         "ServerOrchestratorBridge",
-        "TestNetworkHelpers"
+        "TestNetworkHelpers",
+        "OrchestratorHelpers"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "Newtonsoft.Json.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

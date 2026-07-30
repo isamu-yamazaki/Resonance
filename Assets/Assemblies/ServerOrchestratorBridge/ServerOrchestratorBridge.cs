@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Resonance.Contracts;
 
-namespace Assemblies.ServerOrchestratorBridge
+namespace Resonance.Assemblies.ServerOrchestratorBridge
 {
     /// <summary>
     /// Interact with the orchestrator's server endpoints.

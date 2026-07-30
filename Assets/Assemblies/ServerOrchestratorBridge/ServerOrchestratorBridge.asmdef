@@ -2,7 +2,8 @@
     "name": "ServerOrchestratorBridge",
     "rootNamespace": "",
     "references": [
-        "GUID:d31332f620064e63881b24baa6b678ab"
+        "GUID:d31332f620064e63881b24baa6b678ab",
+        "GUID:678fcde86a4c94f57ac75090c683ba26"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

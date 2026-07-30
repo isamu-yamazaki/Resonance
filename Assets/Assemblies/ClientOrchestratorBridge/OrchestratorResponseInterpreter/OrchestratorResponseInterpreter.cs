@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Resonance.Assemblies.OrchestratorHelpers;
 using Resonance.Contracts;
 
 namespace Resonance.Assemblies.ClientOrchestratorBridge

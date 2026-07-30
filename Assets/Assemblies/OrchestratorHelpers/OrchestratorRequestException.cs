@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 
-namespace Resonance.Assemblies.ClientOrchestratorBridge
+namespace Resonance.Assemblies.OrchestratorHelpers
 {
     /// <summary>
     /// The orchestrator answered with an unexpected status code or body.

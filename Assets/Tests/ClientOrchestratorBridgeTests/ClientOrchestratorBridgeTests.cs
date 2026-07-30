@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Resonance.Assemblies.ClientOrchestratorBridge;
 using Resonance.Assemblies.LobbySystem;
+using Resonance.Assemblies.OrchestratorHelpers;
 using Resonance.Contracts;
 
 public class ClientOrchestratorBridgeTests
@@ -88,50 +89,48 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public void Constructor_ThrowsWhenTheHttpClientIsNull()
     {
-        Assert.Throws<ArgumentNullException>(
-            () => new ClientOrchestratorBridge(null, _userResolver, Platform.Dummy)
+        Assert.Throws<ArgumentNullException>(() => new ClientOrchestratorBridge(null, _userResolver, Platform.Dummy)
         );
     }
 
     [Test]
     public void Constructor_ThrowsWhenTheHttpClientCarriesNoBaseAddress()
     {
-        var clientWithoutBaseAddress = new HttpClient(new FakeHttpMessageHandler(
-            _ => OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK)
-        ));
+        var clientWithoutBaseAddress = new HttpClient(
+            new FakeHttpMessageHandler(_ => ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK)
+            ));
 
-        Assert.Throws<ArgumentException>(
-            () => new ClientOrchestratorBridge(clientWithoutBaseAddress, _userResolver, Platform.Dummy)
+        Assert.Throws<ArgumentException>(() =>
+            new ClientOrchestratorBridge(clientWithoutBaseAddress, _userResolver, Platform.Dummy)
         );
     }
 
     [Test]
     public void Constructor_ThrowsWhenThePlatformUserResolverIsNull()
     {
-        var client = new HttpClient(new FakeHttpMessageHandler(
-            _ => OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK)
-        ))
+        var client = new HttpClient(
+            new FakeHttpMessageHandler(_ => ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK)
+            ))
         {
             BaseAddress = new Uri(OrchestratorBaseUrl)
         };
 
-        Assert.Throws<ArgumentNullException>(
-            () => new ClientOrchestratorBridge(client, null, Platform.Dummy)
+        Assert.Throws<ArgumentNullException>(() => new ClientOrchestratorBridge(client, null, Platform.Dummy)
         );
     }
 
     [Test]
     public void BuildWithPlatform_ThrowsForAPlatformThatHasNoUserResolver()
     {
-        var client = new HttpClient(new FakeHttpMessageHandler(
-            _ => OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK)
-        ))
+        var client = new HttpClient(
+            new FakeHttpMessageHandler(_ => ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK)
+            ))
         {
             BaseAddress = new Uri(OrchestratorBaseUrl)
         };
 
-        Assert.Throws<ArgumentOutOfRangeException>(
-            () => ClientOrchestratorBridge.BuildWithPlatform((Platform)99, client)
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            ClientOrchestratorBridge.BuildWithPlatform((Platform)99, client)
         );
     }
 
@@ -217,8 +216,7 @@ public class ClientOrchestratorBridgeTests
         var lobbyWithoutMemberList = GenerateLobby();
         lobbyWithoutMemberList.Members = null;
 
-        Assert.ThrowsAsync<ArgumentException>(
-            () => _bridge.GetJoinMatchDtoForLobby(lobbyWithoutMemberList)
+        Assert.ThrowsAsync<ArgumentException>(() => _bridge.GetJoinMatchDtoForLobby(lobbyWithoutMemberList)
         );
     }
 
@@ -269,7 +267,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_CallsEndpointToReturnJoinMatchResultDtoInfo()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(
             HttpStatusCode.OK,
             GenerateSerializedSuccessfulJoinMatchResultDto()
         ));
@@ -298,9 +296,9 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_ParsesASuccessBodyInTheServerCamelCaseWireFormat()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(
             HttpStatusCode.OK,
-            OrchestratorResponseBuilder.SerializeJoinMatchResultInServerWireFormat(
+            ClientOrchestratorResponseBuilder.SerializeJoinMatchResultInServerWireFormat(
                 ExpectedMatchId,
                 DedicatedServerHost,
                 DedicatedServerPort,
@@ -324,7 +322,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_SendsThePascalCaseRequestBodyWithNumericPlatformValues()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(
             HttpStatusCode.OK,
             GenerateSerializedSuccessfulJoinMatchResultDto()
         ));
@@ -357,7 +355,7 @@ public class ClientOrchestratorBridgeTests
     public async Task JoinMatch_KeepsThePathPrefixOfABaseAddressWithoutATrailingSlash()
     {
         SetUpBridgeRespondingWith(
-            OrchestratorResponseBuilder.WithBody(
+            ClientOrchestratorResponseBuilder.WithBody(
                 HttpStatusCode.OK,
                 GenerateSerializedSuccessfulJoinMatchResultDto()
             ),
@@ -380,7 +378,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_ThrowsJoinMatchFailedExceptionOn409Conflict()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.JoinFailure(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.JoinFailure(
             HttpStatusCode.Conflict,
             nameof(JoinFailureReason.RosterMismatch),
             joinedCount: 1,
@@ -413,7 +411,7 @@ public class ClientOrchestratorBridgeTests
         JoinFailureReason expectedReason
     )
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.JoinFailure(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.JoinFailure(
             HttpStatusCode.Conflict,
             expectedReason.ToString(),
             joinedCount: 3,
@@ -442,7 +440,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_ThrowsJoinMatchFailedExceptionWithRetryAfterOnServiceUnavailable()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.JoinFailure(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.JoinFailure(
             HttpStatusCode.ServiceUnavailable,
             nameof(JoinFailureReason.CapacityReached),
             joinedCount: 0,
@@ -463,7 +461,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_LeavesRetryAfterUnsetWhenServiceUnavailableCarriesNoRetryAfterHeader()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.JoinFailure(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.JoinFailure(
             HttpStatusCode.ServiceUnavailable,
             nameof(JoinFailureReason.CapacityReached),
             joinedCount: 0,
@@ -486,12 +484,12 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_FallsBackToOrchestratorRequestExceptionForAnUnrecognisedFailureReason()
     {
-        var body = OrchestratorResponseBuilder.SerializeJoinFailureInServerWireFormat(
+        var body = ClientOrchestratorResponseBuilder.SerializeJoinFailureInServerWireFormat(
             "SomethingBrandNew",
             joinedCount: 1,
             expectedCount: 2
         );
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
 
@@ -504,13 +502,14 @@ public class ClientOrchestratorBridgeTests
 
     [TestCase("null", TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenConflictBodyIsTheLiteralNull")]
     [TestCase("[1,2,3]", TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenConflictBodyIsAnArray")]
-    [TestCase("\"not a join failure\"", TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenConflictBodyIsABareString")]
+    [TestCase("\"not a join failure\"",
+        TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenConflictBodyIsABareString")]
     public async Task JoinMatch_ThrowsOrchestratorRequestExceptionWhenConflictBodyIsNotAJoinFailure(
         string responseBody
     )
     {
         SetUpBridgeRespondingWith(
-            OrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, responseBody)
+            ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, responseBody)
         );
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
@@ -531,7 +530,7 @@ public class ClientOrchestratorBridgeTests
     {
         const string bodyWithoutAReason = "{\"totally\":\"unrelated\"}";
         SetUpBridgeRespondingWith(
-            OrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, bodyWithoutAReason)
+            ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, bodyWithoutAReason)
         );
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
@@ -553,7 +552,7 @@ public class ClientOrchestratorBridgeTests
     {
         var body = $"{{\"reason\":\"{nameof(JoinFailureReason.RosterMismatch)}\"," +
                    $"\"joinedCount\":{IntegerBeyondInt32Range},\"expectedCount\":2}}";
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
 
@@ -568,7 +567,7 @@ public class ClientOrchestratorBridgeTests
     public async Task JoinMatch_ThrowsOrchestratorRequestExceptionWhenTheFailureReasonNumberIsBeyondInt32Range()
     {
         var body = $"{{\"reason\":{IntegerBeyondInt32Range},\"joinedCount\":1,\"expectedCount\":2}}";
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
 
@@ -587,7 +586,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_ReadsAFailureReasonNameWhoseCasingDiffersFromTheContracts()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.JoinFailure(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.JoinFailure(
             HttpStatusCode.Conflict,
             "rosterMismatch",
             joinedCount: 1,
@@ -612,12 +611,12 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_ThrowsOrchestratorRequestExceptionWhenTheFailureReasonIsANumericString()
     {
-        var body = OrchestratorResponseBuilder.SerializeJoinFailureInServerWireFormat(
+        var body = ClientOrchestratorResponseBuilder.SerializeJoinFailureInServerWireFormat(
             "5",
             joinedCount: 1,
             expectedCount: 2
         );
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
 
@@ -635,12 +634,12 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_ThrowsOrchestratorRequestExceptionWhenTheFailureReasonIsACommaSeparatedList()
     {
-        var body = OrchestratorResponseBuilder.SerializeJoinFailureInServerWireFormat(
+        var body = ClientOrchestratorResponseBuilder.SerializeJoinFailureInServerWireFormat(
             $"{nameof(JoinFailureReason.RosterMismatch)},{nameof(JoinFailureReason.PeerLeft)}",
             joinedCount: 1,
             expectedCount: 2
         );
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.Conflict, body));
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
 
@@ -659,7 +658,7 @@ public class ClientOrchestratorBridgeTests
     public async Task JoinMatch_ThrowsOnHttpErrorCode()
     {
         SetUpBridgeRespondingWith(
-            OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.InternalServerError)
+            ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.InternalServerError)
         );
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
@@ -673,7 +672,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_PreservesTheProblemDetailsBodyOfABadRequest()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.ProblemDetails(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.ProblemDetails(
             HttpStatusCode.BadRequest,
             ValidationProblemTitle,
             ValidationProblemDetail
@@ -696,7 +695,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_PreservesTheBareStringBodyOfAnUnauthorizedResponse()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.BareJsonStringBody(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.BareJsonStringBody(
             HttpStatusCode.Unauthorized,
             AuthenticationRejectedMessage
         ));
@@ -713,7 +712,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_ReportsAnEmptyBodyWhenTheOrchestratorRateLimitsWithoutOne()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithoutBody(TooManyRequests));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithoutBody(TooManyRequests));
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
 
@@ -729,14 +728,16 @@ public class ClientOrchestratorBridgeTests
 
     #region JoinMatch unreadable success bodies
 
-    [TestCase("{\"matchId\":\"8f1d0a3c-4b2e-4f5a-9c6d-7e8f9a0b1c2d\",\"dedicatedServer", TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenSuccessBodyIsTruncated")]
+    [TestCase("{\"matchId\":\"8f1d0a3c-4b2e-4f5a-9c6d-7e8f9a0b1c2d\",\"dedicatedServer",
+        TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenSuccessBodyIsTruncated")]
     [TestCase("null", TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenSuccessBodyIsTheLiteralNull")]
-    [TestCase("<html><body>502 Bad Gateway</body></html>", TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenSuccessBodyIsHtml")]
+    [TestCase("<html><body>502 Bad Gateway</body></html>",
+        TestName = "JoinMatch_ThrowsOrchestratorRequestException_WhenSuccessBodyIsHtml")]
     public async Task JoinMatch_ThrowsOrchestratorRequestExceptionWhenTheSuccessBodyIsNotAResult(
         string responseBody
     )
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(HttpStatusCode.OK, responseBody));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.OK, responseBody));
 
         var dto = await BuildJoinMatchDtoForGeneratedLobby();
 
@@ -754,7 +755,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public void JoinMatch_RejectsANullDtoWithoutIssuingARequest()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK));
 
         Assert.ThrowsAsync<ArgumentNullException>(() => _bridge.JoinMatch(null));
         AssertNoRequestWasIssued();
@@ -767,7 +768,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task LeaveMatch_CallsEndpointAndExitsIfSucceeds()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.NoContent));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.NoContent));
 
         var dto = await BuildLeaveMatchDtoForGeneratedLobby();
 
@@ -789,7 +790,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task LeaveMatch_TreatsNotFoundAsAlreadyLeft()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.NotFound));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.NotFound));
 
         var dto = await BuildLeaveMatchDtoForGeneratedLobby();
 
@@ -801,7 +802,7 @@ public class ClientOrchestratorBridgeTests
     public async Task LeaveMatch_ThrowsOnHttpErrorCode()
     {
         SetUpBridgeRespondingWith(
-            OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.InternalServerError)
+            ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.InternalServerError)
         );
 
         var dto = await BuildLeaveMatchDtoForGeneratedLobby();
@@ -819,7 +820,7 @@ public class ClientOrchestratorBridgeTests
         HttpStatusCode statusCode
     )
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithoutBody(statusCode));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithoutBody(statusCode));
 
         var dto = await BuildLeaveMatchDtoForGeneratedLobby();
 
@@ -832,7 +833,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public void LeaveMatch_RejectsANullDtoWithoutIssuingARequest()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.NoContent));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.NoContent));
 
         Assert.ThrowsAsync<ArgumentNullException>(() => _bridge.LeaveMatch(null));
         AssertNoRequestWasIssued();
@@ -845,7 +846,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task JoinMatch_ThrowsWithoutIssuingARequestWhenTheCallersTokenIsAlreadyCancelled()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithBody(
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithBody(
             HttpStatusCode.OK,
             GenerateSerializedSuccessfulJoinMatchResultDto()
         ));
@@ -854,8 +855,7 @@ public class ClientOrchestratorBridgeTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.Cancel();
 
-        Assert.ThrowsAsync<TaskCanceledException>(
-            () => _bridge.JoinMatch(dto, cancellationTokenSource.Token)
+        Assert.ThrowsAsync<TaskCanceledException>(() => _bridge.JoinMatch(dto, cancellationTokenSource.Token)
         );
         AssertNoRequestWasIssued();
     }
@@ -863,14 +863,13 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public async Task LeaveMatch_ThrowsWithoutIssuingARequestWhenTheCallersTokenIsAlreadyCancelled()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.NoContent));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.NoContent));
 
         var dto = await BuildLeaveMatchDtoForGeneratedLobby();
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.Cancel();
 
-        Assert.ThrowsAsync<TaskCanceledException>(
-            () => _bridge.LeaveMatch(dto, cancellationTokenSource.Token)
+        Assert.ThrowsAsync<TaskCanceledException>(() => _bridge.LeaveMatch(dto, cancellationTokenSource.Token)
         );
         AssertNoRequestWasIssued();
     }
@@ -962,7 +961,7 @@ public class ClientOrchestratorBridgeTests
     public async Task JoinMatch_KeepsTheAuthenticationTicketOutOfARefusedJoinException()
     {
         await AssertJoinMatchFailureKeepsTheAuthenticationTicketOutOfItsException(
-            OrchestratorResponseBuilder.JoinFailure(
+            ClientOrchestratorResponseBuilder.JoinFailure(
                 HttpStatusCode.Conflict,
                 nameof(JoinFailureReason.PeerAuthenticationFailed),
                 joinedCount: 1,
@@ -975,7 +974,7 @@ public class ClientOrchestratorBridgeTests
     public async Task JoinMatch_KeepsTheAuthenticationTicketOutOfARejectedRequestException()
     {
         await AssertJoinMatchFailureKeepsTheAuthenticationTicketOutOfItsException(
-            OrchestratorResponseBuilder.BareJsonStringBody(
+            ClientOrchestratorResponseBuilder.BareJsonStringBody(
                 HttpStatusCode.Unauthorized,
                 AuthenticationRejectedMessage
             )
@@ -986,7 +985,7 @@ public class ClientOrchestratorBridgeTests
     public async Task JoinMatch_KeepsTheAuthenticationTicketOutOfAnUnreadableSuccessException()
     {
         await AssertJoinMatchFailureKeepsTheAuthenticationTicketOutOfItsException(
-            OrchestratorResponseBuilder.WithBody(HttpStatusCode.OK, "{\"matchId\":\"trunc")
+            ClientOrchestratorResponseBuilder.WithBody(HttpStatusCode.OK, "{\"matchId\":\"trunc")
         );
     }
 
@@ -1113,7 +1112,7 @@ public class ClientOrchestratorBridgeTests
 
     private void SetUpBridgeWithEmptyResponseAndDefaultUserResolver()
     {
-        SetUpBridgeRespondingWith(OrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK));
+        SetUpBridgeRespondingWith(ClientOrchestratorResponseBuilder.WithoutBody(HttpStatusCode.OK));
     }
 
     private static string GenerateSerializedSuccessfulJoinMatchResultDto()

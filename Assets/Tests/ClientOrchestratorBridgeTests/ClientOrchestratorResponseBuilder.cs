@@ -10,7 +10,7 @@ using System.Text;
 /// are written as literal JSON rather than serialized from the contract DTOs on purpose — a test
 /// that round-trips through the client's own serializer would pass even if the wire format drifted.
 /// </summary>
-public static class OrchestratorResponseBuilder
+public static class ClientOrchestratorResponseBuilder
 {
     public const string JsonMediaType = "application/json";
     public const string ProblemJsonMediaType = "application/problem+json";
