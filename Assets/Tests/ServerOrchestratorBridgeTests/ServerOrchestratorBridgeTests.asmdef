@@ -1,12 +1,11 @@
 {
-    "name": "ClientOrchestratorBridgeTests",
+    "name": "ServerOrchestratorBridgeTests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "ClientOrchestratorBridge",
         "Resonance.Contracts",
-        "LobbySystem",
+        "ServerOrchestratorBridge",
         "TestNetworkHelpers"
     ],
     "includePlatforms": [],
@@ -14,8 +13,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll",
-        "Newtonsoft.Json.dll"
+        "nunit.framework.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

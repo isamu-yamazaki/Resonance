@@ -1,0 +1,16 @@
+{
+    "name": "ServerOrchestratorBridge",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d31332f620064e63881b24baa6b678ab"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

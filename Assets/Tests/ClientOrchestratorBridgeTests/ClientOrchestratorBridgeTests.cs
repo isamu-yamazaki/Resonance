@@ -378,7 +378,7 @@ public class ClientOrchestratorBridgeTests
     #region JoinMatch refused by the orchestrator
 
     [Test]
-    public async Task JoinMatch_ThrowsJoinMatchFailedExceptionOnConflict()
+    public async Task JoinMatch_ThrowsJoinMatchFailedExceptionOn409Conflict()
     {
         SetUpBridgeRespondingWith(OrchestratorResponseBuilder.JoinFailure(
             HttpStatusCode.Conflict,
