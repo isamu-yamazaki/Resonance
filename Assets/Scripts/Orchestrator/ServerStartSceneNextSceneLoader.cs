@@ -7,11 +7,6 @@ using UnityEngine.SceneManagement;
 
 namespace Resonance.Server
 {
-    /// <summary>
-    /// Load the game bootstrap scene on the dedicated server.
-    /// Previously loaded the lobby data and orchestrator URL;
-    /// no longer needed since there is no more relay.
-    /// </summary>
     public class ServerStartSceneNextSceneLoader : MonoBehaviour
     {
         [SerializeField] private string gameSceneName = "GameBootstrapScene";
