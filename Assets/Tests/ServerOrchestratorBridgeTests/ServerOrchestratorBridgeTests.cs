@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ public class ServerOrchestratorBridgeTests
     private FakeHttpMessageHandler _httpHandler;
     private string _capturedRequestBody;
 
-    private List<MatchMemberDto> _mockMembers = new List<MatchMemberDto>
+    private readonly List<MatchMemberDto> _mockMembers = new List<MatchMemberDto>
     {
         new(
             Platform.Dummy,
@@ -35,6 +36,7 @@ public class ServerOrchestratorBridgeTests
     private const string OrchestratorBaseUrl = "http://127.0.0.1:9000";
     private const string MatchKey = "1";
     private const string MatchId = "1";
+    private const string MatchKeyHeader = "X-Match-Key";
 
     #region SignalAsReady success
 
@@ -49,8 +51,21 @@ public class ServerOrchestratorBridgeTests
 
         Assert.AreEqual(1, _httpHandler.CallCount);
         Assert.AreEqual(HttpMethod.Post, _httpHandler.LastRequest?.Method);
-        Assert.AreEqual(new Uri($"{OrchestratorBaseUrl}/v1/server/${MatchId}/ready"),
+        Assert.AreEqual(new Uri($"{OrchestratorBaseUrl}/v1/server/{MatchId}/ready"),
             _httpHandler.LastRequest?.RequestUri);
+    }
+
+    [Test]
+    public async Task SignalAsReady_CallsEndpointWithMatchKey()
+    {
+        var response = new HttpResponseMessage();
+        response.StatusCode = HttpStatusCode.NoContent;
+        SetUpBridgeRespondingWith(response);
+
+        await _bridge.SignalAsReady();
+
+        var matchKeyHeaderResult = _httpHandler.LastRequest?.Headers.GetValues(MatchKeyHeader).FirstOrDefault();
+        Assert.AreEqual(MatchKey, matchKeyHeaderResult);
     }
 
     #endregion
@@ -102,6 +117,20 @@ public class ServerOrchestratorBridgeTests
         Assert.AreEqual(JsonConvert.SerializeObject(members), _capturedRequestBody);
     }
 
+    [Test]
+    public async Task GetMembers_InjectsMatchKey()
+    {
+        SetUpBridgeRespondingWith(ServerOrchestratorResponseBuilder.WithBody(
+            HttpStatusCode.OK,
+            GenerateSerializedMemberList()
+        ));
+
+        _ = await _bridge.GetMembers();
+
+        var matchKeyHeaderResult = _httpHandler.LastRequest?.Headers.GetValues(MatchKeyHeader).FirstOrDefault();
+        Assert.AreEqual(MatchKey, matchKeyHeaderResult);
+    }
+
     #endregion
 
     #region GetMembers failures
@@ -126,7 +155,7 @@ public class ServerOrchestratorBridgeTests
     #region Helpers
 
     /// <remarks>
-    /// Read inside the handler rather than from <c>LastRequest</c> afterwards, because
+    /// Read inside the handler rather than from <c>LastRequest</c> afterward, because
     /// <see cref="HttpClient"/> may dispose the request content once the exchange finishes.
     /// </remarks>
     private static string ReadRequestBody(HttpRequestMessage request)
