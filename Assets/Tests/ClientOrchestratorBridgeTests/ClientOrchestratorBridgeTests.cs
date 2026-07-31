@@ -407,6 +407,7 @@ public class ClientOrchestratorBridgeTests
     [TestCase(JoinFailureReason.SupersededByReconnect)]
     [TestCase(JoinFailureReason.MatchAlreadyStarted)]
     [TestCase(JoinFailureReason.CapacityReached)]
+    [TestCase(JoinFailureReason.OtherDataMismatch)]
     public async Task JoinMatch_ParsesEveryJoinFailureReasonFromItsServerStringForm(
         JoinFailureReason expectedReason
     )
@@ -434,7 +435,7 @@ public class ClientOrchestratorBridgeTests
     [Test]
     public void JoinFailureReason_HasExactlyTheTenValuesCoveredByTheReasonParsingTest()
     {
-        Assert.AreEqual(10, Enum.GetValues(typeof(JoinFailureReason)).Length);
+        Assert.AreEqual(11, Enum.GetValues(typeof(JoinFailureReason)).Length);
     }
 
     [Test]
