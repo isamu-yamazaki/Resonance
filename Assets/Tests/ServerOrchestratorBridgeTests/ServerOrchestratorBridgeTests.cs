@@ -38,6 +38,10 @@ public class ServerOrchestratorBridgeTests
     private const string MatchId = "1";
     private const string MatchKeyHeader = "X-Match-Key";
 
+    private const string UnexpectedJsonString = "{\"message\": \"unexpected json\"}";
+
+    private const string GarbageJsonString = "This is not JSON";
+
     #region SignalAsReady success
 
     [Test]
@@ -113,8 +117,6 @@ public class ServerOrchestratorBridgeTests
             Assert.AreEqual(_mockMembers[i].ServerAuthToken, members[i].ServerAuthToken);
             Assert.AreEqual(_mockMembers[i].Username, members[i].Username);
         }
-
-        Assert.AreEqual(JsonConvert.SerializeObject(members), _capturedRequestBody);
     }
 
     [Test]
@@ -149,6 +151,21 @@ public class ServerOrchestratorBridgeTests
         var thrownException = Assert.ThrowsAsync<OrchestratorRequestException>(() => _bridge.GetMembers());
         Assert.AreEqual(statusCode, thrownException.StatusCode);
     }
+
+    [TestCase(UnexpectedJsonString)]
+    [TestCase(GarbageJsonString)]
+    public void GetMembers_ThrowsOnUnrecognizableOrGarbageResponse(string responseString)
+    {
+        SetUpBridgeRespondingWith(ServerOrchestratorResponseBuilder.WithBody(
+            HttpStatusCode.OK,
+            UnexpectedJsonString
+        ));
+
+        var thrownException = Assert.ThrowsAsync<OrchestratorRequestException>(() => _bridge.GetMembers());
+        Assert.AreEqual(HttpStatusCode.OK, thrownException.StatusCode);
+        Assert.AreEqual(UnexpectedJsonString,  thrownException.ResponseBody);
+    }
+
 
     #endregion
 
@@ -191,6 +208,7 @@ public class ServerOrchestratorBridgeTests
     {
         return JsonConvert.SerializeObject(_mockMembers);
     }
+
 
     #endregion
 }

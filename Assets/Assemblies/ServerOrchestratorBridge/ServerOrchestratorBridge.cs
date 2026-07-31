@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Resonance.Assemblies.ClientOrchestratorBridge;
 using Resonance.Assemblies.OrchestratorHelpers;
 using Resonance.Contracts;
+using WebSocketSharp;
 
 namespace Resonance.Assemblies.ServerOrchestratorBridge
 {
@@ -20,6 +23,7 @@ namespace Resonance.Assemblies.ServerOrchestratorBridge
         private readonly string _matchKey;
 
         private string SignalReadyEndpointPath => $"v1/server/{_matchId}/ready";
+        private string GetMembersEndpointPath => $"v1/server/{_matchId}/members";
         private const string PathSegmentSeparator = "/";
 
         private const string CancelledWhileAwaitingOrchestratorMessage =
@@ -56,7 +60,6 @@ namespace Resonance.Assemblies.ServerOrchestratorBridge
             try
             {
                 using var response = await _client.SendAsync(request, cancellationToken);
-
                 if (response.IsSuccessStatusCode)
                 {
                     return;
@@ -84,9 +87,72 @@ namespace Resonance.Assemblies.ServerOrchestratorBridge
 
 
         public async Task<List<MatchMemberDto>> GetMembers(
+            CancellationToken cancellationToken = default
         )
         {
-            throw new System.NotImplementedException();
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                BuildEndpointUri(_client.BaseAddress, GetMembersEndpointPath)
+            );
+
+            try
+            {
+                using var response = await _client.SendAsync(request, cancellationToken);
+                if (response.IsSuccessStatusCode)
+                {
+                    return await AttemptParseMemberResponseContent(response);
+                }
+
+                var responseBody = response.Content != null
+                    ? await response.Content.ReadAsStringAsync()
+                    : string.Empty;
+
+                throw new OrchestratorRequestException(
+                    $"The orchestrator answered {(int)response.StatusCode} ({response.StatusCode}) instead of the result its endpoint promises.",
+                    response.StatusCode,
+                    responseBody
+                );
+            }
+            catch (TaskCanceledException)
+            {
+                throw;
+            }
+            catch (OperationCanceledException cancellation)
+            {
+                throw new TaskCanceledException(CancelledWhileAwaitingOrchestratorMessage, cancellation);
+            }
+        }
+
+        private async Task<List<MatchMemberDto>> AttemptParseMemberResponseContent(
+            HttpResponseMessage response
+        )
+        {
+            var statusCode = response.StatusCode;
+            if (response.Content == null)
+            {
+                throw BuildNoResponseContentOrchestratorRequestException(statusCode);
+            }
+
+            var responseBody = await response.Content.ReadAsStringAsync() ?? string.Empty;
+            if (responseBody.IsNullOrEmpty())
+            {
+                throw BuildNoResponseContentOrchestratorRequestException(statusCode);
+            }
+
+            List<MatchMemberDto> members;
+
+            try
+            {
+                members = JsonConvert.DeserializeObject<List<MatchMemberDto>>(responseBody);
+            }
+            catch (JsonException unreadableBody)
+            {
+                throw BuildUnreadableMembersListOrchestratorRequestException(statusCode, responseBody,
+                    unreadableBody);
+            }
+
+            return members ??
+                   throw BuildUnreadableMembersListOrchestratorRequestException(statusCode, responseBody, null);
         }
 
         #endregion
@@ -110,6 +176,31 @@ namespace Resonance.Assemblies.ServerOrchestratorBridge
                 : new Uri(baseAddress.AbsoluteUri + PathSegmentSeparator);
 
             return new Uri(baseAddressAsDirectory, endpointPath);
+        }
+
+        private static OrchestratorRequestException BuildUnreadableMembersListOrchestratorRequestException(
+            HttpStatusCode statusCode,
+            string responseBody,
+            Exception exception
+        )
+        {
+            return new OrchestratorRequestException(
+                "Unreadable result",
+                statusCode,
+                responseBody,
+                exception
+            );
+        }
+
+        private static OrchestratorRequestException BuildNoResponseContentOrchestratorRequestException(
+            HttpStatusCode statusCode
+        )
+        {
+            return new OrchestratorRequestException(
+                "No response content",
+                statusCode,
+                string.Empty
+            );
         }
 
         #endregion
