@@ -5,7 +5,7 @@ using Resonance.Assemblies.LobbySystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Resonance.Server
+namespace Resonance.GameBootstrap
 {
     public class ServerStartSceneNextSceneLoader : MonoBehaviour
     {

@@ -15,7 +15,7 @@ using PurrNet.UTP;
 using Unity.Services.Relay.Models;
 #endif
 
-namespace Resonance.LobbySystem
+namespace Resonance.GameBootstrap
 {
     /// <summary>
     /// Orchestrator-based connection starter for both the client and server paths.
