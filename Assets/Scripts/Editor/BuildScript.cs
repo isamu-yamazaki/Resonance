@@ -118,7 +118,7 @@ namespace Resonance.BuildTools
             InjectConfigIntoScene<ServerBuildConfigReceiver, ServerBuildConfig>(
                 "Assets/Scenes/Transitions/ServerStartScene.unity", config);
 
-            bool isDev = !config.useProductionRelay;
+            bool isDev = !config.isProductionBuild;
             string targetFolder = target == BuildTarget.StandaloneLinux64 ? "Linux" : "Windows";
 
             string[] scenes = ServerScenes;

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Resonance.BuildTools
 {
@@ -9,9 +10,8 @@ namespace Resonance.BuildTools
     public class ServerBuildConfig : ScriptableObject
     {
         /// <summary>
-        /// When true, connects to the remote production relay (PurrRelay).
-        /// When false, connects to the local relay — requires PurrLay running on your machine.
+        /// Determine whether to create a development or production build.
         /// </summary>
-        public bool useProductionRelay;
+        [FormerlySerializedAs("useProductionRelay")] public bool isProductionBuild;
     }
 }
