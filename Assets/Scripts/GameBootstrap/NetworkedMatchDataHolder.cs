@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using PurrNet;
 using Resonance.Contracts;
 
@@ -37,7 +38,7 @@ namespace Resonance.GameBootstrap
         }
 
         [ServerRpc]
-        private string GetDisplayName(PlayerIdentity identity)
+        private async Task<string> GetDisplayName(PlayerIdentity identity)
         {
             foreach (var member in _serverMembers)
             {
