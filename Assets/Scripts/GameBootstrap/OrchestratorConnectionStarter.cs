@@ -6,6 +6,7 @@ using PurrNet.Logging;
 using PurrNet.Transports;
 using Resonance.Assemblies.ClientOrchestratorBridge;
 using Resonance.Assemblies.LobbySystem;
+using Resonance.Assemblies.ServerOrchestratorBridge;
 using Resonance.BuildTools;
 using Resonance.Contracts;
 using UnityEngine;
@@ -40,21 +41,34 @@ namespace Resonance.GameBootstrap
 
         private void Start()
         {
+            if (EnvironmentVariablesReceiver.Instance == null)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. {nameof(EnvironmentVariablesReceiver)} does not exist!",
+                    this);
+                return;
+            }
+
             if (!_networkManager)
             {
-                Debug.LogError($"Failed to start connection. {nameof(NetworkManager)} is null!", this);
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. {nameof(NetworkManager)} is null!",
+                    this);
                 return;
             }
 
             if (!_lobbyDataHolder)
             {
-                Debug.LogError($"Failed to start connection. {nameof(LobbyDataHolder)} is null!", this);
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. {nameof(LobbyDataHolder)} is null!",
+                    this);
                 return;
             }
 
             if (!_lobbyDataHolder.CurrentLobby.IsValid)
             {
-                Debug.LogError($"Failed to start connection. Lobby is invalid!", this);
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. Lobby is invalid!", this);
                 return;
             }
 
@@ -64,14 +78,15 @@ namespace Resonance.GameBootstrap
             }
             else
             {
-                Debug.LogError($"Failed to start connection. Only {nameof(UDPTransport)} is supported.", this);
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. Only {nameof(UDPTransport)} is supported.",
+                    this);
                 return;
             }
 
             if (ShouldStartAsServer)
             {
                 StartCoroutine(StartServer());
-                _networkManager.StartServer();
             }
             else
             {
@@ -81,8 +96,60 @@ namespace Resonance.GameBootstrap
 
         private IEnumerator StartServer()
         {
-            throw new System.NotImplementedException();
-            // TODO: figure out environment variable handling
+            var client = new HttpClient();
+            var envVars = EnvironmentVariablesReceiver.Instance;
+            if (envVars.OrchestratorUrl == null)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No orchestrator URL available.",
+                    this);
+                yield break;
+            }
+
+            if (envVars.MatchId == null || envVars.MatchKey == null)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No match ID or match key available.",
+                    this);
+                yield break;
+            }
+
+            client.BaseAddress = new Uri(envVars.OrchestratorUrl);
+            var bridge = new ServerOrchestratorBridge(client, envVars.MatchId, envVars.MatchKey);
+
+            var readyTask = bridge.SignalAsReady();
+            yield return new WaitUntil(() => readyTask.IsCompleted);
+
+            if (readyTask.Exception != null)
+            {
+                // TODO: add orchestrator handling
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: {readyTask.Exception}", this);
+                yield break;
+            }
+
+            var getMembersTask = bridge.GetMembers();
+            yield return new WaitUntil(() => getMembersTask.IsCompleted);
+            if (getMembersTask.Exception != null)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: {getMembersTask.Exception}",
+                    this);
+                yield break;
+            }
+
+            if (getMembersTask.Result == null)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match; the server did not return the expected result.",
+                    this);
+                yield break;
+            }
+
+            // TODO: store members
+            var members = getMembersTask.Result;
+
+            _networkManager.StartServer();
         }
 
         private IEnumerator StartClient()
@@ -111,12 +178,14 @@ namespace Resonance.GameBootstrap
             if (joinMatchTask.Exception != null)
             {
                 // TODO: add UI handling
-                Debug.LogError($"Failed to join the match: {joinMatchTask.Exception}", this);
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: {joinMatchTask.Exception}",
+                    this);
                 yield break;
             }
             else if (joinMatchTask.Result == null)
             {
-                Debug.Log($"Failed to join the match: the server did not return the expected result.", this);
+                Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: the server did not return the expected result.", this);
                 yield break;
             }
 
