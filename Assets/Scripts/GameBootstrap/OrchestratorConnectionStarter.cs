@@ -56,21 +56,6 @@ namespace Resonance.GameBootstrap
                 return;
             }
 
-            if (!_lobbyDataHolder)
-            {
-                Debug.LogError(
-                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. {nameof(LobbyDataHolder)} is null!",
-                    this);
-                return;
-            }
-
-            if (!_lobbyDataHolder.CurrentLobby.IsValid)
-            {
-                Debug.LogError(
-                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. Lobby is invalid!", this);
-                return;
-            }
-
             if (_networkManager.transport is UDPTransport transport)
             {
                 _transport = transport;
@@ -113,6 +98,14 @@ namespace Resonance.GameBootstrap
                 yield break;
             }
 
+            if (envVars.GameServerPort == 0 || envVars.GameServerPort == null)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No game server port passed.",
+                    this);
+                yield break;
+            }
+
             client.BaseAddress = new Uri(envVars.OrchestratorUrl);
             var bridge = new ServerOrchestratorBridge(client, envVars.MatchId, envVars.MatchKey);
 
@@ -148,12 +141,29 @@ namespace Resonance.GameBootstrap
             // TODO: store members
             var members = getMembersTask.Result;
 
+            _transport.serverPort = envVars.GameServerPort.Value;
             _networkManager.StartServer();
         }
 
         private IEnumerator StartClient()
         {
             // TODO: apparently there's a better way to implement this using Awaitable
+
+            // client side still requires lobby data holder
+            if (!_lobbyDataHolder)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. {nameof(LobbyDataHolder)} is null!",
+                    this);
+                yield break;
+            }
+
+            if (!_lobbyDataHolder.CurrentLobby.IsValid)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. Lobby is invalid!", this);
+                yield break;
+            }
 
             if (!HasClientConfig) yield break;
 
