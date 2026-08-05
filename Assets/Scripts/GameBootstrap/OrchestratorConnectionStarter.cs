@@ -203,6 +203,8 @@ namespace Resonance.GameBootstrap
             _transport.address = joinMatchResult.DedicatedServerHost;
             _transport.serverPort = (ushort)joinMatchResult.DedicatedServerPort;
 
+            ClientTokenHolder.Instance?.SetClientToken(joinMatchResult.ServerAuthToken);
+
             _networkManager.StartClient();
         }
 

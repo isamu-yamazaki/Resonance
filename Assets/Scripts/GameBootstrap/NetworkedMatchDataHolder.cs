@@ -22,6 +22,20 @@ namespace Resonance.GameBootstrap
             _serverMembers = members;
         }
 
+        [ServerOnly]
+        public PlayerIdentity? ExchangePlayerIdentityForClientToken(string clientToken)
+        {
+            foreach (var member in _serverMembers)
+            {
+                if (member.ServerAuthToken == clientToken)
+                {
+                    return new PlayerIdentity(member.Platform, member.PlatformUserId);
+                }
+            }
+
+            return null;
+        }
+
         [ServerRpc]
         private string GetDisplayName(PlayerIdentity identity)
         {
