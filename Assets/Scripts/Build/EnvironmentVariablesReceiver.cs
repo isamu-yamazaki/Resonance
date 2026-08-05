@@ -5,6 +5,7 @@ namespace Resonance.BuildTools
 {
     /// <summary>
     /// Detect and receive environment variables related to the game.
+    /// Some variables may be unavailable depending on the game context.
     /// </summary>
     public class EnvironmentVariablesReceiver : MonoBehaviour
     {
@@ -21,10 +22,13 @@ namespace Resonance.BuildTools
         private const string MatchKeyVariable = "RESONANCE_MATCH_KEY";
         private const string OrchestratorUrlVariable = "RESONANCE_ORCHESTRATOR_URL";
 
+        private const string NextSceneVariable = "RESONANCE_NEXT_SCENE_NAME";
+
         public ushort? GameServerPort { get; private set; }
         [CanBeNull] public string MatchId { get; private set; }
         [CanBeNull] public string MatchKey { get; private set; }
         [CanBeNull] public string OrchestratorUrl { get; set; }
+        [CanBeNull] public string NextSceneName { get; set; }
 
         private void Awake()
         {
@@ -46,6 +50,7 @@ namespace Resonance.BuildTools
             MatchId = System.Environment.GetEnvironmentVariable(MatchIdVariable);
             MatchKey = System.Environment.GetEnvironmentVariable(MatchKeyVariable);
             OrchestratorUrl = System.Environment.GetEnvironmentVariable(OrchestratorUrlVariable);
+            NextSceneName = System.Environment.GetEnvironmentVariable(NextSceneVariable);
         }
     }
 }
