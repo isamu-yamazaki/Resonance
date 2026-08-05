@@ -76,7 +76,8 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
             return new JoinMatchDto(
                 platformUserInformation: platformUserInformation,
                 expectedLobbyPlayers: expectedLobbyPlayers.ToArray(),
-                nextSceneName: lobby.SceneName
+                nextSceneName: lobby.SceneName,
+                gameMode: lobby.GameMode.ToString()
             );
         }
 
