@@ -12,6 +12,18 @@ namespace Resonance.GameBootstrap
         public event Action OnDictionaryChanged;
         [SerializeField] private SyncDictionary<PlayerID, PlayerIdentity> matchMemberIdentitiesByPlayerId = new();
 
+        public static PlayerIdToMatchMemberIdMap Instance
+        {
+            get
+            {
+                if (InstanceHandler.TryGetInstance<PlayerIdToMatchMemberIdMap>(out var instance))
+                {
+                    return instance;
+                }
+                return null;
+            }
+        }
+
         private void Awake()
         {
             _matchDataHolder = FindFirstObjectByType<NetworkedMatchDataHolder>();
