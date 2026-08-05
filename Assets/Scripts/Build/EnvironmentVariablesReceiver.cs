@@ -23,12 +23,14 @@ namespace Resonance.BuildTools
         private const string OrchestratorUrlVariable = "RESONANCE_ORCHESTRATOR_URL";
 
         private const string NextSceneVariable = "RESONANCE_NEXT_SCENE_NAME";
+        private const string GameModeVariable = "RESONANCE_GAME_MODE";
 
         public ushort? GameServerPort { get; private set; }
         [CanBeNull] public string MatchId { get; private set; }
         [CanBeNull] public string MatchKey { get; private set; }
-        [CanBeNull] public string OrchestratorUrl { get; set; }
-        [CanBeNull] public string NextSceneName { get; set; }
+        [CanBeNull] public string OrchestratorUrl { get; private set; }
+        [CanBeNull] public string NextSceneName { get; private set; }
+        [CanBeNull] public string GameMode { get; private set; }
 
         private void Awake()
         {
@@ -51,6 +53,7 @@ namespace Resonance.BuildTools
             MatchKey = System.Environment.GetEnvironmentVariable(MatchKeyVariable);
             OrchestratorUrl = System.Environment.GetEnvironmentVariable(OrchestratorUrlVariable);
             NextSceneName = System.Environment.GetEnvironmentVariable(NextSceneVariable);
+            GameMode = System.Environment.GetEnvironmentVariable(GameModeVariable);
         }
     }
 }

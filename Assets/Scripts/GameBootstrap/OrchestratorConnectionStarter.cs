@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Net.Http;
 using PurrNet;
-using PurrNet.Logging;
 using PurrNet.Transports;
 using Resonance.Assemblies.ClientOrchestratorBridge;
 using Resonance.Assemblies.LobbySystem;
