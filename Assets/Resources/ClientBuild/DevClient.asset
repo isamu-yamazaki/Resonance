@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: DevClient
   m_EditorClassIdentifier: Assembly-CSharp::ClientBuildConfig
   enableSteamLobby: 0
-  useProductionRelay: 1
-  orchestratorUrl: http://localhost:9000
-  useClientServerMode: 1
+  orchestratorUrl: http://127.0.0.1:9000
   isProduction: 0

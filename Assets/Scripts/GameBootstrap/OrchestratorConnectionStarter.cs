@@ -178,6 +178,10 @@ namespace Resonance.GameBootstrap
                     return;
                 }
 
+#if UNITY_EDITOR
+                Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Orchestrator join successful, configuring network manager");
+#endif
+
                 _transport.address = joinMatchResult.DedicatedServerHost;
                 _transport.serverPort = (ushort)joinMatchResult.DedicatedServerPort;
 
@@ -185,8 +189,13 @@ namespace Resonance.GameBootstrap
 
                 if (!ClientBuildConfigReceiver.Instance.Config.isProduction)
                 {
+                    Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Starting client in {startDelaySeconds} seconds");
                     await Task.Delay(TimeSpan.FromSeconds(startDelaySeconds));
                 }
+
+#if UNITY_EDITOR
+                Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Starting client");
+#endif
 
                 _networkManager.StartClient();
             }
