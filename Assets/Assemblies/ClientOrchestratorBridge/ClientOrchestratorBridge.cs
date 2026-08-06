@@ -66,12 +66,13 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
         #region Converters
 
         public async Task<JoinMatchDto> GetJoinMatchDtoForLobby(
-            Lobby lobby
+            Lobby lobby,
+            string platformUserId
         )
         {
             var expectedLobbyPlayers = GetExpectedLobbyPlayerDtosForLobby(lobby);
 
-            var platformUserInformation = await GetPlatformUserInformationForLobby(lobby);
+            var platformUserInformation = await GetPlatformUserInformationForLobby(lobby, platformUserId);
 
             return new JoinMatchDto(
                 platformUserInformation: platformUserInformation,
@@ -82,10 +83,11 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
         }
 
         public async Task<LeaveMatchDto> GetLeaveMatchDtoForLobby(
-            Lobby lobby
+            Lobby lobby,
+            string platformUserId
         )
         {
-            var platformUserInformation = await GetPlatformUserInformationForLobby(lobby);
+            var platformUserInformation = await GetPlatformUserInformationForLobby(lobby, platformUserId);
 
             return new LeaveMatchDto(
                 platformUserInformation: platformUserInformation
@@ -94,9 +96,9 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
 
         #endregion
 
-        private async Task<PlatformUserInformationDto> GetPlatformUserInformationForLobby(Lobby lobby)
+        private async Task<PlatformUserInformationDto> GetPlatformUserInformationForLobby(Lobby lobby,
+            string platformUserId)
         {
-            var platformUserId = _userResolver.GetPlatformId();
 
             var ticket = await _userResolver.GetAuthTicketForIdentityString(SteamAuthIdentityString);
 

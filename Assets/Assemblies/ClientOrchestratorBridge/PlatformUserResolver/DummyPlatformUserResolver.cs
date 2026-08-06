@@ -10,22 +10,6 @@ namespace Assemblies.ClientOrchestratorBridge
     /// </summary>
     public class DummyPlatformUserResolver : IPlatformUserResolver
     {
-        private readonly string _platformId;
-
-        public DummyPlatformUserResolver(string platformId)
-        {
-            _platformId = platformId;
-        }
-
-        public DummyPlatformUserResolver() : this(Guid.NewGuid().ToString())
-        {
-        }
-
-        public string GetPlatformId()
-        {
-            return _platformId;
-        }
-
         public Task<string> GetAuthTicketForIdentityString(string identityString)
         {
             return Task.FromResult(string.Empty);

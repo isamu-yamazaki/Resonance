@@ -28,11 +28,6 @@ namespace Assemblies.ClientOrchestratorBridge
             _authTicketRequester = new SteamAuthTicketRequester(steamAuthTicketApi, ticketResponseTimeout);
         }
 
-        public string GetPlatformId()
-        {
-            return SteamUser.GetSteamID().ToString();
-        }
-
         public Task<string> GetAuthTicketForIdentityString(string identityString)
         {
             return _authTicketRequester.RequestAuthTicketHexForIdentityString(identityString);

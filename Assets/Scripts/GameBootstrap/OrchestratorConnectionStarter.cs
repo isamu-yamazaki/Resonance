@@ -164,7 +164,8 @@ namespace Resonance.GameBootstrap
             try
             {
                 var joinMatchDto = await bridge.GetJoinMatchDtoForLobby(
-                    _lobbyDataHolder.CurrentLobby
+                    _lobbyDataHolder.CurrentLobby,
+                    _lobbyDataHolder.LocalUserId
                 );
 
                 var joinMatchTask = bridge.JoinMatch(joinMatchDto);

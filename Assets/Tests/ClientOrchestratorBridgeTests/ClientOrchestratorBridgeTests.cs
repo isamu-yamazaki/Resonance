@@ -145,7 +145,7 @@ public class ClientOrchestratorBridgeTests
 
         var lobby = GenerateLobby();
         var lobbyMemberList = lobby.Members;
-        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby);
+        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby, PlatformId);
 
         Assert.IsNotNull(dto);
 
@@ -163,7 +163,7 @@ public class ClientOrchestratorBridgeTests
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
         var lobby = GenerateLobby();
 
-        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby);
+        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby, PlatformId);
         Assert.AreEqual(PlatformId, dto.PlatformUserInformation.PlatformUserId);
         Assert.AreEqual(AuthTicket, dto.PlatformUserInformation.AuthenticationTicketHex);
         Assert.AreEqual(Platform.Dummy, dto.PlatformUserInformation.Platform);
@@ -175,7 +175,7 @@ public class ClientOrchestratorBridgeTests
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
-        await _bridge.GetJoinMatchDtoForLobby(GenerateLobby());
+        await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(), PlatformId);
 
         Assert.AreEqual(
             OrchestratorAuthIdentityString,
@@ -188,7 +188,7 @@ public class ClientOrchestratorBridgeTests
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
-        await _bridge.GetJoinMatchDtoForLobby(GenerateLobby());
+        await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(), PlatformId);
 
         AssertNoRequestWasIssued();
     }
@@ -198,7 +198,7 @@ public class ClientOrchestratorBridgeTests
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
-        var dto = await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(memberCount: 0));
+        var dto = await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(memberCount: 0), PlatformId);
 
         Assert.IsNotNull(dto.ExpectedLobbyPlayers);
         Assert.IsEmpty(dto.ExpectedLobbyPlayers);
@@ -216,7 +216,7 @@ public class ClientOrchestratorBridgeTests
         var lobbyWithoutMemberList = GenerateLobby();
         lobbyWithoutMemberList.Members = null;
 
-        Assert.ThrowsAsync<ArgumentException>(() => _bridge.GetJoinMatchDtoForLobby(lobbyWithoutMemberList)
+        Assert.ThrowsAsync<ArgumentException>(() => _bridge.GetJoinMatchDtoForLobby(lobbyWithoutMemberList, PlatformId)
         );
     }
 
@@ -230,7 +230,7 @@ public class ClientOrchestratorBridgeTests
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
         var lobby = GenerateLobby();
-        var dto = await _bridge.GetLeaveMatchDtoForLobby(lobby);
+        var dto = await _bridge.GetLeaveMatchDtoForLobby(lobby, PlatformId);
         Assert.AreEqual(PlatformId, dto.PlatformUserInformation.PlatformUserId);
         Assert.AreEqual(AuthTicket, dto.PlatformUserInformation.AuthenticationTicketHex);
         Assert.AreEqual(Platform.Dummy, dto.PlatformUserInformation.Platform);
@@ -242,7 +242,7 @@ public class ClientOrchestratorBridgeTests
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
-        await _bridge.GetLeaveMatchDtoForLobby(GenerateLobby());
+        await _bridge.GetLeaveMatchDtoForLobby(GenerateLobby(), PlatformId);
 
         Assert.AreEqual(
             OrchestratorAuthIdentityString,
@@ -255,7 +255,7 @@ public class ClientOrchestratorBridgeTests
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
-        await _bridge.GetLeaveMatchDtoForLobby(GenerateLobby());
+        await _bridge.GetLeaveMatchDtoForLobby(GenerateLobby(), PlatformId);
 
         AssertNoRequestWasIssued();
     }
@@ -1061,12 +1061,12 @@ public class ClientOrchestratorBridgeTests
 
     private Task<JoinMatchDto> BuildJoinMatchDtoForGeneratedLobby()
     {
-        return _bridge.GetJoinMatchDtoForLobby(GenerateLobby());
+        return _bridge.GetJoinMatchDtoForLobby(GenerateLobby(), PlatformId);
     }
 
     private Task<LeaveMatchDto> BuildLeaveMatchDtoForGeneratedLobby()
     {
-        return _bridge.GetLeaveMatchDtoForLobby(GenerateLobby());
+        return _bridge.GetLeaveMatchDtoForLobby(GenerateLobby(), PlatformId);
     }
 
     private void SetUpBridgeRespondingWith(
