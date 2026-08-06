@@ -10,7 +10,8 @@ namespace Resonance.GameBootstrap
 {
     public class DisconnectHandler : MonoBehaviour
     {
-        private NetworkManager networkManager;
+        private ConnectionState _previousState = ConnectionState.Disconnected;
+        private NetworkManager _networkManager;
 
         /// <summary>
         /// The scene to load into on network shutdown.
@@ -25,7 +26,7 @@ namespace Resonance.GameBootstrap
 
         private void Awake()
         {
-            if (!TryGetComponent(out networkManager))
+            if (!TryGetComponent(out _networkManager))
             {
                 Debug.LogError($"Failed to get {nameof(NetworkManager)} component.", this);
             }
@@ -35,26 +36,27 @@ namespace Resonance.GameBootstrap
         {
             Debug.Log("[DisconnectHandler] Disconnect handler started");
 
-            if (networkManager.isOffline)
+            if (_networkManager.isOffline)
             {
                 Debug.Log("[DisconnectHandler] Network manager offline");
             }
 
-            networkManager.onClientConnectionState += OnClientConnectionState;
+            _networkManager.onClientConnectionState += OnClientConnectionState;
         }
 
 
         private void OnDestroy()
         {
-            networkManager.onClientConnectionState -= OnClientConnectionState;
+            _networkManager.onClientConnectionState -= OnClientConnectionState;
         }
 
         private async void OnClientConnectionState(ConnectionState state)
         {
-            if (state == ConnectionState.Disconnected)
+            if (state == ConnectionState.Disconnected && _previousState != ConnectionState.Disconnected)
             {
                 await TryDisconnect();
             }
+            _previousState = state;
         }
 
         private async Task TryDisconnect()
