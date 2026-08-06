@@ -26,6 +26,8 @@ namespace Resonance.GameBootstrap
         private LobbyDataHolder _lobbyDataHolder;
         private UDPTransport _transport;
 
+        [SerializeField] private double startDelaySeconds = 30;
+
         private void Awake()
         {
             if (!TryGetComponent(out _networkManager))
@@ -132,8 +134,6 @@ namespace Resonance.GameBootstrap
 
         private async Task StartClient()
         {
-            // TODO: apparently there's a better way to implement this using Awaitable
-
             // client side still requires lobby data holder
             if (!_lobbyDataHolder)
             {
@@ -183,6 +183,11 @@ namespace Resonance.GameBootstrap
 
                 ClientTokenHolder.Instance?.SetClientToken(joinMatchResult.ServerAuthToken);
 
+                if (!ClientBuildConfigReceiver.Instance.Config.isProduction)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(startDelaySeconds));
+                }
+
                 _networkManager.StartClient();
             }
             catch (Exception e)
@@ -198,7 +203,6 @@ namespace Resonance.GameBootstrap
 
         private bool HasClientConfig => ClientBuildConfigReceiver.Instance != null;
         private bool HasServerConfig => ServerBuildConfigReceiver.Instance != null;
-        private bool IsLobbyOwner => _lobbyDataHolder.CurrentLobby.IsOwner(_lobbyDataHolder.LocalUserId);
 
         #endregion
 

@@ -50,5 +50,11 @@ namespace Resonance.GameBootstrap
 
             return null;
         }
+
+        [ServerOnly]
+        public int GetMemberCount()
+        {
+            return _serverMembers.Count;
+        }
     }
 }

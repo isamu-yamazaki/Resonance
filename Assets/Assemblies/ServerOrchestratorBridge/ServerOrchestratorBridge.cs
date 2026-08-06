@@ -22,8 +22,8 @@ namespace Resonance.Assemblies.ServerOrchestratorBridge
         private readonly string _matchId;
         private readonly string _matchKey;
 
-        private string SignalReadyEndpointPath => $"v1/server/{_matchId}/ready";
-        private string GetMembersEndpointPath => $"v1/server/{_matchId}/members";
+        private string SignalReadyEndpointPath => $"v1/server/matches/{_matchId}/ready";
+        private string GetMembersEndpointPath => $"v1/server/matches/{_matchId}/members";
         private const string PathSegmentSeparator = "/";
 
         private const string CancelledWhileAwaitingOrchestratorMessage =

@@ -8,17 +8,16 @@ namespace Resonance.GameBootstrap
     public class NetworkPlayerCounter : NetworkBehaviour
     {
         public UnityEvent OnAllPlayersJoined = new();
-        private LobbyDataHolder lobbyDataHolder;
-        private int MemberCount => lobbyDataHolder.CurrentLobby.Members.Count;
+        private NetworkedMatchDataHolder _dataHolder;
 
         protected override void OnSpawned(bool asServer)
         {
             base.OnSpawned(asServer);
 
-            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-            if (!lobbyDataHolder)
+            _dataHolder = FindFirstObjectByType<NetworkedMatchDataHolder>();
+            if (!_dataHolder)
             {
-                Debug.LogError($"[{GetType()}] Unable to find {nameof(LobbyDataHolder)} component; scene switching will not work.");
+                Debug.LogError($"[{GetType()}] Unable to find {nameof(NetworkedMatchDataHolder)} component; scene switching will not work.");
             }
 
             if (asServer)
@@ -49,10 +48,12 @@ namespace Resonance.GameBootstrap
             ConditionallyFireAllPlayersEvent();
         }
 
+        [ServerOnly]
         private void ConditionallyFireAllPlayersEvent()
         {
             var playerJoinedCount = networkManager.playerCount;
-            if (playerJoinedCount == MemberCount)
+            var memberCount = _dataHolder.GetMemberCount();
+            if (playerJoinedCount == memberCount)
             {
                 Debug.Log("[NetworkPlayerCounter] All players joined");
                 OnAllPlayersJoined.Invoke();
