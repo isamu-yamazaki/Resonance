@@ -20,10 +20,9 @@ namespace Resonance.GameBootstrap
                 Debug.LogError($"[{GetType()}] Unable to find {nameof(NetworkedMatchDataHolder)} component; scene switching will not work.");
             }
 
-            if (asServer)
-            {
-                networkManager.onPlayerJoined += OnPlayerJoined;
-            }
+            if (!asServer) return;
+            networkManager.onPlayerJoined += OnPlayerJoined;
+            ConditionallyFireAllPlayersEvent();
         }
 
 
@@ -39,6 +38,7 @@ namespace Resonance.GameBootstrap
 
         private void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
         {
+            Debug.Log($"[{nameof(NetworkPlayerCounter)}] Player {player} joined");
             // PurrNet raises onPlayerJoined twice on a host (once per perspective)
             // only act on the server-perspective invocation so the UnityEvent fires once
             if (!asServer)
@@ -55,7 +55,7 @@ namespace Resonance.GameBootstrap
             var memberCount = _dataHolder.GetMemberCount();
             if (playerJoinedCount == memberCount)
             {
-                Debug.Log("[NetworkPlayerCounter] All players joined");
+                Debug.Log($"[{nameof(NetworkPlayerCounter)}] All players joined");
                 OnAllPlayersJoined.Invoke();
             }
         }
