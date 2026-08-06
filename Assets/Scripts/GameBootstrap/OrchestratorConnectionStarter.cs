@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Net.Http;
+using System.Threading.Tasks;
 using PurrNet;
 using PurrNet.Transports;
 using Resonance.Assemblies.ClientOrchestratorBridge;
@@ -68,17 +68,10 @@ namespace Resonance.GameBootstrap
                 return;
             }
 
-            if (ShouldStartAsServer)
-            {
-                StartCoroutine(StartServer());
-            }
-            else
-            {
-                StartCoroutine(StartClient());
-            }
+            _ = ShouldStartAsServer ? StartServer() : StartClient();
         }
 
-        private IEnumerator StartServer()
+        private async Task StartServer()
         {
             var client = new HttpClient();
             var envVars = EnvironmentVariablesReceiver.Instance;
@@ -87,7 +80,7 @@ namespace Resonance.GameBootstrap
                 Debug.LogError(
                     $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No orchestrator URL available.",
                     this);
-                yield break;
+                return;
             }
 
             if (envVars.MatchId == null || envVars.MatchKey == null)
@@ -95,57 +88,49 @@ namespace Resonance.GameBootstrap
                 Debug.LogError(
                     $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No match ID or match key available.",
                     this);
-                yield break;
+                return;
             }
 
-            if (envVars.GameServerPort == 0 || envVars.GameServerPort == null)
+            if (envVars.GameServerPort is 0 or null)
             {
                 Debug.LogError(
                     $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No game server port passed.",
                     this);
-                yield break;
+                return;
             }
 
             client.BaseAddress = new Uri(envVars.OrchestratorUrl);
             var bridge = new ServerOrchestratorBridge(client, envVars.MatchId, envVars.MatchKey);
 
-            var readyTask = bridge.SignalAsReady();
-            yield return new WaitUntil(() => readyTask.IsCompleted);
-
-            if (readyTask.Exception != null)
+            try
             {
-                // TODO: add orchestrator handling
-                Debug.LogError(
-                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: {readyTask.Exception}", this);
-                yield break;
-            }
+                await bridge.SignalAsReady();
+                var members = await bridge.GetMembers();
 
-            var getMembersTask = bridge.GetMembers();
-            yield return new WaitUntil(() => getMembersTask.IsCompleted);
-            if (getMembersTask.Exception != null)
+                var dataHolder = FindFirstObjectByType<NetworkedMatchDataHolder>();
+                if (dataHolder)
+                {
+                    dataHolder.SetMembers(members);
+                }
+                else
+                {
+                    Debug.LogError(
+                        $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match; {nameof(NetworkedMatchDataHolder)} is null!",
+                        this);
+                    return;
+                }
+
+                _transport.serverPort = envVars.GameServerPort.Value;
+                _networkManager.StartServer();
+            }
+            catch (Exception e)
             {
                 Debug.LogError(
-                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: {getMembersTask.Exception}",
-                    this);
-                yield break;
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: {e}", this);
             }
-
-            if (getMembersTask.Result == null)
-            {
-                Debug.LogError(
-                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match; the server did not return the expected result.",
-                    this);
-                yield break;
-            }
-
-            // TODO: store members
-            var members = getMembersTask.Result;
-
-            _transport.serverPort = envVars.GameServerPort.Value;
-            _networkManager.StartServer();
         }
 
-        private IEnumerator StartClient()
+        private async Task StartClient()
         {
             // TODO: apparently there's a better way to implement this using Awaitable
 
@@ -155,17 +140,17 @@ namespace Resonance.GameBootstrap
                 Debug.LogError(
                     $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. {nameof(LobbyDataHolder)} is null!",
                     this);
-                yield break;
+                return;
             }
 
             if (!_lobbyDataHolder.CurrentLobby.IsValid)
             {
                 Debug.LogError(
                     $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. Lobby is invalid!", this);
-                yield break;
+                return;
             }
 
-            if (!HasClientConfig) yield break;
+            if (!HasClientConfig) return;
 
             var config = ClientBuildConfigReceiver.Instance.Config;
 
@@ -176,36 +161,36 @@ namespace Resonance.GameBootstrap
                 client
             );
 
-            var getMatchDtoTask = bridge.GetJoinMatchDtoForLobby(
-                _lobbyDataHolder.CurrentLobby
-            );
-            yield return new WaitUntil(() => getMatchDtoTask.IsCompleted);
-            var joinMatchDto = getMatchDtoTask.Result;
+            try
+            {
+                var joinMatchDto = await bridge.GetJoinMatchDtoForLobby(
+                    _lobbyDataHolder.CurrentLobby
+                );
 
-            var joinMatchTask = bridge.JoinMatch(joinMatchDto);
-            yield return new WaitUntil(() => getMatchDtoTask.IsCompleted);
-            if (joinMatchTask.Exception != null)
+                var joinMatchTask = bridge.JoinMatch(joinMatchDto);
+                var joinMatchResult = await joinMatchTask;
+                if (joinMatchResult == null)
+                {
+                    Debug.Log(
+                        $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: the server did not return the expected result.",
+                        this);
+                    return;
+                }
+
+                _transport.address = joinMatchResult.DedicatedServerHost;
+                _transport.serverPort = (ushort)joinMatchResult.DedicatedServerPort;
+
+                ClientTokenHolder.Instance?.SetClientToken(joinMatchResult.ServerAuthToken);
+
+                _networkManager.StartClient();
+            }
+            catch (Exception e)
             {
                 // TODO: add UI handling
                 Debug.LogError(
-                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: {joinMatchTask.Exception}",
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: {e}",
                     this);
-                yield break;
             }
-            else if (joinMatchTask.Result == null)
-            {
-                Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match: the server did not return the expected result.", this);
-                yield break;
-            }
-
-            var joinMatchResult = joinMatchTask.Result;
-
-            _transport.address = joinMatchResult.DedicatedServerHost;
-            _transport.serverPort = (ushort)joinMatchResult.DedicatedServerPort;
-
-            ClientTokenHolder.Instance?.SetClientToken(joinMatchResult.ServerAuthToken);
-
-            _networkManager.StartClient();
         }
 
         #region Build Context
