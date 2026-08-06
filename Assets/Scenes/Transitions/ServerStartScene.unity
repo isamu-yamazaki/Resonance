@@ -654,7 +654,7 @@ GameObject:
   - component: {fileID: 2109274478}
   - component: {fileID: 2109274479}
   m_Layer: 0
-  m_Name: ServerLobbyCodeReader
+  m_Name: ServerStartSceneNextSceneLoader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

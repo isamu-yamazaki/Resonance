@@ -1,84 +1,63 @@
-using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Resonance.Assemblies.LobbySystem;
+using Resonance.BuildTools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Resonance.GameBootstrap
 {
+    /// <summary>
+    /// Load the next scene if all environment variables are set.
+    /// If not set, the script provides a way to manually load the scene,
+    /// starting the game as the server.
+    /// </summary>
     public class ServerStartSceneNextSceneLoader : MonoBehaviour
     {
-        [SerializeField] private string gameSceneName = "GameBootstrapScene";
-        [SerializeField] private string editorRoomCode = "";
-        [SerializeField] private string editorOrchestratorUrl = "http://localhost:9000";
+        [FormerlySerializedAs("gameSceneName")] [SerializeField]
+        private string nextSceneName = "GameBootstrapScene";
 
-        private LobbyDataHolder lobbyDataHolder;
+        [SerializeField] private string editorOrchestratorUrl = "http://localhost:9000";
+        [SerializeField] private ushort editorGameServerPort = 7777;
+        [SerializeField] private string editorGameMode = "Arena";
+        [SerializeField] private string editorMatchId = "test-match-id";
+        [SerializeField] private string editorMatchKey = "test-match-key";
 
         private void Awake()
         {
-            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-            if (lobbyDataHolder == null)
-            {
-                Debug.LogError("[ServerLobbyCodeReader] Unable to find LobbyDataHolder in scene.");
-                Destroy(this);
-                return;
-            }
+            LoadNextScene();
+        }
 
-            string lobbyCode = null;
-            string orchestratorUrl = null;
-            string[] args = System.Environment.GetCommandLineArgs();
-            for (int i = 0; i < args.Length - 1; i++)
+        private void LoadNextScene()
+        {
+            if (EnvironmentVariablesReceiver.Instance.AllVariablesSet)
             {
-                if (args[i] == "-lobbyCode") lobbyCode = args[i + 1];
-                if (args[i] == "-orchestratorUrl") orchestratorUrl = args[i + 1];
-            }
-
-            if (lobbyCode != null && orchestratorUrl != null)
-            {
-                _ = LoadLobbyAndStartGameAsync(lobbyCode, orchestratorUrl);
+                SceneManager.LoadScene(nextSceneName);
             }
             else
             {
-                Debug.LogWarning("[ServerLobbyCodeReader] Missing -lobbyCode or -orchestratorUrl. Use the inspector button to load manually.");
-            }
-        }
-
-        private async Task LoadLobbyAndStartGameAsync(string lobbyCode, string orchestratorUrl)
-        {
-            try
-            {
-                using var client = new HttpClient();
-                var response = await client.GetAsync($"{orchestratorUrl}/lobbies/{lobbyCode}");
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    Debug.LogError($"[ServerLobbyCodeReader] Failed to fetch lobby {lobbyCode}: {response.StatusCode}");
-                    return;
-                }
-
-                string json = await response.Content.ReadAsStringAsync();
-                Lobby lobby = Lobby.FromJson(json);
-                lobbyDataHolder.SetCurrentLobby(lobby);
-
-                Debug.Log($"[ServerLobbyCodeReader] Lobby data set. Loading scene: {gameSceneName}");
-                SceneManager.LoadScene(gameSceneName);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[ServerLobbyCodeReader] Error fetching lobby: {ex.Message}");
+                Debug.LogWarning(
+                    "[ServerLobbyCodeReader] Missing -lobbyCode or -orchestratorUrl. Use the inspector button to load manually.");
             }
         }
 
 #if UNITY_EDITOR
-        [ContextMenu("Load Scene With Editor Room Code")]
-        private void LoadWithEditorRoomCode()
+        [ContextMenu("Set editor variables")]
+        private void SetEditorVariables()
         {
-            if (lobbyDataHolder == null)
-            {
-                lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-            }
-            _ = LoadLobbyAndStartGameAsync(editorRoomCode, editorOrchestratorUrl);
+            EnvironmentVariablesReceiver.Instance.SetVariables(
+                editorGameServerPort,
+                editorMatchId,
+                editorMatchKey,
+                editorOrchestratorUrl,
+                nextSceneName,
+                editorGameMode
+            );
+        }
+
+        [ContextMenu("Load the next scene manually")]
+        private void LoadManually()
+        {
+            LoadNextScene();
         }
 #endif
     }

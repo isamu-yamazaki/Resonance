@@ -32,6 +32,9 @@ namespace Resonance.BuildTools
         [CanBeNull] public string NextSceneName { get; private set; }
         [CanBeNull] public string GameMode { get; private set; }
 
+        public bool AllVariablesSet => GameServerPort.HasValue && MatchId != null && MatchKey != null &&
+                                       OrchestratorUrl != null && NextSceneName != null && GameMode != null;
+
         private void Awake()
         {
             if (Instance != null)
@@ -55,5 +58,24 @@ namespace Resonance.BuildTools
             NextSceneName = System.Environment.GetEnvironmentVariable(NextSceneVariable);
             GameMode = System.Environment.GetEnvironmentVariable(GameModeVariable);
         }
+
+#if UNITY_EDITOR
+        public void SetVariables(
+            ushort? gameServerPort,
+            string matchId,
+            string matchKey,
+            string orchestratorUrl,
+            string nextSceneName,
+            string gameMode
+        )
+        {
+            GameServerPort = gameServerPort;
+            MatchId = matchId;
+            MatchKey = matchKey;
+            OrchestratorUrl = orchestratorUrl;
+            NextSceneName = nextSceneName;
+            GameMode = gameMode;
+        }
+#endif
     }
 }
