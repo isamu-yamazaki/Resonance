@@ -1,8 +1,6 @@
-using System.Threading.Tasks;
 using Resonance.BuildTools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace Resonance.GameBootstrap
 {
@@ -13,14 +11,14 @@ namespace Resonance.GameBootstrap
     /// </summary>
     public class ServerStartSceneNextSceneLoader : MonoBehaviour
     {
-        [FormerlySerializedAs("gameSceneName")] [SerializeField]
-        private string nextSceneName = "GameBootstrapScene";
+        [SerializeField] private string bootstrapSceneName = "GameBootstrapScene";
 
         [SerializeField] private string editorOrchestratorUrl = "http://localhost:9000";
         [SerializeField] private ushort editorGameServerPort = 7777;
         [SerializeField] private string editorGameMode = "Arena";
         [SerializeField] private string editorMatchId = "test-match-id";
         [SerializeField] private string editorMatchKey = "test-match-key";
+        [SerializeField] private string editorNextSceneName = "NightCity";
 
         private void Awake()
         {
@@ -31,7 +29,7 @@ namespace Resonance.GameBootstrap
         {
             if (EnvironmentVariablesReceiver.Instance.AllVariablesSet)
             {
-                SceneManager.LoadScene(nextSceneName);
+                SceneManager.LoadScene(bootstrapSceneName);
             }
             else
             {
@@ -49,7 +47,7 @@ namespace Resonance.GameBootstrap
                 editorMatchId,
                 editorMatchKey,
                 editorOrchestratorUrl,
-                nextSceneName,
+                editorNextSceneName,
                 editorGameMode
             );
         }
