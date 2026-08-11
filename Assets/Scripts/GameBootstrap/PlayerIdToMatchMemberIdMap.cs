@@ -108,7 +108,7 @@ namespace Resonance.GameBootstrap
         private void RegisterPlayer(string token, RPCInfo info = default)
         {
             if (token == null) return;
-            var playerIdentity = _matchDataHolder.ExchangePlayerIdentityForClientToken(token);
+            var playerIdentity = _matchDataHolder.ExchangeClientTokenForPlayerIdentity(token);
             if (playerIdentity != null)
             {
                 matchMemberIdentitiesByPlayerId.Add(info.sender, playerIdentity.Value);
