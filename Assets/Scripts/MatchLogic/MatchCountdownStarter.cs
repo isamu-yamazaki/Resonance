@@ -1,5 +1,6 @@
 using PurrNet;
 using Resonance.Assemblies.LobbySystem;
+using Resonance.GameBootstrap;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,15 +16,15 @@ namespace Resonance.Match
         [SerializeField] private bool autoStartAfterPlayersLoadedIn = true;
         [SerializeField] private float autoStartDelaySeconds = 5f; // Small delay to ensure everything is initialized
 
-        private LobbyDataHolder lobbyDataHolder;
+        private NetworkedMatchDataHolder _matchDataHolder;
         private bool countdownQueued = false;
 
         protected override void OnSpawned(bool asServer)
         {
             base.OnSpawned(asServer);
 
-            lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
-            // lobbyDataHolder is an optional dependency
+            _matchDataHolder = FindFirstObjectByType<NetworkedMatchDataHolder>();
+            // this is an optional dependency
 
             if (asServer && autoStartAfterPlayersLoadedIn)
             {
@@ -41,9 +42,10 @@ namespace Resonance.Match
             }
         }
 
+        [ServerOnly]
         private void OnPlayerLoadedScene(PlayerID player, SceneID scene, bool asServer)
         {
-            if (lobbyDataHolder != null)
+            if (_matchDataHolder != null)
             {
                 StartMatchCountdownIfAllPlayersLoadedScene();
             } else if (!countdownQueued)
@@ -52,16 +54,17 @@ namespace Resonance.Match
             }
         }
 
+        [ServerOnly]
         private void StartMatchCountdownIfAllPlayersLoadedScene()
         {
-            if (lobbyDataHolder == null) return;
+            if (_matchDataHolder == null) return;
             var targetScene = SceneManager.GetActiveScene();
 
             if (networkManager.sceneModule.TryGetSceneID(targetScene, out var sceneId))
             {
                 if (networkManager.scenePlayersModule.TryGetPlayersInScene(sceneId, out var players))
                 {
-                    if (players.Count == lobbyDataHolder.CurrentLobby.Members.Count)
+                    if (players.Count == _matchDataHolder.GetMemberCount())
                     {
                         Debug.Log($"[MatchStarter] All players loaded into scene {targetScene} (sceneId={sceneId}), queuing match countdown of {autoStartDelaySeconds}s");
                         QueueMatchCountdown();
