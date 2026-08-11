@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PurrNet;
@@ -28,7 +27,7 @@ namespace Resonance.GameBootstrap
         }
 
         [ServerOnly]
-        public PlayerIdentity? ExchangePlayerIdentityForClientToken(string clientToken)
+        public PlayerIdentity? ExchangeClientTokenForPlayerIdentity(string clientToken)
         {
             foreach (var member in _serverMembers)
             {

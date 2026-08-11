@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 104676492}
   - component: {fileID: 104676493}
   - component: {fileID: 104676494}
+  - component: {fileID: 104676496}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -162,7 +163,7 @@ MonoBehaviour:
   _networkAssets: {fileID: 0}
   _networkRules: {fileID: 11400000, guid: d8799083b96579a42b8b2d03e4ceae98, type: 2}
   _visibilityRules: {fileID: 11400000, guid: 7e2b5d5acbf264d12a55cb14d51e3b2e, type: 2}
-  _authenticator: {fileID: 0}
+  _authenticator: {fileID: 104676496}
   _tickRate: 20
   _patchLingeringProcessBug: 0
 --- !u!4 &104676489
@@ -192,6 +193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5c476fd9733ed148b4631bd99c76108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resonance.LobbySystem.ConnectionStarter
+  startDelaySeconds: 30
 --- !u!114 &104676493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +247,19 @@ MonoBehaviour:
   _address: 127.0.0.1
   _timeoutInSeconds: 5
   _pollEventsInUpdate: 0
+--- !u!114 &104676496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104676486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b51222ba74b4c968f0d3c7e23d96f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.GameBootstrap.CustomAuthenticator
+  _timeout: 5
 --- !u!1 &106317278
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,6 +759,50 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &1220298011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1220298012}
+  - component: {fileID: 1220298013}
+  m_Layer: 0
+  m_Name: ClientTokenHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1220298012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220298011}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.45915, y: 1.53022, z: -14.89059}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1220298013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220298011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a462acb9ef14b1fa4d627a36510eed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Resonance.GameBootstrap.ClientTokenHolder
 --- !u!1 &1544287259
 GameObject:
   m_ObjectHideFlags: 0
@@ -1345,3 +1404,4 @@ SceneRoots:
   - {fileID: 106317279}
   - {fileID: 201426219}
   - {fileID: 146963521}
+  - {fileID: 1220298012}

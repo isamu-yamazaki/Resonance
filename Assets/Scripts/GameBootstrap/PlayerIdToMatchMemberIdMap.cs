@@ -20,6 +20,7 @@ namespace Resonance.GameBootstrap
                 {
                     return instance;
                 }
+
                 return null;
             }
         }
@@ -108,10 +109,15 @@ namespace Resonance.GameBootstrap
         private void RegisterPlayer(string token, RPCInfo info = default)
         {
             if (token == null) return;
-            var playerIdentity = _matchDataHolder.ExchangePlayerIdentityForClientToken(token);
+            var playerIdentity = _matchDataHolder.ExchangeClientTokenForPlayerIdentity(token);
             if (playerIdentity != null)
             {
                 matchMemberIdentitiesByPlayerId.Add(info.sender, playerIdentity.Value);
+            }
+            else
+            {
+                Debug.Log(
+                    $"[{nameof(PlayerIdToMatchMemberIdMap)}] Unable to verify the identity of PurrNet player ID {info.sender}. They will not be registered in {nameof(PlayerIdToMatchMemberIdMap)}.");
             }
         }
 
