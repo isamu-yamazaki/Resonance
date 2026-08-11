@@ -88,12 +88,6 @@ namespace Resonance.GameBootstrap
             matchMemberIdentitiesByPlayerId.Remove(playerId);
         }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            networkManager.onClientConnectionState -= OnClientConnectionState;
-        }
-
         private void OnClientConnectionState(ConnectionState state)
         {
             if (state == ConnectionState.Connected)
