@@ -106,8 +106,14 @@ namespace Resonance.GameBootstrap
 
             try
             {
-                await bridge.SignalAsReady();
                 var members = await bridge.GetMembers();
+
+                _transport.serverPort = envVars.GameServerPort.Value;
+                _networkManager.StartServer();
+
+                // wait before assigning data to a networked object
+                await Task.Delay(1000);
+
 
                 var dataHolder = FindFirstObjectByType<NetworkedMatchDataHolder>();
                 if (dataHolder)
@@ -119,11 +125,12 @@ namespace Resonance.GameBootstrap
                     Debug.LogError(
                         $"[{nameof(OrchestratorConnectionStarter)}] Failed to join the match; {nameof(NetworkedMatchDataHolder)} is null!",
                         this);
-                    return;
+
+                    _networkManager.StopServer();
                 }
 
-                _transport.serverPort = envVars.GameServerPort.Value;
-                _networkManager.StartServer();
+                // members must be set before this is called
+                await bridge.SignalAsReady();
             }
             catch (Exception e)
             {

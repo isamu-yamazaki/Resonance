@@ -53,7 +53,7 @@ namespace Resonance.GameBootstrap
         {
             var playerJoinedCount = networkManager.playerCount;
             var memberCount = _dataHolder.GetMemberCount();
-            if (playerJoinedCount == memberCount)
+            if (_dataHolder.Initialized && playerJoinedCount == memberCount)
             {
                 Debug.Log($"[{nameof(NetworkPlayerCounter)}] All players joined");
                 OnAllPlayersJoined.Invoke();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PurrNet;
@@ -17,10 +18,13 @@ namespace Resonance.GameBootstrap
         /// </summary>
         private List<MatchMemberDto> _serverMembers = new();
 
+        public bool Initialized { get; private set; }
+
         [ServerOnly]
         public void SetMembers(List<MatchMemberDto> members)
         {
             _serverMembers = members;
+            Initialized = true;
         }
 
         [ServerOnly]
