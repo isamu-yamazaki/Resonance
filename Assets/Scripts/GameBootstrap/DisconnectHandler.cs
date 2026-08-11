@@ -35,25 +35,23 @@ namespace Resonance.GameBootstrap
         private void Start()
         {
             Debug.Log("[DisconnectHandler] Disconnect handler started");
-
-            if (_networkManager.isOffline)
-            {
-                Debug.Log("[DisconnectHandler] Network manager offline");
-            }
-
             _networkManager.onClientConnectionState += OnClientConnectionState;
         }
 
 
         private void OnDestroy()
         {
-            _networkManager.onClientConnectionState -= OnClientConnectionState;
+            if (_networkManager != null)
+            {
+                _networkManager.onClientConnectionState -= OnClientConnectionState;
+            }
         }
 
         private async void OnClientConnectionState(ConnectionState state)
         {
             if (state == ConnectionState.Disconnected && _previousState != ConnectionState.Disconnected)
             {
+                Debug.Log($"[{nameof(DisconnectHandler)}] Attempting to disconnect");
                 await TryDisconnect();
             }
             _previousState = state;
