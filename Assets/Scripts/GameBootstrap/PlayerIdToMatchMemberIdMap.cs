@@ -26,7 +26,15 @@ namespace Resonance.GameBootstrap
 
         private void Awake()
         {
+            if (InstanceHandler.TryGetInstance<PlayerIdToMatchMemberIdMap>(out var _))
+            {
+                Destroy(this);
+                return;
+            }
+
+            InstanceHandler.RegisterInstance(this);
             _matchDataHolder = FindFirstObjectByType<NetworkedMatchDataHolder>();
+
             if (_matchDataHolder == null)
             {
                 Debug.LogError(
@@ -96,7 +104,7 @@ namespace Resonance.GameBootstrap
 
         private void RegisterPlayerIdUsingClientToken()
         {
-            if (ClientTokenHolder.Instance?.ClientToken == null)
+            if (ClientTokenHolder.Instance?.ClientToken != null)
             {
                 RegisterPlayer(ClientTokenHolder.Instance?.ClientToken);
             }
