@@ -34,7 +34,7 @@ namespace Resonance.GameBootstrap
             else
             {
                 Debug.LogWarning(
-                    "[ServerLobbyCodeReader] Missing -lobbyCode or -orchestratorUrl. Use the inspector button to load manually.");
+                    "[ServerLobbyCodeReader] Not all environment variables are set. Use the editor to set them manually.");
             }
         }
 
