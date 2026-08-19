@@ -9,6 +9,7 @@ using Resonance.Assemblies.ServerOrchestratorBridge;
 using Resonance.BuildTools;
 using Resonance.Contracts;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #if UTP_LOBBYRELAY
 using PurrNet.UTP;
@@ -26,7 +27,11 @@ namespace Resonance.GameBootstrap
         private LobbyDataHolder _lobbyDataHolder;
         private UDPTransport _transport;
 
-        [SerializeField] private double startDelaySeconds = 30;
+        /// <summary>
+        /// The number of seconds to delay for when joining as a client in the editor.
+        /// This gives time to set the match ID and key when using the server flow in-editor.
+        /// </summary>
+        [FormerlySerializedAs("startDelaySeconds")] [SerializeField] private double editorStartDelaySeconds = 30;
 
         private void Awake()
         {
@@ -186,7 +191,8 @@ namespace Resonance.GameBootstrap
                 }
 
 #if UNITY_EDITOR
-                Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Orchestrator join successful, configuring network manager");
+                Debug.Log(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Orchestrator join successful, configuring network manager");
 #endif
 
                 _transport.address = joinMatchResult.DedicatedServerHost;
@@ -194,13 +200,9 @@ namespace Resonance.GameBootstrap
 
                 ClientTokenHolder.Instance?.SetClientToken(joinMatchResult.ServerAuthToken);
 
-                if (!ClientBuildConfigReceiver.Instance.Config.isProduction)
-                {
-                    Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Starting client in {startDelaySeconds} seconds");
-                    await Task.Delay(TimeSpan.FromSeconds(startDelaySeconds));
-                }
-
 #if UNITY_EDITOR
+                Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Editor detected, starting client in {editorStartDelaySeconds} seconds");
+                await Task.Delay(TimeSpan.FromSeconds(editorStartDelaySeconds));
                 Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Starting client");
 #endif
 
