@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using PurrNet;
 using PurrNet.Transports;
 using Resonance.Contracts;
@@ -124,6 +125,21 @@ namespace Resonance.GameBootstrap
         private void HandleSyncDictionaryChanged(SyncDictionaryChange<PlayerID, PlayerIdentity> change)
         {
             OnDictionaryChanged?.Invoke();
+        }
+
+        public IReadOnlyDictionary<PlayerID, PlayerIdentity> GetPlayerIdentityMap()
+        {
+            return matchMemberIdentitiesByPlayerId.ToDictionary();
+        }
+
+        public PlayerIdentity? GetPlayerIdentityForPlayerID(PlayerID playerID)
+        {
+            if (matchMemberIdentitiesByPlayerId.TryGetValue(playerID, out PlayerIdentity identity))
+            {
+                return identity;
+            }
+
+            return null;
         }
     }
 }

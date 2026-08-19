@@ -1,8 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using PurrNet;
 using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.UISystem;
+using Resonance.GameBootstrap;
 using Resonance.Match;
 
 public class MatchStatsView : MonoBehaviour, IOverlayView
@@ -16,7 +19,10 @@ public class MatchStatsView : MonoBehaviour, IOverlayView
 
     private readonly List<LeaderboardRow> _spawnedRows = new();
     private MatchStatsModel _model;
-    private PlayerIdToLobbyMemberIdMap _playerIdMap;
+    private PlayerIdToMatchMemberIdMap _playerIdMap;
+    private NetworkedMatchDataHolder _matchDataHolder;
+
+    private readonly Dictionary<PlayerID, string> _cachedPlayerIDToDisplayNameMap = new();
 
     private void Start()
     {
@@ -34,11 +40,15 @@ public class MatchStatsView : MonoBehaviour, IOverlayView
         root.SetActive(false);
         _model.Rankings.ChangeEvent += OnRankingsChanged;
 
-        _playerIdMap = PlayerIdToLobbyMemberIdMap.Instance;
+        _playerIdMap = PlayerIdToMatchMemberIdMap.Instance;
         if (_playerIdMap != null)
         {
             _playerIdMap.OnDictionaryChanged += OnLobbyMapChanged;
         }
+
+        _matchDataHolder = FindFirstObjectByType<NetworkedMatchDataHolder>();
+
+        _ = UpdateDisplayNameCacheAndRenderRows();
     }
 
     private void OnDestroy()
@@ -72,7 +82,29 @@ public class MatchStatsView : MonoBehaviour, IOverlayView
     private void OnLobbyMapChanged()
     {
         if (_model == null) return;
+        _ = UpdateDisplayNameCacheAndRenderRows();
+    }
+
+    private async Task UpdateDisplayNameCacheAndRenderRows()
+    {
+        await UpdateDisplayNameCache();
         RenderRows(_model.Rankings.Value);
+    }
+
+    private async Task UpdateDisplayNameCache()
+    {
+        var map = _playerIdMap?.GetPlayerIdentityMap();
+        if (map == null || _matchDataHolder == null) return;
+        Debug.Log($"[{nameof(MatchStatsView)}] {map.Count} pair(s) in player identity map");
+        foreach (var pair in map)
+        {
+            Debug.Log($"[{nameof(MatchStatsView)}] Getting display name for {pair.Key} {pair.Value}");
+            var displayName = await _matchDataHolder.GetDisplayName(pair.Value);
+            if (displayName != null)
+            {
+                _cachedPlayerIDToDisplayNameMap.Add(pair.Key, displayName);
+            }
+        }
     }
 
     private void RenderRows(List<PlayerRanking> rankings)
@@ -89,7 +121,7 @@ public class MatchStatsView : MonoBehaviour, IOverlayView
             {
                 var ranking = rankings[i];
                 var playerId = OwnerIDExtractor.UlongToPlayerId(ranking.player);
-                var displayName = _playerIdMap?.GetDisplayName(playerId);
+                var displayName = _cachedPlayerIDToDisplayNameMap.GetValueOrDefault(playerId) ?? playerId.ToString();
 
                 _spawnedRows[i].gameObject.SetActive(true);
                 _spawnedRows[i].Setup(i + 1, ranking, displayName);

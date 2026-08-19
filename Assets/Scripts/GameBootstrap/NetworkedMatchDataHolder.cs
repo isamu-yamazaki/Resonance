@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PurrNet;
 using Resonance.Contracts;
+using UnityEngine;
 
 namespace Resonance.GameBootstrap
 {
@@ -41,7 +42,7 @@ namespace Resonance.GameBootstrap
         }
 
         [ServerRpc]
-        private async Task<string> GetDisplayName(PlayerIdentity identity)
+        public async Task<string> GetDisplayName(PlayerIdentity identity)
         {
             foreach (var member in _serverMembers)
             {
