@@ -7,6 +7,7 @@ namespace Resonance.BuildTools
     /// Detect and receive environment variables related to the game.
     /// Some variables may be unavailable depending on the game context.
     /// </summary>
+    [DefaultExecutionOrder(-1)]
     public class EnvironmentVariablesReceiver : MonoBehaviour
     {
         public static EnvironmentVariablesReceiver Instance { get; private set; }
