@@ -67,7 +67,8 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
 
         public async Task<JoinMatchDto> GetJoinMatchDtoForLobby(
             Lobby lobby,
-            string platformUserId
+            string platformUserId,
+            string intendedServerVersion
         )
         {
             var expectedLobbyPlayers = GetExpectedLobbyPlayerDtosForLobby(lobby);
@@ -78,7 +79,8 @@ namespace Resonance.Assemblies.ClientOrchestratorBridge
                 platformUserInformation: platformUserInformation,
                 expectedLobbyPlayers: expectedLobbyPlayers.ToArray(),
                 nextSceneName: lobby.SceneName,
-                gameMode: lobby.GameMode.ToString()
+                gameMode: lobby.GameMode.ToString(),
+                intendedServerVersion
             );
         }
 

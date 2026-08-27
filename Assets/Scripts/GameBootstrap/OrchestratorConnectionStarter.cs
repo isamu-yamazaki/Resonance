@@ -165,6 +165,7 @@ namespace Resonance.GameBootstrap
             if (!HasClientConfig) return;
 
             var config = ClientBuildConfigReceiver.Instance.Config;
+            var intendedServerVersion = config.intendedServerVersion;
 
             var client = new HttpClient();
             client.BaseAddress = new Uri(config.orchestratorUrl);
@@ -177,7 +178,8 @@ namespace Resonance.GameBootstrap
             {
                 var joinMatchDto = await bridge.GetJoinMatchDtoForLobby(
                     _lobbyDataHolder.CurrentLobby,
-                    _lobbyDataHolder.LocalUserId
+                    _lobbyDataHolder.LocalUserId,
+                    intendedServerVersion
                 );
 
                 var joinMatchTask = bridge.JoinMatch(joinMatchDto);
