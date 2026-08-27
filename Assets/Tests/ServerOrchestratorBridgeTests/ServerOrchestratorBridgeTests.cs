@@ -15,7 +15,6 @@ public class ServerOrchestratorBridgeTests
     private ServerOrchestratorBridge _bridge;
     private HttpClient _httpClient;
     private FakeHttpMessageHandler _httpHandler;
-    private string _capturedRequestBody;
 
     private readonly List<MatchMemberDto> _mockMembers = new List<MatchMemberDto>
     {
@@ -23,13 +22,15 @@ public class ServerOrchestratorBridgeTests
             Platform.Dummy,
             "1",
             "Test user 1",
-            "Auth token 1"
+            "Auth token 1",
+            "1.1.1.1"
         ),
         new(
             Platform.Dummy,
             "2",
             "Test user 2",
-            "Auth token 2"
+            "Auth token 2",
+            "2.2.2.2"
         )
     };
 
@@ -55,7 +56,7 @@ public class ServerOrchestratorBridgeTests
 
         Assert.AreEqual(1, _httpHandler.CallCount);
         Assert.AreEqual(HttpMethod.Post, _httpHandler.LastRequest?.Method);
-        Assert.AreEqual(new Uri($"{OrchestratorBaseUrl}/v1/server/{MatchId}/ready"),
+        Assert.AreEqual(new Uri($"{OrchestratorBaseUrl}/v1/server/matches/{MatchId}/ready"),
             _httpHandler.LastRequest?.RequestUri);
     }
 
@@ -116,6 +117,7 @@ public class ServerOrchestratorBridgeTests
             Assert.AreEqual(_mockMembers[i].PlatformUserId, members[i].PlatformUserId);
             Assert.AreEqual(_mockMembers[i].ServerAuthToken, members[i].ServerAuthToken);
             Assert.AreEqual(_mockMembers[i].Username, members[i].Username);
+            Assert.AreEqual(_mockMembers[i].IpAddress, members[i].IpAddress);
         }
     }
 
@@ -177,9 +179,7 @@ public class ServerOrchestratorBridgeTests
     /// </remarks>
     private static string ReadRequestBody(HttpRequestMessage request)
     {
-        return request.Content == null
-            ? null
-            : request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        return request.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
     }
 
     private void SetUpBridgeRespondingWith(
@@ -189,7 +189,7 @@ public class ServerOrchestratorBridgeTests
     {
         SetUpBridgeWithHandler(new FakeHttpMessageHandler(request =>
         {
-            _capturedRequestBody = ReadRequestBody(request);
+            ReadRequestBody(request);
             return response;
         }), baseUrl);
     }
