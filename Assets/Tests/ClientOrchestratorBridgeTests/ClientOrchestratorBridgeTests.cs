@@ -44,7 +44,7 @@ public class ClientOrchestratorBridgeTests
     private const string ValidationProblemDetail = "PlatformLobbyId must not be empty.";
 
     /// <remarks>
-    /// Shaped like a real Steam session ticket so a leak into an exception message is unmistakable.
+    /// Shaped like a real Steam session ticket, so a leak into an exception message is unmistakable.
     /// </remarks>
     private const string CredentialLikeAuthTicketHex = "14000000DEADBEEFCAFEF00D0BADC0DE";
 
@@ -58,7 +58,7 @@ public class ClientOrchestratorBridgeTests
     private static readonly Guid ExpectedMatchId = new Guid("8f1d0a3c-4b2e-4f5a-9c6d-7e8f9a0b1c2d");
 
     /// <remarks>
-    /// Only ever elapses when the behaviour under test is broken: every assertion that uses it
+    /// Only ever elapses when the behavior under test is broken: every assertion that uses it
     /// completes as soon as the awaited task settles.
     /// </remarks>
     private static readonly TimeSpan PendingOperationGuardTimeout = TimeSpan.FromSeconds(5);
@@ -1101,14 +1101,12 @@ public class ClientOrchestratorBridgeTests
     }
 
     /// <remarks>
-    /// Read inside the handler rather than from <c>LastRequest</c> afterwards, because
+    /// Read inside the handler rather than from <c>LastRequest</c> afterward, because
     /// <see cref="HttpClient"/> may dispose the request content once the exchange finishes.
     /// </remarks>
     private static string ReadRequestBody(HttpRequestMessage request)
     {
-        return request.Content == null
-            ? null
-            : request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        return request.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
     }
 
     private void SetUpBridgeWithEmptyResponseAndDefaultUserResolver()
