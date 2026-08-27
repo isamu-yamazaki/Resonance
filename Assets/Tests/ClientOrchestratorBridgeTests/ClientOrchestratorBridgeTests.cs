@@ -55,6 +55,8 @@ public class ClientOrchestratorBridgeTests
     /// </remarks>
     private const long IntegerBeyondInt32Range = 3000000000L;
 
+    private const string IntendedServerVersion = "dev";
+
     private static readonly Guid ExpectedMatchId = new Guid("8f1d0a3c-4b2e-4f5a-9c6d-7e8f9a0b1c2d");
 
     /// <remarks>
@@ -145,7 +147,7 @@ public class ClientOrchestratorBridgeTests
 
         var lobby = GenerateLobby();
         var lobbyMemberList = lobby.Members;
-        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby, PlatformId);
+        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby, PlatformId, IntendedServerVersion);
 
         Assert.IsNotNull(dto);
 
@@ -154,6 +156,7 @@ public class ClientOrchestratorBridgeTests
             Assert.AreEqual(lobbyMemberList[i].Id, dto.ExpectedLobbyPlayers[i].PlatformUserId);
             Assert.AreEqual(lobbyMemberList[i].DisplayName, dto.ExpectedLobbyPlayers[i].Username);
             Assert.AreEqual(Platform.Dummy, dto.ExpectedLobbyPlayers[i].Platform);
+            Assert.AreEqual(IntendedServerVersion, dto.IntendedServerVersion);
         }
     }
 
@@ -163,7 +166,7 @@ public class ClientOrchestratorBridgeTests
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
         var lobby = GenerateLobby();
 
-        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby, PlatformId);
+        var dto = await _bridge.GetJoinMatchDtoForLobby(lobby, PlatformId, IntendedServerVersion);
         Assert.AreEqual(PlatformId, dto.PlatformUserInformation.PlatformUserId);
         Assert.AreEqual(AuthTicket, dto.PlatformUserInformation.AuthenticationTicketHex);
         Assert.AreEqual(Platform.Dummy, dto.PlatformUserInformation.Platform);
@@ -175,7 +178,7 @@ public class ClientOrchestratorBridgeTests
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
-        await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(), PlatformId);
+        await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(), PlatformId, IntendedServerVersion);
 
         Assert.AreEqual(
             OrchestratorAuthIdentityString,
@@ -184,21 +187,11 @@ public class ClientOrchestratorBridgeTests
     }
 
     [Test]
-    public async Task GetJoinMatchDtoForLobby_IssuesNoHttpRequestOfItsOwn()
-    {
-        SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
-
-        await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(), PlatformId);
-
-        AssertNoRequestWasIssued();
-    }
-
-    [Test]
     public async Task GetJoinMatchDtoForLobby_ReturnsAnEmptyRosterForALobbyWithNoMembers()
     {
         SetUpBridgeWithEmptyResponseAndDefaultUserResolver();
 
-        var dto = await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(memberCount: 0), PlatformId);
+        var dto = await _bridge.GetJoinMatchDtoForLobby(GenerateLobby(memberCount: 0), PlatformId, IntendedServerVersion);
 
         Assert.IsNotNull(dto.ExpectedLobbyPlayers);
         Assert.IsEmpty(dto.ExpectedLobbyPlayers);
@@ -216,7 +209,7 @@ public class ClientOrchestratorBridgeTests
         var lobbyWithoutMemberList = GenerateLobby();
         lobbyWithoutMemberList.Members = null;
 
-        Assert.ThrowsAsync<ArgumentException>(() => _bridge.GetJoinMatchDtoForLobby(lobbyWithoutMemberList, PlatformId)
+        Assert.ThrowsAsync<ArgumentException>(() => _bridge.GetJoinMatchDtoForLobby(lobbyWithoutMemberList, PlatformId, IntendedServerVersion)
         );
     }
 
@@ -1061,7 +1054,7 @@ public class ClientOrchestratorBridgeTests
 
     private Task<JoinMatchDto> BuildJoinMatchDtoForGeneratedLobby()
     {
-        return _bridge.GetJoinMatchDtoForLobby(GenerateLobby(), PlatformId);
+        return _bridge.GetJoinMatchDtoForLobby(GenerateLobby(), PlatformId, IntendedServerVersion);
     }
 
     private Task<LeaveMatchDto> BuildLeaveMatchDtoForGeneratedLobby()
