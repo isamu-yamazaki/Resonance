@@ -6,6 +6,7 @@ using UnityEditor.Build.Profile;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Resonance.BuildTools
 {
@@ -34,10 +35,14 @@ namespace Resonance.BuildTools
 
         #region CLI entry point
         /// <summary>
-        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildPlatform win64|osxuniversal|linux64
+        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildPlatform win64|osxuniversal|linux64 -serverVersion (any string)
+        /// </summary>
+        ///
+        /// <remarks>
         /// Supported -buildMode values: Client (default), Server
         /// Supported -buildPlatform values: win64 (default), osxuniversal, linux64
-        /// </summary>
+        /// The CLI invocation is currently the only way to build with a server version other than `dev`.
+        /// </remarks>
         public static void BuildCLI()
         {
             string configName = ReadArg("-buildConfig")
@@ -45,6 +50,8 @@ namespace Resonance.BuildTools
 
             string modeName = ReadArg("-buildMode") ?? "Client";
             string targetName = ReadArg("-buildPlatform") ?? "win64";
+            string serverVersion = ReadArg("-serverVersion") ?? "dev";
+
             BuildTarget target = targetName switch
             {
                 "win64" => BuildTarget.StandaloneWindows64,
@@ -55,11 +62,15 @@ namespace Resonance.BuildTools
 
             if (modeName == "Server")
             {
-                BuildServer(LoadServerConfig(configName), target);
+                var config = LoadServerConfig(configName);
+                config.intendedServerVersion = serverVersion;
+                BuildServer(config, target);
             }
             else
             {
-                Build(LoadConfig(configName), target);
+                var config = LoadConfig(configName);
+                config.intendedServerVersion = serverVersion;
+                Build(config, target);
             }
         }
         #endregion
@@ -268,9 +279,9 @@ namespace Resonance.BuildTools
             where TConfig : ScriptableObject
         {
             bool wasAlreadyLoaded = false;
-            for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
+            for (int i = 0; i < SceneManager.sceneCount; i++)
             {
-                if (UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).path == scenePath)
+                if (SceneManager.GetSceneAt(i).path == scenePath)
                 {
                     wasAlreadyLoaded = true;
                     break;
@@ -278,7 +289,7 @@ namespace Resonance.BuildTools
             }
 
             var scene = wasAlreadyLoaded
-                ? EditorSceneManager.GetSceneByPath(scenePath)
+                ? SceneManager.GetSceneByPath(scenePath)
                 : EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
             var configurator = Object.FindFirstObjectByType<TConfigurator>();
@@ -299,7 +310,7 @@ namespace Resonance.BuildTools
                 EditorSceneManager.CloseScene(scene, true);
         }
 
-        static string ReadArg(string flag)
+        private static string ReadArg(string flag)
         {
             var args = System.Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
