@@ -464,11 +464,11 @@
       "hash": "610157ad762084380380148ba8ce14e266a6da97"
     },
     "dev.bchen.resonance.contracts": {
-      "version": "https://github.com/brendan-ch/ResonanceServerOrchestrator.git?path=/Resonance.Contracts#contracts-v1.0.3",
+      "version": "https://github.com/brendan-ch/ResonanceServerOrchestrator.git?path=/Resonance.Contracts#contracts-v1.0.4",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "88e47957d3df46fdbc6740ee9ebff15d300cd9b1"
+      "hash": "36460caf72a2fc807f126416af9a801ba6bfbeb1"
     },
     "dev.purrnet.purrdiction": {
       "version": "https://github.com/PurrNet/PurrDiction.git?path=/Assets/PurrDiction#v1.2.3",
