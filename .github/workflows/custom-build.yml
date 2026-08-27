@@ -51,13 +51,6 @@ jobs:
       - name: Pull LFS files
         run: git lfs pull
 
-      - name: Restore Unity installation from cache
-        id: cache-unity
-        uses: actions/cache/restore@v4
-        with:
-          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
-          key: unity-${{ vars.UNITY_VERSION }}-full
-
       - name: Install Unity
         if: steps.cache-unity.outputs.cache-hit != 'true'
         run: |
@@ -73,13 +66,6 @@ jobs:
             --module linux-server
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Save Unity installation to cache
-        if: steps.cache-unity.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
-          key: unity-${{ vars.UNITY_VERSION }}-full
 
       - name: Import certificate into keychain
         if: github.event.inputs.mode == 'Client'
