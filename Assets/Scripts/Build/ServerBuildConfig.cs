@@ -13,5 +13,13 @@ namespace Resonance.BuildTools
         /// Determine whether to create a development or production build.
         /// </summary>
         [FormerlySerializedAs("useProductionRelay")] public bool isProductionBuild;
+
+        /// <summary>
+        /// A string that all clients must agree on when connecting to the server orchestrator,
+        /// before connecting to a server build with this value.
+        /// BuildScript.cs overwrites this value when making a build.
+        /// The value set in the editor is for use within the editor only.
+        /// </summary>
+        public string intendedServerVersion;
     }
 }

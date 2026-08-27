@@ -23,6 +23,12 @@ namespace Resonance.BuildTools
         /// When false, marks this as a development build through Unity.
         /// </summary>
         public bool isProduction;
-    }
 
+        /// <summary>
+        /// A string to pass to the orchestrator for it to find and validate the correct server version.
+        /// BuildScript.cs overwrites this value when making a build.
+        /// The value set in the editor is for use within the editor only.
+        /// </summary>
+        public string intendedServerVersion;
+    }
 }
