@@ -32,6 +32,7 @@ namespace Resonance.BuildTools
         [CanBeNull] public string OrchestratorUrl { get; private set; }
         [CanBeNull] public string NextSceneName { get; private set; }
         [CanBeNull] public string GameMode { get; private set; }
+        [CanBeNull] public string IntendedServerVersion { get; private set; }
 
         public bool AllVariablesSet => GameServerPort.HasValue && MatchId != null && MatchKey != null &&
                                        OrchestratorUrl != null && NextSceneName != null && GameMode != null;
@@ -67,7 +68,8 @@ namespace Resonance.BuildTools
             string matchKey,
             string orchestratorUrl,
             string nextSceneName,
-            string gameMode
+            string gameMode,
+            string intendedServerVersion
         )
         {
             GameServerPort = gameServerPort;
@@ -76,6 +78,7 @@ namespace Resonance.BuildTools
             OrchestratorUrl = orchestratorUrl;
             NextSceneName = nextSceneName;
             GameMode = gameMode;
+            IntendedServerVersion = intendedServerVersion;
         }
 #endif
     }

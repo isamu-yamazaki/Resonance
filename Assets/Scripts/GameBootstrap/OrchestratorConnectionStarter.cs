@@ -31,7 +31,8 @@ namespace Resonance.GameBootstrap
         /// The number of seconds to delay for when joining as a client in the editor.
         /// This gives time to set the match ID and key when using the server flow in-editor.
         /// </summary>
-        [FormerlySerializedAs("startDelaySeconds")] [SerializeField] private double editorStartDelaySeconds = 30;
+        [FormerlySerializedAs("startDelaySeconds")] [SerializeField]
+        private double editorStartDelaySeconds = 30;
 
         private void Awake()
         {
@@ -103,6 +104,28 @@ namespace Resonance.GameBootstrap
                 Debug.LogError(
                     $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No game server port passed.",
                     this);
+                return;
+            }
+
+            if (ServerBuildConfigReceiver.Instance is null)
+            {
+                Debug.LogError(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No ServerBuildConfigReceiver instance.");
+                return;
+            }
+
+            var config = ServerBuildConfigReceiver.Instance.Config;
+            if (envVars.IntendedServerVersion is null)
+            {
+                Debug.Log(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No `intendedServerVersion` set in build config.");
+                return;
+            }
+
+            if (envVars.IntendedServerVersion != config.intendedServerVersion)
+            {
+                Debug.Log(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. Expected server version {config.intendedServerVersion} from config, but got {envVars.IntendedServerVersion} from environment.");
                 return;
             }
 
@@ -203,7 +226,8 @@ namespace Resonance.GameBootstrap
                 ClientTokenHolder.Instance?.SetClientToken(joinMatchResult.ServerAuthToken);
 
 #if UNITY_EDITOR
-                Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Editor detected, starting client in {editorStartDelaySeconds} seconds");
+                Debug.Log(
+                    $"[{nameof(OrchestratorConnectionStarter)}] Editor detected, starting client in {editorStartDelaySeconds} seconds");
                 await Task.Delay(TimeSpan.FromSeconds(editorStartDelaySeconds));
                 Debug.Log($"[{nameof(OrchestratorConnectionStarter)}] Starting client");
 #endif

@@ -19,6 +19,7 @@ namespace Resonance.GameBootstrap
         [SerializeField] private string editorMatchId = "test-match-id";
         [SerializeField] private string editorMatchKey = "test-match-key";
         [SerializeField] private string editorNextSceneName = "NightCity";
+        [SerializeField] private string intendedServerVersion = "dev";
 
         private void Awake()
         {
@@ -48,7 +49,8 @@ namespace Resonance.GameBootstrap
                 editorMatchKey,
                 editorOrchestratorUrl,
                 editorNextSceneName,
-                editorGameMode
+                editorGameMode,
+                intendedServerVersion
             );
         }
 
