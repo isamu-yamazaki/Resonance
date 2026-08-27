@@ -6,6 +6,15 @@ on:
   workflow_dispatch:
 
 jobs:
+  generate-server-version:
+    runs-on: ubuntu-latest
+    outputs:
+      server_version: ${{ steps.generate_version.outputs.server_version }}
+    steps:
+      - name: Generate shared build ID
+        id: generate_version
+        run: echo "server_version=$(uuidgen)" >> "$GITHUB_OUTPUT"
+
   check:
     runs-on: ubuntu-latest
     outputs:
@@ -53,7 +62,7 @@ jobs:
           key: lfs-${{ github.sha }}
 
   build:
-    needs: [check, download-lfs]
+    needs: [check, download-lfs, generate-server-version]
     if: needs.check.outputs.has_changes == 'true'
     runs-on: macos-26
     timeout-minutes: 60
@@ -158,7 +167,8 @@ jobs:
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
             -buildMode ${{ matrix.mode }} \
             -buildConfig $CONFIG \
-            -buildPlatform ${{ matrix.target }}
+            -buildPlatform ${{ matrix.target }} \
+            -serverVersion ${{ needs.generate-server-version.outputs.server_version }}
           BUILD_EXIT=$?
 
           sleep 1
