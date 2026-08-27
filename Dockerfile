@@ -1,7 +1,7 @@
 FROM ubuntu:24.04
 
 WORKDIR /game
-COPY ./Builds/Production/Linux/ .
+COPY ./Builds/Default/Linux/ .
 RUN chmod +x ./ResonanceServer.x86_64 && \
     groupadd -g 2000 gameuser && useradd -g 2000 -u 2000 -m gameuser && \
     chown -R gameuser:gameuser /game
