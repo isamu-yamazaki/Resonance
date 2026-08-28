@@ -115,7 +115,7 @@ namespace Resonance.GameBootstrap
             }
 
             var config = ServerBuildConfigReceiver.Instance.Config;
-            if (envVars.IntendedServerVersion is null)
+            if (config.intendedServerVersion == null)
             {
                 Debug.Log(
                     $"[{nameof(OrchestratorConnectionStarter)}] Failed to start connection. No `intendedServerVersion` set in build config.");
