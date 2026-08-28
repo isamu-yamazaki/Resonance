@@ -63,13 +63,13 @@ namespace Resonance.BuildTools
             if (modeName == "Server")
             {
                 var config = LoadServerConfig(configName);
-                config.intendedServerVersion = serverVersion;
+                SetIntendedServerVersion(config, serverVersion, "server");
                 BuildServer(config, target);
             }
             else
             {
                 var config = LoadConfig(configName);
-                config.intendedServerVersion = serverVersion;
+                SetIntendedServerVersion(config, serverVersion, "client");
                 Build(config, target);
             }
         }
@@ -108,6 +108,25 @@ namespace Resonance.BuildTools
 
         static ServerBuildConfig LoadServerConfig(string name) =>
             LoadAsset<ServerBuildConfig>($"{ServerBuildConfigPath}{name}.asset");
+
+        /// <summary>
+        /// Write the intended server version into the build config asset on disk.
+        /// The change must be saved for Unity to load it correctly.
+        /// </summary>
+        private static void SetIntendedServerVersion(ScriptableObject config, string version, string label)
+        {
+            var so = new SerializedObject(config);
+            var property = so.FindProperty("intendedServerVersion")
+                ?? throw new System.Exception(
+                    $"'{config.name}' ({config.GetType().Name}) has no serialized 'intendedServerVersion' field.");
+
+            Debug.Log($"[BuildScript] Setting server version '{version}' on {label} config " +
+                      $"'{config.name}', overwriting '{property.stringValue}'");
+
+            property.stringValue = version;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            AssetDatabase.SaveAssetIfDirty(config);
+        }
 
         static void LogScenes(string[] scenes)
         {
