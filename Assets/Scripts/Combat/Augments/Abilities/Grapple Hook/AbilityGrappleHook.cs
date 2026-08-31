@@ -8,7 +8,7 @@ namespace Resonance.Combat.Augments
 {
     /// <summary>
     /// Predicted grapple hook ability. The reel motion is computed deterministically each tick in
-    /// <see cref="Simulate"/> and exposed via <see cref="ReelVelocity"/> / <see cref="ExitImpulse"/>,
+    /// <see cref="Simulate"/> and exposed via <see cref="ReelVelocityThisTick"/> / <see cref="ExitImpulse"/>,
     /// which PlayerPredictedController reads into PlayerDependencyData so the actual movement is applied
     /// inside PlayerSimulation (on both server and owner client). This component no longer touches the
     /// CharacterController directly.
@@ -26,13 +26,10 @@ namespace Resonance.Combat.Augments
         [SerializeField] private AK.Wwise.Event releaseEvent;
 #endif
 
-        private PlayerLocomotionInput playerLocomotionInput;
-        private Camera playerCamera;
-        private GrappleRopeRenderer ropeRenderer;
-        private FPArmsAnimator fpArmsAnimator;
-
-        // Owner-only view bookkeeping for detecting the grapple-end transition.
-        private bool _wasGrappling;
+        private PlayerLocomotionInput _playerLocomotionInput;
+        private Camera _playerCamera;
+        private GrappleRopeRenderer _ropeRenderer;
+        private FPArmsAnimator _fpArmsAnimator;
 
         // Previous verified state, so the one-shot broadcast flags can be edge-detected instead of
         // re-firing every render frame that resamples the same verified tick.
@@ -53,24 +50,17 @@ namespace Resonance.Combat.Augments
         public void SimulateActivateAbility()
         {
             // Request activation for this system's own next Simulate call, rather than mutating
-            // currentState directly here. Readiness is already gated upstream by the caller
-            // (PlayerAbilityManager checks AbilityReady before invoking this).
-            currentState.GrappleNextTick = true;
+            // currentState directly here. Keep the ordering consistent.
+            currentState.StartGrappleSequenceNextTick = true;
         }
 
-        public bool CanGrapple()
-        {
-            if (playerCamera == null) return false;
-            Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-            return Physics.Raycast(ray, config.maxRange, grappleLayerMask);
-        }
 
         #endregion
 
         #region Exposed state
 
         public bool IsGrappling => currentState.IsGrappling;
-        public Vector3 ReelVelocity => currentState.ReelVelocity;
+        public Vector3 ReelVelocityThisTick => currentState.ReelVelocityThisTick;
         public Vector3 ExitImpulse => currentState.ExitImpulse;
 
         #endregion
@@ -79,12 +69,12 @@ namespace Resonance.Combat.Augments
 
         protected override void LateAwake()
         {
-            playerLocomotionInput = PlayerLocomotionInput.Instance;
-            ropeRenderer = GetComponent<GrappleRopeRenderer>();
-            fpArmsAnimator = GetComponent<FPArmsAnimator>();
+            _playerLocomotionInput = PlayerLocomotionInput.Instance;
+            _ropeRenderer = GetComponent<GrappleRopeRenderer>();
+            _fpArmsAnimator = GetComponent<FPArmsAnimator>();
 
             if (isOwner)
-                playerCamera = Camera.main;
+                _playerCamera = Camera.main;
         }
 
         #endregion
@@ -95,12 +85,12 @@ namespace Resonance.Combat.Augments
         {
             if (!isOwner) return;
 
-            input.JumpPressed = playerLocomotionInput != null && playerLocomotionInput.JumpPressed;
+            input.JumpPressed = _playerLocomotionInput != null && _playerLocomotionInput.JumpPressed;
 
-            if (playerCamera != null)
+            if (_playerCamera != null)
             {
-                input.CameraPosition = playerCamera.transform.position;
-                input.CameraForward = playerCamera.transform.forward;
+                input.CameraPosition = _playerCamera.transform.position;
+                input.CameraForward = _playerCamera.transform.forward;
             }
 
             input.LocalTransformPosition = transform.position;
@@ -151,22 +141,27 @@ namespace Resonance.Combat.Augments
             }
 #endif
 
-            _wasGrappling = v.IsGrappling;
-            _previousVerifiedState = v;
-            if (!isOwner) return;
+            if (!isOwner)
+            {
+                _previousVerifiedState = v;
+                return;
+            };
 
             // Drive the rope renderer's owner-authority SyncVars so the rope replicates to all clients.
-            if (ropeRenderer != null)
+            if (_ropeRenderer != null)
             {
-                ropeRenderer.IsGrappling.value = v.IsGrappling;
+                _ropeRenderer.IsGrappling.value = v.IsGrappling;
                 if (v.IsGrappling)
-                    ropeRenderer.HookPoint.value = v.HookPoint;
+                    _ropeRenderer.HookPoint.value = v.HookPoint;
             }
 
-            // Detect the grapple-end transition to fire end-of-grapple arm animation feedback.
-            if (_wasGrappling && !v.IsGrappling)
-                fpArmsAnimator?.TriggerGrappleEnd();
+            if (_previousVerifiedState?.GrappleStatus == GrappleStatus.None && v.GrappleStatus == GrappleStatus.PendingWithDelay)
+                _fpArmsAnimator?.RequestGrappleActivation();
 
+            if (_previousVerifiedState?.GrappleStatus != GrappleStatus.None && v.GrappleStatus == GrappleStatus.None)
+                _fpArmsAnimator?.TriggerGrappleEnd();
+
+            _previousVerifiedState = v;
         }
         #endregion
 

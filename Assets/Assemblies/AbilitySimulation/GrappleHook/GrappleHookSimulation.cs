@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
 {
-    public class GrappleHookSimulation
+    public static class GrappleHookSimulation
     {
         public static void Step(in GrappleHookSimulationContext ctx, ref AbilityGrappleHookState state)
         {
@@ -14,7 +14,7 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
                 state.Cooldown -= delta;
             
             // Per-tick outputs are consumed each tick, never accumulated.
-            state.ReelVelocity = Vector3.zero;
+            state.ReelVelocityThisTick = Vector3.zero;
             state.ExitImpulse = Vector3.zero;
             state.BroadcastShootAndTravel = false;
             state.BroadcastGrappleRegistration = false;
@@ -26,19 +26,37 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
             state.CameraPosition = input.CameraPosition;
             state.CameraForward = input.CameraForward;
 
-            if (state.GrappleNextTick)
+            if (state.StartGrappleSequenceNextTick)
             {
-                state.GrappleNextTick = false;
-
-                Ray ray = new Ray(state.CameraPosition, state.CameraForward);
-                if (Physics.Raycast(ray, out RaycastHit hit, config.maxRange, config.grappleLayerMask))
+                state.StartGrappleSequenceNextTick = false;
+                if (CanGrapple(in ctx, in state))
                 {
-                    state.IsGrappling = true;
-                    state.HookPoint = hit.point;
-                    state.ReelTime = 0f;
-                    state.BroadcastShootAndTravel = true;
-                    state.BroadcastGrappleRegistration = true;
-                    state.GrappleRegistrationPosition = state.CameraPosition;
+                    state.GrappleStatus = GrappleStatus.PendingWithDelay;
+                }
+            }
+
+            if (state.GrappleStatus == GrappleStatus.PendingWithDelay)
+            {
+                state.PendingTime += delta;
+
+                if (state.PendingTime >= config.animationDelay)
+                {
+                    Ray ray = NewRayFromCamera(state);
+                    if (Physics.Raycast(ray, out RaycastHit hit, config.maxRange, config.grappleLayerMask))
+                    {
+                        state.PendingTime = 0f;
+                        state.GrappleStatus = GrappleStatus.Grappling;
+                        state.HookPoint = hit.point;
+                        state.ReelTime = 0f;
+                        state.BroadcastShootAndTravel = true;
+                        state.BroadcastGrappleRegistration = true;
+                        state.GrappleRegistrationPosition = state.CameraPosition;
+                    }
+                    else
+                    {
+                        state.PendingTime = 0f;
+                        state.GrappleStatus = GrappleStatus.None;
+                    }
                 }
             }
 
@@ -67,9 +85,21 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
             }
 
             // Send the player according to the reel speed, in the determined direction
-            state.ReelVelocity = directionToHook.normalized * config.reelSpeed;
+            state.ReelVelocityThisTick = directionToHook.normalized * config.reelSpeed;
         }
-        
+
+        private static Ray NewRayFromCamera(in AbilityGrappleHookState state)
+        {
+            return new Ray(state.CameraPosition, state.CameraForward);
+        }
+
+        private static bool CanGrapple(in GrappleHookSimulationContext ctx, in AbilityGrappleHookState state)
+        {
+            var config = ctx.Config;
+            Ray ray = NewRayFromCamera(state);
+            return Physics.Raycast(ray, config.maxRange, config.grappleLayerMask);
+        }
+
         private static void ExitGrapple(
             in GrappleHookConfig config,
             ref AbilityGrappleHookState state,
@@ -77,9 +107,10 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
             bool earlyExit
         )
         {
-            state.IsGrappling = false;
+            state.GrappleStatus = GrappleStatus.None;
             state.BroadcastStopTravel = true;
             state.BroadcastRelease = true;
+
 
             if (earlyExit)
             {

@@ -372,7 +372,6 @@ namespace Resonance.Combat
         {
             if (_grappleHook == null || !_grappleHook.AbilityReady) return;
             if (_playerState.CurrentWeaponState != WeaponState.Idle) return;
-            if (!_grappleHook.CanGrapple()) return;
 
             _pendingSkillState = WeaponState.Grappling;
             _playerState.SetExternalWeaponState(WeaponState.Holstering);

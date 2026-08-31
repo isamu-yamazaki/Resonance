@@ -6,17 +6,14 @@ namespace Resonance.Assemblies.AbilitySimulation.BubbleShield
     public struct BubbleShieldSimulationContext
     {
         public readonly AbilityBubbleShieldInput Input;
-        public readonly BubbleShieldConfig Config;
         public readonly float Delta;
 
         public BubbleShieldSimulationContext(
             in AbilityBubbleShieldInput input,
-            in BubbleShieldConfig config,
             float delta
         )
         {
             Input = input;
-            Config = config;
             Delta = delta;
         }
     }

@@ -6,6 +6,28 @@ public class GrappleHookSimulationTests
 {
     private const float Tolerance = 1e-4f;
 
+    private GameObject _grappleTarget;
+
+    [TearDown]
+    public void DestroyGrappleTarget()
+    {
+        if (_grappleTarget != null)
+            Object.DestroyImmediate(_grappleTarget);
+    }
+
+    private void CreateGrappleTarget(int defaultLayer)
+    {
+        // Physics.Raycast has no mock seam, so we place a real collider in the edit-mode
+        // physics scene directly in front of the camera pose and within maxRange, then
+        // sync transforms so the query sees it. The camera looks down +Z from the origin
+        // at a unit cube centered at z = 3, whose front face sits at z = 2.5.
+        _grappleTarget = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        _grappleTarget.layer = defaultLayer;
+        _grappleTarget.transform.position = new Vector3(0f, 0f, 3f);
+        Physics.SyncTransforms();
+    }
+
+
     private static AbilityGrappleHookInput MakeInput(
         bool jumpPressed = false,
         Vector3 cameraPosition = default,
@@ -23,7 +45,9 @@ public class GrappleHookSimulationTests
     }
 
     private static AbilityGrappleHookState MakeState(
-        bool isGrappling = false,
+        GrappleStatus grappleStatus = default,
+        bool startGrappleSequenceNextTick = false,
+        float pendingTime = 0,
         Vector3 hookPoint = default,
         float reelTime = 0,
         Vector3 reelVelocity = default,
@@ -40,10 +64,12 @@ public class GrappleHookSimulationTests
     {
         return new AbilityGrappleHookState()
         {
-            IsGrappling = isGrappling,
+            GrappleStatus = grappleStatus,
+            StartGrappleSequenceNextTick = startGrappleSequenceNextTick,
+            PendingTime = pendingTime,
             HookPoint = hookPoint,
             ReelTime = reelTime,
-            ReelVelocity = reelVelocity,
+            ReelVelocityThisTick = reelVelocity,
             ExitImpulse = exitImpulse,
             CameraPosition = cameraPosition,
             CameraForward = cameraForward,
@@ -57,6 +83,7 @@ public class GrappleHookSimulationTests
     }
 
     private static GrappleHookConfig MakeConfig(
+        float animationDelay = 5f,
         float maxRange = 5f,
         float reelSpeed = 2f,
         float maxReelTime = 5f,
@@ -68,6 +95,7 @@ public class GrappleHookSimulationTests
     {
         return new GrappleHookConfig()
         {
+            animationDelay = animationDelay,
             maxRange = maxRange,
             reelSpeed = reelSpeed,
             maxReelTime = maxReelTime,
@@ -85,8 +113,8 @@ public class GrappleHookSimulationTests
         var input = MakeInput(
             localTransformPosition: new Vector3(5f, 5f, 10f));
         var state = MakeState(
-            hookPoint: new Vector3(10f, 10f, 10f),
-            isGrappling: true
+            grappleStatus: GrappleStatus.Grappling,
+            hookPoint: new Vector3(10f, 10f, 10f)
         );
         var config = MakeConfig();
 
@@ -96,7 +124,7 @@ public class GrappleHookSimulationTests
         var expectedDirectionVelocity = (state.HookPoint - input.LocalTransformPosition).normalized;
 
         GrappleHookSimulation.Step(ctx, ref state);
-        Assert.AreEqual(expectedDirectionVelocity, state.ReelVelocity.normalized);
+        Assert.AreEqual(expectedDirectionVelocity, state.ReelVelocityThisTick.normalized);
     }
 
     [Test]
@@ -126,7 +154,7 @@ public class GrappleHookSimulationTests
         var input = MakeInput();
         const float initialCooldown = 10f;
         var state = MakeState(
-            isGrappling: false,
+            grappleStatus: GrappleStatus.None,
             cooldown: initialCooldown
         );
 
@@ -147,7 +175,7 @@ public class GrappleHookSimulationTests
     {
         var input = MakeInput();
         var state = MakeState(
-            isGrappling: false,
+            grappleStatus: GrappleStatus.None,
             cooldown: 0f
         );
 
@@ -164,13 +192,139 @@ public class GrappleHookSimulationTests
     }
 
     [Test]
+    public void StepStaysNoneAndResetsFlagIfNextTickFlagIsTrueAndNoRaycastHit()
+    {
+        var state = MakeState(
+            grappleStatus: GrappleStatus.None,
+            startGrappleSequenceNextTick: true,
+            pendingTime: 0f
+        );
+        var config = MakeConfig();
+        var ctx = new GrappleHookSimulationContext(MakeInput(), config, 0.1f);
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.AreEqual(GrappleStatus.None, state.GrappleStatus);
+        Assert.AreEqual(0f, state.PendingTime);
+        Assert.IsFalse(state.StartGrappleSequenceNextTick);
+    }
+
+    [Test]
+    public void StepSetsPendingIfNextTickFlagIsTrueAndRaycastHit()
+    {
+        const int defaultLayer = 0;
+        CreateGrappleTarget(defaultLayer);
+
+        var state = MakeState(
+            grappleStatus: GrappleStatus.None,
+            startGrappleSequenceNextTick: true,
+            pendingTime: 0f
+        );
+        var config = MakeConfig(
+            animationDelay: 2f,
+            maxRange: 5f,
+            grappleLayerMask: 1 << defaultLayer
+        );
+        var input = MakeInput(
+            cameraPosition: Vector3.zero,
+            cameraForward: Vector3.forward
+        );
+        var ctx = new GrappleHookSimulationContext(input, config, 0.1f);
+
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.AreEqual(GrappleStatus.PendingWithDelay, state.GrappleStatus);
+        Assert.AreEqual(0.1f, state.PendingTime, Tolerance);
+    }
+
+    [Test]
+    public void StepStartsGrappleImmediatelyIfNextTickFlagIsTrueWithRaycastHitAndZeroAnimationDelay()
+    {
+        const int defaultLayer = 0;
+        CreateGrappleTarget(defaultLayer);
+
+        var state = MakeState(
+            grappleStatus: GrappleStatus.None,
+            startGrappleSequenceNextTick: true,
+            pendingTime: 0f
+        );
+        var config = MakeConfig(
+            animationDelay: 0f,
+            maxRange: 5f,
+            grappleLayerMask: 1 << defaultLayer
+        );
+        var input = MakeInput(
+            cameraPosition: Vector3.zero,
+            cameraForward: Vector3.forward
+        );
+        var ctx = new GrappleHookSimulationContext(input, config, 0.1f);
+
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.AreEqual(GrappleStatus.Grappling, state.GrappleStatus);
+    }
+
+    [Test]
+    [TestCase(0.1f)]
+    [TestCase(0.2f)]
+    public void StepResetsIfMeetsOrExceedsConfiguredAnimationDelayAndNoRaycastHit(float delta)
+    {
+        var config = MakeConfig(
+            animationDelay: 2f
+        );
+
+        var state = MakeState(
+            grappleStatus: GrappleStatus.PendingWithDelay,
+            pendingTime: 1.9f
+        );
+
+        var ctx = new GrappleHookSimulationContext(MakeInput(), config, delta);
+        GrappleHookSimulation.Step(ctx, ref state);
+        Assert.AreEqual(0f, state.PendingTime);
+        Assert.AreEqual(GrappleStatus.None, state.GrappleStatus);
+    }
+
+    [Test]
+    [TestCase(0.1f)]
+    [TestCase(0.2f)]
+    public void StepGrapplesIfMeetsOrExceedsConfiguredAnimationDelayAndRaycastHit(float delta)
+    {
+        const int defaultLayer = 0;
+        CreateGrappleTarget(defaultLayer);
+
+        var input = MakeInput(
+            cameraPosition: Vector3.zero,
+            cameraForward: Vector3.forward
+        );
+        var config = MakeConfig(
+            animationDelay: 2f,
+            maxRange: 5f,
+            grappleLayerMask: 1 << defaultLayer
+        );
+
+        var state = MakeState(
+            grappleStatus: GrappleStatus.PendingWithDelay,
+            pendingTime: 1.9f
+        );
+
+        var ctx = new GrappleHookSimulationContext(input, config, delta);
+        GrappleHookSimulation.Step(ctx, ref state);
+
+        Assert.AreEqual(GrappleStatus.Grappling, state.GrappleStatus);
+        Assert.AreEqual(0f, state.PendingTime);
+        Assert.AreEqual(2.5f, state.HookPoint.z, Tolerance);
+        Assert.IsTrue(state.BroadcastShootAndTravel);
+        Assert.IsTrue(state.BroadcastGrappleRegistration);
+        Assert.AreEqual(input.CameraPosition, state.GrappleRegistrationPosition);
+    }
+
+    [Test]
     public void StepExitsGrappleAndStartsCooldownIfJumpPressed()
     {
         var input = MakeInput(
             jumpPressed: true
         );
         var state = MakeState(
-            isGrappling: true
+            grappleStatus: GrappleStatus.Grappling
         );
         const float startingCooldown = 15f;
         var config = MakeConfig(
@@ -182,7 +336,7 @@ public class GrappleHookSimulationTests
             input, config, delta);
 
         GrappleHookSimulation.Step(ctx, ref state);
-        Assert.IsFalse(state.IsGrappling);
+        Assert.AreEqual(GrappleStatus.None, state.GrappleStatus);
         Assert.AreEqual(startingCooldown, state.Cooldown);
     }
 
@@ -191,7 +345,7 @@ public class GrappleHookSimulationTests
     {
         var input = MakeInput();
         var state = MakeState(
-            isGrappling: true,
+            grappleStatus: GrappleStatus.Grappling,
             reelTime: 10f
         );
         const float startingCooldown = 15f;
@@ -205,7 +359,7 @@ public class GrappleHookSimulationTests
             input, config, delta);
 
         GrappleHookSimulation.Step(ctx, ref state);
-        Assert.IsFalse(state.IsGrappling);
+        Assert.AreEqual(GrappleStatus.None, state.GrappleStatus);
         Assert.AreEqual(startingCooldown, state.Cooldown);
     }
 
@@ -217,7 +371,7 @@ public class GrappleHookSimulationTests
         );
         var hookPoint = new Vector3(30f, 30f, 30f);
         var state = MakeState(
-            isGrappling: true,
+            grappleStatus: GrappleStatus.Grappling,
             reelTime: 5f,
             hookPoint: hookPoint
         );
@@ -233,7 +387,7 @@ public class GrappleHookSimulationTests
         GrappleHookSimulation.Step(ctx, ref state);
 
         var expectedVelocity = (hookPoint - input.LocalTransformPosition).normalized * config.reelSpeed;
-        Assert.AreEqual(expectedVelocity, state.ReelVelocity);
+        Assert.AreEqual(expectedVelocity, state.ReelVelocityThisTick);
     }
 
     [Test]
@@ -243,7 +397,7 @@ public class GrappleHookSimulationTests
             jumpPressed: true
         );
         var state = MakeState(
-            isGrappling: true
+            grappleStatus: GrappleStatus.Grappling
         );
         var config = MakeConfig();
 
@@ -254,7 +408,7 @@ public class GrappleHookSimulationTests
 
         Assert.IsTrue(state.BroadcastStopTravel);
         Assert.IsTrue(state.BroadcastRelease);
-        Assert.IsFalse(state.IsGrappling);
+        Assert.AreEqual(GrappleStatus.None, state.GrappleStatus);
     }
 
     [Test]
@@ -262,7 +416,7 @@ public class GrappleHookSimulationTests
     {
         var input = MakeInput();
         var state = MakeState(
-            isGrappling: true,
+            grappleStatus: GrappleStatus.Grappling,
             reelTime: 10f
         );
         var config = MakeConfig(
@@ -285,7 +439,7 @@ public class GrappleHookSimulationTests
             localTransformPosition: new Vector3(0f, 0f, 0f)
         );
         var state = MakeState(
-            isGrappling: true,
+            grappleStatus: GrappleStatus.Grappling,
             reelTime: 1f,
             hookPoint: new Vector3(30f, 30f, 30f)
         );
@@ -311,7 +465,7 @@ public class GrappleHookSimulationTests
             localTransformPosition: new Vector3(0f, 0f, 0f)
         );
         var state = MakeState(
-            isGrappling: true,
+            grappleStatus: GrappleStatus.Grappling,
             reelTime: 1f,
             hookPoint: new Vector3(30f, 30f, 30f),
             broadcastShootAndTravel: true,

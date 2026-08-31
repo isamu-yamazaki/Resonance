@@ -3,15 +3,12 @@ namespace Resonance.Assemblies.AbilitySimulation.BubbleShield
     public class BubbleShieldSimulation
     {
         /// <summary>
-        /// Per-tick simulation for the bubble shield ability. Mirrors the owner aim into state,
-        /// raises the cooldown and signals a spawn when activation is pressed, then ticks the
-        /// cooldown down. Activation here is NOT cooldown-gated — the gate lives upstream in
-        /// AbilityBubbleShield.ActivateAbilityExternal. The cooldown-gated path is TryActivate.
+        /// Per-tick simulation for the bubble shield ability. Note that simulation
+        /// also happens in the AbilityBubbleShield.SimulateActivateAbility method.
         /// </summary>
         public static void Step(in BubbleShieldSimulationContext ctx, ref AbilityBubbleShieldState state)
         {
             var input = ctx.Input;
-            var config = ctx.Config;
             var delta = ctx.Delta;
 
             // Per-tick output, consumed each tick, never accumulated.
@@ -19,12 +16,6 @@ namespace Resonance.Assemblies.AbilitySimulation.BubbleShield
 
             state.SpawnPosition = input.SpawnPosition;
             state.LobDirection = input.LobDirection;
-
-            if (input.ActivatePressed)
-            {
-                state.Cooldown = config.cooldown;
-                state.ShouldSpawnShield = true;
-            }
 
             if (state.Cooldown > 0f)
                 state.Cooldown -= delta;
