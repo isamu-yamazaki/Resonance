@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Resonance.BuildTools
 {
@@ -9,9 +10,16 @@ namespace Resonance.BuildTools
     public class ServerBuildConfig : ScriptableObject
     {
         /// <summary>
-        /// When true, connects to the remote production relay (PurrRelay).
-        /// When false, connects to the local relay — requires PurrLay running on your machine.
+        /// Determine whether to create a development or production build.
         /// </summary>
-        public bool useProductionRelay;
+        [FormerlySerializedAs("useProductionRelay")] public bool isProductionBuild;
+
+        /// <summary>
+        /// A string that all clients must agree on when connecting to the server orchestrator,
+        /// before connecting to a server build with this value.
+        /// BuildScript.cs overwrites this value when making a build.
+        /// The value set in the editor is for use within the editor only.
+        /// </summary>
+        public string intendedServerVersion;
     }
 }

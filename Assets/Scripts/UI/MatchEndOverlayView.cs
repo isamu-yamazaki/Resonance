@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,7 @@ using PurrNet;
 using Resonance.Assemblies.LobbySystem;
 using Resonance.Assemblies.MatchStat;
 using Resonance.Assemblies.UISystem;
+using Resonance.GameBootstrap;
 using Resonance.Match;
 using Resonance.NetworkDespawner;
 
@@ -19,20 +21,24 @@ namespace Resonance.UI
 
         public static MatchEndOverlayView Instance { get; private set; }
 
-        [Header("Match End UI")]
-        [SerializeField] private GameObject matchEndPanel;
+        [Header("Match End UI")] [SerializeField]
+        private GameObject matchEndPanel;
+
         [SerializeField] private TextMeshProUGUI winnerText;
         [SerializeField] private TextMeshProUGUI finalStatsText;
         [SerializeField] private TextMeshProUGUI waitingForHostText;
         [SerializeField] private Button playAgainButton;
         [SerializeField] private Button returnToLobbyButton;
 
-        [Header("Leaderboard")]
-        [SerializeField] private Transform leaderboardContentRoot;
+        [Header("Leaderboard")] [SerializeField]
+        private Transform leaderboardContentRoot;
+
         [SerializeField] private LeaderboardRow leaderboardRowPrefab;
 
-        [Header("Dependencies")]
-        [SerializeField] private NetworkDespawnerSceneLoader despawnerSceneLoader;
+        [Header("Dependencies")] [SerializeField]
+        private NetworkDespawnerSceneLoader despawnerSceneLoader;
+
+        private NetworkedMatchDataHolder _matchDataHolder;
 
         private Action dismiss;
         private readonly List<LeaderboardRow> _spawnedRows = new();
@@ -47,6 +53,11 @@ namespace Resonance.UI
             if (despawnerSceneLoader == null)
             {
                 despawnerSceneLoader = FindFirstObjectByType<NetworkDespawnerSceneLoader>();
+            }
+
+            if (_matchDataHolder == null)
+            {
+                _matchDataHolder = FindFirstObjectByType<NetworkedMatchDataHolder>();
             }
 
             if (matchEndPanel != null)
@@ -79,6 +90,7 @@ namespace Resonance.UI
             {
                 matchEndPanel.SetActive(true);
             }
+
             dismiss = viewActions.Dismiss;
 
             RenderLeaderboard();
@@ -90,21 +102,30 @@ namespace Resonance.UI
             {
                 matchEndPanel.SetActive(false);
             }
+
             dismiss = null;
         }
 
-        public async void PresentWinner(PlayerID? winner)
+        public async Task PresentWinner(PlayerID? winner)
         {
             if (winnerText != null)
             {
-                if (winner == null)
+                if (!winner.HasValue)
                 {
                     winnerText.text = "No Winner.";
                 }
                 else
                 {
-                    var displayName = PlayerIdToLobbyMemberIdMap.Instance?.GetDisplayName(winner.Value);
-                    winnerText.text = $"{displayName ?? winner.ToString()} Wins!";
+                    var identity = PlayerIdToMatchMemberIdMap.Instance?.GetPlayerIdentityForPlayerID(winner.Value);
+                    if (identity.HasValue && _matchDataHolder != null)
+                    {
+                        var displayName = await _matchDataHolder.GetDisplayName(identity.Value);
+                        winnerText.text = $"{displayName ?? winner.ToString()} Wins!";
+                    }
+                    else
+                    {
+                        winnerText.text = $"{winner.ToString()} wins!";
+                    }
                 }
             }
 
@@ -114,9 +135,9 @@ namespace Resonance.UI
             }
 
             var matchStats = MatchStatBridge.GetTemporaryReference();
-            if (winner is PlayerID id && matchStats != null)
+            if (winner.HasValue && matchStats != null)
             {
-                PlayerMatchStats? stats = await matchStats.GetStats(id);
+                PlayerMatchStats? stats = await matchStats.GetStats(winner.Value);
                 if (stats != null && finalStatsText != null)
                 {
                     finalStatsText.text = $"Final Score: {stats?.kills} Kills";

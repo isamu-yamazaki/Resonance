@@ -6,6 +6,15 @@ on:
   workflow_dispatch:
 
 jobs:
+  generate-server-version:
+    runs-on: ubuntu-latest
+    outputs:
+      server_version: ${{ steps.generate_version.outputs.server_version }}
+    steps:
+      - name: Generate shared build ID
+        id: generate_version
+        run: echo "server_version=$(uuidgen)" >> "$GITHUB_OUTPUT"
+
   check:
     runs-on: ubuntu-latest
     outputs:
@@ -53,7 +62,7 @@ jobs:
           key: lfs-${{ github.sha }}
 
   build:
-    needs: [check, download-lfs]
+    needs: [check, download-lfs, generate-server-version]
     if: needs.check.outputs.has_changes == 'true'
     runs-on: macos-26
     timeout-minutes: 60
@@ -63,15 +72,9 @@ jobs:
           - target: win64
             mode: Client
             client_config: ProductionClient
-          - target: win64
-            mode: Client
-            client_config: ProductionHost
           - target: osxuniversal
             mode: Client
             client_config: ProductionClient
-          - target: osxuniversal
-            mode: Client
-            client_config: ProductionHost
           - target: linux64
             mode: Server
     steps:
@@ -93,13 +96,6 @@ jobs:
       - name: Pull LFS files
         run: git lfs pull
 
-      - name: Restore Unity installation from cache
-        id: cache-unity
-        uses: actions/cache/restore@v4
-        with:
-          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
-          key: unity-${{ vars.UNITY_VERSION }}-full
-
       - name: Install Unity
         if: steps.cache-unity.outputs.cache-hit != 'true'
         run: |
@@ -115,13 +111,6 @@ jobs:
             --module linux-server
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Save Unity installation to cache
-        if: steps.cache-unity.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: /Applications/Unity/Hub/Editor/${{ vars.UNITY_VERSION }}
-          key: unity-${{ vars.UNITY_VERSION }}-full
 
       - name: Import certificate into keychain
         if: matrix.mode == 'Client'
@@ -178,7 +167,8 @@ jobs:
             -executeMethod Resonance.BuildTools.BuildScript.BuildCLI \
             -buildMode ${{ matrix.mode }} \
             -buildConfig $CONFIG \
-            -buildPlatform ${{ matrix.target }}
+            -buildPlatform ${{ matrix.target }} \
+            -serverVersion ${{ needs.generate-server-version.outputs.server_version }}
           BUILD_EXIT=$?
 
           sleep 1

@@ -6,6 +6,7 @@ using UnityEditor.Build.Profile;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Resonance.BuildTools
 {
@@ -17,54 +18,31 @@ namespace Resonance.BuildTools
         [MenuItem("Build/Client/Windows/DevClient")]
         public static void BuildDevClientWindows() => Build(LoadConfig("DevClient"), BuildTarget.StandaloneWindows64);
 
-        [MenuItem("Build/Client/Windows/DevClientLocalRelay")]
-        public static void BuildDevClientLocalRelayWindows() => Build(LoadConfig("DevClientLocalRelay"), BuildTarget.StandaloneWindows64);
-
-        [MenuItem("Build/Client/Windows/DevHost")]
-        public static void BuildDevHostWindows() => Build(LoadConfig("DevHost"), BuildTarget.StandaloneWindows64);
-
-        [MenuItem("Build/Client/Windows/DevHostLocalRelay")]
-        public static void BuildDevHostLocalRelayWindows() => Build(LoadConfig("DevHostLocalRelay"), BuildTarget.StandaloneWindows64);
-
         [MenuItem("Build/Client/Windows/ProductionClient")]
         public static void BuildProductionClientWindows() => Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneWindows64);
-
-        [MenuItem("Build/Client/Windows/ProductionHost")]
-        public static void BuildProductionHostWindows() => Build(LoadConfig("ProductionHost"), BuildTarget.StandaloneWindows64);
 
         [MenuItem("Build/Client/Mac/DevClient")]
         public static void BuildDevClientMac() => Build(LoadConfig("DevClient"), BuildTarget.StandaloneOSX);
 
-        [MenuItem("Build/Client/Mac/DevClientLocalRelay")]
-        public static void BuildDevClientLocalRelayMac() => Build(LoadConfig("DevClientLocalRelay"), BuildTarget.StandaloneOSX);
-
-        [MenuItem("Build/Client/Mac/DevHost")]
-        public static void BuildDevHostMac() => Build(LoadConfig("DevHost"), BuildTarget.StandaloneOSX);
-
-        [MenuItem("Build/Client/Mac/DevHostLocalRelay")]
-        public static void BuildDevHostLocalRelayMac() => Build(LoadConfig("DevHostLocalRelay"), BuildTarget.StandaloneOSX);
-
         [MenuItem("Build/Client/Mac/ProductionClient")]
         public static void BuildProductionClientMac() => Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneOSX);
 
-        [MenuItem("Build/Client/Mac/ProductionHost")]
-        public static void BuildProductionHostMac() => Build(LoadConfig("ProductionHost"), BuildTarget.StandaloneOSX);
-
-        [MenuItem("Build/Server/Linux/LocalRelay")]
-        public static void BuildServerLocalRelayLinux() => BuildServer(LoadServerConfig("LocalRelay"), BuildTarget.StandaloneLinux64);
-
-        [MenuItem("Build/Server/Linux/Production")]
-        public static void BuildServerProductionLinux() => BuildServer(LoadServerConfig("Production"), BuildTarget.StandaloneLinux64);
+        [MenuItem("Build/Server/Linux/Default")]
+        public static void BuildServerLinux() => BuildServer(LoadServerConfig("Default"), BuildTarget.StandaloneLinux64);
 
         #endregion
 
 
         #region CLI entry point
         /// <summary>
-        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildPlatform win64|osxuniversal|linux64
+        /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildPlatform win64|osxuniversal|linux64 -serverVersion (any string)
+        /// </summary>
+        ///
+        /// <remarks>
         /// Supported -buildMode values: Client (default), Server
         /// Supported -buildPlatform values: win64 (default), osxuniversal, linux64
-        /// </summary>
+        /// The CLI invocation is currently the only way to build with a server version other than `dev`.
+        /// </remarks>
         public static void BuildCLI()
         {
             string configName = ReadArg("-buildConfig")
@@ -72,6 +50,8 @@ namespace Resonance.BuildTools
 
             string modeName = ReadArg("-buildMode") ?? "Client";
             string targetName = ReadArg("-buildPlatform") ?? "win64";
+            string serverVersion = ReadArg("-serverVersion") ?? "dev";
+
             BuildTarget target = targetName switch
             {
                 "win64" => BuildTarget.StandaloneWindows64,
@@ -82,11 +62,15 @@ namespace Resonance.BuildTools
 
             if (modeName == "Server")
             {
-                BuildServer(LoadServerConfig(configName), target);
+                var config = LoadServerConfig(configName);
+                SetIntendedServerVersion(config, serverVersion, "server");
+                BuildServer(config, target);
             }
             else
             {
-                Build(LoadConfig(configName), target);
+                var config = LoadConfig(configName);
+                SetIntendedServerVersion(config, serverVersion, "client");
+                Build(config, target);
             }
         }
         #endregion
@@ -125,6 +109,25 @@ namespace Resonance.BuildTools
         static ServerBuildConfig LoadServerConfig(string name) =>
             LoadAsset<ServerBuildConfig>($"{ServerBuildConfigPath}{name}.asset");
 
+        /// <summary>
+        /// Write the intended server version into the build config asset on disk.
+        /// The change must be saved for Unity to load it correctly.
+        /// </summary>
+        private static void SetIntendedServerVersion(ScriptableObject config, string version, string label)
+        {
+            var so = new SerializedObject(config);
+            var property = so.FindProperty("intendedServerVersion")
+                ?? throw new System.Exception(
+                    $"'{config.name}' ({config.GetType().Name}) has no serialized 'intendedServerVersion' field.");
+
+            Debug.Log($"[BuildScript] Setting server version '{version}' on {label} config " +
+                      $"'{config.name}', overwriting '{property.stringValue}'");
+
+            property.stringValue = version;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            AssetDatabase.SaveAssetIfDirty(config);
+        }
+
         static void LogScenes(string[] scenes)
         {
             Debug.Log($"[BuildScript] Building with {scenes.Length} scene(s):\n" +
@@ -145,7 +148,7 @@ namespace Resonance.BuildTools
             InjectConfigIntoScene<ServerBuildConfigReceiver, ServerBuildConfig>(
                 "Assets/Scenes/Transitions/ServerStartScene.unity", config);
 
-            bool isDev = !config.useProductionRelay;
+            bool isDev = !config.isProductionBuild;
             string targetFolder = target == BuildTarget.StandaloneLinux64 ? "Linux" : "Windows";
 
             string[] scenes = ServerScenes;
@@ -168,7 +171,7 @@ namespace Resonance.BuildTools
             InjectConfigIntoScene<ClientBuildConfigReceiver, ClientBuildConfig>(
                 "Assets/Scenes/Lobby/LobbyScene.unity", config);
 
-            bool isDev = !config.enableSteamLobby && !config.useProductionRelay;
+            bool isDev = !config.isProduction;
             string ext = target == BuildTarget.StandaloneWindows64 ? ".exe" : ".app";
             string targetFolder = target == BuildTarget.StandaloneWindows64 ? "Windows" : "Mac";
 
@@ -295,9 +298,9 @@ namespace Resonance.BuildTools
             where TConfig : ScriptableObject
         {
             bool wasAlreadyLoaded = false;
-            for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
+            for (int i = 0; i < SceneManager.sceneCount; i++)
             {
-                if (UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).path == scenePath)
+                if (SceneManager.GetSceneAt(i).path == scenePath)
                 {
                     wasAlreadyLoaded = true;
                     break;
@@ -305,7 +308,7 @@ namespace Resonance.BuildTools
             }
 
             var scene = wasAlreadyLoaded
-                ? EditorSceneManager.GetSceneByPath(scenePath)
+                ? SceneManager.GetSceneByPath(scenePath)
                 : EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
             var configurator = Object.FindFirstObjectByType<TConfigurator>();
@@ -326,7 +329,7 @@ namespace Resonance.BuildTools
                 EditorSceneManager.CloseScene(scene, true);
         }
 
-        static string ReadArg(string flag)
+        private static string ReadArg(string flag)
         {
             var args = System.Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
