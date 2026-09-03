@@ -229,6 +229,7 @@ jobs:
 
   edgegap-create-version:
     needs: [ build, generate-server-version ]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout without LFS
         uses: actions/checkout@v4
