@@ -20,7 +20,7 @@ jobs:
     outputs:
       has_changes: ${{ steps.check.outputs.has_changes }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check for recent commits
         id: check
         run: |
@@ -37,7 +37,7 @@ jobs:
     if: needs.check.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure LFS credentials
         run: |
@@ -79,7 +79,7 @@ jobs:
             mode: Server
             client_config: Default
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure LFS credentials
         run: |
@@ -232,7 +232,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout without LFS
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Create blank build directory
         run: mkdir -p Builds/Default/Linux
