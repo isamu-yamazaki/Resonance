@@ -17,9 +17,7 @@ namespace Resonance.Abilities.SonarDisc
 
         [Header("Config")] [SerializeField] private SonarDiscConfig config;
 
-        private PlayerActionsInput _playerActionsInput;
         private FPArmsManager _fpArmsManager;
-        private bool _pendingActivate;
 
         public const string AbilityKeyConst = "augment_upper_sonarDisc";
 
@@ -44,21 +42,12 @@ namespace Resonance.Abilities.SonarDisc
         {
             if (!isOwner) return;
 
-            _playerActionsInput = PlayerActionsInput.Instance;
             _fpArmsManager = GetComponent<FPArmsManager>();
         }
 
         #endregion
 
         #region Input
-
-        public void ActivateAbilityExternal()
-        {
-            if (!AbilityReady)
-                return;
-
-            _pendingActivate = true;
-        }
 
         private Transform GetActiveMuzzle()
         {
@@ -81,9 +70,6 @@ namespace Resonance.Abilities.SonarDisc
 
         protected override void GetFinalInput(ref SonarDiscAbilityInput input)
         {
-            input.ActivatePressed = _pendingActivate;
-            _pendingActivate = false;
-
             Transform muzzle = GetActiveMuzzle();
             if (muzzle == null) return;
 

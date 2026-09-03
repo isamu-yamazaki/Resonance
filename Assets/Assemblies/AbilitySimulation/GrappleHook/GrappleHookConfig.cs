@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
 {
@@ -7,6 +8,7 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
     public struct GrappleHookConfig
     {
         [Header("Grapple Settings")]
+        public float animationDelay;
         public float maxRange;
         public float reelSpeed;
         public float maxReelTime;
@@ -16,5 +18,6 @@ namespace Resonance.Assemblies.AbilitySimulation.GrappleHook
         
         [Header("References")]
         public LayerMask grappleLayerMask;
+
     }
 }

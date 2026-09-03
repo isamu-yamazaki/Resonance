@@ -36,7 +36,6 @@ namespace Resonance.Combat.Augments
         }
         public bool AbilityReady => false;
 
-        public void ActivateAbilityExternal() { }
         public void SimulateActivateAbility()
         {
             throw new System.NotImplementedException();

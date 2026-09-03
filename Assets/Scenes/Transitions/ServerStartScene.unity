@@ -687,12 +687,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79fd4002b02784f038d424f054d4d07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ServerLobbyCodeReader
-  nextSceneName: GameBootstrapScene
+  bootstrapSceneName: GameBootstrapScene
   editorOrchestratorUrl: http://127.0.0.1:9000
   editorGameServerPort: 7777
   editorGameMode: Arena
   editorMatchId: test-match-id
   editorMatchKey: test-match-key
+  editorNextSceneName: NightCity
+  intendedServerVersion: dev
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

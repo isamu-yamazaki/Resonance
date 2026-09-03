@@ -34,9 +34,6 @@ namespace Resonance.Assemblies.AbilitySimulation.SonarDisc
                 state.SpawnDiscNextTick = false;
             }
 
-            if (input.ActivatePressed)
-                state.SpawnDiscNextTick = true;
-
             // Mirror the owner muzzle pose into state for the next tick's spawn / SimulationOnly reads.
             state.MuzzleForward = input.MuzzleForward;
             state.MuzzlePosition = input.MuzzlePosition;

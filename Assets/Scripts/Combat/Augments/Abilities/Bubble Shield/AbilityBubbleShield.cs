@@ -47,25 +47,13 @@ namespace Resonance.Abilities.BubbleShield
         {
             if (!isOwner) return;
 
-            input.ActivatePressed = _pendingActivate;
-
             if (playerCamera != null)
             {
                 input.SpawnPosition = playerCamera.transform.position;
                 input.LobDirection = Vector3.Lerp(playerCamera.transform.forward, Vector3.up, config.upwardLobBias)
                     .normalized;
             }
-
-            _pendingActivate = false;
         }
-
-        public void ActivateAbilityExternal()
-        {
-            if (!AbilityReady) return;
-
-            _pendingActivate = true;
-        }
-
         #endregion
 
 
@@ -74,7 +62,7 @@ namespace Resonance.Abilities.BubbleShield
         protected override void Simulate(AbilityBubbleShieldInput input, ref AbilityBubbleShieldState state,
             float delta)
         {
-            var ctx = new BubbleShieldSimulationContext(input, config, delta);
+            var ctx = new BubbleShieldSimulationContext(input, delta);
             BubbleShieldSimulation.Step(ctx, ref state);
 
             if (state.ShouldSpawnShield)

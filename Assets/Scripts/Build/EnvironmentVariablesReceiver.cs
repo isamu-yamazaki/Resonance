@@ -25,6 +25,7 @@ namespace Resonance.BuildTools
 
         private const string NextSceneVariable = "RESONANCE_NEXT_SCENE_NAME";
         private const string GameModeVariable = "RESONANCE_GAME_MODE";
+        private const string IntendedServerVersionVariable = "RESONANCE_INTENDED_SERVER_VERSION";
 
         public ushort? GameServerPort { get; private set; }
         [CanBeNull] public string MatchId { get; private set; }
@@ -59,6 +60,7 @@ namespace Resonance.BuildTools
             OrchestratorUrl = System.Environment.GetEnvironmentVariable(OrchestratorUrlVariable);
             NextSceneName = System.Environment.GetEnvironmentVariable(NextSceneVariable);
             GameMode = System.Environment.GetEnvironmentVariable(GameModeVariable);
+            IntendedServerVersion = System.Environment.GetEnvironmentVariable(IntendedServerVersionVariable);
         }
 
 #if UNITY_EDITOR

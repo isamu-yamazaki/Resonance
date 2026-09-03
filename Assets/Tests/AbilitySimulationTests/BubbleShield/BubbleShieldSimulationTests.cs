@@ -58,9 +58,8 @@ public class BubbleShieldSimulationTests
             lobDirection: new Vector3(0f, 1f, 0f)
         );
         var state = MakeState();
-        var config = MakeConfig();
 
-        var ctx = new BubbleShieldSimulationContext(input, config, delta: 0.1f);
+        var ctx = new BubbleShieldSimulationContext(input, delta: 0.1f);
 
         BubbleShieldSimulation.Step(ctx, ref state);
 
@@ -68,57 +67,8 @@ public class BubbleShieldSimulationTests
         Assert.AreEqual(input.LobDirection, state.LobDirection);
     }
 
-    [Test]
-    public void StepSetsCooldownAndSignalsSpawnWhenActivatePressed()
-    {
-        var input = MakeInput(activatePressed: true);
-        var state = MakeState(cooldown: 0f);
-        const float cooldown = 5f;
-        var config = MakeConfig(cooldown: cooldown);
-
-        const float delta = 0.1f;
-        var ctx = new BubbleShieldSimulationContext(input, config, delta);
-
-        BubbleShieldSimulation.Step(ctx, ref state);
-
-        Assert.IsTrue(state.ShouldSpawnShield);
-        // Cooldown is raised to config.cooldown on activation, then decremented the same tick.
-        Assert.AreEqual(cooldown - delta, state.Cooldown, Tolerance);
-    }
-
-    [Test]
-    public void StepDoesNotSignalSpawnWhenActivateNotPressed()
-    {
-        var input = MakeInput(activatePressed: false);
-        var state = MakeState();
-        var config = MakeConfig();
-
-        var ctx = new BubbleShieldSimulationContext(input, config, delta: 0.1f);
-
-        BubbleShieldSimulation.Step(ctx, ref state);
-
-        Assert.IsFalse(state.ShouldSpawnShield);
-    }
-
-    [Test]
-    public void StepActivationIsNotCooldownGatedAndResetsRunningCooldown()
-    {
-        // Gating lives upstream in AbilityBubbleShield.ActivateAbilityExternal; the per-tick
-        // Step always activates when pressed, even with a cooldown still running, and overwrites
-        // that running cooldown with config.cooldown.
-        var input = MakeInput(activatePressed: true);
-        var state = MakeState(cooldown: 100f);
-        var config = MakeConfig(cooldown: 5f);
-
-        const float delta = 0.1f;
-        var ctx = new BubbleShieldSimulationContext(input, config, delta);
-
-        BubbleShieldSimulation.Step(ctx, ref state);
-
-        Assert.IsTrue(state.ShouldSpawnShield);
-        // The 100f running cooldown is replaced by config.cooldown, then decremented this tick.
-        Assert.AreEqual(config.cooldown - delta, state.Cooldown, Tolerance);
-    }
+    // no longer testing for activation in tests,
+    // that is handled by the external simulation method
 
     [Test]
     public void StepCooldownDecrementsPastZeroWhenBelowDelta()
@@ -129,9 +79,8 @@ public class BubbleShieldSimulationTests
         var input = MakeInput();
         const float delta = 0.1f;
         var state = MakeState(cooldown: 0.05f);
-        var config = MakeConfig();
 
-        var ctx = new BubbleShieldSimulationContext(input, config, delta);
+        var ctx = new BubbleShieldSimulationContext(input, delta);
 
         BubbleShieldSimulation.Step(ctx, ref state);
 
@@ -144,9 +93,8 @@ public class BubbleShieldSimulationTests
     {
         var input = MakeInput(activatePressed: false);
         var state = MakeState(shouldSpawnShield: true);
-        var config = MakeConfig();
 
-        var ctx = new BubbleShieldSimulationContext(input, config, delta: 0.1f);
+        var ctx = new BubbleShieldSimulationContext(input, delta: 0.1f);
 
         BubbleShieldSimulation.Step(ctx, ref state);
 
@@ -159,10 +107,9 @@ public class BubbleShieldSimulationTests
         var input = MakeInput();
         const float initialCooldown = 3f;
         var state = MakeState(cooldown: initialCooldown);
-        var config = MakeConfig();
 
         const float delta = 0.1f;
-        var ctx = new BubbleShieldSimulationContext(input, config, delta);
+        var ctx = new BubbleShieldSimulationContext(input, delta);
 
         BubbleShieldSimulation.Step(ctx, ref state);
 
@@ -174,9 +121,8 @@ public class BubbleShieldSimulationTests
     {
         var input = MakeInput();
         var state = MakeState(cooldown: 0f);
-        var config = MakeConfig();
 
-        var ctx = new BubbleShieldSimulationContext(input, config, delta: 0.1f);
+        var ctx = new BubbleShieldSimulationContext(input, delta: 0.1f);
 
         BubbleShieldSimulation.Step(ctx, ref state);
 
