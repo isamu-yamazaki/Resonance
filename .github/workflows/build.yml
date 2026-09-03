@@ -263,7 +263,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: registry.edgegap.com/${{ vars.EDGEGAP_REGISTRY_PROJECT_NAME }}/${{ needs.generate-server-version.outputs.server_version }}:latest
+          tags: registry.edgegap.com/${{ vars.EDGEGAP_REGISTRY_PROJECT_NAME }}/server-build:${{ needs.generate-server-version.outputs.server_version }}
 
       - name: Create new Edgegap version
         # See https://docs.edgegap.com/docs/api/versioning#post-v1-app-app_name-version
@@ -280,8 +280,8 @@ jobs:
             "docker_repository": "registry.edgegap.com",
             "private_username": "${{ secrets.EDGEGAP_CONTAINER_REGISTRY_USERNAME }}",
             "private_token": "${{ secrets.EDGEGAP_CONTAINER_REGISTRY_PASSWORD }}",
-            "docker_image": "${{ vars.EDGEGAP_REGISTRY_PROJECT_NAME }}/${{ needs.generate-server-version.outputs.server_version }}",
-            "docker_tag": "latest",
+            "docker_image": "registry.edgegap.com/${{ vars.EDGEGAP_REGISTRY_PROJECT_NAME }}/server-build",
+            "docker_tag": "${{ needs.generate-server-version.outputs.server_version }}",
             "ports": [
               {
                 "port": 7777,
