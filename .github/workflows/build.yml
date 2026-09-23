@@ -20,7 +20,7 @@ jobs:
     outputs:
       has_changes: ${{ steps.check.outputs.has_changes }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check for recent commits
         id: check
         run: |
@@ -37,7 +37,7 @@ jobs:
     if: needs.check.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure LFS credentials
         run: |
@@ -62,7 +62,7 @@ jobs:
           key: lfs-${{ github.sha }}
 
   build:
-    needs: [check, download-lfs, generate-server-version]
+    needs: [ check, download-lfs, generate-server-version ]
     if: needs.check.outputs.has_changes == 'true'
     runs-on: macos-26
     timeout-minutes: 60
@@ -77,8 +77,9 @@ jobs:
             client_config: ProductionClient
           - target: linux64
             mode: Server
+            client_config: Default
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure LFS credentials
         run: |
@@ -158,7 +159,7 @@ jobs:
             GRAPHICS_FLAG="-nographics"
           fi
 
-          CONFIG=${{ matrix.client_config || 'Production' }}
+          CONFIG=${{ matrix.client_config }}
 
           $UNITY_PATH -batchmode -quit $GRAPHICS_FLAG \
             -logFile "$LOG_FILE" \
@@ -185,7 +186,7 @@ jobs:
 
       - name: Zip
         run: |
-          CONFIG=${{ matrix.client_config || 'Production' }}
+          CONFIG=${{ matrix.client_config }}
           if [ "${{ matrix.target }}" = "osxuniversal" ]; then
             ditto -c -k --keepParent "Builds/$CONFIG/Mac/Resonance.app" "Resonance_mac_${CONFIG}.zip"
             echo "ARTIFACT=Resonance_mac_${CONFIG}.zip" >> $GITHUB_ENV
@@ -200,7 +201,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ matrix.target }}-${{ matrix.client_config || 'Production' }}
+          name: build-${{ matrix.target }}-${{ matrix.client_config }}
           path: ${{ env.ARTIFACT }}
 
   release:
@@ -218,12 +219,76 @@ jobs:
           TAG="build-$(date +%Y%m%d-%H%M%S)"
           gh release create "$TAG" \
             Resonance_win_ProductionClient.zip \
-            Resonance_win_ProductionHost.zip \
             Resonance_mac_ProductionClient.zip \
-            Resonance_mac_ProductionHost.zip \
             ResonanceServer_linux.zip \
             --repo ${{ github.repository }} \
             --title "Build $TAG" \
-            --notes "Automated production build: client (win64, macOS) × (ProductionClient, ProductionHost) + server (linux64)"
+            --notes "Automated production build: client (win64, macOS) + server (linux64)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  edgegap-create-version:
+    needs: [ build, generate-server-version ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout without LFS
+        uses: actions/checkout@v7
+
+      - name: Create blank build directory
+        run: mkdir -p Builds/Default/Linux
+
+      - name: Download the build artifact
+        id: download-server-build
+        uses: actions/download-artifact@v4
+        with:
+          name: build-linux64-Default
+
+      - name: Unzip the downloaded artifact
+        run: |
+          unzip ${{ steps.download-server-build.outputs.path }} 
+          unzip ResonanceServer_linux.zip -d Builds/Default/Linux
+
+      - name: Log into Edgegap container registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.EDGEGAP_CONTAINER_REGISTRY_USERNAME }}
+          password: ${{ secrets.EDGEGAP_CONTAINER_REGISTRY_PASSWORD }}
+          registry: registry.edgegap.com
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: registry.edgegap.com/${{ vars.EDGEGAP_REGISTRY_PROJECT_NAME }}/server-build:${{ needs.generate-server-version.outputs.server_version }}
+
+      - name: Create new Edgegap version
+        # See https://docs.edgegap.com/docs/api/versioning#post-v1-app-app_name-version
+        run: |
+          curl -L \
+            --request POST \
+            --url 'https://api.edgegap.com/v1/app/${{ vars.EDGEGAP_APP_NAME }}/version' \
+            --header 'Authorization: ${{ secrets.EDGEGAP_API_KEY }}' \
+            --header 'Content-Type: application/json' \
+            --data '{
+            "name": "${{ needs.generate-server-version.outputs.server_version }}",
+            "req_cpu": 1024,
+            "req_memory": 2048,
+            "docker_repository": "registry.edgegap.com",
+            "private_username": "${{ secrets.EDGEGAP_CONTAINER_REGISTRY_USERNAME }}",
+            "private_token": "${{ secrets.EDGEGAP_CONTAINER_REGISTRY_PASSWORD }}",
+            "docker_image": "registry.edgegap.com/${{ vars.EDGEGAP_REGISTRY_PROJECT_NAME }}/server-build",
+            "docker_tag": "${{ needs.generate-server-version.outputs.server_version }}",
+            "ports": [
+              {
+                "port": 7777,
+                "protocol": "UDP",
+                "to_check": false,
+                "name": "gameport"
+              }
+            ],
+            "restart_policy": "never"
+          }'
