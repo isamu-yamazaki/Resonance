@@ -171,7 +171,6 @@ namespace Resonance.BuildTools
             InjectConfigIntoScene<ClientBuildConfigReceiver, ClientBuildConfig>(
                 "Assets/Scenes/Lobby/LobbyScene.unity", config);
 
-            bool isDev = !config.isProduction;
             string ext = target == BuildTarget.StandaloneWindows64 ? ".exe" : ".app";
             string targetFolder = target == BuildTarget.StandaloneWindows64 ? "Windows" : "Mac";
 
@@ -183,24 +182,19 @@ namespace Resonance.BuildTools
                 scenes = scenes,
                 locationPathName = $"Builds/{config.name}/{targetFolder}/Resonance{ext}",
                 target = target,
-                options = isDev ? BuildOptions.Development : BuildOptions.None,
+                options = config.unityDevelopmentBuild ? BuildOptions.Development : BuildOptions.None,
             };
 
             VerifyBuild(BuildPipeline.BuildPlayer(options));
 
-            if (config.isProduction)
+            if (config.copySteamAppId)
             {
-                PostBuild(options.locationPathName, target);
+                CopySteamAppId(options.locationPathName, target);
             }
-        }
 
-        static void PostBuild(string outputPath, BuildTarget target)
-        {
-            CopySteamAppId(outputPath, target);
-
-            if (target == BuildTarget.StandaloneOSX)
+            if (config.useCodesigningAndNotarizationOnMac && target == BuildTarget.StandaloneOSX)
             {
-                CodeSignAndNotarizeMac(outputPath);
+                CodeSignAndNotarizeMac(options.locationPathName);
             }
         }
 
