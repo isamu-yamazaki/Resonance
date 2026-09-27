@@ -12,28 +12,48 @@ namespace Resonance.BuildTools
 {
     public static class BuildScript
     {
-
         #region Editor menu items
 
         [MenuItem("Build/Client/Windows/DevClient")]
         public static void BuildDevClientWindows() => Build(LoadConfig("DevClient"), BuildTarget.StandaloneWindows64);
 
+        [MenuItem("Build/Client/Windows/DevSteamLobbyClient")]
+        public static void BuildDevSteamLobbyClientWindows() =>
+            Build(LoadConfig("DevSteamLobbyClient"), BuildTarget.StandaloneWindows64);
+
         [MenuItem("Build/Client/Windows/ProductionClient")]
-        public static void BuildProductionClientWindows() => Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneWindows64);
+        public static void BuildProductionClientWindows() =>
+            Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneWindows64);
+
+        [MenuItem("Build/Client/Windows/ProductionSteamSubmissionClient")]
+        public static void BuildProductionSteamSubmissionClientWindows() =>
+            Build(LoadConfig("ProductionSteamSubmissionClient"), BuildTarget.StandaloneWindows64);
 
         [MenuItem("Build/Client/Mac/DevClient")]
         public static void BuildDevClientMac() => Build(LoadConfig("DevClient"), BuildTarget.StandaloneOSX);
 
+        [MenuItem("Build/Client/Mac/DevSteamLobbyClient")]
+        public static void BuildDevSteamLobbyClientMac() =>
+            Build(LoadConfig("DevSteamLobbyClient"), BuildTarget.StandaloneOSX);
+
         [MenuItem("Build/Client/Mac/ProductionClient")]
-        public static void BuildProductionClientMac() => Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneOSX);
+        public static void BuildProductionClientMac() =>
+            Build(LoadConfig("ProductionClient"), BuildTarget.StandaloneOSX);
+
+        [MenuItem("Build/Client/Mac/ProductionSteamSubmissionClient")]
+        public static void BuildProductionSteamSubmissionClientMac() =>
+            Build(LoadConfig("ProductionSteamSubmissionClient"), BuildTarget.StandaloneOSX);
+
 
         [MenuItem("Build/Server/Linux/Default")]
-        public static void BuildServerLinux() => BuildServer(LoadServerConfig("Default"), BuildTarget.StandaloneLinux64);
+        public static void BuildServerLinux() =>
+            BuildServer(LoadServerConfig("Default"), BuildTarget.StandaloneLinux64);
 
         #endregion
 
 
         #region CLI entry point
+
         /// <summary>
         /// Invoked via: /path/to/Unity -executeMethod BuildScript.BuildCLI -buildMode Client|Server -buildConfig &lt;AssetName&gt; -buildPlatform win64|osxuniversal|linux64 -serverVersion (any string)
         /// </summary>
@@ -46,7 +66,8 @@ namespace Resonance.BuildTools
         public static void BuildCLI()
         {
             string configName = ReadArg("-buildConfig")
-                ?? throw new System.Exception("Missing -buildConfig argument. Usage: -buildConfig <AssetName>");
+                                ?? throw new System.Exception(
+                                    "Missing -buildConfig argument. Usage: -buildConfig <AssetName>");
 
             string modeName = ReadArg("-buildMode") ?? "Client";
             string targetName = ReadArg("-buildPlatform") ?? "win64";
@@ -57,7 +78,8 @@ namespace Resonance.BuildTools
                 "win64" => BuildTarget.StandaloneWindows64,
                 "osxuniversal" => BuildTarget.StandaloneOSX,
                 "linux64" => BuildTarget.StandaloneLinux64,
-                _ => throw new System.Exception($"Unknown -buildPlatform '{targetName}'. Supported: win64, osxuniversal, linux64"),
+                _ => throw new System.Exception(
+                    $"Unknown -buildPlatform '{targetName}'. Supported: win64, osxuniversal, linux64"),
             };
 
             if (modeName == "Server")
@@ -73,6 +95,7 @@ namespace Resonance.BuildTools
                 Build(config, target);
             }
         }
+
         #endregion
 
         #region Internal
@@ -100,6 +123,7 @@ namespace Resonance.BuildTools
             {
                 throw new System.Exception($"Could not load {typeof(T).Name} at '{path}'.");
             }
+
             return asset;
         }
 
@@ -117,8 +141,8 @@ namespace Resonance.BuildTools
         {
             var so = new SerializedObject(config);
             var property = so.FindProperty("intendedServerVersion")
-                ?? throw new System.Exception(
-                    $"'{config.name}' ({config.GetType().Name}) has no serialized 'intendedServerVersion' field.");
+                           ?? throw new System.Exception(
+                               $"'{config.name}' ({config.GetType().Name}) has no serialized 'intendedServerVersion' field.");
 
             Debug.Log($"[BuildScript] Setting server version '{version}' on {label} config " +
                       $"'{config.name}', overwriting '{property.stringValue}'");
@@ -308,7 +332,8 @@ namespace Resonance.BuildTools
             var configurator = Object.FindFirstObjectByType<TConfigurator>();
             if (configurator == null)
             {
-                Debug.LogWarning($"[BuildScript] {typeof(TConfigurator).Name} not found in {scenePath}. Config not injected.");
+                Debug.LogWarning(
+                    $"[BuildScript] {typeof(TConfigurator).Name} not found in {scenePath}. Config not injected.");
                 if (!wasAlreadyLoaded)
                     EditorSceneManager.CloseScene(scene, true);
                 return;
@@ -333,8 +358,10 @@ namespace Resonance.BuildTools
                     return args[i + 1];
                 }
             }
+
             return null;
         }
+
         #endregion
     }
 }
