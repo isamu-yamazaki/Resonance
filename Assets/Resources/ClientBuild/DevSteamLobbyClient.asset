@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f938caf3da1e74c0b8000cd3921ddf42, type: 3}
   m_Name: DevSteamLobbyClient
   m_EditorClassIdentifier: Assembly-CSharp::ClientBuildConfig
-  enableSteamLobby: 0
+  enableSteamLobby: 1
   orchestratorUrl: http://127.0.0.1:9000
   useCodesigningAndNotarizationOnMac: 0
   unityDevelopmentBuild: 1
