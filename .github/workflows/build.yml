@@ -75,6 +75,12 @@ jobs:
           - target: osxuniversal
             mode: Client
             client_config: ProductionClient
+          - target: win64
+            mode: Client
+            client_config: ProductionSteamSubmissionClient
+          - target: osxuniversal
+            mode: Client
+            client_config: ProductionSteamSubmissionClient
           - target: linux64
             mode: Server
             client_config: Default
