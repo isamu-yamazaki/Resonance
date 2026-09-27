@@ -29,13 +29,10 @@ If `git lfs push` (or
     - Linux (`store` helper): edit
       `~/.git-credentials` and remove the line containing `lfs.bchen.dev`
 
-3. **Test that the LFS server is reachable:**
-   ```sh
-   git lfs env
-   ```
-   Verify the `Endpoint` URL matches
-   `https://lfs.bchen.dev/isamu-yamazaki/resonance`. If it doesn't, check that
-   `.lfsconfig` is present and not overridden by a local git config.
+3. **Test that the LFS server is reachable** by running `git lfs env`
+    - Verify the `Endpoint` URL matches
+      `https://lfs.bchen.dev/isamu-yamazaki/resonance`. If it doesn't, check that
+      `.lfsconfig` is present and not overridden by a local git config.
 
 ## Building the game
 
@@ -46,10 +43,12 @@ and server builds.
 
 Currently available build configurations:
 
-| Config           | Steam lobby | Orchestrator           | Mode          |
-|------------------|-------------|------------------------|---------------|
-| DevClient        | No          | Local (localhost:9000) | Client-server |
-| ProductionClient | Yes         | Remote                 | Client-server |
+| Config                          | Steam lobby | Orchestrator           | Mode          | Notes                                                                                                            |
+|---------------------------------|-------------|------------------------|---------------|------------------------------------------------------------------------------------------------------------------
+| DevClient                       | No          | Local (localhost:9000) | Client-server |                                                                                                                  |
+| DevSteamLobbyClient             | Yes         | Local (localhost:9000) | Client-server |                                                                                                                  |
+| ProductionClient                | Yes         | Remote                 | Client-server |                                                                                                                  |
+| ProductionSteamSubmissionClient | Yes         | Remote                 | Client-server | Does not copy steam_appid.txt next to the executable, as Steam injects this when launching through their client. |
 
 The only available server build configuration is the **Default** configuration,
 designed for production deployments.
@@ -65,7 +64,9 @@ Output is written to `Builds/<ConfigName>/<Platform>/` from the project root.
 Builds meant for distribution should be built with the command line. This is
 currently the only way to pass a **server version**.
 
-```sh
+On macOS and Linux:
+
+```shell
 /path/to/Unity \
   -batchmode -quit \
   -projectPath /path/to/Resonance \
@@ -76,6 +77,32 @@ currently the only way to pass a **server version**.
   -buildPlatform <platform> \
   -serverVersion <string>
 ```
+
+On Windows (PowerShell):
+
+```powershell
+& "C:\path\to\Unity" `
+  -batchmode -quit `
+  -projectPath "C:\path\to\Resonance" `
+  -executeMethod Resonance.BuildTools.BuildScript.BuildCLI `
+  -buildMode <mode> `
+  -buildConfig <config> `
+  -buildTarget <platform> `
+  -buildPlatform <platform> `
+  -serverVersion <string>
+```
+
+Finding the path to Unity:
+
+- On Windows, usually under
+  `C:\Program Files\Unity\Hub\Editor\<Unity version>\Editor\Unity.exe`
+- On macOS, usually under
+  `/Applications/Unity/Hub/Editor/<Unity version>/Unity.app/Contents/MacOS/Unity`
+- If unsure
+    - Open Unity Hub
+    - Go to Installs
+    - For the editor version for this project, click on Manage, then *Show in
+      Explorer* or *Show in Finder*, or similar
 
 **Arguments:**
 
