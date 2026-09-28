@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f938caf3da1e74c0b8000cd3921ddf42, type: 3}
-  m_Name: ProductionClient
+  m_Name: ProductionSteamSubmissionClient
   m_EditorClassIdentifier: Assembly-CSharp::AppConfig
   enableSteamLobby: 1
   orchestratorUrl: https://resonance-orchestrator.bchen.dev
   useCodesigningAndNotarizationOnMac: 1
   unityDevelopmentBuild: 0
-  copySteamAppId: 1
+  copySteamAppId: 0
   intendedServerVersion: dev

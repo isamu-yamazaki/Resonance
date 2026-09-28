@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Resonance.BuildTools
 {
@@ -7,22 +8,32 @@ namespace Resonance.BuildTools
     {
         /// <summary>
         /// When true, activates the Steam lobby provider in the lobby scene.
-        /// When false, activates the dummy lobby provider (no Steam required; for local/dev builds).
+        /// When false, activates the dummy lobby provider.
         /// </summary>
         public bool enableSteamLobby;
 
         /// <summary>
-        /// Note that the game version under the remote orchestrator must match
-        /// exactly with the client.
+        /// The full base URL for the orchestrator (e.g. https://example.com).
+        /// For local testing, use http://127.0.0.1:9000 or a different port number.
         /// </summary>
         public string orchestratorUrl;
 
         /// <summary>
-        /// When true, marks this as a production build.
-        /// Triggers codesigning and notarization in the post-build step on Mac.
-        /// When false, marks this as a development build through Unity.
+        /// When true, triggers codesigning and notarization in the post-build step on Mac.
         /// </summary>
-        public bool isProduction;
+        [FormerlySerializedAs("isProduction")] public bool useCodesigningAndNotarizationOnMac;
+
+        /// <summary>
+        /// When true, adds BuildOptions.Development to the BuildPlayerOptions.
+        /// </summary>
+        public bool unityDevelopmentBuild;
+
+        /// <summary>
+        /// When true, copies steam_appid.txt next to the executable.
+        /// Builds submitted to Steam should *not* have this option checked!
+        /// This option is only for testing Steam integration in a build outside of Steam.
+        /// </summary>
+        public bool copySteamAppId;
 
         /// <summary>
         /// A string to pass to the orchestrator for it to find and validate the correct server version.

@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ClientBuildConfig
   enableSteamLobby: 0
   orchestratorUrl: http://127.0.0.1:9000
-  isProduction: 0
+  useCodesigningAndNotarizationOnMac: 0
+  unityDevelopmentBuild: 1
+  copySteamAppId: 1
   intendedServerVersion: dev
