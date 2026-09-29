@@ -56,6 +56,12 @@ public class OverdriveHUD : MonoBehaviour
             var controls = Resonance.PlayerController.PlayerInputManager.Instance.PlayerControls;
             keybindText.text = controls.PlayerActionMap.Overdrive.GetBindingDisplayString().ToUpper();
         }
+
+        overdrive = GetComponent<OverdriveAbility>();
+        overdrive.OnOverdriveStateChanged += OnStateChanged;
+        overdrive.OnCooldownChanged += OnCooldownChanged;
+        overdrive.OnDurationChanged += OnDurationChanged;
+        overdrive.OnCooldownFillChanged += OnCooldownFillChanged;
     }
 
     private void Update()
@@ -173,29 +179,24 @@ public class OverdriveHUD : MonoBehaviour
     public void SetOverdriveAbility(OverdriveAbility ability)
     {
         overdrive = ability;
-        
-        ability.State.ChangeEvent += OnStateChanged;
-        ability.CooldownRemaining.ChangeEvent += OnCooldownChanged;
-        ability.DurationRemaining.ChangeEvent += OnDurationChanged;
-        ability.CooldownFill.ChangeEvent += OnCooldownFillChanged;
     }
     #endregion
     
     #region View Handlers (MVVM Bindings)
 
-    private void OnStateChanged(OverdriveAbility.OverdriveState state)
+    private void OnStateChanged(OverdriveState state, OverdriveState? previous)
     {
         switch (state)
         {
-            case OverdriveAbility.OverdriveState.Ready:
+            case OverdriveState.Ready:
                 ShowReady();
                 break;
 
-            case OverdriveAbility.OverdriveState.Active:
+            case OverdriveState.Active:
                 ShowActive();
                 break;
 
-            case OverdriveAbility.OverdriveState.Cooldown:
+            case OverdriveState.Cooldown:
                 ShowCooldown();
                 break;
         }
@@ -203,7 +204,7 @@ public class OverdriveHUD : MonoBehaviour
 
     private void OnCooldownChanged(float time)
     {
-        if (overdrive.CurrentState != OverdriveAbility.OverdriveState.Cooldown)
+        if (overdrive.CurrentState != OverdriveState.Cooldown)
             return;
         
         timerText.text = $"{time:F1}s";
@@ -211,7 +212,7 @@ public class OverdriveHUD : MonoBehaviour
 
     private void OnDurationChanged(float time)
     {
-        if (overdrive.CurrentState != OverdriveAbility.OverdriveState.Active)
+        if (overdrive.CurrentState != OverdriveState.Active)
             return;
 
         timerText.text = $"{time:F1}s";

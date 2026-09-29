@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using PurrNet.Prediction;
 using Resonance.Helper;
@@ -8,6 +9,8 @@ namespace Resonance.PlayerController
 {
     public class OverdriveAbility : PredictedIdentity<OverdriveAbilityInput, OverdriveAbilityState>
     {
+        private const float EventInvokeThresholdForFloats = 0.01f;
+
         public OverdriveAbility(OverdriveAbilityState state)
         {
             _state = state;
@@ -48,6 +51,13 @@ namespace Resonance.PlayerController
         private OverdriveAbilityState _state;
 
         private PlayerActionsInput _playerActionsInput;
+        private OverdriveAbilityState? _previousVerifiedViewState;
+
+        // current, previous
+        public event Action<OverdriveState, OverdriveState?> OnOverdriveStateChanged;
+        public event Action<float> OnCooldownChanged;
+        public event Action<float> OnDurationChanged;
+        public event Action<float> OnCooldownFillChanged;
 
         #endregion
 
@@ -55,7 +65,6 @@ namespace Resonance.PlayerController
 
         protected override void LateAwake()
         {
-            // TODO: implement death and respawn polling
             _playerState = GetComponent<PlayerState>();
             _playerStats = GetComponent<PlayerStats>();
 
@@ -65,14 +74,6 @@ namespace Resonance.PlayerController
             if (!isOwner) return;
 
             _playerActionsInput = PlayerActionsInput.Instance;
-
-            OverdriveHUD hud = FindFirstObjectByType<OverdriveHUD>();
-            if (hud == null) return;
-
-            hud.SetOverdriveAbility(this);
-#if UNITY_EDITOR
-            Debug.Log("[OverdriveAbility] Registered with OverdriveHUD");
-#endif
         }
 
         protected override OverdriveAbilityState GetInitialState()
@@ -136,6 +137,12 @@ namespace Resonance.PlayerController
                     }
 
                     break;
+                case OverdriveState.PendingWithDelay:
+                    // TODO add animation stuff
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             if (_playerState.IsDead())
@@ -207,18 +214,48 @@ namespace Resonance.PlayerController
 
         #region View updates
 
-        protected override void UpdateView(OverdriveAbilityState viewState, OverdriveAbilityState? verified)
+        protected override void UpdateView(OverdriveAbilityState interpolatedState, OverdriveAbilityState? verified)
         {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
 
+            if (v.State != _previousVerifiedViewState?.State)
+            {
+                OnOverdriveStateChanged?.Invoke(v.State, _previousVerifiedViewState?.State);
+            }
+
+            if (v.State == OverdriveState.Cooldown && _previousVerifiedViewState?.State == OverdriveState.Active)
+            {
+                StartCoroutine(LerpLowPassOut(1f));
+            }
+
+            if (Mathf.Abs(v.CooldownRemaining - (_previousVerifiedViewState?.CooldownRemaining ?? 0f)) >
+                EventInvokeThresholdForFloats)
+            {
+                OnCooldownChanged?.Invoke(v.CooldownRemaining);
+            }
+
+            if (Mathf.Abs(v.CooldownFill - (_previousVerifiedViewState?.CooldownFill ?? 0f)) >
+                EventInvokeThresholdForFloats)
+            {
+                OnCooldownFillChanged?.Invoke(v.CooldownFill);
+            }
+
+            if (Mathf.Abs(v.DurationRemaining - (_previousVerifiedViewState?.DurationRemaining ?? 0f)) >
+                EventInvokeThresholdForFloats)
+            {
+                OnDurationChanged?.Invoke(v.DurationRemaining);
+            }
+
+            _previousVerifiedViewState = v;
         }
 
         #endregion
 
 
-#if !UNITY_SERVER
-        // TODO: call this again from the UpdateView
         private IEnumerator LerpLowPassOut(float duration)
         {
+#if !UNITY_SERVER
             float elapsed = 0f;
             while (elapsed < duration)
             {
@@ -229,8 +266,8 @@ namespace Resonance.PlayerController
             }
 
             AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 0f);
-        }
 #endif
+        }
     }
 
     public struct OverdriveAbilityInput : IPredictedData
