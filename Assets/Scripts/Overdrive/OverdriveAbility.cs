@@ -13,11 +13,6 @@ namespace Resonance.PlayerController
         private const float EventInvokeThresholdForFloats = 0.01f;
         private const float AnimationDelaySeconds = 0.67f;
 
-        public OverdriveAbility(OverdriveAbilityState state)
-        {
-            _state = state;
-
-        }
 
         #region Class Variables
 
@@ -51,7 +46,6 @@ namespace Resonance.PlayerController
         private PlayerState _playerState;
         private PlayerStats _playerStats;
         private OverdriveWorldActivateBroadcast _audioBroadcast;
-        private OverdriveAbilityState _state;
         private FPArmsAnimator _fpArmsAnimator;
 
         private PlayerActionsInput _playerActionsInput;
