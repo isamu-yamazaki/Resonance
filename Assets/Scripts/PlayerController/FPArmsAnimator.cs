@@ -339,7 +339,6 @@ namespace Resonance.Combat
 
         public void OnOverdriveAnimActivate()
         {
-            // _overdriveAbility?.TryActivateOverdrive();
         }
         
         public void OnStimAnimActivate()
@@ -380,8 +379,6 @@ namespace Resonance.Combat
 
         public void OnGrappleFireHook()
         {
-            // TODO: implement simulation timeout path
-            // _grappleHook?.ActivateAbilityExternal();
         }
 
         public void OnGrappleComplete()

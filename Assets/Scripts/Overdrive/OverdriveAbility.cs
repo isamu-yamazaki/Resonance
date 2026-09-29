@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using PurrNet.Prediction;
+using Resonance.Combat;
 using Resonance.Helper;
 using UnityEngine;
 using Resonance.Player;
@@ -10,10 +11,12 @@ namespace Resonance.PlayerController
     public class OverdriveAbility : PredictedIdentity<OverdriveAbilityInput, OverdriveAbilityState>
     {
         private const float EventInvokeThresholdForFloats = 0.01f;
+        private const float AnimationDelaySeconds = 0.67f;
 
         public OverdriveAbility(OverdriveAbilityState state)
         {
             _state = state;
+
         }
 
         #region Class Variables
@@ -49,6 +52,7 @@ namespace Resonance.PlayerController
         private PlayerStats _playerStats;
         private OverdriveWorldActivateBroadcast _audioBroadcast;
         private OverdriveAbilityState _state;
+        private FPArmsAnimator _fpArmsAnimator;
 
         private PlayerActionsInput _playerActionsInput;
         private OverdriveAbilityState? _previousVerifiedViewState;
@@ -67,6 +71,7 @@ namespace Resonance.PlayerController
         {
             _playerState = GetComponent<PlayerState>();
             _playerStats = GetComponent<PlayerStats>();
+            _fpArmsAnimator = GetComponent<FPArmsAnimator>();
 
             // TODO: migrate audio broadcasts to this script
             _audioBroadcast = GetComponent<OverdriveWorldActivateBroadcast>();
@@ -113,7 +118,7 @@ namespace Resonance.PlayerController
                 case OverdriveState.Ready:
                     if (input.OverdriveKeyPressed)
                     {
-                        ActivateOverdrive(ref state);
+                        state.State = OverdriveState.PendingWithDelay;
                     }
 
                     break;
@@ -134,11 +139,18 @@ namespace Resonance.PlayerController
                     if (state.CooldownRemaining <= 0f)
                     {
                         state.State = OverdriveState.Ready;
+                        ActivateOverdrive(ref state);
                     }
 
                     break;
                 case OverdriveState.PendingWithDelay:
-                    // TODO add animation stuff
+                    state.PendingTime += delta;
+                    if (state.PendingTime >= AnimationDelaySeconds)
+                    {
+                        state.State = OverdriveState.Active;
+                        state.PendingTime = 0;
+                    }
+
                     break;
 
                 default:
@@ -224,6 +236,11 @@ namespace Resonance.PlayerController
                 OnOverdriveStateChanged?.Invoke(v.State, _previousVerifiedViewState?.State);
             }
 
+            if (v.State == OverdriveState.PendingWithDelay && _previousVerifiedViewState?.State == OverdriveState.Ready)
+            {
+                _fpArmsAnimator.RequestOverdriveActivation();
+            }
+
             if (v.State == OverdriveState.Cooldown && _previousVerifiedViewState?.State == OverdriveState.Active)
             {
                 StartCoroutine(LerpLowPassOut(1f));
@@ -285,6 +302,7 @@ namespace Resonance.PlayerController
         public float CooldownRemaining;
         public float DurationRemaining;
         public float CooldownFill;
+        public float PendingTime;
 
         public void Dispose()
         {
