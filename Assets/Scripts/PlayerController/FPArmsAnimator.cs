@@ -339,7 +339,7 @@ namespace Resonance.Combat
 
         public void OnOverdriveAnimActivate()
         {
-            _overdriveAbility?.TryActivateOverdrive();
+            // _overdriveAbility?.TryActivateOverdrive();
         }
         
         public void OnStimAnimActivate()
