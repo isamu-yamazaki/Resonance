@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Resonance.Helper;
 using UnityEngine;
@@ -8,8 +9,7 @@ using UnityEngine.InputSystem;
 
 public class OverdriveHUD : MonoBehaviour
 {
-    [Header("References")] [SerializeField]
-    private OverdriveAbility overdrive;
+    private OverdriveAbility _overdrive;
 
     [SerializeField] private Image icon;
     [SerializeField] private Image cooldownFill;
@@ -62,13 +62,22 @@ public class OverdriveHUD : MonoBehaviour
             keybindText.text = controls.PlayerActionMap.Overdrive.GetBindingDisplayString().ToUpper();
         }
 
-        overdrive = OwnerFinder.FindFirstOwnedPredictedObjectByType<OverdriveAbility>();
-        if (overdrive == null) return;
+        StartCoroutine(BindToOverdriveAbility());
+    }
 
-        overdrive.OnOverdriveStateChanged += OnStateChanged;
-        overdrive.OnCooldownChanged += OnCooldownChanged;
-        overdrive.OnDurationChanged += OnDurationChanged;
-        overdrive.OnCooldownFillChanged += OnCooldownFillChanged;
+    private IEnumerator BindToOverdriveAbility()
+    {
+        while (OwnerFinder.FindFirstOwnedPredictedObjectByType<OverdriveAbility>() == null)
+        {
+            yield return null;
+        }
+
+
+        _overdrive = OwnerFinder.FindFirstOwnedPredictedObjectByType<OverdriveAbility>();
+        _overdrive.OnOverdriveStateChanged += OnStateChanged;
+        _overdrive.OnCooldownChanged += OnCooldownChanged;
+        _overdrive.OnDurationChanged += OnDurationChanged;
+        _overdrive.OnCooldownFillChanged += OnCooldownFillChanged;
     }
 
     private void Update()
@@ -78,6 +87,15 @@ public class OverdriveHUD : MonoBehaviour
 
         if (animateReady || animateActive)
             AnimateReadyGlow();
+    }
+
+    private void OnDestroy()
+    {
+        if (_overdrive == null) return;
+        _overdrive.OnOverdriveStateChanged -= OnStateChanged;
+        _overdrive.OnCooldownChanged -= OnCooldownChanged;
+        _overdrive.OnDurationChanged -= OnDurationChanged;
+        _overdrive.OnCooldownFillChanged -= OnCooldownFillChanged;
     }
 
     #region Display States
@@ -100,13 +118,13 @@ public class OverdriveHUD : MonoBehaviour
 
     private void ShowCooldown()
     {
-        float fill = overdrive.CooldownTimeRemaining / overdrive.CooldownDuration;
+        float fill = _overdrive.CooldownTimeRemaining / _overdrive.CooldownDuration;
         icon.color = fadedColor;
 
         SetAlpha(cooldownFill, 1f);
         cooldownFill.fillAmount = fill;
 
-        timerText.text = $"{overdrive.CooldownTimeRemaining:F1}s";
+        timerText.text = $"{_overdrive.CooldownTimeRemaining:F1}s";
         timerText.color = cooldownTextColor;
 
         animateReady = false;
@@ -188,7 +206,7 @@ public class OverdriveHUD : MonoBehaviour
 
     public void SetOverdriveAbility(OverdriveAbility ability)
     {
-        overdrive = ability;
+        _overdrive = ability;
     }
 
     #endregion
@@ -215,7 +233,7 @@ public class OverdriveHUD : MonoBehaviour
 
     private void OnCooldownChanged(float time)
     {
-        if (overdrive.CurrentState != OverdriveState.Cooldown)
+        if (_overdrive.CurrentState != OverdriveState.Cooldown)
             return;
 
         timerText.text = $"{time:F1}s";
@@ -223,7 +241,7 @@ public class OverdriveHUD : MonoBehaviour
 
     private void OnDurationChanged(float time)
     {
-        if (overdrive.CurrentState != OverdriveState.Active)
+        if (_overdrive.CurrentState != OverdriveState.Active)
             return;
 
         timerText.text = $"{time:F1}s";
