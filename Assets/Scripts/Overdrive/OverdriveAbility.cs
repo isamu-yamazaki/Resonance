@@ -14,6 +14,7 @@ namespace Resonance.PlayerController
         private const float AnimationDelaySeconds = 0.67f;
 
 
+
         #region Class Variables
 
         [Header("Audio")]
@@ -123,7 +124,7 @@ namespace Resonance.PlayerController
                     break;
 
                 case OverdriveState.Active:
-                    state.DurationRemaining -= Time.deltaTime;
+                    state.DurationRemaining -= delta;
                     if (state.DurationRemaining <= 0f)
                     {
                         DeactivateOverdrive(ref state);
@@ -132,13 +133,12 @@ namespace Resonance.PlayerController
                     break;
 
                 case OverdriveState.Cooldown:
-                    state.CooldownRemaining -= Time.deltaTime;
+                    state.CooldownRemaining -= delta;
                     state.CooldownFill = CooldownTimeRemaining / overdriveCooldown;
 
                     if (state.CooldownRemaining <= 0f)
                     {
                         state.State = OverdriveState.Ready;
-                        ActivateOverdrive(ref state);
                     }
 
                     break;
@@ -146,7 +146,7 @@ namespace Resonance.PlayerController
                     state.PendingTime += delta;
                     if (state.PendingTime >= AnimationDelaySeconds)
                     {
-                        state.State = OverdriveState.Active;
+                        ActivateOverdrive(ref state);
                         state.PendingTime = 0;
                     }
 
@@ -165,6 +165,7 @@ namespace Resonance.PlayerController
         [SimulationOnly]
         private void ActivateOverdrive(ref OverdriveAbilityState state)
         {
+            state.State = OverdriveState.Active;
             state.DurationRemaining = overdriveDuration;
 
             // TODO: post activate event? unless this is what posts it
