@@ -90,10 +90,15 @@ namespace Resonance.PlayerController
 
         #region Input
 
+        protected override void UpdateInput(ref OverdriveAbilityInput input)
+        {
+            if (!isOwner) return;
+            input.OverdriveKeyPressed |= _playerActionsInput.OverdrivePressed;
+        }
+
         protected override void GetFinalInput(ref OverdriveAbilityInput input)
         {
             if (!isOwner) return;
-
             input.OverdriveKeyPressed = _playerActionsInput.OverdrivePressed;
         }
 
