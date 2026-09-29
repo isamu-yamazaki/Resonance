@@ -78,7 +78,7 @@ namespace Resonance.Combat
             CurrentCharges.Value = currentCharges;
 
             float healAmount = playerStats.MaxHealth / 4f;
-            playerStats.Heal(healAmount);
+            playerStats.HealExternal(healAmount);
 
             Debug.Log($"[HealthStim] Stim used. Healed {healAmount} HP. Charges remaining: {currentCharges}/{maxCharges}.");
 
