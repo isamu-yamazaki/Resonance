@@ -136,11 +136,6 @@ namespace Resonance.Combat
                 active.SetFloat(FireSpeedHash, PlayerActionsInput.Instance.AttackHeld ? weapon.FireClip.length * fireRate : 1f);
             }
 
-            if (PlayerActionsInput.Instance.OverdrivePressed)
-            {
-                RequestOverdriveActivation();
-                PlayerActionsInput.Instance.SetOverdrivePressedFales();
-            }
             if (PlayerActionsInput.Instance.StimPressed)
             {
                 RequestStimActivation();
