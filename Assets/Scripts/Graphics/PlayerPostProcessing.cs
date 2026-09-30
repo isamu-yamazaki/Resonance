@@ -74,8 +74,8 @@ namespace Resonance.PlayerController
 
         private void TryBindToLocalPlayer()
         {
-            _playerController = GetComponent<PlayerPredictedController>();
-            if (_playerController == null || !_playerController.isOwner)
+            var ownerGameObject = OwnerFinder.FindGameObjectOfOwnedPlayerPredictedController();
+            if (ownerGameObject != gameObject)
                 return;
 
             _bound = true;
