@@ -168,8 +168,7 @@ namespace Resonance.PlayerController
             state.State = OverdriveState.Active;
             state.DurationRemaining = overdriveDuration;
 
-            // TODO: post activate event? unless this is what posts it
-            _audioBroadcast.RequestAudioBroadcastNextTick();
+            _audioBroadcast.SimulateBroadcastAudio();
 
             if (_playerStats != null)
             {

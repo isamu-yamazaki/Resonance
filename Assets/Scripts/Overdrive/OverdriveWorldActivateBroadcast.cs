@@ -5,27 +5,36 @@ using UnityEngine;
 
 namespace Resonance.PlayerController
 {
-    public class OverdriveWorldActivateBroadcast : PredictedIdentity<PredictedAudioBroadcastInput, PredictedAudioBroadcastState>
+    public class
+        OverdriveWorldActivateBroadcast : PredictedIdentity<PredictedAudioBroadcastState>
     {
-
 #if !UNITY_SERVER
         [SerializeField] private AK.Wwise.Event activateWorldEvent;
 #endif
 
         private bool _requestAudioBroadcast;
 
-        protected override void GetFinalInput(ref PredictedAudioBroadcastInput input)
+        protected override void Simulate(ref PredictedAudioBroadcastState state,
+            float delta)
         {
-            input.RequestAudioBroadcastNextTick = _requestAudioBroadcast;
-            _requestAudioBroadcast = false;
+            if (state.BroadcastAudioNextTick)
+            {
+                state.BroadcastAudio = true;
+                state.BroadcastAudioNextTick = false;
+            }
+            else
+            {
+                state.BroadcastAudio = false;
+            }
         }
 
-        protected override void Simulate(PredictedAudioBroadcastInput input, ref PredictedAudioBroadcastState state, float delta)
+        public void SimulateBroadcastAudio()
         {
-            state.BroadcastAudio = input.RequestAudioBroadcastNextTick;
+            currentState.BroadcastAudioNextTick = true;
         }
 
-        protected override void UpdateView(PredictedAudioBroadcastState viewState, PredictedAudioBroadcastState? verified)
+        protected override void UpdateView(PredictedAudioBroadcastState viewState,
+            PredictedAudioBroadcastState? verified)
         {
             if (!verified.HasValue) return;
             var v = verified.Value;
