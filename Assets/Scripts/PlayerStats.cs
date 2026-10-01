@@ -15,7 +15,7 @@ namespace Resonance.Player
 {
     [RequireComponent(typeof(PlayerPredictedController))]
     public class PlayerStats : PredictedIdentity<PlayerStatsInputData, PlayerStatsDataState>,
-                               IDamageable, IDamageNumberTarget
+        IDamageable, IDamageNumberTarget
     {
         #region Inspector Fields
 
@@ -35,12 +35,30 @@ namespace Resonance.Player
 
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentState.CurrentHealth;
-        public float BaseHealthRegen { get => baseHealthRegen; set => baseHealthRegen = value; }
+
+        public float BaseHealthRegen
+        {
+            get => baseHealthRegen;
+            set => baseHealthRegen = value;
+        }
+
         public float CurrentHealthRegen => currentState.CurrentHealthRegen;
         public float DamageReduction => currentState.CurrentDamageReduction;
-        public float BaseDamageReduction { get => baseDamageReduction; set => baseDamageReduction = Mathf.Clamp(value, 0f, maxDamageReduction); }
+
+        public float BaseDamageReduction
+        {
+            get => baseDamageReduction;
+            set => baseDamageReduction = Mathf.Clamp(value, 0f, maxDamageReduction);
+        }
+
         public float PlayerSpeed => currentState.CurrentSpeed;
-        public float BaseSpeed { get => playerBaseSpeed; set => playerBaseSpeed = value; }
+
+        public float BaseSpeed
+        {
+            get => playerBaseSpeed;
+            set => playerBaseSpeed = value;
+        }
+
         public bool IsDead => currentState.IsDead;
 
         public IReadOnlyList<float> DamageReductionModifiers => currentState.DamageReductionModifiers;
@@ -329,6 +347,12 @@ namespace Resonance.Player
             SimulateRemoveDamageReductionModifier(ref currentState, modifier);
         }
 
+        [SimulationOnly]
+        public void SimulateHeal(float amount)
+        {
+            currentState.CurrentHealth = Mathf.Min(currentState.CurrentHealth + amount, maxHealth);
+        }
+
         private void SimulateRemoveDamageReductionModifier(ref PlayerStatsDataState state, float modifier)
         {
             state.DamageReductionModifiers.Remove(modifier);
@@ -337,7 +361,8 @@ namespace Resonance.Player
 
         private void CalculateDamageReduction(ref PlayerStatsDataState state)
         {
-            float reduction = state.DamageReductionModifiers.Aggregate(baseDamageReduction, (combined, next) => combined + next);
+            float reduction =
+                state.DamageReductionModifiers.Aggregate(baseDamageReduction, (combined, next) => combined + next);
             state.CurrentDamageReduction = Mathf.Clamp(reduction, 0f, maxDamageReduction);
         }
 
@@ -367,12 +392,14 @@ namespace Resonance.Player
 
         private void CalculateRegen(ref PlayerStatsDataState state)
         {
-            state.CurrentHealthRegen = baseHealthRegen + state.RegenModifiers.Aggregate(0f, (combined, next) => combined + next);
+            state.CurrentHealthRegen =
+                baseHealthRegen + state.RegenModifiers.Aggregate(0f, (combined, next) => combined + next);
         }
 
         private void CalculateSpeed(ref PlayerStatsDataState state)
         {
-            state.CurrentSpeed = playerBaseSpeed * state.SpeedModifiers.Aggregate(1f, (combined, next) => combined * next);
+            state.CurrentSpeed =
+                playerBaseSpeed * state.SpeedModifiers.Aggregate(1f, (combined, next) => combined * next);
         }
 
         #endregion
@@ -515,14 +542,10 @@ namespace Resonance.Player
             }
         }
 
-        public void Heal(float amount)
+        public void HealExternal(float amount)
         {
             if (currentState.IsDead) return;
-
-            if (isServer && !isOwner)
-                currentState.CurrentHealth = Mathf.Min(currentState.CurrentHealth + amount, maxHealth);
-            else
-                _pendingExternalHeal += amount;
+            _pendingExternalHeal += amount;
         }
 
         private IEnumerator FinishRespawn()
@@ -537,11 +560,6 @@ namespace Resonance.Player
 #endif
             OnPlayerRespawn?.Invoke();
         }
-
-        #endregion
-
-        #region Damage Reduction Management
-
 
         #endregion
     }

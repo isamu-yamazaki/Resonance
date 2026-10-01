@@ -57,10 +57,11 @@ namespace Resonance.Combat
         {
             if (!isOwner) return;
             input.AbilityUpperPressed = playerActionsInput.AbilityUpperPressed;
-            input.AbilityLowerPressed =  playerActionsInput.AbilityLowerPressed;
+            input.AbilityLowerPressed = playerActionsInput.AbilityLowerPressed;
         }
 
-        protected override void Simulate(PlayerAbilityManagerInput input, ref PlayerAbilityManagerState state, float delta)
+        protected override void Simulate(PlayerAbilityManagerInput input, ref PlayerAbilityManagerState state,
+            float delta)
         {
             if (input.AbilityUpperPressed)
             {
@@ -71,20 +72,40 @@ namespace Resonance.Combat
             {
                 TryUseLowerActiveAbility();
             }
+
+            if (state.AugmentToEquipNextTick.HasValue)
+            {
+                state.AugmentToEquipThisTick = state.AugmentToEquipNextTick;
+                state.AugmentToEquipNextTick = null;
+            }
+            else
+            {
+                state.AugmentToEquipThisTick = null;
+            }
+
+            if (state.AugmentToRemoveNextTick.HasValue)
+            {
+                state.AugmentToRemoveThisTick = state.AugmentToRemoveNextTick;
+                state.AugmentToRemoveNextTick = null;
+            }
+            else
+            {
+                state.AugmentToRemoveThisTick = null;
+            }
         }
 
         [SimulationOnly]
         public void SimulateRemoveAugment(AugmentLookupArguments augment)
         {
             TryRemoveAugment(augment.AbilityKey);
-            currentState.AugmentRemovedThisTick = augment;
+            currentState.AugmentToRemoveNextTick = augment;
         }
 
         [SimulationOnly]
         public void SimulateEquipAugment(AugmentLookupArguments augment)
         {
             TryEquipAugment(augment.AbilityKey);
-            currentState.AugmentEquippedThisTick = augment;
+            currentState.AugmentToEquipNextTick = augment;
         }
 
         [SimulationOnly]
@@ -168,9 +189,19 @@ namespace Resonance.Combat
                 OnAbilityUsed?.Invoke(AugmentSlot.Lower);
             }
 
-            if (v.AugmentEquippedThisTick.HasValue)
+            if (v.AugmentToRemoveThisTick.HasValue)
             {
-                var lookupArgs = v.AugmentEquippedThisTick.Value;
+                var lookupArgs = v.AugmentToRemoveThisTick.Value;
+                var augment = FindAugmentByKey(lookupArgs.Key);
+                if (augment != null)
+                {
+                    OnAugmentRemoved?.Invoke(augment.Slot);
+                }
+            }
+
+            if (v.AugmentToEquipThisTick.HasValue)
+            {
+                var lookupArgs = v.AugmentToEquipThisTick.Value;
                 var ability = GetAbility(lookupArgs.AbilityKey);
                 var augment = FindAugmentByKey(lookupArgs.Key);
                 if (augment != null && ability != null)
@@ -178,21 +209,12 @@ namespace Resonance.Combat
                     OnAugmentEquipped?.Invoke(augment, ability);
                 }
             }
-
-            if (v.AugmentRemovedThisTick.HasValue)
-            {
-                var lookupArgs = v.AugmentRemovedThisTick.Value;
-                var augment = FindAugmentByKey(lookupArgs.Key);
-                if (augment != null)
-                {
-                    OnAugmentRemoved?.Invoke(augment.Slot);
-                }
-
-            }
         }
+
         #endregion
 
         #region Helpers
+
         private IAugmentAbility GetAbility(string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -218,8 +240,10 @@ namespace Resonance.Combat
         public bool UpperAbilityFired;
         public bool LowerAbilityFired;
 
-        public AugmentLookupArguments? AugmentEquippedThisTick;
-        public AugmentLookupArguments? AugmentRemovedThisTick;
+        public AugmentLookupArguments? AugmentToEquipNextTick;
+        public AugmentLookupArguments? AugmentToRemoveNextTick;
+        public AugmentLookupArguments? AugmentToEquipThisTick;
+        public AugmentLookupArguments? AugmentToRemoveThisTick;
 
         public void Dispose()
         {

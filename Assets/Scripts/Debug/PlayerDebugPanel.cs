@@ -431,7 +431,7 @@ private void DrawRegenModifiers()
             if (_playerStats == null) return;
             if (float.TryParse(_healAmount, out float healAmount))
             {
-                _playerStats.Heal(healAmount);
+                _playerStats.HealExternal(healAmount);
                 Debug.Log($"Applied {healAmount} heal via debug tools");
             }
             else Debug.LogWarning("Invalid heal amount");
@@ -440,7 +440,7 @@ private void DrawRegenModifiers()
         private void HealToMax()
         {
             if (_playerStats == null) return;
-            _playerStats.Heal(_playerStats.MaxHealth);
+            _playerStats.HealExternal(_playerStats.MaxHealth);
             Debug.Log("Player healed to max via debug tools");
         }
         #endregion

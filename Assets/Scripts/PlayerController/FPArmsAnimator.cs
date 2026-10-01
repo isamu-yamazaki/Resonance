@@ -136,11 +136,6 @@ namespace Resonance.Combat
                 active.SetFloat(FireSpeedHash, PlayerActionsInput.Instance.AttackHeld ? weapon.FireClip.length * fireRate : 1f);
             }
 
-            if (PlayerActionsInput.Instance.OverdrivePressed)
-            {
-                RequestOverdriveActivation();
-                PlayerActionsInput.Instance.SetOverdrivePressedFales();
-            }
             if (PlayerActionsInput.Instance.StimPressed)
             {
                 RequestStimActivation();
@@ -339,7 +334,6 @@ namespace Resonance.Combat
 
         public void OnOverdriveAnimActivate()
         {
-            _overdriveAbility?.TryActivateOverdrive();
         }
         
         public void OnStimAnimActivate()
@@ -380,8 +374,6 @@ namespace Resonance.Combat
 
         public void OnGrappleFireHook()
         {
-            // TODO: implement simulation timeout path
-            // _grappleHook?.ActivateAbilityExternal();
         }
 
         public void OnGrappleComplete()
