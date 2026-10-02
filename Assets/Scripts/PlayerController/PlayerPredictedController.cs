@@ -50,6 +50,7 @@ namespace Resonance.PlayerController
         // Both yaw and pitch are fully local for better responsiveness
         private float _cameraPitch;
         private float _cameraYaw;
+        private float _lastLocallyTrackedTickCameraYaw;
 
         /// <summary>
         /// The first-person view root's offset relative to the raw simulated root, captured once
@@ -184,8 +185,10 @@ namespace Resonance.PlayerController
         protected override void GetFinalInput(ref PlayerInputData input)
         {
             if (!isOwner) return;
+
             input.MovementInput = _playerLocomotionInput.MovementInput;
-            input.CameraYaw = _cameraYaw;
+            input.LookYawDelta = _cameraYaw - _lastLocallyTrackedTickCameraYaw;
+            _lastLocallyTrackedTickCameraYaw = _cameraYaw;
         }
 
 

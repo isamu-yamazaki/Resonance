@@ -84,7 +84,7 @@ namespace Resonance.Assemblies.Player
 
         public static void TickCameraMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
-            state.CameraYaw = ctx.Input.CameraYaw;
+            state.CameraYaw += ctx.Input.LookYawDelta;
         }
 
         public static void TickLateralMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
