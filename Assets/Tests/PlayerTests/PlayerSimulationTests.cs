@@ -118,7 +118,8 @@ public class PlayerSimulationTests
         bool jumpedLastSimulatedFrame = false,
         PlayerMovementState lastSimulatedMovementState = PlayerMovementState.Falling,
         PlayerMovementState simulatedMovementState = PlayerMovementState.Falling,
-        float slideTimer = 0f
+        float slideTimer = 0f,
+        bool wasGroundedLastTick = false
     )
     {
         return new PlayerMovementDataState
@@ -129,6 +130,7 @@ public class PlayerSimulationTests
             JumpedLastSimulatedFrame = jumpedLastSimulatedFrame,
             SimulatedMovementStateResult = simulatedMovementState,
             SlideTimer = slideTimer,
+            WasGroundedLastTick = wasGroundedLastTick,
         };
     }
 
@@ -338,6 +340,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickVerticalMovement_GroundedAndFalling_ClampsVyToNegativeAntiBump()
     {
+        GroundCharacterController();
+
         var config = MakeConfig(gravity: 0f, sprintSpeed: 7f, terminalVelocity: 1000f);
         var deps = MakeDeps(multiplier: 1f, movementState: PlayerMovementState.Idling);
         var input = MakeInput();
@@ -353,6 +357,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickVerticalMovement_GroundedAndFalling_ClearsGrappleImpulse()
     {
+        GroundCharacterController();
+
         var config = MakeConfig(gravity: 0f, sprintSpeed: 7f);
         var deps = MakeDeps(movementState: PlayerMovementState.Idling);
         var input = MakeInput();
@@ -371,6 +377,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickVerticalMovement_GroundedButRising_DoesNotClamp()
     {
+        GroundCharacterController();
+
         var config = MakeConfig(gravity: 0f, sprintSpeed: 7f, terminalVelocity: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Idling);
         var input = MakeInput();
@@ -405,6 +413,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickVerticalMovement_GroundedAndJumpPressed_AddsJumpVelocityAndSetsFlag()
     {
+        GroundCharacterController();
+
         // sprintSpeed=0 so antiBump=0; Branch B clamps to 0 (instead of -antiBump),
         // making the post-Branch-C value exactly sqrt(jumpSpeed*3*gravity).
         var config = MakeConfig(gravity: 25f, jumpSpeed: 1f, sprintSpeed: 0f, terminalVelocity: 1000f);
@@ -458,7 +468,8 @@ public class PlayerSimulationTests
         var config = MakeConfig(gravity: 0f, sprintSpeed: 10f, terminalVelocity: 1000f);
         var deps = MakeDeps(multiplier: 1f, movementState: PlayerMovementState.Falling);
         var input = MakeInput();
-        var state = MakeState(velocity: Vector3.zero, lastSimulatedMovementState: PlayerMovementState.Idling);
+        var state = MakeState(velocity: Vector3.zero, lastSimulatedMovementState: PlayerMovementState.Idling,
+            wasGroundedLastTick: true);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
