@@ -118,7 +118,8 @@ public class PlayerSimulationTests
         bool jumpedLastSimulatedFrame = false,
         PlayerMovementState lastSimulatedMovementState = PlayerMovementState.Falling,
         PlayerMovementState simulatedMovementState = PlayerMovementState.Falling,
-        float slideTimer = 0f
+        float slideTimer = 0f,
+        bool wasGroundedLastTick = false
     )
     {
         return new PlayerMovementDataState
@@ -129,7 +130,26 @@ public class PlayerSimulationTests
             JumpedLastSimulatedFrame = jumpedLastSimulatedFrame,
             SimulatedMovementStateResult = simulatedMovementState,
             SlideTimer = slideTimer,
+            WasGroundedLastTick = wasGroundedLastTick,
         };
+    }
+
+    private void GroundCharacterController()
+    {
+        // CharacterController.isGrounded is only set by a Move call that contacts a collider,
+        // so place a temporary floor just under the default CC capsule (bottom at y=-1)
+        // and drive it down a step. The floor is destroyed immediately; isGrounded stays
+        // true until the next Move call, which no test in this fixture makes.
+        var ground = new GameObject("TestGround");
+        var floor = ground.AddComponent<BoxCollider>();
+        floor.size = new Vector3(10f, 1f, 10f);
+        ground.transform.position = new Vector3(0f, -1.5f, 0f);
+        Physics.SyncTransforms();
+
+        _cc.Move(Vector3.down * 0.1f);
+        Assert.IsTrue(_cc.isGrounded, "Test CC could not be grounded; adjust floor placement.");
+
+        Object.DestroyImmediate(ground);
     }
 
     private PlayerSimulationContext MakeContext(
@@ -304,7 +324,8 @@ public class PlayerSimulationTests
         var config = MakeConfig(gravity: 25f, terminalVelocity: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Falling);
         var input = MakeInput();
-        var state = MakeState(velocity: new Vector3(0f, 10f, 0f), lastSimulatedMovementState: PlayerMovementState.Falling);
+        var state = MakeState(velocity: new Vector3(0f, 10f, 0f),
+            lastSimulatedMovementState: PlayerMovementState.Falling);
         var ctx = MakeContext(config: config, deps: deps, input: input, delta: 0.1f);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -319,10 +340,13 @@ public class PlayerSimulationTests
     [Test]
     public void TickVerticalMovement_GroundedAndFalling_ClampsVyToNegativeAntiBump()
     {
+        GroundCharacterController();
+
         var config = MakeConfig(gravity: 0f, sprintSpeed: 7f, terminalVelocity: 1000f);
         var deps = MakeDeps(multiplier: 1f, movementState: PlayerMovementState.Idling);
         var input = MakeInput();
-        var state = MakeState(velocity: new Vector3(0f, -5f, 0f), lastSimulatedMovementState: PlayerMovementState.Idling);
+        var state = MakeState(velocity: new Vector3(0f, -5f, 0f),
+            lastSimulatedMovementState: PlayerMovementState.Idling);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -333,6 +357,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickVerticalMovement_GroundedAndFalling_ClearsGrappleImpulse()
     {
+        GroundCharacterController();
+
         var config = MakeConfig(gravity: 0f, sprintSpeed: 7f);
         var deps = MakeDeps(movementState: PlayerMovementState.Idling);
         var input = MakeInput();
@@ -351,10 +377,13 @@ public class PlayerSimulationTests
     [Test]
     public void TickVerticalMovement_GroundedButRising_DoesNotClamp()
     {
+        GroundCharacterController();
+
         var config = MakeConfig(gravity: 0f, sprintSpeed: 7f, terminalVelocity: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Idling);
         var input = MakeInput();
-        var state = MakeState(velocity: new Vector3(0f, 5f, 0f), lastSimulatedMovementState: PlayerMovementState.Idling);
+        var state = MakeState(velocity: new Vector3(0f, 5f, 0f),
+            lastSimulatedMovementState: PlayerMovementState.Idling);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -368,7 +397,8 @@ public class PlayerSimulationTests
         var config = MakeConfig(gravity: 0f, sprintSpeed: 7f, terminalVelocity: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Falling);
         var input = MakeInput();
-        var state = MakeState(velocity: new Vector3(0f, -5f, 0f), lastSimulatedMovementState: PlayerMovementState.Falling);
+        var state = MakeState(velocity: new Vector3(0f, -5f, 0f),
+            lastSimulatedMovementState: PlayerMovementState.Falling);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -383,6 +413,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickVerticalMovement_GroundedAndJumpPressed_AddsJumpVelocityAndSetsFlag()
     {
+        GroundCharacterController();
+
         // sprintSpeed=0 so antiBump=0; Branch B clamps to 0 (instead of -antiBump),
         // making the post-Branch-C value exactly sqrt(jumpSpeed*3*gravity).
         var config = MakeConfig(gravity: 25f, jumpSpeed: 1f, sprintSpeed: 0f, terminalVelocity: 1000f);
@@ -436,7 +468,8 @@ public class PlayerSimulationTests
         var config = MakeConfig(gravity: 0f, sprintSpeed: 10f, terminalVelocity: 1000f);
         var deps = MakeDeps(multiplier: 1f, movementState: PlayerMovementState.Falling);
         var input = MakeInput();
-        var state = MakeState(velocity: Vector3.zero, lastSimulatedMovementState: PlayerMovementState.Idling);
+        var state = MakeState(velocity: Vector3.zero, lastSimulatedMovementState: PlayerMovementState.Idling,
+            wasGroundedLastTick: true);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -451,7 +484,8 @@ public class PlayerSimulationTests
         var deps = MakeDeps(multiplier: 1f, movementState: PlayerMovementState.Sprinting);
         var input = MakeInput();
         // vy=+5 to skip Branch B (which requires vy<0).
-        var state = MakeState(velocity: new Vector3(0f, 5f, 0f), lastSimulatedMovementState: PlayerMovementState.Idling);
+        var state = MakeState(velocity: new Vector3(0f, 5f, 0f),
+            lastSimulatedMovementState: PlayerMovementState.Idling);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -483,7 +517,8 @@ public class PlayerSimulationTests
         var config = MakeConfig(gravity: 0f, sprintSpeed: 0f, terminalVelocity: 50f);
         var deps = MakeDeps(movementState: PlayerMovementState.Falling);
         var input = MakeInput();
-        var state = MakeState(velocity: new Vector3(0f, -100f, 0f), lastSimulatedMovementState: PlayerMovementState.Falling);
+        var state = MakeState(velocity: new Vector3(0f, -100f, 0f),
+            lastSimulatedMovementState: PlayerMovementState.Falling);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -499,7 +534,8 @@ public class PlayerSimulationTests
         var config = MakeConfig(gravity: 0f, sprintSpeed: 0f, terminalVelocity: 50f);
         var deps = MakeDeps(movementState: PlayerMovementState.Falling);
         var input = MakeInput();
-        var state = MakeState(velocity: new Vector3(0f, 100f, 0f), lastSimulatedMovementState: PlayerMovementState.Falling);
+        var state = MakeState(velocity: new Vector3(0f, 100f, 0f),
+            lastSimulatedMovementState: PlayerMovementState.Falling);
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -517,7 +553,8 @@ public class PlayerSimulationTests
         var config = MakeConfig(gravity: 25f, jumpSpeed: 1f, sprintSpeed: 7f, terminalVelocity: 50f);
         var deps = MakeDeps(movementState: PlayerMovementState.Idling);
         var input = MakeInput(jumpPressed: true);
-        var state = MakeState(velocity: new Vector3(3f, 0f, 5f), lastSimulatedMovementState: PlayerMovementState.Idling);
+        var state = MakeState(velocity: new Vector3(3f, 0f, 5f),
+            lastSimulatedMovementState: PlayerMovementState.Idling);
         var ctx = MakeContext(config: config, deps: deps, input: input, delta: 0.1f);
 
         PlayerSimulation.TickVerticalMovement(ctx, ref state);
@@ -595,7 +632,8 @@ public class PlayerSimulationTests
     {
         // drag=0 -> Branch F produces newVelocity = movementDelta directly.
         // input=(0,1), yaw=0 -> movementDirection=(0,0,1), so result.z = inAirAcc * delta.
-        var config = MakeConfig(inAirAcc: 25f, runAcc: 999f, sprintAcc: 999f, crouchAcc: 999f, drag: 0f, sprintSpeed: 1000f);
+        var config = MakeConfig(inAirAcc: 25f, runAcc: 999f, sprintAcc: 999f, crouchAcc: 999f, drag: 0f,
+            sprintSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Falling);
         var input = MakeInput(movementInput: new Vector2(0f, 1f));
         var state = MakeState();
@@ -610,7 +648,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickLateralMovement_Crouching_UsesCrouchAcceleration()
     {
-        var config = MakeConfig(inAirAcc: 999f, runAcc: 999f, sprintAcc: 999f, crouchAcc: 13f, drag: 0f, crouchSpeed: 1000f);
+        var config = MakeConfig(inAirAcc: 999f, runAcc: 999f, sprintAcc: 999f, crouchAcc: 13f, drag: 0f,
+            crouchSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Crouching);
         var input = MakeInput(movementInput: new Vector2(0f, 1f));
         var state = MakeState();
@@ -624,7 +663,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickLateralMovement_Sprinting_UsesSprintAcceleration()
     {
-        var config = MakeConfig(inAirAcc: 999f, runAcc: 999f, sprintAcc: 50f, crouchAcc: 999f, drag: 0f, sprintSpeed: 1000f);
+        var config = MakeConfig(inAirAcc: 999f, runAcc: 999f, sprintAcc: 50f, crouchAcc: 999f, drag: 0f,
+            sprintSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Sprinting);
         var input = MakeInput(movementInput: new Vector2(0f, 1f));
         var state = MakeState();
@@ -638,7 +678,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickLateralMovement_Running_UsesRunAcceleration()
     {
-        var config = MakeConfig(inAirAcc: 999f, runAcc: 35f, sprintAcc: 999f, crouchAcc: 999f, drag: 0f, runSpeed: 1000f);
+        var config = MakeConfig(inAirAcc: 999f, runAcc: 35f, sprintAcc: 999f, crouchAcc: 999f, drag: 0f,
+            runSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Running);
         var input = MakeInput(movementInput: new Vector2(0f, 1f));
         var state = MakeState();
@@ -653,7 +694,8 @@ public class PlayerSimulationTests
     public void TickLateralMovement_Idling_UsesRunAccelerationFallthrough()
     {
         // Idling is grounded but neither sprinting nor crouching -> falls through to runAcc.
-        var config = MakeConfig(inAirAcc: 999f, runAcc: 35f, sprintAcc: 999f, crouchAcc: 999f, drag: 0f, runSpeed: 1000f);
+        var config = MakeConfig(inAirAcc: 999f, runAcc: 35f, sprintAcc: 999f, crouchAcc: 999f, drag: 0f,
+            runSpeed: 1000f);
         var deps = MakeDeps(movementState: PlayerMovementState.Idling);
         var input = MakeInput(movementInput: new Vector2(0f, 1f));
         var state = MakeState();
@@ -811,22 +853,24 @@ public class PlayerSimulationTests
     #region Branch E: Train velocity offset
 
     [Test]
-    public void TickLateralMovement_TrainVelocityOffset_SubtractedFromLocalVelocity()
+    public void TickLateralMovement_TrainVelocityOffset_IndependentMovementCalculation()
     {
-        // No input, no drag, no acc -> newVelocity = -trainVelocityOffset (XZ part).
-        // Then state.Velocity.x = -trainVelocityOffset.x.
+        // Test that TrainVelocityOffset is taken away before the movement calculation,
+        // and that it's added back afterwards
+
         var config = MakeConfig(runAcc: 0f, drag: 0f, runSpeed: 1000f);
         var deps = MakeDeps(
             movementState: PlayerMovementState.Running,
             trainVelocityOffset: new Vector3(5f, 0f, 0f)
         );
         var input = MakeInput();
-        var state = MakeState();
+        // Velocity includes train movement
+        var state = MakeState(velocity: new Vector3(10f, 0f, 0f));
         var ctx = MakeContext(config: config, deps: deps, input: input);
 
         PlayerSimulation.TickLateralMovement(ctx, ref state);
 
-        Assert.AreEqual(-5f, state.Velocity.x, Tolerance);
+        Assert.AreEqual(10f, state.Velocity.x, Tolerance);
         Assert.AreEqual(0f, state.Velocity.z, Tolerance);
     }
 
@@ -1080,6 +1124,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickMovementState_Grounded_NoInputNoVelocity_ReturnsIdling()
     {
+        GroundCharacterController();
+
         var ctx = MakeContext(input: MakeInput(movementInput: Vector2.zero));
         var state = MakeState(velocity: Vector3.zero);
 
@@ -1091,6 +1137,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickMovementState_Grounded_HasMovementInput_ReturnsRunning()
     {
+        GroundCharacterController();
+
         var ctx = MakeContext(input: MakeInput(movementInput: new Vector2(0f, 1f)));
         var state = MakeState(velocity: Vector3.zero);
 
@@ -1102,6 +1150,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickMovementState_Grounded_HasLateralVelocity_ReturnsRunning()
     {
+        GroundCharacterController();
+
         var ctx = MakeContext(input: MakeInput());
         var state = MakeState(velocity: new Vector3(2f, 0f, 0f));
 
@@ -1113,6 +1163,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickMovementState_Grounded_CrouchToggled_ReturnsCrouching()
     {
+        GroundCharacterController();
+
         var ctx = MakeContext(input: MakeInput(crouchToggledOn: true));
         var state = MakeState(velocity: Vector3.zero);
 
@@ -1124,6 +1176,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickMovementState_Grounded_CrouchAndSprintBothToggled_ReturnsCrouching()
     {
+        GroundCharacterController();
+
         var ctx = MakeContext(input: MakeInput(crouchToggledOn: true, sprintToggledOn: true));
         var state = MakeState(velocity: new Vector3(2f, 0f, 0f));
 
@@ -1135,6 +1189,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickMovementState_Grounded_SprintingWithLateralVelocityAndForwardInput_ReturnsSprinting()
     {
+        GroundCharacterController();
+
         // canRun requires movementInput.y >= |movementInput.x|; use pure forward input.
         var ctx = MakeContext(input: MakeInput(movementInput: new Vector2(0f, 1f), sprintToggledOn: true));
         var state = MakeState(velocity: new Vector3(0f, 0f, 2f));
@@ -1147,6 +1203,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickMovementState_Grounded_SprintToggled_StrafeOnlyInput_DoesNotSprint()
     {
+        GroundCharacterController();
+
         // canRun is false when movementInput.y < |movementInput.x| (pure strafe).
         var ctx = MakeContext(input: MakeInput(movementInput: new Vector2(1f, 0f), sprintToggledOn: true));
         var state = MakeState(velocity: new Vector3(2f, 0f, 0f));
@@ -1159,6 +1217,8 @@ public class PlayerSimulationTests
     [Test]
     public void TickMovementState_Grounded_SprintToggled_NoLateralVelocityNoInput_DoesNotSprint()
     {
+        GroundCharacterController();
+
         var ctx = MakeContext(input: MakeInput(sprintToggledOn: true));
         var state = MakeState(velocity: Vector3.zero);
 

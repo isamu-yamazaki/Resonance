@@ -186,7 +186,11 @@ namespace Resonance.PlayerController
 
         public void OnOverdrive(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState()) return;
+            if (!context.performed || IsBlockedByPlayerState())
+            {
+                OverdrivePressed = false;
+                return;
+            };
 
             OverdrivePressed = true;
         }
