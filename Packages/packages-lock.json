@@ -471,13 +471,13 @@
       "hash": "36460caf72a2fc807f126416af9a801ba6bfbeb1"
     },
     "dev.purrnet.purrdiction": {
-      "version": "https://github.com/PurrNet/PurrDiction.git?path=/Assets/PurrDiction#v1.2.3",
+      "version": "https://github.com/PurrNet/PurrDiction.git?path=/Assets/PurrDiction#v1.4.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.nuget.mono-cecil": "1.11.4"
       },
-      "hash": "5e35e71b29c688bedcd03f9f1ca2399cdd6548ef"
+      "hash": "c3aff287a2ea22d1461d7a3a34c9c59deceed781"
     },
     "dev.purrnet.purrnet": {
       "version": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#v1.24.0",
