@@ -8,6 +8,7 @@ namespace Resonance.Helper.PredictedAudioBroadcast
     public struct PredictedAudioBroadcastState : IPredictedData<PredictedAudioBroadcastState>
     {
         public bool BroadcastAudio;
+        public bool BroadcastAudioNextTick;
 
         public readonly void Dispose()
         {

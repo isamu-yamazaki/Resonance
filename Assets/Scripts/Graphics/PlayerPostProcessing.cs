@@ -1,13 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using Resonance.Player;
 using PurrNet;
+using Resonance.Helper;
 
 namespace Resonance.PlayerController
 {
     [RequireComponent(typeof(Volume))]
-    public class PlayerPostProcessing : NetworkBehaviour
+    public class PlayerPostProcessing : MonoBehaviour
     {
         #region Inspector Fields
 
@@ -41,6 +43,8 @@ namespace Resonance.PlayerController
 
         private OverdriveAbility _overdriveAbility;
         private PlayerStats _playerStats;
+        private PlayerPredictedController _playerController;
+        private bool _bound = false;
 
         private Bloom _bloom;
         private ChromaticAberration _chromaticAberration;
@@ -53,27 +57,35 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Startup
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
-            enabled = isOwner;
-        }
-
         private void Awake()
         {
-            _overdriveAbility = GetComponent<OverdriveAbility>();
-            _playerStats = GetComponent<PlayerStats>();
-
             if (_playerVolume == null)
                 _playerVolume = GetComponent<Volume>();
+        }
+
+        private void Update()
+        {
+            if (!_bound)
+                TryBindToLocalPlayer();
+
+            if (!_isDead)
+                TickEffects();
+        }
+
+        private void TryBindToLocalPlayer()
+        {
+            var ownerGameObject = OwnerFinder.FindGameObjectOfOwnedPlayerPredictedController();
+            if (ownerGameObject != gameObject)
+                return;
+
+            _bound = true;
+
+            _playerStats = GetComponent<PlayerStats>();
+            _overdriveAbility = GetComponent<OverdriveAbility>();
 
             _playerVolume.weight = 1f;
 
             ResolveOverrides();
-        }
-
-        private void Start()
-        {
             EnableOverrideStates();
             SetBaseValues();
 
@@ -141,10 +153,8 @@ namespace Resonance.PlayerController
 
         #region Update
 
-        private void Update()
+        private void TickEffects()
         {
-            if (_isDead) return;
-
             bool isOverdriveActive = _overdriveAbility != null && _overdriveAbility.IsInOverdrive;
 
             UpdateBloom(isOverdriveActive);

@@ -225,7 +225,9 @@ jobs:
           TAG="build-$(date +%Y%m%d-%H%M%S)"
           gh release create "$TAG" \
             Resonance_win_ProductionClient.zip \
+            Resonance_win_ProductionSteamSubmissionClient.zip \
             Resonance_mac_ProductionClient.zip \
+            Resonance_mac_ProductionSteamSubmissionClient.zip \
             ResonanceServer_linux.zip \
             --repo ${{ github.repository }} \
             --title "Build $TAG" \

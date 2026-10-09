@@ -1,3 +1,4 @@
+using PurrNet.Prediction;
 using Resonance.Combat.Mods;
 using Resonance.Player;
 using Resonance.PlayerController;
@@ -5,128 +6,160 @@ using UnityEngine;
 
 namespace Resonance.Combat.Augments
 {
-    // TODO: re-implement as a predicted ability
-    public class AbilityHumanTurret : MonoBehaviour, IAugmentAbility, IEquippableAbility
+    public class AbilityHumanTurret : PredictedIdentity<AbilityHumanTurretInput, AbilityHumanTurretState>, IAugmentAbility, IEquippableAbility
     {
         [SerializeField] private float timeToActivate = 2f;
 
         [SerializeField] private float damageReduction = 0.25f;
         [SerializeField] private WeaponModProperties turretMod;
 
-        private PlayerLocomotionInput playerLocomotionInput;
-        private PlayerStats playerStats;
-        private WeaponStatManager weaponStatManager;
-        private PlayerShooter playerShooter;
-
-        private float timeStandingStill;
-        private bool isTurretActive;
-
-        // This component stays permanently enabled; "equipped" is tracked here instead of via the
-        // Unity `enabled` flag (see IEquippableAbility / PlayerAbilityManager).
-        private bool _isEquipped;
+        private PlayerLocomotionInput _playerLocomotionInput;
+        private PlayerStats _playerStats;
+        private WeaponStatManager _weaponStatManager;
 
         public string AbilityKey => "ability_humanTurret";
         public string Name => "Human Turret";
         public string Description => "Standing still long enough turns you into a turret.";
         public float MaxCooldown => timeToActivate;
-        public float CurrentCooldown
-        {
-            get => timeStandingStill;
-            set => timeStandingStill = Mathf.Clamp(value, 0f, timeToActivate);
-        }
+
+        public float CurrentCooldown => currentState.TimeStandingStill;
+
         public bool AbilityReady => false;
 
-        public void SimulateActivateAbility()
+        #region Lifecycle
+
+        protected override void LateAwake()
         {
-            throw new System.NotImplementedException();
+            _playerStats = GetComponent<PlayerStats>();
+            _playerLocomotionInput = PlayerLocomotionInput.Instance;
+            _weaponStatManager = GetComponent<WeaponStatManager>();
         }
 
-        public void SetEquipped(bool equipped)
+        protected override AbilityHumanTurretState GetInitialState()
         {
-            if (_isEquipped == equipped) return;
-
-            _isEquipped = equipped;
-
-            // Unequipping must tear down the turret effect; OnDisable used to do this, but the
-            // component no longer gets disabled.
-            if (!equipped)
-                DeactivateTurret();
-        }
-
-        private void Awake()
-        {
-            playerStats = GetComponent<PlayerStats>();
-            playerLocomotionInput = PlayerLocomotionInput.Instance;
-            weaponStatManager = GetComponent<WeaponStatManager>();
-            playerShooter = GetComponent<PlayerShooter>();
-            timeStandingStill = 0f;
-            isTurretActive = false;
-        }
-
-        private void Update()
-        {
-            if (!_isEquipped) return;
-
-            if (playerLocomotionInput.MovementInput == Vector2.zero)
+            return new AbilityHumanTurretState()
             {
-                StandingStill();
-            }
-            else
-            {
-                Moving();
-            }
+                TimeStandingStill = 0f,
+                IsTurretActive = false
+            };
         }
 
         private void OnDisable()
         {
-            DeactivateTurret();
+            DeactivateTurret(ref currentState);
         }
 
-        private void StandingStill()
+        #endregion
+
+        #region Simulation
+
+        protected override void GetFinalInput(ref AbilityHumanTurretInput input)
         {
-            if (isTurretActive)
+            input.IsMoving = _playerLocomotionInput.MovementInput != Vector2.zero;
+        }
+
+        protected override void Simulate(AbilityHumanTurretInput input, ref AbilityHumanTurretState state, float delta)
+        {
+            if (!state.IsEquipped) return;
+
+            if (input.IsMoving)
+            {
+                StandingStill(ref state, delta);
+            }
+            else
+            {
+                Moving(ref state);
+            }
+        }
+
+        [SimulationOnly]
+        public void SimulateActivateAbility()
+        {
+        }
+
+        [SimulationOnly]
+        public void SetEquipped(bool equipped)
+        {
+            if (currentState.IsEquipped == equipped) return;
+
+            currentState.IsEquipped = equipped;
+
+            // Unequipping must tear down the turret effect; OnDisable used to do this, but the
+            // component no longer gets disabled.
+            if (!equipped)
+                DeactivateTurret(ref currentState);
+        }
+
+        [SimulationOnly]
+        private void StandingStill(ref AbilityHumanTurretState state, float delta)
+        {
+            if (state.IsTurretActive)
             {
                 return;
             }
 
-            timeStandingStill += Time.deltaTime;
+            state.TimeStandingStill += delta;
 
-            if (timeStandingStill >= timeToActivate)
+            if (state.TimeStandingStill >= timeToActivate)
             {
-                ActivateTurret();
+                ActivateTurret(ref state);
             }
         }
 
-        private void Moving()
+        [SimulationOnly]
+        private void Moving(ref AbilityHumanTurretState state)
         {
-            timeStandingStill = 0f;
-            DeactivateTurret();
+            state.TimeStandingStill = 0f;
+            DeactivateTurret(ref state);
         }
 
-        private void ActivateTurret()
+        [SimulationOnly]
+        private void ActivateTurret(ref AbilityHumanTurretState state)
         {
-            if (isTurretActive)
-            {
-                return;
-            }
-
-            isTurretActive = true;
-
-            playerStats.AddDamageReductionModifierExternal(damageReduction);
-            weaponStatManager.AddAugmentMod(turretMod);
-        }
-
-        private void DeactivateTurret()
-        {
-            if (!isTurretActive)
+            if (state.IsTurretActive)
             {
                 return;
             }
 
-            isTurretActive = false;
+            state.IsTurretActive = true;
 
-            playerStats.RemoveDamageReductionModifierExternal(damageReduction);
-            weaponStatManager.RemoveAugmentMod(turretMod);
+            _playerStats.SimulateAddDamageReductionModifier(damageReduction);
+            _weaponStatManager.SimulateAddAugmentMod(turretMod);
+        }
+
+        private void DeactivateTurret(ref AbilityHumanTurretState state)
+        {
+            if (!state.IsTurretActive)
+            {
+                return;
+            }
+
+            state.IsTurretActive = false;
+
+            _playerStats.SimulateRemoveDamageReductionModifier(damageReduction);
+            _weaponStatManager.SimulateRemoveAugmentMod(turretMod);
+        }
+
+        #endregion
+    }
+
+    public struct AbilityHumanTurretInput : IPredictedData
+    {
+        public bool IsMoving;
+
+        public void Dispose()
+        {
+        }
+    }
+
+    public struct AbilityHumanTurretState : IPredictedData<AbilityHumanTurretState>
+    {
+        public bool IsTurretActive;
+        public float TimeStandingStill;
+        public bool IsEquipped;
+
+        public void Dispose()
+        {
         }
     }
 }

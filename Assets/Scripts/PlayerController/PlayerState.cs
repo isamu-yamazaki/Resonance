@@ -20,11 +20,11 @@ namespace Resonance.PlayerController
         public event Action<WeaponClass> OnWeaponClassChanged;
 
         #region External input accumulators
-        private WeaponState pendingWeaponState;
-        private PlayerMovementState pendingMovementState;
-        private bool requestWeaponStateUpdate;
-        private bool requestMovementStateUpdate;
-        private PlayerStateData? previousVerifiedState;
+        private WeaponState _pendingWeaponState;
+        private PlayerMovementState _pendingMovementState;
+        private bool _requestWeaponStateUpdate;
+        private bool _requestMovementStateUpdate;
+        private PlayerStateData? _previousVerifiedState;
         #endregion
 
         public void SetExternalWeaponState(WeaponState state)
@@ -32,14 +32,14 @@ namespace Resonance.PlayerController
             if (CurrentWeaponState == state) return;
             if (!IsValidTransition(CurrentWeaponState, state)) return;
             
-            pendingWeaponState = state;
-            requestWeaponStateUpdate = true;
+            _pendingWeaponState = state;
+            _requestWeaponStateUpdate = true;
         }
 
         public void SetExternalPlayerMovementState(PlayerMovementState playerMovementState)
         {
-            pendingMovementState = playerMovementState;
-            requestMovementStateUpdate = true;
+            _pendingMovementState = playerMovementState;
+            _requestMovementStateUpdate = true;
         }
 
         [SimulationOnly]
@@ -113,13 +113,13 @@ namespace Resonance.PlayerController
 
         protected override void GetFinalInput(ref PlayerStateInput input)
         {
-            input.RequestExternalPlayerMovementStateUpdate = requestMovementStateUpdate;
-            input.RequestExternalWeaponStateUpdate = requestWeaponStateUpdate;
-            input.RequestedPlayerMovementState = pendingMovementState;
-            input.RequestedWeaponState = pendingWeaponState;
+            input.RequestExternalPlayerMovementStateUpdate = _requestMovementStateUpdate;
+            input.RequestExternalWeaponStateUpdate = _requestWeaponStateUpdate;
+            input.RequestedPlayerMovementState = _pendingMovementState;
+            input.RequestedWeaponState = _pendingWeaponState;
 
-            requestMovementStateUpdate = false;
-            requestWeaponStateUpdate = false;
+            _requestMovementStateUpdate = false;
+            _requestWeaponStateUpdate = false;
         }
 
         protected override void Simulate(PlayerStateInput input, ref PlayerStateData state, float delta)
@@ -139,13 +139,13 @@ namespace Resonance.PlayerController
             if (!verified.HasValue) return;
             var v = verified.Value;
 
-            if (!previousVerifiedState.HasValue || (previousVerifiedState.Value.WeaponClass != v.WeaponClass))
+            if (!_previousVerifiedState.HasValue || (_previousVerifiedState.Value.WeaponClass != v.WeaponClass))
                 OnWeaponClassChanged?.Invoke(v.WeaponClass);
             
-            if (!previousVerifiedState.HasValue || (previousVerifiedState.Value.WeaponState != v.WeaponState))
+            if (!_previousVerifiedState.HasValue || (_previousVerifiedState.Value.WeaponState != v.WeaponState))
                 OnWeaponStateChanged?.Invoke(v.WeaponState);
 
-            previousVerifiedState = v;
+            _previousVerifiedState = v;
         }
 
         #endregion

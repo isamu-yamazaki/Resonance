@@ -13,6 +13,7 @@ namespace Resonance.PlayerController
 
         private PlayerLocomotionInput _playerLocomotionInput;
         private PlayerState _playerState;
+        private float _lastLocallyTrackedTickCameraPitch;
 
         private static int inputXHash = Animator.StringToHash("inputX");
         private static int inputYHash = Animator.StringToHash("inputY");
@@ -47,8 +48,10 @@ namespace Resonance.PlayerController
 
         protected override void GetFinalInput(ref PlayerAnimationInput input)
         {
+            float pitch = Camera.main != null ? Camera.main.transform.localEulerAngles.x : 0f;
             input.MovementInput = _playerLocomotionInput.MovementInput;
-            input.CameraPitch = Camera.main != null ? Camera.main.transform.localEulerAngles.x : 0f;
+            input.LookPitchDelta = Mathf.DeltaAngle(_lastLocallyTrackedTickCameraPitch, pitch);
+            _lastLocallyTrackedTickCameraPitch = pitch;
         }
 
         #endregion
@@ -57,7 +60,7 @@ namespace Resonance.PlayerController
 
         protected override void SanitizeInput(ref PlayerAnimationInput input)
         {
-            if (input.CameraPitch > 180f) input.CameraPitch -= 360f;
+            input.LookPitchDelta = Mathf.Clamp(input.LookPitchDelta, -180f, 180f);
         }
 
         protected override void Simulate(PlayerAnimationInput input, ref PlayerAnimationState state, float delta)
@@ -73,7 +76,7 @@ namespace Resonance.PlayerController
                 };
 
             state.BlendInput = Vector2.Lerp(state.BlendInput, inputTarget, locomotionBlendSpeed * delta);
-            state.CameraPitch = input.CameraPitch;
+            state.CameraPitch += input.LookPitchDelta;
         }
 
         #endregion
@@ -129,7 +132,7 @@ namespace Resonance.PlayerController
     public struct PlayerAnimationInput : IPredictedData
     {
         public Vector2 MovementInput;
-        public float CameraPitch;
+        public float LookPitchDelta;
 
         public void Dispose()
         {
