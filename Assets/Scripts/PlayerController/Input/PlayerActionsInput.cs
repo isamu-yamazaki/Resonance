@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Resonance.Combat;
 using Resonance.Helper;
+using Resonance.Match;
 
 namespace Resonance.PlayerController
 {
@@ -10,6 +11,7 @@ namespace Resonance.PlayerController
         public static PlayerActionsInput Instance { get; private set; }
 
         #region Class Variables
+
         public bool AttackPressed { get; private set; }
         public bool AttackHeld { get; private set; }
         public bool ReloadPressed { get; private set; }
@@ -34,9 +36,11 @@ namespace Resonance.PlayerController
         private PlayerLocomotionInput _playerLocomotionInput;
         private OverdriveAbility _cachedOverdriveAbilityReference;
         private PlayerState _cachedPlayerStateReference;
+
         #endregion
 
         #region Startup
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -44,6 +48,7 @@ namespace Resonance.PlayerController
                 Destroy(gameObject);
                 return;
             }
+
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
@@ -90,6 +95,7 @@ namespace Resonance.PlayerController
             _cachedOverdriveAbilityReference = gameObject.GetComponent<OverdriveAbility>();
             _cachedPlayerStateReference = gameObject.GetComponent<PlayerState>();
         }
+
         #endregion
 
         #region Update
@@ -118,6 +124,7 @@ namespace Resonance.PlayerController
         {
             InteractPressed = false;
         }
+
         public void SetSlotOnePressedFalse()
         {
             SwapSlotOnePressed = false;
@@ -151,9 +158,10 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Input Callbacks
+
         public void OnAttack(InputAction.CallbackContext context)
         {
-            if (IsBlockedByPlayerState()) return;
+            if (IsBlockedByPlayerOrMatchState()) return;
 
             if (context.started)
             {
@@ -172,46 +180,48 @@ namespace Resonance.PlayerController
 
         public void OnReload(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState()) return;
+            if (!context.performed || IsBlockedByPlayerOrMatchState()) return;
 
             ReloadPressed = true;
         }
 
         public void OnInteract(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState()) return;
+            if (!context.performed || IsBlockedByPlayerOrMatchState()) return;
 
             InteractPressed = true;
         }
 
         public void OnOverdrive(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState())
+            if (!context.performed || IsBlockedByPlayerOrMatchState())
             {
                 OverdrivePressed = false;
                 return;
-            };
+            }
+
+            ;
 
             OverdrivePressed = true;
         }
 
         public void OnSwapSlotOne(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState()) return;
+            if (!context.performed || IsBlockedByPlayerOrMatchState()) return;
 
             SwapSlotOnePressed = true;
         }
 
         public void OnSwapSlotTwo(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState()) return;
+            if (!context.performed || IsBlockedByPlayerOrMatchState()) return;
 
             SwapSlotTwoPressed = true;
         }
 
         public void OnSwapWeapon(InputAction.CallbackContext context)
         {
-            if (IsBlockedByPlayerState()) return;
+            if (IsBlockedByPlayerOrMatchState()) return;
 
             Vector2 scroll = context.ReadValue<Vector2>();
             if (Mathf.Abs(scroll.y) < 0.01f)
@@ -222,29 +232,33 @@ namespace Resonance.PlayerController
 
         public void OnStim(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState()) return;
+            if (!context.performed || IsBlockedByPlayerOrMatchState()) return;
 
             StimPressed = true;
         }
 
         public void OnAbilityUpper(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState())
+            if (!context.performed || IsBlockedByPlayerOrMatchState())
             {
                 AbilityUpperPressed = false;
                 return;
-            };
+            }
+
+            ;
 
             AbilityUpperPressed = true;
         }
 
         public void OnAbilityLower(InputAction.CallbackContext context)
         {
-            if (!context.performed || IsBlockedByPlayerState())
+            if (!context.performed || IsBlockedByPlayerOrMatchState())
             {
                 AbilityLowerPressed = false;
                 return;
-            };
+            }
+
+            ;
 
             AbilityLowerPressed = true;
         }
@@ -278,9 +292,10 @@ namespace Resonance.PlayerController
         }
 
         #endregion
+
         public void RequestReload()
         {
-            if (IsBlockedByPlayerState()) return;
+            if (IsBlockedByPlayerOrMatchState()) return;
 
             ReloadPressed = true;
         }
@@ -299,10 +314,12 @@ namespace Resonance.PlayerController
             AdsHeld = false;
         }
 
-        private bool IsBlockedByPlayerState()
+        private bool IsBlockedByPlayerOrMatchState()
         {
             TryCachePlayerComponentReferences();
-            return _cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen());
+            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
+            return _cachedPlayerStateReference == null || roundManager == null ||
+                   _cachedPlayerStateReference.IsDead() || !roundManager.IsMatchActive;
         }
     }
 }
