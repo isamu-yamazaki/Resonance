@@ -1,5 +1,6 @@
 using Resonance.Assemblies.Player;
 using Resonance.Helper;
+using Resonance.Match;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -63,15 +64,6 @@ namespace Resonance.PlayerController
             PlayerInputManager.Instance.PlayerControls.PlayerLocomotionMap.RemoveCallbacks(this);
         }
 
-        private void TryCachePlayerComponentReferences()
-        {
-            if (_cachedPlayerStateReference != null) return;
-
-            var gameObject = OwnerFinder.FindGameObjectOfOwnedPlayerPredictedController();
-            if (gameObject == null) return;
-
-            _cachedPlayerStateReference = gameObject.GetComponent<PlayerState>();
-        }
         #endregion
 
         #region Late Update Logic
@@ -100,8 +92,7 @@ namespace Resonance.PlayerController
         #region Input Callbacks
         public void OnMovement(InputAction.CallbackContext context)
         {
-            TryCachePlayerComponentReferences();
-            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen()))
+            if (IsBlockedByPlayerOrMatchState())
             {
                 MovementInput = Vector2.zero;
                 return;
@@ -112,9 +103,7 @@ namespace Resonance.PlayerController
 
         public void OnLook(InputAction.CallbackContext context)
         {
-            TryCachePlayerComponentReferences();
-
-            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen()))
+            if (IsBlockedByPlayerOrMatchState())
             {
                 LookInput = Vector2.zero;
                 return;
@@ -125,9 +114,7 @@ namespace Resonance.PlayerController
 
         public void OnToggleSprint(InputAction.CallbackContext context)
         {
-            TryCachePlayerComponentReferences();
-
-            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen())) return;
+            if (IsBlockedByPlayerOrMatchState()) return;
 
             if (context.performed)
             {
@@ -141,26 +128,45 @@ namespace Resonance.PlayerController
 
         public void OnJump(InputAction.CallbackContext context)
         {
-            TryCachePlayerComponentReferences();
+            if (IsBlockedByPlayerOrMatchState()) return;
 
             if (!context.performed)
             {
                 JumpPressed = false;
                 return;
             }
-            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen())) return;
 
             JumpPressed = true;
         }
 
         public void OnToggleCrouch(InputAction.CallbackContext context)
         {
-            TryCachePlayerComponentReferences();
+            if (IsBlockedByPlayerOrMatchState()) return;
 
             if (!context.performed) return;
-            if (_cachedPlayerStateReference != null && (_cachedPlayerStateReference.IsDead() || _cachedPlayerStateReference.IsMatchFrozen())) return;
-
             CrouchToggledOn = !CrouchToggledOn;
+        }
+
+        #endregion
+
+        #region Input helpers
+
+        private void TryCachePlayerComponentReferences()
+        {
+            if (_cachedPlayerStateReference != null) return;
+
+            var go = OwnerFinder.FindGameObjectOfOwnedPlayerPredictedController();
+            if (go == null) return;
+
+            _cachedPlayerStateReference = go.GetComponent<PlayerState>();
+        }
+
+        private bool IsBlockedByPlayerOrMatchState()
+        {
+            TryCachePlayerComponentReferences();
+            var roundManager = MatchLogicNetworkAdapter.Instance?.GetTemporaryActiveRoundManagerReference();
+            return _cachedPlayerStateReference == null || roundManager == null ||
+                   _cachedPlayerStateReference.IsDead() || !roundManager.IsMatchActive;
         }
 
         #endregion
