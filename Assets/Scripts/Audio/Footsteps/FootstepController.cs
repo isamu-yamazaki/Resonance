@@ -5,7 +5,7 @@ using PurrNet;
 
 namespace Resonance.Audio
 {
-    public class FootstepController : NetworkBehaviour
+    public class FootstepController : MonoBehaviour
     {
 #if !UNITY_SERVER
         [Header("Wwise Events")]
@@ -38,11 +38,6 @@ namespace Resonance.Audio
         private string currentSurface = "Concrete";
         private bool wasInAir = false;
 
-        protected override void OnSpawned()
-        {
-            base.OnSpawned();
-        }
-
         void Awake()
         {
             characterController = GetComponentInParent<CharacterController>();
@@ -57,8 +52,6 @@ namespace Resonance.Audio
 
         void Update()
         {
-            if (!isOwner) return;
-
             bool isInAir = !playerState.InGroundedState();
             bool canLand = playerState.InGroundedState() ||
                            playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping ||
@@ -72,19 +65,6 @@ namespace Resonance.Audio
 
         public void PlayFootstep()
         {
-            if (!isOwner) return;
-            PlayFootstepRpc();
-        }
-
-        public void PlayLanding()
-        {
-            if (!isOwner) return;
-            PlayLandingRpc();
-        }
-
-        [ObserversRpc(runLocally: true)]
-        private void PlayFootstepRpc()
-        {
 #if !UNITY_SERVER
             DetectSurface();
             SetSurfaceSwitch();
@@ -95,8 +75,7 @@ namespace Resonance.Audio
 #endif
         }
 
-        [ObserversRpc(runLocally: true)]
-        private void PlayLandingRpc()
+        public void PlayLanding()
         {
 #if !UNITY_SERVER
             DetectSurface();

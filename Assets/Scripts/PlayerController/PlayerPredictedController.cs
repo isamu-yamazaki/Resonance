@@ -19,20 +19,21 @@ namespace Resonance.PlayerController
     {
         #region Inspector
 
-        [Header("Components")]
-        [SerializeField] private CharacterController _characterController;
+        [Header("Components")] [SerializeField]
+        private CharacterController _characterController;
+
         [SerializeField] private CinemachineCamera _virtualCamera;
 
         [Tooltip("Shared parent of the first-person camera and FP arms. Driven from the " +
                  "interpolated PredictedTransform.graphics so the local view feels as smooth " +
                  "as the third-person skin, instead of stepping with the raw simulated root.")]
-        [SerializeField] private Transform _firstPersonViewRoot;
+        [SerializeField]
+        private Transform _firstPersonViewRoot;
 
-        [Header("Config")]
-        [SerializeField] private PlayerConfig _config;
+        [Header("Config")] [SerializeField] private PlayerConfig _config;
 
-        [Header("Environment Details")]
-        [SerializeField] private LayerMask _groundLayers;
+        [Header("Environment Details")] [SerializeField]
+        private LayerMask _groundLayers;
 
         #endregion
 
@@ -49,6 +50,7 @@ namespace Resonance.PlayerController
         // Both yaw and pitch are fully local for better responsiveness
         private float _cameraPitch;
         private float _cameraYaw;
+        private float _lastLocallyTrackedTickCameraYaw;
 
         /// <summary>
         /// The first-person view root's offset relative to the raw simulated root, captured once
@@ -56,6 +58,7 @@ namespace Resonance.PlayerController
         /// so the eye height/offset is preserved without compounding.
         /// </summary>
         private Vector3 _firstPersonViewRootOffsetFromRoot;
+
         private bool _hasFirstPersonViewRoot;
 
         #endregion
@@ -147,10 +150,6 @@ namespace Resonance.PlayerController
             }
         }
 
-        #endregion
-
-        #region Prediction overrides
-
         protected override PlayerMovementDataState GetInitialState()
         {
             return new PlayerMovementDataState
@@ -164,6 +163,10 @@ namespace Resonance.PlayerController
                 SlideTimer = 0f,
             };
         }
+
+        #endregion
+
+        #region Simulation
 
         protected override void UpdateInput(ref PlayerInputData input)
         {
@@ -182,8 +185,10 @@ namespace Resonance.PlayerController
         protected override void GetFinalInput(ref PlayerInputData input)
         {
             if (!isOwner) return;
+
             input.MovementInput = _playerLocomotionInput.MovementInput;
-            input.CameraYaw = _cameraYaw;
+            input.LookYawDelta = _cameraYaw - _lastLocallyTrackedTickCameraYaw;
+            _lastLocallyTrackedTickCameraYaw = _cameraYaw;
         }
 
 
@@ -195,7 +200,7 @@ namespace Resonance.PlayerController
             if (_playerState.IsMatchFrozen()) return;
             if (_playerState.IsZiplining()) return;
             if (!_characterController.enabled) return;
-            
+
             // Player movement state:
             // The current player movement state is read from _playerState.
             // A resulting state is calculated in PlayerSimulation, then
@@ -261,6 +266,10 @@ namespace Resonance.PlayerController
             _predictedTransform?.ResetInterpolation();
         }
 
+        #endregion
+
+        #region View updates
+
         protected override PlayerMovementDataState Interpolate(
             PlayerMovementDataState from,
             PlayerMovementDataState to,
@@ -297,16 +306,19 @@ namespace Resonance.PlayerController
 
             // Body yaw is driven in Simulate and owned by PredictedTransform; UpdateView only
             // handles the owner camera/FOV (kept crisp on the simulated root).
-            Vector3 camForwardXZ = new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
+            Vector3 camForwardXZ =
+                new Vector3(_virtualCamera.transform.forward.x, 0f, _virtualCamera.transform.forward.z).normalized;
             Vector3 cross = Vector3.Cross(transform.forward, camForwardXZ);
-            RotationMismatch = Mathf.Sign(Vector3.Dot(cross, transform.up)) * Vector3.Angle(transform.forward, camForwardXZ);
+            RotationMismatch = Mathf.Sign(Vector3.Dot(cross, transform.up)) *
+                               Vector3.Angle(transform.forward, camForwardXZ);
 
             float targetFOV = _config.baseFOV;
             if (_overdriveAbility != null && _overdriveAbility.IsInOverdrive)
                 targetFOV = _config.overdriveFOV;
             else if (viewState.SimulatedMovementStateResult == PlayerMovementState.Sprinting)
                 targetFOV = _config.sprintFOV;
-            _virtualCamera.Lens.FieldOfView = Mathf.Lerp(_virtualCamera.Lens.FieldOfView, targetFOV, _config.fovTransitionSpeed * Time.deltaTime);
+            _virtualCamera.Lens.FieldOfView = Mathf.Lerp(_virtualCamera.Lens.FieldOfView, targetFOV,
+                _config.fovTransitionSpeed * Time.deltaTime);
         }
 
         #endregion

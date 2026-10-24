@@ -207073,6 +207073,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &255538496
 Mesh:
   m_ObjectHideFlags: 0
@@ -242994,6 +243010,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!1 &299651763
 GameObject:
   m_ObjectHideFlags: 0
@@ -361158,6 +361190,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &482345209
 Mesh:
   m_ObjectHideFlags: 0
@@ -476840,6 +476888,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &642876306
 Mesh:
   m_ObjectHideFlags: 0
@@ -590247,6 +590311,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &819919967
 Mesh:
   m_ObjectHideFlags: 0
@@ -670781,6 +670861,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &944211169
 Mesh:
   m_ObjectHideFlags: 0
@@ -675294,6 +675390,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!1 &953424085
 GameObject:
   m_ObjectHideFlags: 0
@@ -855943,6 +856055,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &1200148676
 Mesh:
   m_ObjectHideFlags: 0
@@ -966211,6 +966339,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &1365496414
 Mesh:
   m_ObjectHideFlags: 0
@@ -1017798,6 +1017942,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &1430825264
 Mesh:
   m_ObjectHideFlags: 0
@@ -1097791,6 +1097951,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!1 &1522981294
 GameObject:
   m_ObjectHideFlags: 0
@@ -1134727,6 +1134903,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &1569499837
 Mesh:
   m_ObjectHideFlags: 0
@@ -1294353,6 +1294545,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &1762433006
 Mesh:
   m_ObjectHideFlags: 0
@@ -1467659,6 +1467867,22 @@ MonoBehaviour:
   dismountJumpForce: 8
   lineWidth: 0.1
   lineMaterial: {fileID: 0}
+  mountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingLoopEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  dismountEvent:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  ridingSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!43 &1990825290
 Mesh:
   m_ObjectHideFlags: 0

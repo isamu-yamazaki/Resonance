@@ -9,7 +9,7 @@ namespace Resonance.Assemblies.Player
         public bool JumpPressed { get; set; }
         public bool SprintToggledOn { get; set; }
         public bool CrouchToggledOn { get; set; }
-        public float CameraYaw { get; set; }
+        public float LookYawDelta { get; set; }
 
         public void Dispose() { }
     }

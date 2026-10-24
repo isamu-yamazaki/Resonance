@@ -31,6 +31,7 @@ namespace Resonance.Combat.Augments
         private GrappleRopeRenderer _ropeRenderer;
         private FPArmsAnimator _fpArmsAnimator;
 
+
         // Previous verified state, so the one-shot broadcast flags can be edge-detected instead of
         // re-firing every render frame that resamples the same verified tick.
         private AbilityGrappleHookState? _previousVerifiedState;

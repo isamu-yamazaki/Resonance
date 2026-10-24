@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using PurrNet.Prediction;
 using Resonance.Combat.Weapons;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Resonance.PlayerController
 {
-    public class OverdriveTrailEffect : PredictedIdentity<OverdriveTrailEffectInput, OverdriveTrailEffectState>
+    [RequireComponent(typeof(OverdriveAbility))]
+    [DefaultExecutionOrder(1)]
+    public class OverdriveTrailEffect : PredictedIdentity<OverdriveTrailEffectState>
     {
         #region Class Variables
-        [Header("Trail Settings")]
-        [SerializeField] private Material _overdriveTrailMaterial;
+
+        [FormerlySerializedAs("_overdriveTrailMaterial")] [Header("Trail Settings")] [SerializeField]
+        private Material overdriveTrailMaterial;
+
         [SerializeField] private float spawnInterval = 0.1f;
         [SerializeField] private float ghostLifetime = 0.5f;
         [SerializeField] private int maxGhosts = 10;
@@ -26,24 +31,31 @@ namespace Resonance.PlayerController
         /// </summary>
         [SerializeField] private float ghostSpawningDelaySeconds = 0.5f;
 
-        [Header("Color Settings")]
-        [SerializeField] private Gradient colorGradient;
+        [Header("Color Settings")] [SerializeField]
+        private Gradient colorGradient;
+
         [SerializeField] private bool useGradientOverLifetime = true;
 
-        private SkinnedMeshRenderer[] _meshesToCopy;
+        private SkinnedMeshRenderer[] _meshesToCopy = Array.Empty<SkinnedMeshRenderer>();
+        private bool _meshesApplied = false;
         private PlayerSkinRenderer _playerSkinRenderer;
         private OverdriveAbility _overdriveAbility;
         private float _spawnTimer = 0f;
         private Queue<GhostInstance> _ghostPool = new Queue<GhostInstance>();
         private List<GhostInstance> _activeGhosts = new List<GhostInstance>();
         private Transform _ghostContainer;
+
         #endregion
 
         #region Startup
-        private void Awake()
+
+        protected override void LateAwake()
         {
             _overdriveAbility = GetComponent<OverdriveAbility>();
             _playerState = GetComponent<PlayerState>();
+            _playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
+
+            if (isServer) return;
 
             // Create a static container for ghosts in world space
             GameObject container = new GameObject("Overdrive Ghost Container");
@@ -54,9 +66,9 @@ namespace Resonance.PlayerController
             {
                 colorGradient = new Gradient();
                 GradientColorKey[] colorKeys = new GradientColorKey[3];
-                colorKeys[0] = new GradientColorKey(new Color(0f, 1f, 0f), 0f);    // Green
-                colorKeys[1] = new GradientColorKey(new Color(0f, 1f, 1f), 0.5f);  // Cyan
-                colorKeys[2] = new GradientColorKey(new Color(0f, 0.5f, 1f), 1f);  // Blue
+                colorKeys[0] = new GradientColorKey(new Color(0f, 1f, 0f), 0f); // Green
+                colorKeys[1] = new GradientColorKey(new Color(0f, 1f, 1f), 0.5f); // Cyan
+                colorKeys[2] = new GradientColorKey(new Color(0f, 0.5f, 1f), 1f); // Blue
 
                 GradientAlphaKey[] alphaKeys = new GradientAlphaKey[2];
                 alphaKeys[0] = new GradientAlphaKey(1f, 0f);
@@ -65,45 +77,46 @@ namespace Resonance.PlayerController
                 colorGradient.SetKeys(colorKeys, alphaKeys);
             }
 
-            _playerSkinRenderer = GetComponent<PlayerSkinRenderer>();
-        }
-
-        private void Start()
-        {
             // Read the current skin's renderers directly (previously delivered via the
             // OnNewSkinSpawned event). Null-guarded for the case where the skin has not been
             // applied yet on a verified tick.
-            _meshesToCopy = _playerSkinRenderer.CurrentMeshInstance != null
-                ? _playerSkinRenderer.CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>()
-                : Array.Empty<SkinnedMeshRenderer>();
+            LazilyReferenceMeshesToCopy();
 
-            // Pre-instantiate ghost pool
-            for (int i = 0; i < maxGhosts; i++)
+            // Pre-instantiate ghost pool once the skin is known; until then
+            // GetGhostFromPool builds instances lazily.
+            if (_meshesToCopy.Length > 0)
             {
-                CreateGhostInstance();
+                for (int i = 0; i < maxGhosts; i++)
+                {
+                    CreateGhostInstance();
+                }
             }
         }
+
         #endregion
 
         #region Update Logic
-        protected override void GetFinalInput(ref OverdriveTrailEffectInput input)
-        {
-            input.ShouldSpawnGhostsForEveryone = _overdriveAbility.IsInOverdrive;
-        }
 
-        protected override void Simulate(OverdriveTrailEffectInput input, ref OverdriveTrailEffectState state, float delta)
+        protected override void Simulate(ref OverdriveTrailEffectState state, float f)
         {
-            if (input.ShouldSpawnGhostsForEveryone && !state.SpawnGhosts)
+            if (_overdriveAbility.currentState.State == OverdriveState.Active
+                && !state.SpawnGhosts)
             {
                 state.GhostSpawningStartTime = DateTime.Now.AddSeconds(ghostSpawningDelaySeconds);
+                state.SpawnGhosts = true;
             }
-
-            state.SpawnGhosts = input.ShouldSpawnGhostsForEveryone;
+            else if (_overdriveAbility.currentState.State != OverdriveState.Active && state.SpawnGhosts)
+            {
+                state.SpawnGhosts = false;
+            }
         }
 
         protected override void UpdateView(OverdriveTrailEffectState viewState, OverdriveTrailEffectState? verified)
         {
             if (!verified.HasValue) return;
+
+            LazilyReferenceMeshesToCopy();
+
             var v = verified.Value;
 
             if (v.SpawnGhosts && v.GhostSpawningStartTime <= DateTime.Now)
@@ -156,13 +169,28 @@ namespace Resonance.PlayerController
                     {
                         ReturnGhostToPool(ghost);
                     }
+
                     _activeGhosts.RemoveAt(i);
                 }
             }
         }
+
         #endregion
 
         #region Ghost Management
+
+        private void LazilyReferenceMeshesToCopy()
+        {
+            if (_meshesApplied || _playerSkinRenderer.CurrentMeshInstance == null) return;
+
+#if UNITY_EDITOR
+            Debug.Log(
+                $"[{nameof(OverdriveTrailEffect)}] Applying meshes from {_playerSkinRenderer.CurrentMeshInstance}");
+#endif
+            _meshesToCopy = _playerSkinRenderer.CurrentMeshInstance.GetComponentsInChildren<SkinnedMeshRenderer>();
+            _meshesApplied = true;
+        }
+
         private void SpawnGhost()
         {
             if (Vector3.Distance(transform.position, _lastGhostPosition) < minGhostSpawnDistance) return;
@@ -228,13 +256,14 @@ namespace Resonance.PlayerController
 
                 // Each SkinMeshRenderer has its own local rotation which must correspond to this object
                 meshObj.transform.localPosition = Vector3.zero;
-                meshObj.transform.localRotation = _meshesToCopy[i].transform.localRotation * Quaternion.Euler(0f, 0f, 180f);
+                meshObj.transform.localRotation =
+                    _meshesToCopy[i].transform.localRotation * Quaternion.Euler(0f, 0f, 180f);
 
                 MeshFilter mf = meshObj.AddComponent<MeshFilter>();
                 MeshRenderer mr = meshObj.AddComponent<MeshRenderer>();
 
                 // Create instance of overdrive trail material
-                Material matInstance = new Material(_overdriveTrailMaterial);
+                Material matInstance = new Material(overdriveTrailMaterial);
                 mr.material = matInstance;
                 mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 mr.receiveShadows = false;
@@ -244,6 +273,7 @@ namespace Resonance.PlayerController
                 {
                     overdriveMaterials[j] = matInstance;
                 }
+
                 mr.materials = overdriveMaterials;
 
                 ghost.meshFilters[i] = mf;
@@ -255,6 +285,8 @@ namespace Resonance.PlayerController
 
         private GhostInstance GetGhostFromPool()
         {
+            if (_meshesToCopy.Length == 0) return null;
+
             if (_ghostPool.Count > 0)
             {
                 return _ghostPool.Dequeue();
@@ -285,15 +317,19 @@ namespace Resonance.PlayerController
         #endregion
 
         #region Helper Classes
+
         private class GhostInstance
         {
             public GameObject gameObject;
             public Transform transform;
             public MeshFilter[] meshFilters;
+
             public MeshRenderer[] meshRenderers;
+
             // for materials, see each mesh renderer in meshRenderers
             public float lifetime;
         }
+
         #endregion
     }
 }

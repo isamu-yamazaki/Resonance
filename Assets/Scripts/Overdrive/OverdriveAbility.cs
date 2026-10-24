@@ -1,172 +1,181 @@
+using System;
 using System.Collections;
+using PurrNet.Prediction;
+using Resonance.Combat;
 using Resonance.Helper;
 using UnityEngine;
 using Resonance.Player;
 
 namespace Resonance.PlayerController
 {
-    public class OverdriveAbility : MonoBehaviour
+    public class OverdriveAbility : PredictedIdentity<OverdriveAbilityInput, OverdriveAbilityState>
     {
+        private const float EventInvokeThresholdForFloats = 0.01f;
+        private const float AnimationDelaySeconds = 0.67f;
+
+
+
         #region Class Variables
+
         [Header("Audio")]
 #if !UNITY_SERVER
-        [SerializeField] private AK.Wwise.Event activateEvent;
+        [SerializeField]
+        private AK.Wwise.Event activateEvent;
 #endif
 
-        [Header("Overdrive Settings")]
-        [SerializeField] private float overdriveDuration = 8f;
+        [Header("Overdrive Settings")] [SerializeField]
+        private float overdriveDuration = 8f;
+
         [SerializeField] private float overdriveCooldown = 30f;
         [SerializeField] private float overdriveSpeedMultiplier = 2f;
         [SerializeField] private float overdriveHealAmount = 50f;
         [SerializeField] private float overdriveRegenAmount = 2f;
         [SerializeField] private float overdriveDamageReductionAmount = 0.25f;
-        
-        
-        public ObservableValue<OverdriveState> State { get; private set; }
-        public ObservableValue<float> CooldownRemaining { get; private set; }
-        public ObservableValue<float> DurationRemaining { get; private set; }
-        public ObservableValue<float> CooldownFill { get; private set; }
-        
-        public bool IsInOverdrive { get; private set; } = false;
-        public bool IsOnCooldown { get; private set; } = false;
+
+
+        public bool IsInOverdrive => currentState.State == OverdriveState.Active;
+        public bool IsOnCooldown => currentState.State == OverdriveState.Cooldown;
         public bool IsReady => !IsInOverdrive && !IsOnCooldown;
-        public OverdriveState CurrentState { get; private set; } = OverdriveState.Ready;
-        
-        public float DurationTimeRemaining { get; private set; } = 0f;
-        public float CooldownTimeRemaining { get; private set; } = 0f;
-        
+        public OverdriveState CurrentState => currentState.State;
+
+        public float DurationTimeRemaining => currentState.DurationRemaining;
+        public float CooldownTimeRemaining => currentState.CooldownRemaining;
+
         public float SpeedMultiplier => overdriveSpeedMultiplier;
         public float CooldownDuration => overdriveCooldown;
 
         private PlayerState _playerState;
         private PlayerStats _playerStats;
         private OverdriveWorldActivateBroadcast _audioBroadcast;
+        private FPArmsAnimator _fpArmsAnimator;
+
+        private PlayerActionsInput _playerActionsInput;
+        private OverdriveAbilityState? _previousVerifiedViewState;
+
+        // current, previous
+        public event Action<OverdriveState, OverdriveState?> OnOverdriveStateChanged;
+        public event Action<float> OnCooldownChanged;
+        public event Action<float> OnDurationChanged;
+        public event Action<float> OnCooldownFillChanged;
+
         #endregion
 
-        #region Startup
-        private void Awake()
+        #region Lifecycle
+
+        protected override void LateAwake()
         {
             _playerState = GetComponent<PlayerState>();
             _playerStats = GetComponent<PlayerStats>();
+            _fpArmsAnimator = GetComponent<FPArmsAnimator>();
+
+            // TODO: migrate audio broadcasts to this script
             _audioBroadcast = GetComponent<OverdriveWorldActivateBroadcast>();
-            
-            State = new ObservableValue<OverdriveState>(OverdriveState.Ready);
-            CooldownRemaining = new ObservableValue<float>(0f);
-            DurationRemaining = new ObservableValue<float>(0f);
-            CooldownFill = new ObservableValue<float>(0f);
-        }
-        
-        private void Start()
-        {
-            if (_playerStats != null)
-            {
-                _playerStats.OnPlayerDeath += HandlePlayerDeath;
-                _playerStats.OnPlayerRespawn += HandlePlayerRespawn;
-            }
-            
-            OverdriveHUD hud = FindFirstObjectByType<OverdriveHUD>();
-            if (hud != null)
-            {
-                hud.SetOverdriveAbility(this);
-#if UNITY_EDITOR
-                Debug.Log("[OverdriveAbility] Registered with OverdriveHUD");
-#endif
-            }
-        }
-        
-        private void OnDestroy()
-        {
-            if (_playerStats != null)
-            {
-                _playerStats.OnPlayerDeath -= HandlePlayerDeath;
-                _playerStats.OnPlayerRespawn -= HandlePlayerRespawn;
-            }
-        }
-        #endregion
-        
-        #region Update Logic
-        private void Update()
-        {
-            UpdateOverdriveState();
+
+            if (!isOwner) return;
+
+            _playerActionsInput = PlayerActionsInput.Instance;
         }
 
-        private void UpdateOverdriveState()
+        protected override OverdriveAbilityState GetInitialState()
         {
-            switch (CurrentState)
+            return new OverdriveAbilityState()
+            {
+                State = OverdriveState.Ready,
+                CooldownRemaining = 0f,
+                DurationRemaining = 0f,
+                CooldownFill = 0f,
+            };
+        }
+
+        #endregion
+
+        #region Input
+
+        protected override void UpdateInput(ref OverdriveAbilityInput input)
+        {
+            if (!isOwner) return;
+            input.OverdriveKeyPressed |= _playerActionsInput.OverdrivePressed;
+        }
+
+        protected override void GetFinalInput(ref OverdriveAbilityInput input)
+        {
+            if (!isOwner) return;
+            input.OverdriveKeyPressed = _playerActionsInput.OverdrivePressed;
+        }
+
+        #endregion
+
+        #region Simulation
+
+        protected override void Simulate(
+            OverdriveAbilityInput input,
+            ref OverdriveAbilityState state,
+            float delta
+        )
+        {
+            switch (state.State)
             {
                 case OverdriveState.Ready:
-                    IsInOverdrive = false;
-                    IsOnCooldown = false;
+                    if (input.OverdriveKeyPressed)
+                    {
+                        state.State = OverdriveState.PendingWithDelay;
+                    }
+
                     break;
-                
+
                 case OverdriveState.Active:
-                    IsInOverdrive = true;
-                    IsOnCooldown = false;
-                    
-                    DurationTimeRemaining -= Time.deltaTime;
-                    
-                    DurationRemaining.Value = DurationTimeRemaining;
-
-                    if (DurationTimeRemaining <= 0f)
+                    state.DurationRemaining -= delta;
+                    if (state.DurationRemaining <= 0f)
                     {
-                        DeactivateOverdrive();
+                        DeactivateOverdrive(ref state);
                     }
+
                     break;
-                
+
                 case OverdriveState.Cooldown:
-                    IsInOverdrive = false;
-                    IsOnCooldown = true;
-                    
-                    CooldownTimeRemaining -= Time.deltaTime;
-                    
-                    CooldownRemaining.Value = CooldownTimeRemaining;
-                    CooldownFill.Value = CooldownTimeRemaining / overdriveCooldown;
+                    state.CooldownRemaining -= delta;
+                    state.CooldownFill = CooldownTimeRemaining / overdriveCooldown;
 
-                    if (CooldownTimeRemaining <= 0f)
+                    if (state.CooldownRemaining <= 0f)
                     {
-                        SetState(OverdriveState.Ready);
+                        state.State = OverdriveState.Ready;
                     }
+
                     break;
+                case OverdriveState.PendingWithDelay:
+                    state.PendingTime += delta;
+                    if (state.PendingTime >= AnimationDelaySeconds)
+                    {
+                        ActivateOverdrive(ref state);
+                        state.PendingTime = 0;
+                    }
+
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-        }
-        #endregion
-        
-        #region Public Methods
-        public bool TryActivateOverdrive()
-        {
-            if (CurrentState != OverdriveState.Ready)
+
+            if (_playerState.IsDead())
             {
-#if UNITY_EDITOR
-                Debug.Log("Overdrive not ready - currently in state: " +  CurrentState);
-#endif
-                return false;
+                HandlePlayerDeath(ref state);
             }
-
-            ActivateOverdrive();
-            return true;
         }
-        #endregion
-        
-        #region Private Methods
-        private void ActivateOverdrive()
+
+        [SimulationOnly]
+        private void ActivateOverdrive(ref OverdriveAbilityState state)
         {
-            SetState(OverdriveState.Active);
-            DurationTimeRemaining = overdriveDuration;
+            state.State = OverdriveState.Active;
+            state.DurationRemaining = overdriveDuration;
 
-#if !UNITY_SERVER
-            if (activateEvent != null && activateEvent.IsValid())
-                activateEvent.Post(gameObject);
+            _audioBroadcast.SimulateBroadcastAudio();
 
-            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 70f);
-#endif
-            _audioBroadcast.RequestAudioBroadcastNextTick();
-            
             if (_playerStats != null)
             {
-                _playerStats.AddSpeedModifierExternal(overdriveSpeedMultiplier);
-                _playerStats.AddRegenModifierExternal(overdriveRegenAmount);
-                _playerStats.AddDamageReductionModifierExternal(overdriveDamageReductionAmount);
-                _playerStats.Heal(overdriveHealAmount);
+                _playerStats.SimulateAddSpeedModifier(overdriveSpeedMultiplier);
+                _playerStats.SimulateAddRegenModifier(overdriveRegenAmount);
+                _playerStats.SimulateAddDamageReductionModifier(overdriveDamageReductionAmount);
+                _playerStats.SimulateHeal(overdriveHealAmount);
 #if UNITY_EDITOR
                 Debug.Log($"Overdrive ACTIVATED! Healed {overdriveHealAmount} HP");
 #endif
@@ -179,59 +188,90 @@ namespace Resonance.PlayerController
             }
         }
 
-        private void DeactivateOverdrive()
+        [SimulationOnly]
+        private void DeactivateOverdrive(ref OverdriveAbilityState state)
         {
-            SetState(OverdriveState.Cooldown);
-            CooldownTimeRemaining = overdriveCooldown;
-            
-            _playerStats.RemoveSpeedModifierExternal(overdriveSpeedMultiplier);
-            _playerStats.RemoveRegenModifierExternal(overdriveRegenAmount);
-            _playerStats.RemoveDamageReductionModifierExternal(overdriveDamageReductionAmount);
+            state.State = OverdriveState.Cooldown;
+            state.CooldownRemaining = overdriveCooldown;
+
+            _playerStats.SimulateRemoveSpeedModifier(overdriveSpeedMultiplier);
+            _playerStats.SimulateRemoveRegenModifier(overdriveRegenAmount);
+            _playerStats.SimulateRemoveDamageReductionModifier(overdriveDamageReductionAmount);
 #if UNITY_EDITOR
             Debug.Log("Overdrive DEACTIVATED - Starting cooldown");
 #endif
-
-#if !UNITY_SERVER
-            StartCoroutine(LerpLowPassOut(1f));
-#endif
         }
 
-        private void SetState(OverdriveState newState)
+        [SimulationOnly]
+        private void HandlePlayerDeath(ref OverdriveAbilityState state)
         {
-            if (CurrentState == newState) return;
+            if (state.State != OverdriveState.Active) return;
 
-            CurrentState = newState;
-            State.Value = newState;
-
-            IsInOverdrive = (newState == OverdriveState.Active);
-            IsOnCooldown = (newState == OverdriveState.Cooldown);
-        }
-        
-        private void HandlePlayerDeath()
-        {
-            if (CurrentState == OverdriveState.Active)
-            {
-                DeactivateOverdrive();
+            DeactivateOverdrive(ref state);
 #if UNITY_EDITOR
-                Debug.Log("[OverdriveAbility] Overdrive interrupted by death");
+            Debug.Log("[OverdriveAbility] Overdrive interrupted by death");
 #endif
-            }
-            
-            enabled = false;
         }
-        
+
+        [SimulationOnly]
         private void HandlePlayerRespawn()
         {
-            enabled = true;
 #if UNITY_EDITOR
             Debug.Log("[OverdriveAbility] Component resumed after respawn");
 #endif
         }
+
         #endregion
 
-        #if !UNITY_SERVER
+        #region View updates
+
+        protected override void UpdateView(OverdriveAbilityState interpolatedState, OverdriveAbilityState? verified)
+        {
+            if (!verified.HasValue) return;
+            var v = verified.Value;
+
+            if (v.State != _previousVerifiedViewState?.State)
+            {
+                OnOverdriveStateChanged?.Invoke(v.State, _previousVerifiedViewState?.State);
+            }
+
+            if (v.State == OverdriveState.PendingWithDelay && _previousVerifiedViewState?.State == OverdriveState.Ready)
+            {
+                _fpArmsAnimator.RequestOverdriveActivation();
+            }
+
+            if (v.State == OverdriveState.Cooldown && _previousVerifiedViewState?.State == OverdriveState.Active)
+            {
+                StartCoroutine(LerpLowPassOut(1f));
+            }
+
+            if (Mathf.Abs(v.CooldownRemaining - (_previousVerifiedViewState?.CooldownRemaining ?? 0f)) >
+                EventInvokeThresholdForFloats)
+            {
+                OnCooldownChanged?.Invoke(v.CooldownRemaining);
+            }
+
+            if (Mathf.Abs(v.CooldownFill - (_previousVerifiedViewState?.CooldownFill ?? 0f)) >
+                EventInvokeThresholdForFloats)
+            {
+                OnCooldownFillChanged?.Invoke(v.CooldownFill);
+            }
+
+            if (Mathf.Abs(v.DurationRemaining - (_previousVerifiedViewState?.DurationRemaining ?? 0f)) >
+                EventInvokeThresholdForFloats)
+            {
+                OnDurationChanged?.Invoke(v.DurationRemaining);
+            }
+
+            _previousVerifiedViewState = v;
+        }
+
+        #endregion
+
+
         private IEnumerator LerpLowPassOut(float duration)
         {
+#if !UNITY_SERVER
             float elapsed = 0f;
             while (elapsed < duration)
             {
@@ -240,15 +280,39 @@ namespace Resonance.PlayerController
                 AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", value);
                 yield return null;
             }
-            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 0f);
-        }
-        #endif
 
-        public enum OverdriveState
-        {
-            Ready = 0,
-            Active = 1,
-            Cooldown = 2
+            AkUnitySoundEngine.SetRTPCValue("Overdrive_LowPass", 0f);
+#endif
         }
+    }
+
+    public struct OverdriveAbilityInput : IPredictedData
+    {
+        public void Dispose()
+        {
+        }
+
+        public bool OverdriveKeyPressed;
+    }
+
+    public struct OverdriveAbilityState : IPredictedData<OverdriveAbilityState>
+    {
+        public OverdriveState State;
+        public float CooldownRemaining;
+        public float DurationRemaining;
+        public float CooldownFill;
+        public float PendingTime;
+
+        public void Dispose()
+        {
+        }
+    }
+
+    public enum OverdriveState
+    {
+        Ready = 0,
+        PendingWithDelay = 1,
+        Active = 2,
+        Cooldown = 3
     }
 }

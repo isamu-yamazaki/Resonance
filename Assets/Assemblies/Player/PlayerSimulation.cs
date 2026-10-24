@@ -64,7 +64,7 @@ namespace Resonance.Assemblies.Player
             bool canRun = ctx.Input.MovementInput.y >= Mathf.Abs(ctx.Input.MovementInput.x);
             bool isSprinting = ctx.Input.SprintToggledOn && isMovingLaterally && !ctx.Input.CrouchToggledOn && canRun;
 
-            if (ctx.Input.CrouchToggledOn && !ctx.Input.SprintToggledOn)
+            if (ctx.Input.CrouchToggledOn)
             {
                 state.SimulatedMovementStateResult = PlayerMovementState.Crouching;
             }
@@ -84,7 +84,7 @@ namespace Resonance.Assemblies.Player
 
         public static void TickCameraMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
         {
-            state.CameraYaw = ctx.Input.CameraYaw;
+            state.CameraYaw += ctx.Input.LookYawDelta;
         }
 
         public static void TickLateralMovement(in PlayerSimulationContext ctx, ref PlayerMovementDataState state)
