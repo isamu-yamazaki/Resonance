@@ -418,13 +418,13 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.transport": {
-      "version": "2.5.3",
-      "depth": 1,
+      "version": "2.6.0",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.burst": "1.8.12",
+        "com.unity.burst": "1.8.24",
         "com.unity.collections": "2.2.1",
-        "com.unity.mathematics": "1.3.1"
+        "com.unity.mathematics": "1.3.2"
       },
       "url": "https://packages.unity.com"
     },
@@ -471,24 +471,25 @@
       "hash": "36460caf72a2fc807f126416af9a801ba6bfbeb1"
     },
     "dev.purrnet.purrdiction": {
-      "version": "https://github.com/PurrNet/PurrDiction.git?path=/Assets/PurrDiction#v1.2.3",
+      "version": "https://github.com/PurrNet/PurrDiction.git?path=/Assets/PurrDiction#v1.4.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.nuget.mono-cecil": "1.11.4"
       },
-      "hash": "5e35e71b29c688bedcd03f9f1ca2399cdd6548ef"
+      "hash": "c3aff287a2ea22d1461d7a3a34c9c59deceed781"
     },
     "dev.purrnet.purrnet": {
-      "version": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#v1.19.1",
+      "version": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#v1.24.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.nuget.mono-cecil": "1.11.4",
         "com.unity.nuget.newtonsoft-json": "3.2.1",
-        "com.unity.collections": "2.6.2"
+        "com.unity.collections": "2.6.2",
+        "com.unity.mathematics": "1.3.2"
       },
-      "hash": "266cb63efd3d858d6d2fce68c2b0b2364ca78c24"
+      "hash": "2702fed9d1b5a261bd671d5f5e36e893f36d4f75"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
